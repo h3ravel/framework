@@ -1,0 +1,16 @@
+import { ServiceProvider } from '@h3ravel/core'
+
+/**
+ * Handles CLI commands and tooling.
+ * 
+ * Register DatabaseManager and QueryBuilder.
+ * Set up ORM models and relationships.
+ * Register migration and seeder commands.
+ * 
+ * Auto-Registered when in CLI mode
+ */
+export class ConsoleServiceProvider extends ServiceProvider {
+    register () {
+        // Core bindings
+    }
+}

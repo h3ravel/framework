@@ -1,0 +1,33 @@
+{
+  "name": "h3ravel-monorepo",
+  "private": true,
+  "description": "Monorepo for H3ravel, a modern TypeScript runtime-agnostic web framework built on H3.",
+  "type": "module",
+  "scripts": {
+    "barrel": "pnpm -r --filter './packages/*' run barrel",
+    "build": "pnpm barrel && pnpm -r --workspace-concurrency=1 --filter '@h3ravel/core' --filter './packages/*' run build",
+    "dev": "pnpm barrel && pnpm -r --parallel --filter './packages/*' run dev",
+    "lint": "pnpm -r --filter './packages/*' run lint",
+    "test": "pnpm -r --filter './packages/*' run test",
+    "prepare": "husky",
+    "postinstall": "pnpm barrel",
+    "undev": "tsx watch packages/core/src/main.ts"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.32.0",
+    "@types/node": "^24.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "barrelsby": "^2.8.1",
+    "eslint": "^9.0.0",
+    "husky": "^9.0.0",
+    "path": "^0.12.7",
+    "tsx": "^4.20.3",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.38.0",
+    "vite": "^7.0.0",
+    "vite-plugin-dts": "^4.5.4",
+    "vitest": "^3.0.0"
+  },
+  "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
+}

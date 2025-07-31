@@ -1,0 +1,24 @@
+{
+  "name": "@h3ravel/config",
+  "version": "0.1.0",
+  "description": "Environment/config loading and management system for H3ravel.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "barrel": "barrelsby --directory src --delete --singleQuotes",
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "lint": "eslint . --ext .ts",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@h3ravel/core": "workspace:*",
+    "h3": "^2.0.0-beta.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^7.0.0",
+    "vite-plugin-dts": "^4.0.0"
+  }
+}

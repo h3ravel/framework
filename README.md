@@ -11,8 +11,8 @@ H3ravel is a modern TypeScript runtime-agnostic web framework built on top of [H
 - Controllers with decorators – Class-based controllers like Laravel
 - HTTP Kernel – Centralized middleware and request lifecycle handling
 - Eloquent-like ORM – Fluent, model-based database interactions (planned)
-- Powerful CLI – Artisan-like command-line tool for generating code and running tasks (planned)
-- Modular Services – Mail, Queue, Cache, Broadcasting support (planned)
+- Musketeer CLI, our Powerful Artisan-like command-line tool for generating code and running tasks
+- Modular Services – Mail, Queue, Cache, Broadcasting support
 - Runtime Agnostic – Works seamlessly across Node.js, Bun, and Deno
 - Type-safe everything – Fully written in TypeScript
 
@@ -55,7 +55,7 @@ src/
 - Minimal, yet scalable – Built on H3’s tiny but powerful HTTP handling, keeping your app fast and maintainable.
 - Runtime Freedom – Designed to run on Node.js, Bun, and Deno without code changes.
 - Convention over configuration – Opinionated structure for faster development.
- 
+
 ## Roadmap
 
 - [ ] Application container with service providers

@@ -1,0 +1,26 @@
+{
+  "name": "@h3ravel/core",
+  "version": "0.1.0",
+  "description": "Core application container, lifecycle management and service providers for H3ravel.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "barrel": "barrelsby --directory src --delete --singleQuotes",
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "lint": "eslint . --ext .ts",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "h3": "^2.0.0-beta.1",
+    "reflect-metadata": "^0.2.2",
+    "srvx": "^0.8.2",
+    "tslib": "^2.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vite": "^7.0.0",
+    "vite-plugin-dts": "^4.0.0"
+  }
+}

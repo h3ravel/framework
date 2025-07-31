@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@h3ravel/core": ["packages/core/src"],
+      "@h3ravel/router": ["packages/router/src"],
+      "@h3ravel/http": ["packages/http/src"],
+      "@h3ravel/config": ["packages/config/src"],
+      "@h3ravel/database": ["packages/database/src"],
+      "@h3ravel/cache": ["packages/cache/src"],
+      "@h3ravel/mail": ["packages/mail/src"],
+      "@h3ravel/queue": ["packages/queue/src"],
+      "@h3ravel/console": ["packages/console/src"]
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true
+  }
+}
