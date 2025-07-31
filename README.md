@@ -30,25 +30,6 @@ While modern JavaScript frameworks focus on speed and minimalism, they often lac
 
 This combination delivers the productivity of Laravel while leveraging the modern JavaScript ecosystem and runtime flexibility.
 
-## Project Structure
-
-```
-src/
-├── core/              # Framework foundation (App Container, Kernel, Providers)
-├── http/
-│   ├── controllers/   # Controllers
-│   ├── middleware/    # Middleware
-│   └── kernel.ts      # HTTP Kernel (middleware stack & route loading)
-├── routes/            # Route definitions
-│   ├── web.ts         # Web routes
-│   └── api.ts         # API routes
-├── database/          # ORM, migrations, seeds
-├── console/           # CLI commands
-├── services/          # Mail, Queue, Cache
-├── support/           # Helpers, utilities
-└── config/            # Configuration files
-```
-
 ## Philosophy
 
 - Laravel DX, TypeScript speed – H3ravel brings Laravel’s expressive syntax and architecture to JavaScript with full type safety.
