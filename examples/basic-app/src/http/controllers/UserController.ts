@@ -1,4 +1,4 @@
-import { Controller } from '@h3ravel/core'
+import { Controller } from '../../../../../packages/core/src/Controller'
 import { H3Event } from 'h3'
 
 export class UserController extends Controller {

@@ -1,32 +1,28 @@
 import 'reflect-metadata'
 
-import { Application } from './Application'
-import { H3, type serve as H3Serve } from 'h3'
+import { Application, Kernel } from '@h3ravel/core'
 
-/**
- * Boostrap the app
- */
+import type { H3 } from 'h3'
+import { LogRequests } from './Middleware/LogRequests'
+
 async function bootstrap () {
     const app = new Application(process.cwd())
     await app.registerConfiguredProviders()
     await app.boot()
 
     const h3App = app.make<H3>('http.app')
-    const serve = app.make<typeof H3Serve>('http.serve')
+    const serve = app.make<typeof import('h3').serve>('http.serve')
 
-    // h3App
+    const kernel = new Kernel([new LogRequests()])
 
-    // Example route
-    h3App.get('/', (event) => {
-        if (!event.res.headers.has('Content-Type')) {
-            event.res.headers.set('Content-Type', 'text/plain; charset=utf-8')
-        }
-
-        return '⚡️ Tadaas!'
+    // Wrap all routes
+    h3App.use(async (event) => {
+        return kernel.handle(event, async () => {
+            // If middleware passes, H3 continues to normal routing
+            return undefined
+        })
     })
 
     serve(h3App, { port: 3000 })
-    console.log('🚀 H3ravel running on http://localhost:3000')
 }
-
 bootstrap()
