@@ -4,6 +4,7 @@
 
 export * from './Application';
 export * from './Container';
+export * from './Controller';
 export * from './ServiceProvider';
 export * from './main';
 export * from './Exceptions/Handler';
