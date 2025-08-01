@@ -2,6 +2,7 @@ import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Controller, Kernel } from '@h3ravel/core'
 import { Middleware as HttpMiddleware } from '@h3ravel/http'
 import { HttpContext } from '@h3ravel/http'
+import { singularize } from '@h3ravel/support'
 
 type EventHandler = (ctx: HttpContext) => unknown
 
@@ -49,7 +50,7 @@ export class Router {
         name?: string,
         middleware: HttpMiddleware[] = []
     ) {
-        const fullPath = `${this.groupPrefix}${path}`
+        const fullPath = `${this.groupPrefix}${path}`.replace(/\/+/g, '/')
         this.routes.push({ method, path: fullPath, name, handler })
         this.app[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
     }
@@ -84,7 +85,7 @@ export class Router {
         path = path.replace(/\//g, '/')
 
         const basePath = `/${path}`.replace(/\/+/g, '/')
-        console.log(`${basePath}/:id`, path)
+        console.log(`${basePath}/:id`, singularize(path), basePath)
 
         this.addRoute('get', basePath, controller.index, `${path}.index`, middleware)
         this.addRoute('post', basePath, controller.store, `${path}.store`, middleware)

@@ -1,6 +1,7 @@
 import { H3 } from 'h3'
 import { Router } from '../Router'
 import { ServiceProvider } from '@h3ravel/core'
+import { readdirSync } from 'fs'
 
 /**
  * Handles routing registration
@@ -24,10 +25,16 @@ export class RouteServiceProvider extends ServiceProvider {
      */
     async boot () {
         try {
-            const routesModule = await import(`${process.cwd()}/src/routes/web.ts`)
-            if (typeof routesModule.default === 'function') {
-                const router = this.app.make<Router>('router')
-                routesModule.default(router)
+            const routePath = `${process.cwd()}/src/routes`
+            const files = readdirSync(routePath);
+
+            for (let i = 0; i < files.length; i++) {
+                const routesModule = await import(`${routePath}/${files[i]}`)
+
+                if (typeof routesModule.default === 'function') {
+                    const router = this.app.make<Router>('router')
+                    routesModule.default(router)
+                }
             }
         } catch (e) {
             console.warn('No web routes found or failed to load:', e)

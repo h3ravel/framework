@@ -94,4 +94,13 @@ export class Application extends Container {
             return null
         }
     }
+
+    /**
+     * Get the base path of the app
+     * 
+     * @returns 
+     */
+    getBasePath (): string {
+        return this.basePath
+    }
 }
