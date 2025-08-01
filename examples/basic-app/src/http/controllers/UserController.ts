@@ -1,24 +1,25 @@
-import { Controller } from '../../../../../packages/core/src/Controller'
-import { H3Event } from 'h3'
+import { Controller } from '@h3ravel/core'
+import { HttpContext } from '@h3ravel/http'
 
 export class UserController extends Controller {
-    index (event: H3Event) {
+    async index () {
         return [{ id: 1, name: 'John Doe' }]
     }
 
-    store (event: H3Event) {
-        return { message: 'User created' }
+    store ({ request, response }: HttpContext) {
+        console.log(request.all())
+        return response.setStatusCode(202).json({ message: 'User created' })
     }
 
-    show (event: H3Event) {
-        return { id: event.context.params.id, name: 'John Doe' }
+    show ({ request, response }: HttpContext) {
+        return response.json({ id: request.input('id'), name: 'John Doe' })
     }
 
-    update (event: H3Event) {
-        return { message: `User ${event.context.params.id} updated` }
+    update ({ request, response }: HttpContext) {
+        return response.setStatusCode(201).json({ message: `User ${request.input('id')} updated` })
     }
 
-    destroy (event: H3Event) {
-        return { message: `User ${event.context.params.id} deleted` }
+    destroy ({ request }: HttpContext) {
+        return { message: `User ${request.input('id')} deleted` }
     }
 }

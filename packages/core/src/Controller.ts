@@ -1,20 +1,22 @@
-import { H3Event } from "h3";
+import { HttpContext } from '@h3ravel/http'
 
+/**
+ * Add shared logic for controllers here (middleware, helpers, etc.)
+ */
 export abstract class Controller {
-    // Shared logic for controllers should go here (middleware, helpers, etc.)
-    public show (event: H3Event): any {
-        return event
+    public show (_ctx: HttpContext): any {
+        return
     }
-    public index (event: H3Event): any {
-        return event
+    public index (_ctx: HttpContext): any {
+        return
     }
-    public store (event: H3Event): any {
-        return event
+    public store (_ctx: HttpContext): any {
+        return
     }
-    public update (event: H3Event): any {
-        return event
+    public update (_ctx: HttpContext): any {
+        return
     }
-    public destroy (event: H3Event): any {
-        return event
+    public destroy (_ctx: HttpContext): any {
+        return
     }
 }

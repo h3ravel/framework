@@ -5,11 +5,12 @@ export class Application extends Container {
     private providers: ServiceProvider[] = []
     private basePath: string
     private booted = false
+    protected externalProviders: Array<new (_app: Application) => ServiceProvider> = []
 
     constructor(basePath: string) {
         super()
         this.basePath = basePath
-        this.registerBaseBindings()
+        // this.registerBaseBindings()
     }
 
     /**
@@ -24,7 +25,7 @@ export class Application extends Container {
      * Dynamically register all configured providers
      */
     public async registerConfiguredProviders () {
-        const providers = await this.getConfiguredProviders()
+        const providers = await this.getAllProviders()
 
         for (const ProviderClass of providers) {
             if (!ProviderClass) continue
@@ -46,14 +47,17 @@ export class Application extends Container {
             (await import('@h3ravel/core')).AppServiceProvider,
             (await import('@h3ravel/config')).ConfigServiceProvider,
             (await import('@h3ravel/http')).HttpServiceProvider,
-            (await import('@h3ravel/router')).RouteServiceProvider,
+            (await import('@h3ravel/router')).RouteServiceProvider
+        ]
+    }
 
-            await this.safeImport('@h3ravel/database').then(m => m?.DatabaseServiceProvider),
-            await this.safeImport('@h3ravel/cache').then(m => m?.CacheServiceProvider),
-            await this.safeImport('@h3ravel/mail').then(m => m?.MailServiceProvider),
-            await this.safeImport('@h3ravel/queue').then(m => m?.QueueServiceProvider),
-            await this.safeImport('@h3ravel/console').then(m => m?.ConsoleServiceProvider)
-        ].filter(Boolean) as Array<new (_app: Application) => ServiceProvider>
+    protected async getAllProviders (): Promise<Array<new (_app: Application) => ServiceProvider>> {
+        const coreProviders = await this.getConfiguredProviders()
+        return [...coreProviders, ...this.externalProviders]
+    }
+
+    registerProviders (providers: Array<new (_app: Application) => ServiceProvider>): void {
+        this.externalProviders.push(...providers)
     }
 
     /**

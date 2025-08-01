@@ -2,18 +2,25 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@h3ravel/core": ["packages/core/src"],
-      "@h3ravel/router": ["packages/router/src"],
-      "@h3ravel/http": ["packages/http/src"],
-      "@h3ravel/config": ["packages/config/src"],
-      "@h3ravel/database": ["packages/database/src"],
-      "@h3ravel/cache": ["packages/cache/src"],
-      "@h3ravel/mail": ["packages/mail/src"],
-      "@h3ravel/queue": ["packages/queue/src"],
-      "@h3ravel/console": ["packages/console/src"]
+      "@h3ravel/core": ["packages/core/src/index.ts"],
+      "@h3ravel/router": ["packages/router/src/index.ts"],
+      "@h3ravel/http": ["packages/http/src/index.ts"],
+      "@h3ravel/config": ["packages/config/src/index.ts"],
+      "@h3ravel/database": ["packages/database/src/index.ts"],
+      "@h3ravel/cache": ["packages/cache/src/index.ts"],
+      "@h3ravel/mail": ["packages/mail/src/index.ts"],
+      "@h3ravel/queue": ["packages/queue/src/index.ts"],
+      "@h3ravel/console": ["packages/console/src/index.ts"],
+      "@h3ravel/support": ["packages/support/src/index.ts"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "esModuleInterop": true
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   }
 }

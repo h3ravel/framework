@@ -1,19 +1,21 @@
-import { EventHandler, Middleware, MiddlewareOptions, type H3 } from 'h3'
-import { Kernel, type Middleware as HttpMiddleware } from '@h3ravel/core'
+import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
+import { Controller, Kernel } from '@h3ravel/core'
+import { Middleware as HttpMiddleware } from '@h3ravel/http'
+import { HttpContext } from '@h3ravel/http'
 
-type Handler = EventHandler
+type EventHandler = (ctx: HttpContext) => unknown
 
 interface RouteDefinition {
     method: string
     path: string
     name?: string
-    handler: Handler
+    handler: EventHandler
 }
 
 export class Router {
     private routes: RouteDefinition[] = []
     private groupPrefix = ''
-    private groupMiddleware: Handler[] = []
+    private groupMiddleware: EventHandler[] = []
 
     constructor(private app: H3) { }
 
@@ -21,17 +23,13 @@ export class Router {
      * Route Resolver
      * 
      * @param handler 
+     * @param middleware 
      * @returns 
      */
-    private resolveHandler (handler: Handler): Handler {
-        return async (event) => {
-            /**
-             * Apply group middleware
-             */
-            for (const mw of this.groupMiddleware) {
-                await mw(event)
-            }
-            return handler(event)
+    private resolveHandler (handler: EventHandler, middleware: HttpMiddleware[] = []) {
+        return async (event: H3Event) => {
+            const kernel = new Kernel(middleware)
+            return kernel.handle(event, (ctx) => Promise.resolve(handler(ctx)))
         }
     }
 
@@ -42,43 +40,34 @@ export class Router {
      * @param path 
      * @param handler 
      * @param name 
+     * @param middleware 
      */
-    private addRoute (method: string, path: string, handler: Handler, name?: string) {
+    private addRoute (
+        method: string,
+        path: string,
+        handler: EventHandler,
+        name?: string,
+        middleware: HttpMiddleware[] = []
+    ) {
         const fullPath = `${this.groupPrefix}${path}`
         this.routes.push({ method, path: fullPath, name, handler })
-        this.app[method as 'get'](fullPath, this.resolveHandler(handler))
+        this.app[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
     }
 
-    get (path: string, handler: Handler, name?: string, middleware: HttpMiddleware[] = []) {
-        // this.addRoute('get', path, handler, name)
-        this.addRoute('get', path, async (event) => {
-            const kernel = new Kernel(middleware)
-            return kernel.handle(event, () => Promise.resolve(handler(event)))
-        }, name)
+    get (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
+        this.addRoute('get', path, handler, name, middleware)
     }
 
-    post (path: string, handler: Handler, name?: string, middleware: HttpMiddleware[] = []) {
-        // this.addRoute('post', path, handler, name)
-        this.addRoute('post', path, async (event) => {
-            const kernel = new Kernel(middleware)
-            return kernel.handle(event, () => Promise.resolve(handler(event)))
-        }, name)
+    post (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
+        this.addRoute('post', path, handler, name, middleware)
     }
 
-    put (path: string, handler: Handler, name?: string, middleware: HttpMiddleware[] = []) {
-        // this.addRoute('put', path, handler, name)
-        this.addRoute('put', path, async (event) => {
-            const kernel = new Kernel(middleware)
-            return kernel.handle(event, () => Promise.resolve(handler(event)))
-        }, name)
+    put (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
+        this.addRoute('put', path, handler, name, middleware)
     }
 
-    delete (path: string, handler: Handler, name?: string, middleware: HttpMiddleware[] = []) {
-        // this.addRoute('delete', path, handler, name)
-        this.addRoute('put', path, async (event) => {
-            const kernel = new Kernel(middleware)
-            return kernel.handle(event, () => Promise.resolve(handler(event)))
-        }, name)
+    delete (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
+        this.addRoute('delete', path, handler, name, middleware)
     }
 
     /**
@@ -87,41 +76,21 @@ export class Router {
      * @param path 
      * @param controller 
      */
-    apiResource (path: string, controller: any, middleware: HttpMiddleware[] = []) {
-        this.get(
-            path,
-            this.resolveHandler(controller.index.bind(controller)),
-            `${path}.index`, middleware
-        )
+    apiResource (
+        path: string,
+        controller: Controller,
+        middleware: HttpMiddleware[] = []
+    ) {
+        path = path.replace(/\//g, '/')
 
-        this.post(
-            path,
-            this.resolveHandler(controller.store.bind(controller)),
-            `${path}.store`,
-            middleware
-        )
+        const basePath = `/${path}`.replace(/\/+/g, '/')
+        console.log(`${basePath}/:id`, path)
 
-        this.get(
-            `${path}/:id`,
-            this.resolveHandler(controller.show.bind(controller)),
-            `${path}.show`,
-            middleware
-        )
-
-        this.put(
-            `${path}/:id`,
-            this.resolveHandler(controller.update.bind(controller)),
-            `${path}.update`,
-            middleware
-        )
-
-        this.delete(
-            `${path}/:id`,
-            this.resolveHandler(controller.destroy.bind(controller)),
-            `${path}.destroy`,
-            middleware
-        )
-
+        this.addRoute('get', basePath, controller.index, `${path}.index`, middleware)
+        this.addRoute('post', basePath, controller.store, `${path}.store`, middleware)
+        this.addRoute('get', `${basePath}/:id`, controller.show, `${path}.show`, middleware)
+        this.addRoute('put', `${basePath}/:id`, controller.update, `${path}.update`, middleware)
+        this.addRoute('delete', `${basePath}/:id`, controller.destroy, `${path}.destroy`, middleware)
     }
 
     /**
@@ -148,7 +117,7 @@ export class Router {
      * @param options 
      * @param callback 
      */
-    group (options: { prefix?: string; middleware?: Handler[] }, callback: () => void) {
+    group (options: { prefix?: string; middleware?: EventHandler[] }, callback: () => void) {
         const prevPrefix = this.groupPrefix
         const prevMiddleware = [...this.groupMiddleware]
 

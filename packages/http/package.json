@@ -7,8 +7,9 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "barrel": "barrelsby --directory src --delete --singleQuotes",
-    "build": "vite build",
-    "dev": "vite build --watch",
+    "build": "tsup",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
     "test": "vitest"
   },
@@ -18,8 +19,6 @@
     "h3": "^2.0.0-beta.1"
   },
   "devDependencies": {
-    "typescript": "^5.3.3",
-    "vite": "^7.0.0",
-    "vite-plugin-dts": "^4.0.0"
+    "typescript": "^5.4.0"
   }
 }
