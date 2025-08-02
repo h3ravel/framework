@@ -6,7 +6,7 @@ import path from 'node:path'
 export class Application extends Container {
     paths = new PathLoader()
     private booted = false
-    private version = '0'
+    private versions = { app: '0', ts: '0' }
     private basePath: string
 
     private providers: ServiceProvider[] = []
@@ -44,9 +44,13 @@ export class Application extends Container {
 
     protected async loadOptions () {
         const app = await this.safeImport(this.getPath('base', 'package.json'))
+        const core = await this.safeImport('../package.json')
 
         if (app && app.dependencies) {
-            this.version = app.dependencies['@h3ravel/core']
+            this.versions.app = app.dependencies['@h3ravel/core']
+        }
+        if (core && core.devDependencies) {
+            this.versions.ts = app.devDependencies.typescript
         }
     }
 
@@ -150,11 +154,11 @@ export class Application extends Container {
     }
 
     /**
-     * Returns the version of the system core.
+     * Returns the installed version of the system core and typescript.
      *
      * @returns 
      */
-    getVersion () {
-        return this.version
+    getVersions () {
+        return this.versions
     }
 }

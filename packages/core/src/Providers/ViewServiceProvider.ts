@@ -12,6 +12,7 @@ export class ViewServiceProvider extends ServiceProvider {
 
         edge.global('asset', this.app.make('asset'))
         edge.global('config', config.get)
+        edge.global('app', this.app)
 
         this.app.bind('view', () => edge)
     }
