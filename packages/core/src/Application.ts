@@ -158,7 +158,7 @@ export class Application extends Container {
      *
      * @returns 
      */
-    getVersions () {
-        return this.versions
+    getVersion (key: 'app' | 'ts') {
+        return this.versions[key]?.replaceAll(/\^|\~/g, '')
     }
 }
