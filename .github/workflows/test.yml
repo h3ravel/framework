@@ -11,6 +11,9 @@ permissions:
 
 jobs:
   check:
+    env:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
     name: Check Resource Status
     runs-on: ubuntu-latest
 
@@ -34,8 +37,6 @@ jobs:
           cat << EOF > "$HOME/.npmrc"
             //registry.npmjs.org/:_authToken=$NPM_TOKEN
           EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Test NPM Auth
         run: |
