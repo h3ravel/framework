@@ -10,7 +10,7 @@ export class PathLoader {
         routes: '/src/routes',
         config: '/src/config',
         public: '/public',
-        storage: '/src/storage',
+        storage: '/storage',
     }
 
     /**
