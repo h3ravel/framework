@@ -1,4 +1,4 @@
-import { getQuery, getRouterParams, type H3Event } from 'h3'
+import { getQuery, getRouterParams, readBody, type H3Event } from 'h3'
 import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
 
 export class Request {
@@ -12,11 +12,18 @@ export class Request {
      * Get all input data (query + body).
      */
     async all<T = Record<string, unknown>> (): Promise<T> {
-        return {
+        let data = {
             ...getRouterParams(this.event),
             ...getQuery(this.event),
-            ...this.event.req.body
         } as T
+
+        if (this.event.req.method === 'POST') {
+            data = Object.assign({}, data, Object.fromEntries((await this.event.req.formData()).entries()))
+        } else if (this.event.req.method === 'PUT') {
+            data = <never>Object.fromEntries(Object.entries(<never>await readBody(this.event)))
+        }
+
+        return data
     }
 
     /**

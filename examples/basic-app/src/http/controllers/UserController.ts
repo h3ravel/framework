@@ -2,21 +2,25 @@ import { Controller } from '@h3ravel/core'
 import { HttpContext } from '@h3ravel/http'
 
 export class UserController extends Controller {
-    async index () {
+    index () {
         return [{ id: 1, name: 'John Doe' }]
     }
 
-    store ({ request, response }: HttpContext) {
-        console.log(request.all())
-        return response.setStatusCode(202).json({ message: 'User created' })
+    async store ({ request, response }: HttpContext) {
+        return response
+            .setStatusCode(202)
+            .json({ message: `User ${await request.input('name')} created` })
     }
 
     show ({ request, response }: HttpContext) {
-        return response.json({ id: request.input('id'), name: 'John Doe' })
+        return response
+            .json({ id: request.input('id'), name: 'John Doe' })
     }
 
-    update ({ request, response }: HttpContext) {
-        return response.setStatusCode(201).json({ message: `User ${request.input('id')} updated` })
+    async update ({ request, response }: HttpContext) {
+        return response
+            .setStatusCode(201)
+            .json({ message: `User ${await request.input('name')} updated` })
     }
 
     destroy ({ request }: HttpContext) {
