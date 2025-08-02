@@ -6,6 +6,7 @@ import path from 'node:path'
 export class Application extends Container {
     paths = new PathLoader()
     private booted = false
+    private version = false
     private basePath: string
 
     private providers: ServiceProvider[] = []

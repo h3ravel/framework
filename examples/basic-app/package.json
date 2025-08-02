@@ -17,6 +17,7 @@
     "@h3ravel/core": "workspace:*",
     "@h3ravel/router": "workspace:*",
     "@h3ravel/http": "workspace:*",
+    "@h3ravel/config": "workspace:*",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {

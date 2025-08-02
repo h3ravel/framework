@@ -1,4 +1,4 @@
-import { EventHandlerRequest, getQuery, getRouterParams, type H3Event } from 'h3'
+import { getQuery, getRouterParams, type H3Event } from 'h3'
 import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
 
 export class Request {

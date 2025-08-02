@@ -53,6 +53,9 @@ importers:
 
   examples/basic-app:
     dependencies:
+      '@h3ravel/config':
+        specifier: workspace:*
+        version: link:../../packages/config
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -94,6 +97,9 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
+      '@h3ravel/support':
+        specifier: workspace:*
+        version: link:../support
       dotenv:
         specifier: ^17.2.1
         version: 17.2.1
@@ -158,6 +164,9 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
+      '@h3ravel/support':
+        specifier: workspace:*
+        version: link:../support
       h3:
         specifier: ^2.0.0-beta.1
         version: 2.0.0-beta.3
@@ -200,6 +209,9 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
+      '@h3ravel/support':
+        specifier: workspace:*
+        version: link:../support
       h3:
         specifier: ^2.0.0-beta.1
         version: 2.0.0-beta.3
