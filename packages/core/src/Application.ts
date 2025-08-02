@@ -1,16 +1,21 @@
 import { Container } from './Container'
+import { PathLoader } from './Utils/PathLoader'
 import { ServiceProvider } from './ServiceProvider'
+import path from 'node:path'
 
 export class Application extends Container {
-    private providers: ServiceProvider[] = []
-    private basePath: string
+    paths = new PathLoader()
     private booted = false
+    private basePath: string
+
+    private providers: ServiceProvider[] = []
     protected externalProviders: Array<new (_app: Application) => ServiceProvider> = []
 
     constructor(basePath: string) {
         super()
         this.basePath = basePath
-        // this.registerBaseBindings()
+        this.setPath('base', basePath)
+        this.registerBaseBindings()
     }
 
     /**
@@ -19,6 +24,7 @@ export class Application extends Container {
     protected registerBaseBindings () {
         this.bind(Application, () => this)
         this.bind('path.base', () => this.basePath)
+        this.bind('app.paths', () => this.paths)
     }
 
     /**
@@ -45,9 +51,11 @@ export class Application extends Container {
     protected async getConfiguredProviders (): Promise<Array<new (_app: Application) => ServiceProvider>> {
         return [
             (await import('@h3ravel/core')).AppServiceProvider,
+            (await import('@h3ravel/core')).ViewServiceProvider,
             (await import('@h3ravel/config')).ConfigServiceProvider,
             (await import('@h3ravel/http')).HttpServiceProvider,
-            (await import('@h3ravel/router')).RouteServiceProvider
+            (await import('@h3ravel/router')).RouteServiceProvider,
+            (await import('@h3ravel/router')).AssetsServiceProvider
         ]
     }
 
@@ -102,5 +110,27 @@ export class Application extends Container {
      */
     getBasePath (): string {
         return this.basePath
+    }
+
+    /**
+     * Dynamically retrieves a path property from the class.
+     * Any property ending with "Path" is accessible automatically.
+     *
+     * @param name - The base name of the path property
+     * @returns 
+     */
+    getPath (name: Parameters<PathLoader['setPath']>[0], pth?: string) {
+        return path.join(this.paths.getPath(name, this.basePath), pth ?? '')
+    }
+
+    /**
+     * Programatically set the paths.
+     *
+     * @param name - The base name of the path property
+     * @param path - The new path
+     * @returns 
+     */
+    setPath (name: Parameters<PathLoader['setPath']>[0], path: string) {
+        return this.paths.setPath(name, path, this.basePath)
     }
 }

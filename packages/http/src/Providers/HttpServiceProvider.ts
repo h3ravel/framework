@@ -13,7 +13,7 @@ import { ServiceProvider } from '@h3ravel/core'
  */
 export class HttpServiceProvider extends ServiceProvider {
     register () {
-        this.app.singleton<H3>('http.app', () => {
+        this.app.singleton('http.app', () => {
             return new H3()
         })
 

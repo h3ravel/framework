@@ -1,7 +1,7 @@
 import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
+import { html, redirect, } from 'h3'
 
 import type { H3Event } from 'h3'
-import { redirect, } from 'h3'
 
 export class Response {
     private readonly event: H3Event
@@ -27,6 +27,11 @@ export class Response {
     setHeader (name: string, value: string): this {
         this.headers[name] = value
         return this
+    }
+
+    html (content: string): string {
+        this.applyHeaders()
+        return html(this.event, content)
     }
 
     /**

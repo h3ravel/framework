@@ -10,7 +10,7 @@ export default (router: Router) => {
             }
         ]
     }, () => {
-        router.apiResource('/users', new UserController(), [new AuthMiddleware()])
+        router.apiResource('/users', UserController, [new AuthMiddleware()])
     })
 
     router.get('/hello', () => 'Hello', 'hello.route')

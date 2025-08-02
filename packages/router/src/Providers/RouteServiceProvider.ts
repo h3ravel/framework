@@ -1,7 +1,7 @@
-import { H3 } from 'h3'
 import { Router } from '../Router'
 import { ServiceProvider } from '@h3ravel/core'
-import { readdirSync } from 'fs'
+import path from 'node:path'
+import { readdir } from 'node:fs/promises'
 
 /**
  * Handles routing registration
@@ -14,9 +14,9 @@ import { readdirSync } from 'fs'
  */
 export class RouteServiceProvider extends ServiceProvider {
     register () {
-        this.app.singleton<Router>('router', () => {
-            const h3App = this.app.make<H3>('http.app')
-            return new Router(h3App)
+        this.app.singleton('router', () => {
+            const h3App = this.app.make('http.app')
+            return new Router(h3App, this.app)
         })
     }
 
@@ -25,14 +25,15 @@ export class RouteServiceProvider extends ServiceProvider {
      */
     async boot () {
         try {
-            const routePath = `${process.cwd()}/src/routes`
-            const files = readdirSync(routePath);
+            const routePath = this.app.getPath('routes')
+
+            const files = await readdir(routePath);
 
             for (let i = 0; i < files.length; i++) {
-                const routesModule = await import(`${routePath}/${files[i]}`)
+                const routesModule = await import(path.join(routePath, files[i]))
 
                 if (typeof routesModule.default === 'function') {
-                    const router = this.app.make<Router>('router')
+                    const router = this.app.make('router')
                     routesModule.default(router)
                 }
             }

@@ -1,0 +1,46 @@
+import nodepath from "path"
+
+type PathName = 'views' | 'routes' | 'assets' | 'base' | 'public' | 'storage' | 'config'
+
+export class PathLoader {
+    private paths = {
+        base: '',
+        views: '/src/resources/views',
+        assets: '/public/assets',
+        routes: '/src/routes',
+        config: '/src/config',
+        public: '/public',
+        storage: '/src/storage',
+    }
+
+    /**
+     * Dynamically retrieves a path property from the class.
+     * Any property ending with "Path" is accessible automatically.
+     *
+     * @param name - The base name of the path property
+     * @param base - The base path to include to the path
+     * @returns 
+     */
+    getPath (name: PathName, base?: string): string {
+        if (base && name !== 'base') {
+            return nodepath.join(base, this.paths[name])
+        }
+
+        return this.paths[name]
+    }
+
+    /**
+     * Programatically set the paths.
+     *
+     * @param name - The base name of the path property
+     * @param path - The new path
+     * @param base - The base path to include to the path
+     */
+    setPath (name: PathName, path: string, base?: string) {
+        if (base && name !== 'base') {
+            this.paths[name] = nodepath.join(base, path)
+        }
+
+        this.paths[name] = path
+    }
+}

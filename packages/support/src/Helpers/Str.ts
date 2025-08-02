@@ -1,6 +1,58 @@
 import { dot } from "./Obj"
 
 /**
+ * Get the portion of the string after the first occurrence of the given value.
+ * 
+ * @param value 
+ * @param search 
+ * @returns 
+ */
+export const after = (value: string, search: string): string => {
+    if (!search) return value
+    const index = value.indexOf(search)
+    return index !== -1 ? value.slice(index + search.length) : value
+}
+
+/**
+ * Get the portion of the string after the last occurrence of the given value.
+ * 
+ * @param value 
+ * @param search 
+ * @returns 
+ */
+export const afterLast = (value: string, search: string): string => {
+    if (!search) return value
+    const lastIndex = value.lastIndexOf(search)
+    return lastIndex !== -1 ? value.slice(lastIndex + search.length) : value
+}
+
+/**
+ * Get the portion of the string before the first occurrence of the given value.
+ * 
+ * @param value 
+ * @param search 
+ * @returns 
+ */
+export const before = (value: string, search: string): string => {
+    if (!search) return value
+    const index = value.indexOf(search)
+    return index !== -1 ? value.slice(0, index) : value
+}
+
+/**
+ * Get the portion of the string before the last occurrence of the given value.
+ * 
+ * @param value 
+ * @param search 
+ * @returns 
+ */
+export const beforeLast = (value: string, search: string): string => {
+    if (!search) return value
+    const lastIndex = value.lastIndexOf(search)
+    return lastIndex !== -1 ? value.slice(0, lastIndex) : value
+}
+
+/**
  * Capitalizes the first character of a string.
  *
  * @param str - The input string

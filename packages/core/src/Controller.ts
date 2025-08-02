@@ -1,22 +1,20 @@
-import { HttpContext } from '@h3ravel/http'
+import { HttpContext, IController } from '@h3ravel/http'
+
+import { Application } from '.'
 
 /**
- * Add shared logic for controllers here (middleware, helpers, etc.)
+ * Base controller class
  */
-export abstract class Controller {
-    public show (_ctx: HttpContext): any {
-        return
+export abstract class Controller implements IController {
+    protected app: Application
+
+    constructor(app: Application) {
+        this.app = app
     }
-    public index (_ctx: HttpContext): any {
-        return
-    }
-    public store (_ctx: HttpContext): any {
-        return
-    }
-    public update (_ctx: HttpContext): any {
-        return
-    }
-    public destroy (_ctx: HttpContext): any {
-        return
-    }
+
+    public show (_ctx: HttpContext): any { return }
+    public index (_ctx: HttpContext): any { return }
+    public store (_ctx: HttpContext): any { return }
+    public update (_ctx: HttpContext): any { return }
+    public destroy (_ctx: HttpContext): any { return }
 }

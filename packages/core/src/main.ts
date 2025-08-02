@@ -1,5 +1,9 @@
 import 'reflect-metadata'
 
+import { config as loadEnv } from 'dotenv'
+
+loadEnv()
+
 // import { Application, Kernel, LogRequests } from '@h3ravel/core'
 
 // import type { H3 } from 'h3'
@@ -10,8 +14,8 @@ import 'reflect-metadata'
 //     await app.boot()
 
 
-//     const h3App = app.make<H3>('http.app')
-//     const serve = app.make<typeof import('h3').serve>('http.serve')
+//     const h3App = app.make('http.app')
+//     const serve = app.make('http.serve')
 //     const kernel = new Kernel([new LogRequests()])
 
 //     // Wrap all routes

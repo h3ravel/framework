@@ -1,7 +1,6 @@
 import 'reflect-metadata'
 
 import { Application } from '@h3ravel/core'
-import type { H3 } from 'h3'
 import { Kernel } from '@h3ravel/core'
 import { LogRequests } from '@h3ravel/http'
 
@@ -17,8 +16,8 @@ async function bootstrap () {
     await app.registerConfiguredProviders()
     await app.boot()
 
-    const h3App = app.make<H3>('http.app')
-    const serve = app.make<typeof import('h3').serve>('http.serve')
+    const h3App = app.make('http.app')
+    const serve = app.make('http.serve')
 
     const kernel = new Kernel([new LogRequests()])
 

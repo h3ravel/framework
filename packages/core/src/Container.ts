@@ -1,16 +1,19 @@
-type Binding = string | (new (..._args: any[]) => unknown)
+import type { Bindings, UseKey } from "./Contracts/BindingsContract"
+
+type IBinding = UseKey | (new (..._args: any[]) => unknown)
 
 export class Container {
-    private bindings = new Map<Binding, () => unknown>()
-    private singletons = new Map<Binding, unknown>()
-
+    private bindings = new Map<IBinding, () => unknown>()
+    private singletons = new Map<IBinding, unknown>()
 
     /**
      * Bind a transient service to the container
      */
-    bind<T> (
-        key: string | (new (..._args: any[]) => T),
-        factory: () => T
+    bind<T> (key: new (...args: any[]) => T, factory: () => T): void
+    bind<T extends UseKey> (key: T, factory: () => Bindings[T]): void
+    bind<T extends UseKey> (
+        key: T,
+        factory: () => Bindings[T] | T
     ) {
         this.bindings.set(key, factory)
     }
@@ -18,9 +21,9 @@ export class Container {
     /**
      * Bind a singleton service to the container
      */
-    singleton<T> (
-        key: string | (new (..._args: any[]) => T),
-        factory: () => T
+    singleton<T extends UseKey> (
+        key: T | (new (..._args: any[]) => Bindings[T]),
+        factory: () => Bindings[T]
     ) {
         this.bindings.set(key, () => {
             if (!this.singletons.has(key)) {
@@ -33,10 +36,10 @@ export class Container {
     /**
      * Resolve a service from the container
      */
-    make<T> (key: string | (new (..._args: any[]) => T)): T {
+    make<T extends UseKey> (key: T | (new (..._args: any[]) => Bindings[T])): Bindings[T] {
         // 1️⃣ Direct factory binding
         if (this.bindings.has(key)) {
-            return this.bindings.get(key)!() as T
+            return this.bindings.get(key)!() as Bindings[T]
         }
 
         // 2️⃣ If class constructor → auto-resolve via reflection
@@ -52,7 +55,7 @@ export class Container {
     /**
      * Automatically build a class with constructor dependency injection
      */
-    private build<T> (ClassType: new (..._args: any[]) => T): T {
+    private build<T extends UseKey> (ClassType: new (..._args: any[]) => Bindings[T]): Bindings[T] {
         const paramTypes: any[] = Reflect.getMetadata('design:paramtypes', ClassType) || []
         const dependencies = paramTypes.map((dep) => this.make(dep))
         return new ClassType(...dependencies)
@@ -62,7 +65,7 @@ export class Container {
     /**
      * Check if a service is registered
      */
-    has (key: string): boolean {
+    has (key: UseKey): boolean {
         return this.bindings.has(key)
     }
 }

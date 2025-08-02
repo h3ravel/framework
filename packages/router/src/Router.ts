@@ -1,8 +1,8 @@
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
-import { Controller, Kernel } from '@h3ravel/core'
+import { Application, Controller, Kernel } from '@h3ravel/core'
 import { Middleware as HttpMiddleware } from '@h3ravel/http'
 import { HttpContext } from '@h3ravel/http'
-import { singularize } from '@h3ravel/support'
+import { afterLast } from '@h3ravel/support'
 
 type EventHandler = (ctx: HttpContext) => unknown
 
@@ -18,7 +18,7 @@ export class Router {
     private groupPrefix = ''
     private groupMiddleware: EventHandler[] = []
 
-    constructor(private app: H3) { }
+    constructor(private h3App: H3, private app: Application) { }
 
     /**
      * Route Resolver
@@ -52,11 +52,32 @@ export class Router {
     ) {
         const fullPath = `${this.groupPrefix}${path}`.replace(/\/+/g, '/')
         this.routes.push({ method, path: fullPath, name, handler })
-        this.app[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
+        this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
     }
 
-    get (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
-        this.addRoute('get', path, handler, name, middleware)
+    private resolveControllerOrHandler (
+        handler: EventHandler | (new (...args: any[]) => Controller),
+        methodName?: string
+    ): EventHandler {
+        if (typeof handler === 'function' && (handler as any).prototype instanceof Controller) {
+            return (ctx) => {
+                const controller = new (handler as new (...args: any[]) => Controller)(this.app)
+                const action = (methodName || 'index') as keyof Controller
+
+                if (typeof controller[action] !== 'function') {
+                    throw new Error(`Method "${action}" not found on controller ${handler.name}`)
+                }
+
+                return controller[action](ctx)
+            }
+        }
+
+        return handler as EventHandler
+    }
+
+
+    get (path: string, handler: EventHandler | (new (...args: any[]) => Controller), methodName?: string, name?: string, middleware: HttpMiddleware[] = []) {
+        this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
 
     post (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
@@ -79,19 +100,22 @@ export class Router {
      */
     apiResource (
         path: string,
-        controller: Controller,
+        Controller: new (app: Application) => Controller,
         middleware: HttpMiddleware[] = []
     ) {
         path = path.replace(/\//g, '/')
 
+        const name = afterLast(path, '/')
         const basePath = `/${path}`.replace(/\/+/g, '/')
-        console.log(`${basePath}/:id`, singularize(path), basePath)
 
-        this.addRoute('get', basePath, controller.index, `${path}.index`, middleware)
-        this.addRoute('post', basePath, controller.store, `${path}.store`, middleware)
-        this.addRoute('get', `${basePath}/:id`, controller.show, `${path}.show`, middleware)
-        this.addRoute('put', `${basePath}/:id`, controller.update, `${path}.update`, middleware)
-        this.addRoute('delete', `${basePath}/:id`, controller.destroy, `${path}.destroy`, middleware)
+        const controller = new Controller(this.app)
+
+        this.addRoute('get', basePath, controller.index.bind(controller), `${name}.index`, middleware)
+        this.addRoute('post', basePath, controller.store.bind(controller), `${name}.store`, middleware)
+        this.addRoute('get', `${basePath}/:id`, controller.show.bind(controller), `${name}.show`, middleware)
+        this.addRoute('put', `${basePath}/:id`, controller.update.bind(controller), `${name}.update`, middleware)
+        this.addRoute('patch', `${basePath}/:id`, controller.update.bind(controller), `${name}.update`, middleware)
+        this.addRoute('delete', `${basePath}/:id`, controller.destroy.bind(controller), `${name}.destroy`, middleware)
     }
 
     /**
@@ -135,6 +159,6 @@ export class Router {
     }
 
     middleware (path: string, handler: Middleware, opts?: MiddlewareOptions) {
-        this.app.use(path, handler, opts)
+        this.h3App.use(path, handler, opts)
     }
 }
