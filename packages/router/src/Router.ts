@@ -76,20 +76,36 @@ export class Router {
     }
 
 
-    get (path: string, handler: EventHandler | (new (...args: any[]) => Controller), methodName?: string, name?: string, middleware: HttpMiddleware[] = []) {
+    get (
+        path: string,
+        handler: EventHandler | (new (...args: any[]) => Controller),
+        methodName?: string, name?: string, middleware: HttpMiddleware[] = []
+    ) {
         this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
 
-    post (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
-        this.addRoute('post', path, handler, name, middleware)
+    post (
+        path: string,
+        handler: EventHandler | (new (...args: any[]) => Controller),
+        methodName?: string, name?: string, middleware: HttpMiddleware[] = []
+    ) {
+        this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
 
-    put (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
-        this.addRoute('put', path, handler, name, middleware)
+    put (
+        path: string,
+        handler: EventHandler | (new (...args: any[]) => Controller),
+        methodName?: string, name?: string, middleware: HttpMiddleware[] = []
+    ) {
+        this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
 
-    delete (path: string, handler: EventHandler, name?: string, middleware: HttpMiddleware[] = []) {
-        this.addRoute('delete', path, handler, name, middleware)
+    delete (
+        path: string,
+        handler: EventHandler | (new (...args: any[]) => Controller),
+        methodName?: string, name?: string, middleware: HttpMiddleware[] = []
+    ) {
+        this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
 
     /**
