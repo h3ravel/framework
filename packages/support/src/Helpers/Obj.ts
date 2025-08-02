@@ -140,6 +140,52 @@ export function safeDot<
 }
 
 /**
+ * Sets a nested property on an object using dot notation.
+ * 
+ * @example
+ * const obj = {}
+ * setNested(obj, 'app.user.name', 'Legacy')
+ * console.log(obj)
+ * // Output: { app: { user: { name: 'Legacy' } } }
+ * 
+ * @param obj - The target object to modify.
+ * @param key - The dot-separated key (e.g., 'app.user.name').
+ * @param value - The value to set at the specified path.
+ */
+export const setNested = (
+    obj: Record<string, any>,
+    key: string,
+    value: any
+): void => {
+    if (!key.includes('.')) {
+        obj[key] = value
+        return
+    }
+
+    const parts = key.split('.')
+    let current = obj
+
+    for (let i = 0; i < parts.length; i++) {
+        const part = parts[i]
+
+        /**
+         * If we're at the last key, assign the value
+         */
+        if (i === parts.length - 1) {
+            current[part] = value
+        } else {
+            /**
+             * If the key doesn't exist or isn't an object, create it
+             */
+            if (typeof current[part] !== 'object' || current[part] === null) {
+                current[part] = {}
+            }
+            current = current[part]
+        }
+    }
+}
+
+/**
  * Converts object keys to a slugified format (e.g., snake_case).
  *
  * @template T - Type of the input object

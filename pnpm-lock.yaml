@@ -94,6 +94,9 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
+      dotenv:
+        specifier: ^17.2.1
+        version: 17.2.1
       h3:
         specifier: ^2.0.0-beta.1
         version: 2.0.0-beta.3
@@ -117,9 +120,6 @@ importers:
 
   packages/core:
     dependencies:
-      dotenv:
-        specifier: ^17.2.1
-        version: 17.2.1
       edge.js:
         specifier: ^6.3.0
         version: 6.3.0

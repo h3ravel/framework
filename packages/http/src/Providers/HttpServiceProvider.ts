@@ -17,7 +17,6 @@ export class HttpServiceProvider extends ServiceProvider {
             return new H3()
         })
 
-
         this.app.singleton('http.serve', () => serve)
     }
 }

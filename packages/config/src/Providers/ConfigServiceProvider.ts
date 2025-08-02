@@ -1,8 +1,7 @@
 import { Bindings, ServiceProvider } from '@h3ravel/core'
+import { ConfigRepository, EnvLoader } from '..'
 
-import path from 'node:path'
-import { readdir } from 'node:fs/promises'
-import { safeDot } from '@h3ravel/support'
+import { config as loadEnv } from 'dotenv'
 
 /**
  * Loads configuration and environment files.
@@ -14,33 +13,34 @@ import { safeDot } from '@h3ravel/support'
  */
 export class ConfigServiceProvider extends ServiceProvider {
     async register () {
+
+        loadEnv()
+
+        /**
+         * Create singleton to load env
+         */
         this.app.singleton('env', () => {
-            return (<T extends string> (key?: T, def?: string) => {
-                if (key) {
-                    return process.env[key] ?? def ?? null
-                }
-                return process.env as Record<string, string | null | undefined>
-            }) as Bindings['env']
+            return new EnvLoader(this.app).get
         })
 
+        /**
+         * Initialize the configuration through the repository
+         */
+        const repo = new ConfigRepository(this.app)
+        await repo.load()
 
-        const configPath = this.app.getPath('config')
-        const configs: Record<string, Record<string, any>> = {};
-        const files = await readdir(configPath);
-
-        for (let i = 0; i < files.length; i++) {
-            const configModule = await import(path.join(configPath, files[i]))
-            const name = files[i].replaceAll(/.ts|js/g, '')
-            if (typeof configModule.default === 'function') {
-                configs[name] = configModule.default(this.app)
-            }
-        }
-
+        /**
+         * Create singleton to load configurations
+         */
         this.app.singleton('config', () => {
             return {
-                get: (key) => safeDot(configs, key),
-                set: (_key, _value) => { }
+                get: (key, def) => repo.get(key as any, def),
+                set: repo.set
             } as Bindings['config']
+        })
+
+        this.app.make('http.app').use(e => {
+            repo.set('app.url', e.url.origin)
         })
     }
 }

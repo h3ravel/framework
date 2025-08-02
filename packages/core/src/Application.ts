@@ -51,11 +51,11 @@ export class Application extends Container {
     protected async getConfiguredProviders (): Promise<Array<new (_app: Application) => ServiceProvider>> {
         return [
             (await import('@h3ravel/core')).AppServiceProvider,
-            (await import('@h3ravel/core')).ViewServiceProvider,
-            (await import('@h3ravel/config')).ConfigServiceProvider,
             (await import('@h3ravel/http')).HttpServiceProvider,
+            (await import('@h3ravel/config')).ConfigServiceProvider,
             (await import('@h3ravel/router')).RouteServiceProvider,
-            (await import('@h3ravel/router')).AssetsServiceProvider
+            (await import('@h3ravel/router')).AssetsServiceProvider,
+            (await import('@h3ravel/core')).ViewServiceProvider,
         ]
     }
 
