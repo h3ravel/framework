@@ -59,7 +59,7 @@ export class JsonResource<R extends Resource = any> {
      * @param res The response instance
      * @param rsc The data to send to the client
      */
-    constructor(private event: H3Event, rsc: R) {
+    constructor(protected event: H3Event, rsc: R) {
         this.request = event.req;
         this.response = event.res;
         this.resource = rsc;

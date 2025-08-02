@@ -3,7 +3,7 @@ import { HttpContext, Middleware, Request, Response } from '@h3ravel/http'
 import type { H3Event } from 'h3'
 
 export class Kernel {
-    constructor(private middleware: Middleware[] = []) { }
+    constructor(protected middleware: Middleware[] = []) { }
 
     async handle (event: H3Event, next: (ctx: HttpContext) => Promise<unknown>): Promise<unknown> {
         const context: HttpContext = {

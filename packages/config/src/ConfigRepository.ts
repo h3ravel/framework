@@ -8,7 +8,7 @@ export class ConfigRepository {
     private loaded: boolean = false
     private configs: Record<string, Record<string, any>> = {}
 
-    constructor(private app: Application) { }
+    constructor(protected app: Application) { }
 
     // get<X extends Record<string, any>> (): X
     // get<X extends Record<string, any>, T extends Extract<keyof X, string>> (key: T): X[T]

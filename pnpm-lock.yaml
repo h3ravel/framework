@@ -90,9 +90,6 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
-      h3:
-        specifier: ^2.0.0-beta.1
-        version: 2.0.0-beta.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
@@ -109,9 +106,6 @@ importers:
       dotenv:
         specifier: ^17.2.1
         version: 17.2.1
-      h3:
-        specifier: ^2.0.0-beta.1
-        version: 2.0.0-beta.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
@@ -122,9 +116,6 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
-      h3:
-        specifier: ^2.0.0-beta.1
-        version: 2.0.0-beta.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
@@ -132,6 +123,12 @@ importers:
 
   packages/core:
     dependencies:
+      '@h3ravel/router':
+        specifier: workspace:*
+        version: link:../router
+      '@h3ravel/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       edge.js:
         specifier: ^6.3.0
         version: 6.3.0
@@ -157,9 +154,6 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
-      h3:
-        specifier: ^2.0.0-beta.1
-        version: 2.0.0-beta.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
@@ -189,9 +183,6 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
-      h3:
-        specifier: ^2.0.0-beta.1
-        version: 2.0.0-beta.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
@@ -202,9 +193,6 @@ importers:
       '@h3ravel/core':
         specifier: workspace:*
         version: link:../core
-      h3:
-        specifier: ^2.0.0-beta.1
-        version: 2.0.0-beta.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
@@ -218,26 +206,18 @@ importers:
       '@h3ravel/support':
         specifier: workspace:*
         version: link:../support
-      h3:
-        specifier: ^2.0.0-beta.1
-        version: 2.0.0-beta.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
         version: 5.8.3
 
   packages/support:
-    dependencies:
-      '@h3ravel/core':
-        specifier: workspace:*
-        version: link:../core
-      h3:
-        specifier: ^2.0.0-beta.1
-        version: 2.0.0-beta.3
     devDependencies:
       typescript:
         specifier: ^5.4.0
         version: 5.8.3
+
+  packages/tsconfig: {}
 
 packages:
 

@@ -3,7 +3,7 @@ import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
 import { Application } from "@h3ravel/core";
 
 export class EnvLoader {
-    constructor(private _app: Application) { }
+    constructor(protected _app: Application) { }
 
     /**
      * Get the defined environment vars

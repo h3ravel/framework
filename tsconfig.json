@@ -1,4 +1,5 @@
 {
+  "extends": "./packages/tsconfig/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -12,15 +13,6 @@
       "@h3ravel/queue": ["packages/queue/src/index.ts"],
       "@h3ravel/console": ["packages/console/src/index.ts"],
       "@h3ravel/support": ["packages/support/src/index.ts"]
-    },
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "esModuleInterop": true,
-    "strict": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true
+    }
   }
 }

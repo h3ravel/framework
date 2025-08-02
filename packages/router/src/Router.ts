@@ -18,7 +18,7 @@ export class Router {
     private groupPrefix = ''
     private groupMiddleware: EventHandler[] = []
 
-    constructor(private h3App: H3, private app: Application) { }
+    constructor(protected h3App: H3, private app: Application) { }
 
     /**
      * Route Resolver
