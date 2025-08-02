@@ -8,6 +8,8 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
 jobs:
   release:
     name: Create Release PR or Publish
@@ -36,6 +38,7 @@ jobs:
         with:
           publish: pnpm release
           commit: 'chore(release): version packages'
+          commitMode: github-api
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
