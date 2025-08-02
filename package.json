@@ -16,7 +16,7 @@
     "undev": "tsx watch packages/core/src/main.ts",
     "cleanup": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
     "release": "pnpm build && pnpm changeset version && pnpm changeset publish",
-    "publish": "pnpm -r publish --access public"
+    "publish": "pnpm build && pnpm -r publish --access public"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.5",
