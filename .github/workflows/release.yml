@@ -38,7 +38,7 @@ jobs:
         with:
           publish: pnpm release
           commit: 'chore(release): version packages'
-          # commitMode: github-api
+          commitMode: github-api
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
