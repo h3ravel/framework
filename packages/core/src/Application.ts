@@ -6,7 +6,7 @@ import path from 'node:path'
 export class Application extends Container {
     paths = new PathLoader()
     private booted = false
-    private version = false
+    private version = '0'
     private basePath: string
 
     private providers: ServiceProvider[] = []
@@ -16,6 +16,7 @@ export class Application extends Container {
         super()
         this.basePath = basePath
         this.setPath('base', basePath)
+        this.loadOptions()
         this.registerBaseBindings()
     }
 
@@ -41,6 +42,14 @@ export class Application extends Container {
         }
     }
 
+    protected async loadOptions () {
+        const app = await this.safeImport(this.getPath('base', 'package.json'))
+
+        if (app && app.dependencies) {
+            this.version = app.dependencies['@h3ravel/core']
+        }
+    }
+
     /**
      * Load default and optional providers dynamically
      * 
@@ -57,6 +66,11 @@ export class Application extends Container {
             (await import('@h3ravel/router')).RouteServiceProvider,
             (await import('@h3ravel/router')).AssetsServiceProvider,
             (await import('@h3ravel/core')).ViewServiceProvider,
+            (await this.safeImport('@h3ravel/database'))?.DatabaseServiceProvider,
+            (await this.safeImport('@h3ravel/cache'))?.CacheServiceProvider,
+            (await this.safeImport('@h3ravel/console'))?.ConsoleServiceProvider,
+            (await this.safeImport('@h3ravel/queue'))?.QueueServiceProvider,
+            (await this.safeImport('@h3ravel/mail'))?.MailServiceProvider,
         ]
     }
 
@@ -98,7 +112,7 @@ export class Application extends Container {
     private async safeImport (moduleName: string) {
         try {
             const mod = await import(moduleName)
-            return mod.default
+            return mod.default ?? mod
         } catch {
             return null
         }
@@ -133,5 +147,14 @@ export class Application extends Container {
      */
     setPath (name: Parameters<PathLoader['setPath']>[0], path: string) {
         return this.paths.setPath(name, path, this.basePath)
+    }
+
+    /**
+     * Returns the version of the system core.
+     *
+     * @returns 
+     */
+    getVersion () {
+        return this.version
     }
 }
