@@ -24,7 +24,7 @@ async function bootstrap () {
     h3App.use((event) => kernel.handle(event, async () => undefined))
 
     serve(h3App, { port: 3000 })
-    console.log('🚀 H3ravel Boilerplate running at http://localhost:3000')
+    console.log('🚀 H3ravel running at http://localhost:3000')
 }
 
 bootstrap()

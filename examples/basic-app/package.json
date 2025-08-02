@@ -13,14 +13,15 @@
     "test": "vitest"
   },
   "dependencies": {
-    "h3": "^2.0.0-beta.1",
-    "@h3ravel/core": "workspace:*",
-    "@h3ravel/router": "workspace:*",
-    "@h3ravel/http": "workspace:*",
     "@h3ravel/config": "workspace:*",
+    "@h3ravel/core": "workspace:*",
+    "@h3ravel/http": "workspace:*",
+    "@h3ravel/router": "workspace:*",
+    "h3": "^2.0.0-beta.1",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
+    "@types/node": "^24.1.0",
     "tsx": "^4.0.0",
     "typescript": "^5.4.0"
   }
