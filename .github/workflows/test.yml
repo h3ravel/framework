@@ -11,9 +11,6 @@ permissions:
 
 jobs:
   check:
-    env:
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
     name: Check Resource Status
     runs-on: ubuntu-latest
 
@@ -31,17 +28,6 @@ jobs:
         uses: pnpm/action-setup@v2
         with:
           version: 10
-
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
-
-      - name: Test NPM Auth
-        run: |
-          pnpm whoami
-          pnpm access list collaborators @h3ravel/config
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile

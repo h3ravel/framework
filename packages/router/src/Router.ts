@@ -1,6 +1,6 @@
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Request, Response } from '@h3ravel/http'
-import { Controller, Kernel } from '@h3ravel/core'
+import { Application, Controller, Kernel } from '@h3ravel/core'
 import { afterLast } from '@h3ravel/support'
 import { EventHandler, HttpContext, IApplication, IController, IMiddleware } from '@h3ravel/shared'
 
@@ -16,7 +16,7 @@ export class Router {
     private groupPrefix = ''
     private groupMiddleware: EventHandler[] = []
 
-    constructor(protected h3App: H3, private app: IApplication) { }
+    constructor(protected h3App: H3, private app: Application) { }
 
     /**
      * Route Resolver
@@ -118,7 +118,7 @@ export class Router {
      */
     apiResource (
         path: string,
-        Controller: new (app: IApplication) => IController,
+        Controller: new (app: Application) => IController,
         middleware: IMiddleware[] = []
     ) {
         path = path.replace(/\//g, '/')

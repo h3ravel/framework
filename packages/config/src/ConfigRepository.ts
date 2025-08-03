@@ -1,6 +1,6 @@
 import { DotNestedKeys, DotNestedValue, safeDot, setNested } from '@h3ravel/support'
 
-import { IApplication } from '@h3ravel/shared'
+import { Application } from '@h3ravel/core'
 import path from 'node:path'
 import { readdir } from 'node:fs/promises'
 
@@ -8,7 +8,7 @@ export class ConfigRepository {
     private loaded: boolean = false
     private configs: Record<string, Record<string, any>> = {}
 
-    constructor(protected app: IApplication) { }
+    constructor(protected app: Application) { }
 
     // get<X extends Record<string, any>> (): X
     // get<X extends Record<string, any>, T extends Extract<keyof X, string>> (key: T): X[T]

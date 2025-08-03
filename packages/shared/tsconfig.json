@@ -12,5 +12,6 @@
     "resolveJsonModule": true
     // "target": "ES2022",
     // "module": "ESNext",
-  }
+  },
+  "exclude": ["./dist", "./**/dist", "/.node_modules"]
 }

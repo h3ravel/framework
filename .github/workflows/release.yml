@@ -39,9 +39,10 @@ jobs:
       - name: Create Release PR or Publish
         uses: changesets/action@v1
         with:
-          publish: pnpm release
+          publish: pnpm build && pnpm changeset publish
           commit: 'chore(release): version packages'
           commitMode: github-api
+          createGithubReleases: true
         env:
           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

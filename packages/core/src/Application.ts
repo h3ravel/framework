@@ -11,7 +11,7 @@ export class Application extends Container implements IApplication {
     private basePath: string
 
     private providers: IServiceProvider[] = []
-    protected externalProviders: Array<new (_app: IApplication) => IServiceProvider> = []
+    protected externalProviders: Array<new (_app: Application) => IServiceProvider> = []
 
     constructor(basePath: string) {
         super()
@@ -63,7 +63,7 @@ export class Application extends Container implements IApplication {
      * Minimal App: Loads only core, config, http, router by default.
      * Full-Stack App: Installs database, mail, queue, cache → they self-register via their providers.
      */
-    protected async getConfiguredProviders (): Promise<Array<new (_app: IApplication) => IServiceProvider>> {
+    protected async getConfiguredProviders (): Promise<Array<new (_app: Application) => IServiceProvider>> {
         return [
             (await this.safeImport('@h3ravel/core')).AppServiceProvider,
             (await this.safeImport('@h3ravel/http')).HttpServiceProvider,
@@ -79,12 +79,12 @@ export class Application extends Container implements IApplication {
         ]
     }
 
-    protected async getAllProviders (): Promise<Array<new (_app: IApplication) => IServiceProvider>> {
+    protected async getAllProviders (): Promise<Array<new (_app: Application) => IServiceProvider>> {
         const coreProviders = await this.getConfiguredProviders()
         return [...coreProviders, ...this.externalProviders]
     }
 
-    registerProviders (providers: Array<new (_app: IApplication) => IServiceProvider>): void {
+    registerProviders (providers: Array<new (_app: Application) => IServiceProvider>): void {
         this.externalProviders.push(...providers)
     }
 

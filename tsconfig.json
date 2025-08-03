@@ -15,5 +15,16 @@
       "@h3ravel/support": ["packages/support/src/index.ts"],
       "@h3ravel/shared": ["packages/shared/src/index.ts"]
     }
-  }
+  },
+  "exclude": [
+    "./dist",
+    "./**/dist",
+    "/.node_modules",
+    "./**/public",
+    "./public",
+    "./**/storage",
+    "./storage",
+    "eslint.config.js",
+    "jest.config.ts"
+  ]
 }

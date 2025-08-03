@@ -16,24 +16,27 @@
     "undev": "tsx watch packages/core/src/main.ts",
     "cleanup": "find . \\( -name 'node_modules' -o -name 'dist' \\) -type d -prune -exec rm -rf '{}' +",
     "release": "pnpm build && pnpm changeset version && pnpm changeset publish",
-    "publish": "pnpm build && pnpm -r publish --access public"
+    "publish": "pnpm build && pnpm -r publish --access public",
+    "coverage": "vitest run --coverage"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.5",
     "@eslint/js": "^9.32.0",
     "@swc/core": "^1.13.3",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.1.0",
-    "@typescript-eslint/eslint-plugin": "^8.0.0",
-    "@typescript-eslint/parser": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.38.0",
+    "@typescript-eslint/parser": "^8.38.0",
     "barrelsby": "^2.8.1",
     "eslint": "^9.0.0",
     "husky": "^9.0.0",
+    "jest": "^30.0.0",
     "path": "^0.12.7",
+    "ts-jest": "^29.0.0",
     "tsup": "8.0.0",
     "tsx": "^4.20.3",
-    "typescript": "^5.4.0",
-    "typescript-eslint": "^8.38.0",
-    "vitest": "^3.0.0"
+    "typescript": ">=5.4.0 <5.9.0",
+    "typescript-eslint": "^8.0.0"
   },
   "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
 }
