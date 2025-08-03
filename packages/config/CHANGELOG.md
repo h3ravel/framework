@@ -1,5 +1,17 @@
 # @h3ravel/config
 
+## 0.5.2
+
+### Patch Changes
+
+- dynamically import dotenv
+
+## 0.5.1
+
+### Patch Changes
+
+- feat: hide all dotenv debug info
+
 ## 0.5.0
 
 ### Minor Changes

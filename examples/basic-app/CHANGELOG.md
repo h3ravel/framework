@@ -1,5 +1,19 @@
 # @h3ravel/example
 
+## 0.4.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/config@0.5.2
+
+## 0.4.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/config@0.5.1
+
 ## 0.4.0
 
 ### Minor Changes

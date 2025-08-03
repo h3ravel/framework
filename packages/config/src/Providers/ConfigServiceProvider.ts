@@ -1,8 +1,6 @@
 import { Bindings, ServiceProvider } from '@h3ravel/core'
 import { ConfigRepository, EnvLoader } from '..'
 
-import { config as loadEnv } from 'dotenv'
-
 /**
  * Loads configuration and environment files.
  * 
@@ -14,7 +12,7 @@ import { config as loadEnv } from 'dotenv'
 export class ConfigServiceProvider extends ServiceProvider {
     async register () {
 
-        loadEnv()
+        (await import('dotenv')).config({ quiet: true })
 
         /**
          * Create singleton to load env
