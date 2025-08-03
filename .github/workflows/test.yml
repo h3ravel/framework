@@ -32,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run the tests
+      - name: Run tests and generate code coverage
         run: pnpm coverage
 
       - name: Upload coverage reports to Codecov
