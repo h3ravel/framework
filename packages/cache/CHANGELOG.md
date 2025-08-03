@@ -1,5 +1,16 @@
 # @h3ravel/cache
 
+## 2.0.0
+
+### Patch Changes
+
+- a27f452: chore: fix all linting issues.
+- c906050: chore: migrate tests suite to jest
+- Updated dependencies [8ceb2c1]
+- Updated dependencies [a27f452]
+- Updated dependencies [c906050]
+  - @h3ravel/core@0.4.0
+
 ## 1.0.0
 
 ### Minor Changes

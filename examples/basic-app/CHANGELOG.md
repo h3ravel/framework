@@ -1,5 +1,20 @@
 # @h3ravel/example
 
+## 0.3.1
+
+### Patch Changes
+
+- a27f452: chore: fix all linting issues.
+- c906050: chore: migrate tests suite to jest
+- Updated dependencies [8ceb2c1]
+- Updated dependencies [a27f452]
+- Updated dependencies [c906050]
+  - @h3ravel/config@0.4.0
+  - @h3ravel/core@0.4.0
+  - @h3ravel/router@0.4.0
+  - @h3ravel/shared@0.4.0
+  - @h3ravel/http@2.0.0
+
 ## 0.3.0
 
 ### Minor Changes

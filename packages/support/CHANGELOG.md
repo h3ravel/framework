@@ -1,5 +1,16 @@
 # @h3ravel/support
 
+## 0.4.0
+
+### Minor Changes
+
+- 8ceb2c1: implement the Application class directly since it already implements the IClass contract
+
+### Patch Changes
+
+- a27f452: chore: fix all linting issues.
+- c906050: chore: migrate tests suite to jest
+
 ## 0.3.0
 
 ### Minor Changes
