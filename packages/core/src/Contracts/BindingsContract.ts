@@ -1,9 +1,9 @@
 // import { DotNestedKeys, DotNestedValue } from "@h3ravel/support";
-import type { H3, serve } from "h3";
+import type { H3, serve } from 'h3'
 
-import type { Edge } from "edge.js";
-import { IRouter } from "@h3ravel/shared";
-import { PathLoader } from "../Utils/PathLoader";
+import type { Edge } from 'edge.js'
+import { IRouter } from '@h3ravel/shared'
+import { PathLoader } from '../Utils/PathLoader'
 
 type RemoveIndexSignature<T> = {
     [K in keyof T as string extends K
@@ -15,7 +15,7 @@ type RemoveIndexSignature<T> = {
 
 export type Bindings = {
     [key: string]: any;
-    env<T extends string> (): NodeJS.ProcessEnv
+    env (): NodeJS.ProcessEnv
     env<T extends string> (key: T, def?: any): any
     view: Edge,
     asset (key: string, def?: string): string,

@@ -1,4 +1,4 @@
-import { dot } from "./Obj"
+import { dot } from './Obj'
 
 /**
  * Get the portion of the string after the first occurrence of the given value.

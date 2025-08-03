@@ -1,4 +1,4 @@
-import { EventHandlerRequest, H3Event } from "h3";
+import { EventHandlerRequest, H3Event } from 'h3'
 
 export interface Resource {
     [key: string]: any;
@@ -24,25 +24,25 @@ export class JsonResource<R extends Resource = any> {
     /**
      * The request instance
      */
-    request: H3Event<EventHandlerRequest>['req'];
+    request: H3Event<EventHandlerRequest>['req']
     /**
      * The response instance
      */
-    response: H3Event['res'];
+    response: H3Event['res']
     /**
      * The data to send to the client
      */
-    resource: R;
+    resource: R
     /**
      * The final response data object
      */
     body: BodyResource = {
         data: {},
-    };
+    }
     /**
      * Flag to track if response should be sent automatically
      */
-    private shouldSend: boolean = false;
+    private shouldSend: boolean = false
     /**
      * Flag to track if response has been sent
      */
@@ -60,9 +60,9 @@ export class JsonResource<R extends Resource = any> {
      * @param rsc The data to send to the client
      */
     constructor(protected event: H3Event, rsc: R) {
-        this.request = event.req;
-        this.response = event.res;
-        this.resource = rsc;
+        this.request = event.req
+        this.response = event.res
+        this.resource = rsc
 
         // Copy all properties from rsc to this, avoiding conflicts
         for (const key of Object.keys(rsc)) {
@@ -72,9 +72,9 @@ export class JsonResource<R extends Resource = any> {
                     configurable: true,
                     get: () => this.resource[key],
                     set: (value) => {
-                        (<any>this.resource)[key] = value;
+                        (<any>this.resource)[key] = value
                     },
-                });
+                })
             }
         }
     }
@@ -94,43 +94,43 @@ export class JsonResource<R extends Resource = any> {
      */
     json () {
         // Indicate response should be sent automatically
-        this.shouldSend = true;
+        this.shouldSend = true
 
         // Set default status code
-        this.response.status = 200;
+        this.response.status = 200
 
         // Prepare body
         const resource = this.data()
-        let data: Resource = Array.isArray(resource) ? [...resource] : { ...resource };
+        let data: Resource = Array.isArray(resource) ? [...resource] : { ...resource }
 
         if (typeof data.data !== 'undefined') {
             data = data.data
         }
 
         if (!Array.isArray(resource)) {
-            delete data.pagination;
+            delete data.pagination
         }
 
         this.body = {
             data,
-        };
+        }
 
         // Set the pagination from the data() resource, if available
         if (!Array.isArray(resource) && resource.pagination) {
             const meta: BodyResource['meta'] = this.body.meta ?? {}
-            meta.pagination = resource.pagination;
-            this.body.meta = meta;
+            meta.pagination = resource.pagination
+            this.body.meta = meta
         }
 
         // If pagination is not available on the resource, then check and set it
         // if it's available on the base resource.
         if (this.resource.pagination && !this.body.meta?.pagination) {
             const meta: BodyResource['meta'] = this.body.meta ?? {}
-            meta.pagination = this.resource.pagination;
-            this.body.meta = meta;
+            meta.pagination = this.resource.pagination
+            this.body.meta = meta
         }
 
-        return this;
+        return this
     }
 
     /**
@@ -141,18 +141,18 @@ export class JsonResource<R extends Resource = any> {
     additional<X extends { [key: string]: any }> (data: X) {
 
         // Allow automatic send after additional
-        this.shouldSend = true;
+        this.shouldSend = true
 
         // Merge data with body
-        delete data.data;
-        delete data.pagination;
+        delete data.data
+        delete data.pagination
 
         this.body = {
             ...this.body,
             ...data,
-        };
+        }
 
-        return this;
+        return this
     }
 
     /**
@@ -160,11 +160,11 @@ export class JsonResource<R extends Resource = any> {
      * @returns this
      */
     send () {
-        this.shouldSend = false; // Prevent automatic send
+        this.shouldSend = false // Prevent automatic send
         if (!this.responseSent) {
-            this.#send();
+            this.#send()
         }
-        return this;
+        return this
     }
 
     /**
@@ -173,8 +173,8 @@ export class JsonResource<R extends Resource = any> {
      * @returns this
      */
     status (code: number) {
-        this.response.status = code;
-        return this;
+        this.response.status = code
+        return this
     }
 
     /**
@@ -183,10 +183,10 @@ export class JsonResource<R extends Resource = any> {
     #send () {
         if (!this.responseSent) {
             this.event.context.
-                this.response.json(this.body);
+                this.response.json(this.body)
 
             // Mark response as sent
-            this.responseSent = true;
+            this.responseSent = true
         }
     }
 
@@ -195,7 +195,7 @@ export class JsonResource<R extends Resource = any> {
      */
     private checkSend () {
         if (this.shouldSend && !this.responseSent) {
-            this.#send();
+            this.#send()
         }
     }
 }

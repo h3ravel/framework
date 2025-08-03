@@ -1,10 +1,10 @@
-import { readFile, stat } from "node:fs/promises";
+import { readFile, stat } from 'node:fs/promises'
 
 import { ServiceProvider } from '@h3ravel/core'
-import { before } from "@h3ravel/support";
-import { join } from "node:path";
+import { before } from '@h3ravel/support'
+import { join } from 'node:path'
 import { serveStatic } from 'h3'
-import { statSync } from "node:fs";
+import { statSync } from 'node:fs'
 
 /**
  * Handles public assets loading
@@ -20,22 +20,22 @@ export class AssetsServiceProvider extends ServiceProvider {
 
         app.middleware(`/${fsconfig.public_mask}/**`, (event) => {
             return serveStatic(event, {
-                indexNames: ["/index.html"],
+                indexNames: ['/index.html'],
                 getContents: (id) => {
                     const newId = id.replace(`/${fsconfig.public_mask}/`, '')
                     return readFile(join(before(publicPath, newId), newId))
                 },
                 getMeta: async (id) => {
                     const newId = id.replace(`/${fsconfig.public_mask}/`, '')
-                    const stats = await stat(join(before(publicPath, newId), newId)).catch(() => { });
+                    const stats = await stat(join(before(publicPath, newId), newId)).catch(() => { })
                     if (stats?.isFile()) {
                         return {
                             size: stats.size,
                             mtime: stats.mtimeMs,
-                        };
+                        }
                     }
                 },
-            });
+            })
         })
 
         this.app.singleton('asset', () => {

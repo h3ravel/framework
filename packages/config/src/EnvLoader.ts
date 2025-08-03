@@ -1,6 +1,6 @@
 import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
 
-import { Application } from "@h3ravel/core";
+import { Application } from '@h3ravel/core'
 
 export class EnvLoader {
     constructor(protected _app: Application) { }

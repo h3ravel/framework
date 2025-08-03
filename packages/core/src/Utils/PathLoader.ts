@@ -1,5 +1,5 @@
-import { IPathName } from "@h3ravel/shared"
-import nodepath from "path"
+import { IPathName } from '@h3ravel/shared'
+import nodepath from 'path'
 
 export class PathLoader {
     private paths = {

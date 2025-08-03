@@ -160,6 +160,6 @@ export class Application extends Container implements IApplication {
      * @returns 
      */
     getVersion (key: 'app' | 'ts') {
-        return this.versions[key]?.replaceAll(/\^|\~/g, '')
+        return this.versions[key]?.replaceAll(/\^|~/g, '')
     }
 }

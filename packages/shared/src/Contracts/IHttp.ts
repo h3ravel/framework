@@ -1,8 +1,8 @@
-import type { Middleware, MiddlewareOptions } from "h3";
+import type { Middleware, MiddlewareOptions } from 'h3'
 
-import { IApplication } from "./IApplication";
-import { IRequest } from "./IRequest";
-import { IResponse } from "./IResponse";
+import { IApplication } from './IApplication'
+import { IRequest } from './IRequest'
+import { IResponse } from './IResponse'
 
 /**
  * Interface for the Router contract, defining methods for HTTP routing.

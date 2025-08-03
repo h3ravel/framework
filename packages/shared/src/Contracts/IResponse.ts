@@ -1,6 +1,6 @@
 import { DotNestedKeys, DotNestedValue } from '@h3ravel/support'
 
-import type { H3Event } from "h3";
+import type { H3Event } from 'h3'
 
 /**
  * Interface for the Response contract, defining methods for handling HTTP responses.

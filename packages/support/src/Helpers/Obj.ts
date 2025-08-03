@@ -1,4 +1,4 @@
-import { DotFlatten, DotNestedKeys, DotNestedValue, KeysToSnakeCase } from "../Contracts/ObjContract"
+import { DotFlatten, DotNestedKeys, DotNestedValue, KeysToSnakeCase } from '../Contracts/ObjContract'
 
 /**
  * Flattens a nested object into a single-level object
@@ -116,7 +116,7 @@ export const getValue = <
  */
 export const modObj = <T extends object, R> (
     obj: T,
-    callback: (entry: [keyof T & string, T[keyof T]]) => [string, R]
+    callback: (_entry: [keyof T & string, T[keyof T]]) => [string, R]
 ): Record<string, R> => {
     return Object.fromEntries(
         Object.entries(obj).map(([key, value]) =>
@@ -126,11 +126,11 @@ export const modObj = <T extends object, R> (
 }
 
 
-export function safeDot<T extends Record<string, any>> (data: T): T
+export function safeDot<T extends Record<string, any>> (_data: T): T
 export function safeDot<
     T extends Record<string, any>,
     K extends DotNestedKeys<T>
-> (data: T, key?: K): DotNestedValue<T, K>
+> (_data: T, _key?: K): DotNestedValue<T, K>
 export function safeDot<
     T extends Record<string, any>,
     K extends DotNestedKeys<T>

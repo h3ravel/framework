@@ -2,7 +2,7 @@ import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Request, Response } from '@h3ravel/http'
 import { Application, Controller, Kernel } from '@h3ravel/core'
 import { afterLast } from '@h3ravel/support'
-import { EventHandler, HttpContext, IApplication, IController, IMiddleware } from '@h3ravel/shared'
+import { EventHandler, IController, IMiddleware } from '@h3ravel/shared'
 
 interface RouteDefinition {
     method: string

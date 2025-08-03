@@ -7,7 +7,7 @@
  * @returns An array of chunks (arrays)
  */
 export const chunk = <T> (arr: T[], size: number = 2): T[][] => {
-    if (size <= 0) throw new Error("Chunk size must be greater than 0")
+    if (size <= 0) throw new Error('Chunk size must be greater than 0')
 
     const chunks: T[][] = []
 

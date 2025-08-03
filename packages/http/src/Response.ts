@@ -39,7 +39,7 @@ export class Response implements IResponse {
      * Send a JSON response.
      */
     json<T = unknown> (data: T): T {
-        this.setHeader("content-type", "application/json; charset=utf-8")
+        this.setHeader('content-type', 'application/json; charset=utf-8')
         this.applyHeaders()
         return data
     }
@@ -48,9 +48,9 @@ export class Response implements IResponse {
      * Send plain text.
      */
     text (data: string): string {
-        this.setHeader("content-type", "text/plain; charset=utf-8")
+        this.setHeader('content-type', 'text/plain; charset=utf-8')
         this.applyHeaders()
-        return data;
+        return data
     }
 
     /**

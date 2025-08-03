@@ -1,4 +1,4 @@
-import type { Bindings, UseKey } from "./Contracts/BindingsContract"
+import type { Bindings, UseKey } from './Contracts/BindingsContract'
 
 type IBinding = UseKey | (new (..._args: any[]) => unknown)
 

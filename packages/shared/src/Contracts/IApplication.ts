@@ -1,4 +1,4 @@
-import { IServiceProvider } from "./IServiceProvider";
+import { IServiceProvider } from './IServiceProvider'
 
 export type IPathName = 'views' | 'routes' | 'assets' | 'base' | 'public' | 'storage' | 'config'
 

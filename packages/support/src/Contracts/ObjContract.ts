@@ -1,4 +1,4 @@
-import { CamelToSnakeCase } from "./StrContract"
+import { CamelToSnakeCase } from './StrContract'
 
 /**
  * Adds a dot prefix to nested keys

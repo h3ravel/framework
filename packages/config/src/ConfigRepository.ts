@@ -33,7 +33,7 @@ export class ConfigRepository {
         if (!this.loaded) {
             const configPath = this.app.getPath('config')
 
-            const files = await readdir(configPath);
+            const files = await readdir(configPath)
 
             for (let i = 0; i < files.length; i++) {
                 const configModule = await import(path.join(configPath, files[i]))
