@@ -1,4 +1,4 @@
-# @h3ravel/tsconfig
+# @h3ravel/shared
 
 ## 0.2.0
 

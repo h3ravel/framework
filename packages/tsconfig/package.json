@@ -1,9 +1,0 @@
-{
-  "name": "@h3ravel/tsconfig",
-  "version": "0.2.0",
-  "description": "Base tsconfig.",
-  "type": "module",
-  "publishConfig": {
-    "access": "public"
-  }
-}

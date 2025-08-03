@@ -2,8 +2,9 @@ import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
 import { html, redirect, } from 'h3'
 
 import type { H3Event } from 'h3'
+import { IResponse } from '@h3ravel/shared'
 
-export class Response {
+export class Response implements IResponse {
     private readonly event: H3Event
     private statusCode: number = 200
     private headers: Record<string, string> = {}

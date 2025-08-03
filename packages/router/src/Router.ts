@@ -1,10 +1,8 @@
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
-import { Application, Controller, Kernel } from '@h3ravel/core'
-import { Middleware as HttpMiddleware } from '@h3ravel/http'
-import { HttpContext } from '@h3ravel/http'
+import { Request, Response } from '@h3ravel/http'
+import { Controller, Kernel } from '@h3ravel/core'
 import { afterLast } from '@h3ravel/support'
-
-type EventHandler = (ctx: HttpContext) => unknown
+import { EventHandler, HttpContext, IApplication, IController, IMiddleware } from '@h3ravel/shared'
 
 interface RouteDefinition {
     method: string
@@ -18,7 +16,7 @@ export class Router {
     private groupPrefix = ''
     private groupMiddleware: EventHandler[] = []
 
-    constructor(protected h3App: H3, private app: Application) { }
+    constructor(protected h3App: H3, private app: IApplication) { }
 
     /**
      * Route Resolver
@@ -27,9 +25,13 @@ export class Router {
      * @param middleware 
      * @returns 
      */
-    private resolveHandler (handler: EventHandler, middleware: HttpMiddleware[] = []) {
+    private resolveHandler (handler: EventHandler, middleware: IMiddleware[] = []) {
         return async (event: H3Event) => {
-            const kernel = new Kernel(middleware)
+            const kernel = new Kernel(() => ({
+                request: new Request(event),
+                response: new Response(event)
+            }), middleware)
+
             return kernel.handle(event, (ctx) => Promise.resolve(handler(ctx)))
         }
     }
@@ -48,7 +50,7 @@ export class Router {
         path: string,
         handler: EventHandler,
         name?: string,
-        middleware: HttpMiddleware[] = []
+        middleware: IMiddleware[] = []
     ) {
         const fullPath = `${this.groupPrefix}${path}`.replace(/\/+/g, '/')
         this.routes.push({ method, path: fullPath, name, handler })
@@ -56,16 +58,16 @@ export class Router {
     }
 
     private resolveControllerOrHandler (
-        handler: EventHandler | (new (...args: any[]) => Controller),
+        handler: EventHandler | (new (...args: any[]) => IController),
         methodName?: string
     ): EventHandler {
         if (typeof handler === 'function' && (handler as any).prototype instanceof Controller) {
             return (ctx) => {
-                const controller = new (handler as new (...args: any[]) => Controller)(this.app)
-                const action = (methodName || 'index') as keyof Controller
+                const controller = new (handler as new (...args: any[]) => IController)(this.app)
+                const action = (methodName || 'index') as keyof IController
 
                 if (typeof controller[action] !== 'function') {
-                    throw new Error(`Method "${action}" not found on controller ${handler.name}`)
+                    throw new Error(`Method "${String(action)}" not found on controller ${handler.name}`)
                 }
 
                 return controller[action](ctx)
@@ -78,32 +80,32 @@ export class Router {
 
     get (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => Controller),
-        methodName?: string, name?: string, middleware: HttpMiddleware[] = []
+        handler: EventHandler | (new (...args: any[]) => IController),
+        methodName?: string, name?: string, middleware: IMiddleware[] = []
     ) {
         this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
 
     post (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => Controller),
-        methodName?: string, name?: string, middleware: HttpMiddleware[] = []
+        handler: EventHandler | (new (...args: any[]) => IController),
+        methodName?: string, name?: string, middleware: IMiddleware[] = []
     ) {
         this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
 
     put (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => Controller),
-        methodName?: string, name?: string, middleware: HttpMiddleware[] = []
+        handler: EventHandler | (new (...args: any[]) => IController),
+        methodName?: string, name?: string, middleware: IMiddleware[] = []
     ) {
         this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
 
     delete (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => Controller),
-        methodName?: string, name?: string, middleware: HttpMiddleware[] = []
+        handler: EventHandler | (new (...args: any[]) => IController),
+        methodName?: string, name?: string, middleware: IMiddleware[] = []
     ) {
         this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
     }
@@ -116,8 +118,8 @@ export class Router {
      */
     apiResource (
         path: string,
-        Controller: new (app: Application) => Controller,
-        middleware: HttpMiddleware[] = []
+        Controller: new (app: IApplication) => IController,
+        middleware: IMiddleware[] = []
     ) {
         path = path.replace(/\//g, '/')
 

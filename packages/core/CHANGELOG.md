@@ -10,4 +10,4 @@
 
 - Updated dependencies [aea734f]
   - @h3ravel/router@0.2.0
-  - @h3ravel/tsconfig@0.2.0
+  - @h3ravel/shared@0.2.0

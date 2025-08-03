@@ -1,4 +1,4 @@
-import { HttpContext, IController } from '@h3ravel/http'
+import { HttpContext, IApplication, IController } from '@h3ravel/shared'
 
 import { Application } from '.'
 
@@ -6,7 +6,7 @@ import { Application } from '.'
  * Base controller class
  */
 export abstract class Controller implements IController {
-    protected app: Application
+    protected app: IApplication
 
     constructor(app: Application) {
         this.app = app

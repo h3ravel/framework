@@ -1,6 +1,7 @@
 import { Application } from './Application'
+import { IServiceProvider } from '@h3ravel/shared'
 
-export abstract class ServiceProvider {
+export abstract class ServiceProvider implements IServiceProvider {
     protected app: Application
 
     constructor(app: Application) {

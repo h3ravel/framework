@@ -1,5 +1,5 @@
 import { Edge } from 'edge.js'
-import { ServiceProvider } from '@h3ravel/core'
+import { ServiceProvider } from '../ServiceProvider'
 
 export class ViewServiceProvider extends ServiceProvider {
     register (): void {

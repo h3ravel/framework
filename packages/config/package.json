@@ -24,10 +24,12 @@
   },
   "dependencies": {
     "@h3ravel/core": "workspace:*",
+    "@h3ravel/shared": "workspace:*",
     "@h3ravel/support": "workspace:*",
     "dotenv": "^17.2.1"
   },
   "devDependencies": {
-    "typescript": "^5.4.0"
+    "typescript": "^5.4.0",
+    "@h3ravel/core": "shared:*"
   }
 }

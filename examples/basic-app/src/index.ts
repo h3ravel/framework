@@ -1,16 +1,17 @@
 import 'reflect-metadata'
 
+import { LogRequests, Request, Response } from '@h3ravel/http'
+
 import { Application } from '@h3ravel/core'
 import { Kernel } from '@h3ravel/core'
-import { LogRequests } from '@h3ravel/http'
 
 async function bootstrap () {
     const app = new Application(process.cwd())
 
     app.registerProviders([
-        (await import('@h3ravel/cache')).CacheServiceProvider,
-        (await import('@h3ravel/queue')).QueueServiceProvider,
-        (await import('@h3ravel/mail')).MailServiceProvider
+        // (await import('@h3ravel/cache')).CacheServiceProvider,
+        // (await import('@h3ravel/queue')).QueueServiceProvider,
+        // (await import('@h3ravel/mail')).MailServiceProvider
     ])
 
     await app.registerConfiguredProviders()
@@ -19,7 +20,10 @@ async function bootstrap () {
     const h3App = app.make('http.app')
     const serve = app.make('http.serve')
 
-    const kernel = new Kernel([new LogRequests()])
+    const kernel = new Kernel((event) => ({
+        request: new Request(event),
+        response: new Response(event)
+    }), [new LogRequests()])
 
     h3App.use((event) => kernel.handle(event, async () => undefined))
 

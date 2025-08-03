@@ -16,7 +16,7 @@
     "lint": "eslint . --ext .ts",
     "test": "vitest"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@h3ravel/core": "workspace:*"
   },
   "devDependencies": {

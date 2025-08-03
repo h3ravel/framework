@@ -1,4 +1,5 @@
-import { HttpContext, Middleware } from '@h3ravel/http'
+import { HttpContext } from '@h3ravel/shared'
+import { Middleware } from '../Middleware'
 
 export class LogRequests extends Middleware {
     async handle ({ request }: HttpContext, next: () => Promise<unknown>): Promise<unknown> {

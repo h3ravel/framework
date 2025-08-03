@@ -1,7 +1,3 @@
-import { Request } from "../Request"
-import { Response } from "../Response"
+import { HttpContext as IHttpContext } from '@h3ravel/shared'
 
-export interface HttpContext {
-    request: Request
-    response: Response
-}
+export type HttpContext = IHttpContext

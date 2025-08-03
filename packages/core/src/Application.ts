@@ -1,16 +1,17 @@
+import { IApplication, IPathName, IServiceProvider } from '@h3ravel/shared'
+
 import { Container } from './Container'
 import { PathLoader } from './Utils/PathLoader'
-import { ServiceProvider } from './ServiceProvider'
 import path from 'node:path'
 
-export class Application extends Container {
+export class Application extends Container implements IApplication {
     paths = new PathLoader()
     private booted = false
     private versions = { app: '0', ts: '0' }
     private basePath: string
 
-    private providers: ServiceProvider[] = []
-    protected externalProviders: Array<new (_app: Application) => ServiceProvider> = []
+    private providers: IServiceProvider[] = []
+    protected externalProviders: Array<new (_app: IApplication) => IServiceProvider> = []
 
     constructor(basePath: string) {
         super()
@@ -62,14 +63,14 @@ export class Application extends Container {
      * Minimal App: Loads only core, config, http, router by default.
      * Full-Stack App: Installs database, mail, queue, cache → they self-register via their providers.
      */
-    protected async getConfiguredProviders (): Promise<Array<new (_app: Application) => ServiceProvider>> {
+    protected async getConfiguredProviders (): Promise<Array<new (_app: IApplication) => IServiceProvider>> {
         return [
-            (await import('@h3ravel/core')).AppServiceProvider,
-            (await import('@h3ravel/http')).HttpServiceProvider,
-            (await import('@h3ravel/config')).ConfigServiceProvider,
-            (await import('@h3ravel/router')).RouteServiceProvider,
-            (await import('@h3ravel/router')).AssetsServiceProvider,
-            (await import('@h3ravel/core')).ViewServiceProvider,
+            (await this.safeImport('@h3ravel/core')).AppServiceProvider,
+            (await this.safeImport('@h3ravel/http')).HttpServiceProvider,
+            (await this.safeImport('@h3ravel/config')).ConfigServiceProvider,
+            (await this.safeImport('@h3ravel/router')).RouteServiceProvider,
+            (await this.safeImport('@h3ravel/router')).AssetsServiceProvider,
+            (await this.safeImport('@h3ravel/core')).ViewServiceProvider,
             (await this.safeImport('@h3ravel/database'))?.DatabaseServiceProvider,
             (await this.safeImport('@h3ravel/cache'))?.CacheServiceProvider,
             (await this.safeImport('@h3ravel/console'))?.ConsoleServiceProvider,
@@ -78,19 +79,19 @@ export class Application extends Container {
         ]
     }
 
-    protected async getAllProviders (): Promise<Array<new (_app: Application) => ServiceProvider>> {
+    protected async getAllProviders (): Promise<Array<new (_app: IApplication) => IServiceProvider>> {
         const coreProviders = await this.getConfiguredProviders()
         return [...coreProviders, ...this.externalProviders]
     }
 
-    registerProviders (providers: Array<new (_app: Application) => ServiceProvider>): void {
+    registerProviders (providers: Array<new (_app: IApplication) => IServiceProvider>): void {
         this.externalProviders.push(...providers)
     }
 
     /**
      * Register a provider
      */
-    public async register (provider: ServiceProvider) {
+    public async register (provider: IServiceProvider) {
         await provider.register()
         this.providers.push(provider)
     }
@@ -116,7 +117,7 @@ export class Application extends Container {
     private async safeImport (moduleName: string) {
         try {
             const mod = await import(moduleName)
-            return mod.default ?? mod
+            return mod.default ?? mod ?? {}
         } catch {
             return null
         }
@@ -138,7 +139,7 @@ export class Application extends Container {
      * @param name - The base name of the path property
      * @returns 
      */
-    getPath (name: Parameters<PathLoader['setPath']>[0], pth?: string) {
+    getPath (name: IPathName, pth?: string) {
         return path.join(this.paths.getPath(name, this.basePath), pth ?? '')
     }
 
@@ -149,7 +150,7 @@ export class Application extends Container {
      * @param path - The new path
      * @returns 
      */
-    setPath (name: Parameters<PathLoader['setPath']>[0], path: string) {
+    setPath (name: IPathName, path: string) {
         return this.paths.setPath(name, path, this.basePath)
     }
 

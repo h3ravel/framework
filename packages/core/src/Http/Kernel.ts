@@ -1,17 +1,16 @@
-import { HttpContext, Middleware, Request, Response } from '@h3ravel/http'
+import { HttpContext, IMiddleware } from '@h3ravel/shared'
 
 import type { H3Event } from 'h3'
 
 export class Kernel {
-    constructor(protected middleware: Middleware[] = []) { }
+    constructor(
+        protected context: (event: H3Event) => HttpContext,
+        protected middleware: IMiddleware[] = [],
+    ) { }
 
     async handle (event: H3Event, next: (ctx: HttpContext) => Promise<unknown>): Promise<unknown> {
-        const context: HttpContext = {
-            request: new Request(event),
-            response: new Response(event)
-        }
-
-        const result = await this.runMiddleware(context, () => next(context))
+        const ctx = this.context(event)
+        const result = await this.runMiddleware(ctx, () => next(ctx))
 
         // Auto-set JSON header if plain object returned
         if (result !== undefined && this.isPlainObject(result)) {

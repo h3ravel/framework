@@ -1,6 +1,5 @@
+import { IPathName } from "@h3ravel/shared"
 import nodepath from "path"
-
-type PathName = 'views' | 'routes' | 'assets' | 'base' | 'public' | 'storage' | 'config'
 
 export class PathLoader {
     private paths = {
@@ -21,7 +20,7 @@ export class PathLoader {
      * @param base - The base path to include to the path
      * @returns 
      */
-    getPath (name: PathName, base?: string): string {
+    getPath (name: IPathName, base?: string): string {
         if (base && name !== 'base') {
             return nodepath.join(base, this.paths[name])
         }
@@ -36,7 +35,7 @@ export class PathLoader {
      * @param path - The new path
      * @param base - The base path to include to the path
      */
-    setPath (name: PathName, path: string, base?: string) {
+    setPath (name: IPathName, path: string, base?: string) {
         if (base && name !== 'base') {
             this.paths[name] = nodepath.join(base, path)
         }

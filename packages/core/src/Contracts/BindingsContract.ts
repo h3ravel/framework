@@ -2,8 +2,8 @@
 import type { H3, serve } from "h3";
 
 import type { Edge } from "edge.js";
+import { IRouter } from "@h3ravel/shared";
 import { PathLoader } from "../Utils/PathLoader";
-import type { Router } from "@h3ravel/router";
 
 type RemoveIndexSignature<T> = {
     [K in keyof T as string extends K
@@ -19,7 +19,7 @@ export type Bindings = {
     env<T extends string> (key: T, def?: any): any
     view: Edge,
     asset (key: string, def?: string): string,
-    router: Router
+    router: IRouter
     config: {
         // get<X extends Record<string, any>> (): X
         // get<X extends Record<string, any>, K extends DotNestedKeys<X>> (key: K, def?: any): DotNestedValue<X, K>

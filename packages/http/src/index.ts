@@ -5,7 +5,6 @@
 export * from './Middleware';
 export * from './Request';
 export * from './Response';
-export * from './Contracts/ControllerContracts';
 export * from './Contracts/HttpContract';
 export * from './Middleware/LogRequests';
 export * from './Providers/HttpServiceProvider';
