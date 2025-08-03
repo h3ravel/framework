@@ -1,5 +1,16 @@
 # @h3ravel/database
 
+## 3.0.0
+
+### Minor Changes
+
+- rebuild all dependencies
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/core@0.5.0
+
 ## 2.0.0
 
 ### Patch Changes

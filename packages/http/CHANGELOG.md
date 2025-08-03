@@ -1,5 +1,18 @@
 # @h3ravel/http
 
+## 3.0.0
+
+### Minor Changes
+
+- rebuild all dependencies
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/core@0.5.0
+  - @h3ravel/shared@0.5.0
+  - @h3ravel/support@0.5.0
+
 ## 2.0.0
 
 ### Patch Changes

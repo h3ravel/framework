@@ -1,5 +1,16 @@
 # @h3ravel/core
 
+## 0.5.0
+
+### Minor Changes
+
+- rebuild all dependencies
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/shared@0.5.0
+
 ## 0.4.0
 
 ### Minor Changes
