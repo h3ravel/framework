@@ -10,14 +10,14 @@
     "dev": "pnpm barrel && pnpm -r --parallel --filter './packages/*' run dev",
     "start": "pnpm --filter @h3ravel/core start",
     "lint": "pnpm -r --filter './packages/*' run lint",
-    "test": "pnpm -r --filter './packages/*' run test",
+    "test": "NODE_NO_WARNINGS=1 NODE_ENV=testing jest --passWithNoTests",
+    "coverage": "NODE_NO_WARNINGS=1 NODE_ENV=testing jest --passWithNoTests --coverage --coverageDirectory=coverage",
     "prepare": "husky",
     "postinstall": "pnpm barrel",
     "undev": "tsx watch packages/core/src/main.ts",
     "cleanup": "find . \\( -name 'node_modules' -o -name 'dist' \\) -type d -prune -exec rm -rf '{}' +",
     "release": "pnpm build && pnpm changeset version && pnpm changeset publish",
-    "publish": "pnpm build && pnpm -r publish --access public",
-    "coverage": "vitest run --coverage"
+    "publish": "pnpm build && pnpm -r publish --access public"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.5",

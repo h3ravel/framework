@@ -14,7 +14,7 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "vitest"
+    "test": "jest --passWithNoTests"
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:*"

@@ -1,13 +1,16 @@
-import type { Config } from 'jest'
-import { createDefaultPreset } from 'ts-jest'
+import { createJsWithTsEsmPreset, type JestConfigWithTsJest } from 'ts-jest'
 
-const tsJestTransformCfg = createDefaultPreset().transform
+const tsJestTransformCfg = createJsWithTsEsmPreset().transform
 
-const jestConfig: Config = {
+const jestConfig: JestConfigWithTsJest = {
   testEnvironment: 'node',
   transform: {
     ...tsJestTransformCfg,
   },
+  roots: [
+    '<rootDir>/packages/',   // Look for tests in all packages
+  ],
+  testMatch: ['**/tests/**/*.test.ts'],
   moduleNameMapper: {
     '@h3ravel/core': '<rootDir>/packages/core/src/index.ts',
     '@h3ravel/router': '<rootDir>/packages/router/src/index.ts',
