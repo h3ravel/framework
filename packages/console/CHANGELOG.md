@@ -1,5 +1,16 @@
 # @h3ravel/console
 
+## 1.0.0
+
+### Minor Changes
+
+- 3ff97bf: refactor: add a shared package to be extended by others to avoid cyclic dependency issues.
+
+### Patch Changes
+
+- Updated dependencies [3ff97bf]
+  - @h3ravel/core@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes

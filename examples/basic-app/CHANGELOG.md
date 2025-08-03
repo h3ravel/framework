@@ -1,5 +1,20 @@
 # @h3ravel/example
 
+## 0.3.0
+
+### Minor Changes
+
+- 3ff97bf: refactor: add a shared package to be extended by others to avoid cyclic dependency issues.
+
+### Patch Changes
+
+- Updated dependencies [3ff97bf]
+  - @h3ravel/config@0.3.0
+  - @h3ravel/core@0.3.0
+  - @h3ravel/http@1.0.0
+  - @h3ravel/router@0.3.0
+  - @h3ravel/shared@0.3.0
+
 ## 0.2.0
 
 ### Minor Changes
