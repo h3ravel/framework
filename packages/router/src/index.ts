@@ -4,10 +4,5 @@
 
 export * from './Controller';
 export * from './Route';
-export * from './Decorators/ApiResource';
-export * from './Decorators/Controller';
-export * from './Decorators/Get';
-export * from './Decorators/Middleware';
-export * from './Decorators/Post';
 export * from './Providers/AssetsServiceProvider';
 export * from './Providers/RouteServiceProvider';

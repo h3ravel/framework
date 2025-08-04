@@ -3,7 +3,7 @@
  */
 
 export * from './Kernel';
-export * from './Musketeer';
+export * from './Musket';
 export * from './Commands/MakeController';
 export * from './Commands/MakeModel';
 export * from './Commands/MakeResource';

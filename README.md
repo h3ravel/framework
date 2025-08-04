@@ -1,16 +1,16 @@
 <p align="center"><a href="https://h3ravel.toneflix.net" target="_blank"><img src="https://raw.githubusercontent.com/h3ravel/assets/refs/heads/main/logo-full.svg" width="400" alt="H3ravel Logo"></a></p>
 
 [![Framework][ix]][lx]
-[![Latest Stable Version][i1]][l1]
-[![Latest Stable Version][i2]][l2]
-[![Latest Stable Version][i3]][l3]
-[![Latest Stable Version][i4]][l4]
-[![Latest Stable Version][i5]][l5]
-[![Latest Stable Version][i6]][l6]
-[![Latest Stable Version][i7]][l7]
-[![Latest Stable Version][i8]][l8]
-[![Latest Stable Version][i9]][l9]
-[![Latest Stable Version][i10]][l10]
+[![Core Package Version][i1]][l1]
+[![Cache Package Version][i2]][l2]
+[![Config Package Version][i3]][l3]
+[![Console Package Version][i4]][l4]
+[![Database Package Version][i5]][l5]
+[![Http Package Version][i6]][l6]
+[![Mail Package Version][i7]][l7]
+[![Queue Package Version][i8]][l8]
+[![Router Package Version][i9]][l9]
+[![Shared Package Version][i10]][l10]
 
 # About H3ravel
 
@@ -51,10 +51,10 @@ This combination delivers the productivity of Laravel while leveraging the moder
 
 ## Roadmap
 
-- [ ] Application container with service providers
+- [x] Application container with service providers
 - [ ] Middleware pipeline and HTTP kernel
-- [ ] Routing system (with decorators)
-- [ ] CLI (artisan-like commands)
+- [x] Routing system
+- [ ] Musketeer CLI (artisan-like commands)
 - [ ] ORM with relationships (Eloquent-style)
 - [ ] Queues, Mail, Events, Broadcasting
 - [ ] Config management and environment handling
