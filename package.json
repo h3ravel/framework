@@ -4,6 +4,16 @@
   "version": "0.1.2",
   "description": "Monorepo for H3ravel, a modern TypeScript runtime-agnostic web framework built on H3.",
   "type": "module",
+  "keywords": [
+    "h3ravel",
+    "modern",
+    "web",
+    "H3",
+    "framework",
+    "nodejs",
+    "typescript",
+    "laravel"
+  ],
   "scripts": {
     "barrel": "pnpm -r --filter './packages/*' run barrel",
     "build": "pnpm barrel && pnpm -r --workspace-concurrency=1 --filter './packages/*' run build",

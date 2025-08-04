@@ -8,6 +8,16 @@
   "publishConfig": {
     "access": "public"
   },
+  "keywords": [
+    "h3ravel",
+    "modern",
+    "web",
+    "H3",
+    "framework",
+    "nodejs",
+    "typescript",
+    "laravel"
+  ],
   "scripts": {
     "build": "tsup",
     "barrel": "barrelsby --directory src --delete --singleQuotes",
