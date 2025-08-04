@@ -23,7 +23,7 @@ H3ravel is a modern TypeScript runtime-agnostic web framework built on top of [H
 - Controllers with decorators – Class-based controllers like Laravel
 - HTTP Kernel – Centralized middleware and request lifecycle handling
 - Eloquent-like ORM – Fluent, model-based database interactions (planned)
-- Musketeer CLI, our Powerful Artisan-like command-line tool for generating code and running tasks
+- Musket CLI, our Powerful Artisan-like command-line tool for generating code and running tasks
 - Modular Services – Mail, Queue, Cache, Broadcasting support
 - Runtime Agnostic – Works seamlessly across Node.js, Bun, and Deno
 - Type-safe everything – Fully written in TypeScript
@@ -52,12 +52,14 @@ This combination delivers the productivity of Laravel while leveraging the moder
 ## Roadmap
 
 - [x] Application container with service providers
-- [ ] Middleware pipeline and HTTP kernel
+- [x] Middleware pipeline and HTTP kernel
 - [x] Routing system
-- [ ] Musketeer CLI (artisan-like commands)
-- [ ] ORM with relationships (Eloquent-style)
+- [x] Config management and environment handling
+- [ ] Community Building
+- [ ] Musket CLI (artisan-like commands)
+- [ ] Cache Management
 - [ ] Queues, Mail, Events, Broadcasting
-- [ ] Config management and environment handling
+- [ ] H3loquent ORM with relationships (Eloquent-style)
 - [ ] First-class runtime adapters (Node, Bun, Deno)
 
 ## Contributing
@@ -78,23 +80,23 @@ The H3ravel framework is open-sourced software licensed under the [MIT license](
 
 [ix]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=Framework&color=%230970ce
 [lx]: https://www.npmjs.com/package/@h3ravel/core
-[i1]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=core&color=%230970ce
+[i1]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=@h3ravel/core&color=%230970ce
 [l1]: https://www.npmjs.com/package/@h3ravel/core
-[i2]: https://img.shields.io/npm/v/%40h3ravel%2Fcache?style=flat-square&label=cache&color=%230970ce
+[i2]: https://img.shields.io/npm/v/%40h3ravel%2Fcache?style=flat-square&label=@h3ravel/cache&color=%230970ce
 [l2]: https://www.npmjs.com/package/@h3ravel/cache
-[i3]: https://img.shields.io/npm/v/%40h3ravel%2Fconfig?style=flat-square&label=config&color=%230970ce
+[i3]: https://img.shields.io/npm/v/%40h3ravel%2Fconfig?style=flat-square&label=@h3ravel/config&color=%230970ce
 [l3]: https://www.npmjs.com/package/@h3ravel/config
-[i4]: https://img.shields.io/npm/v/%40h3ravel%2Fconsole?style=flat-square&label=console&color=%230970ce
+[i4]: https://img.shields.io/npm/v/%40h3ravel%2Fconsole?style=flat-square&label=@h3ravel/console&color=%230970ce
 [l4]: https://www.npmjs.com/package/@h3ravel/console
-[i5]: https://img.shields.io/npm/v/%40h3ravel%2Fdatabase?style=flat-square&label=database&color=%230970ce
+[i5]: https://img.shields.io/npm/v/%40h3ravel%2Fdatabase?style=flat-square&label=@h3ravel/database&color=%230970ce
 [l5]: https://www.npmjs.com/package/@h3ravel/database
-[i6]: https://img.shields.io/npm/v/%40h3ravel%2Fhttp?style=flat-square&label=http&color=%230970ce
+[i6]: https://img.shields.io/npm/v/%40h3ravel%2Fhttp?style=flat-square&label=@h3ravel/http&color=%230970ce
 [l6]: https://www.npmjs.com/package/@h3ravel/http
-[i7]: https://img.shields.io/npm/v/%40h3ravel%2Fmail?style=flat-square&label=mail&color=%230970ce
+[i7]: https://img.shields.io/npm/v/%40h3ravel%2Fmail?style=flat-square&label=@h3ravel/mail&color=%230970ce
 [l7]: https://www.npmjs.com/package/@h3ravel/mail
-[i8]: https://img.shields.io/npm/v/%40h3ravel%2Fqueue?style=flat-square&label=queue&color=%230970ce
+[i8]: https://img.shields.io/npm/v/%40h3ravel%2Fqueue?style=flat-square&label=@h3ravel/queue&color=%230970ce
 [l8]: https://www.npmjs.com/package/@h3ravel/queue
-[i9]: https://img.shields.io/npm/v/%40h3ravel%2Frouter?style=flat-square&label=router&color=%230970ce
+[i9]: https://img.shields.io/npm/v/%40h3ravel%2Frouter?style=flat-square&label=@h3ravel/router&color=%230970ce
 [l9]: https://www.npmjs.com/package/@h3ravel/router
-[i10]: https://img.shields.io/npm/v/%40h3ravel%2Fshared?style=flat-square&label=shared&color=%230970ce
+[i10]: https://img.shields.io/npm/v/%40h3ravel%2Fshared?style=flat-square&label=@h3ravel/shared&color=%230970ce
 [l10]: https://www.npmjs.com/package/@h3ravel/shared

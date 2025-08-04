@@ -1,11 +1,11 @@
 <p align="center"><a href="https://h3ravel.toneflix.net" target="_blank"><img src="https://raw.githubusercontent.com/h3ravel/assets/refs/heads/main/logo-full.svg" width="400" alt="H3ravel Logo"></a></p>
 
 [![Framework][ix]][lx]
-[![Support Package Version][i1]][l1]
+[![Shared Package Version][i1]][l1]
 
-# About H3ravel/support
+# About H3ravel/shared
 
-This package provides first class support, reusable components and helpers used across the [H3ravel](https://h3ravel.toneflix.net) ecosystem, we strive to keep this framework agnostic so you can use whatever you can find, where ever you can.
+This package provides first reusable interfaces and contracts used across the [H3ravel](https://h3ravel.toneflix.net) ecosystem.
 
 ## Contributing
 
@@ -25,5 +25,5 @@ The H3ravel framework is open-sourced software licensed under the [MIT license](
 
 [ix]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=Framework&color=%230970ce
 [lx]: https://www.npmjs.com/package/@h3ravel/core
-[i1]: https://img.shields.io/npm/v/%40h3ravel%2Fsupport?style=flat-square&label=@h3ravel/support&color=%230970ce
-[l1]: https://www.npmjs.com/package/@h3ravel/support
+[i1]: https://img.shields.io/npm/v/%40h3ravel%2Fshared?style=flat-square&label=@h3ravel/shared&color=%230970ce
+[l1]: https://www.npmjs.com/package/@h3ravel/shared
