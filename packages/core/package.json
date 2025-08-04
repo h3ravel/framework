@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/core",
-  "version": "0.5.0",
+  "version": "1.0.0",
   "description": "Core application container, lifecycle management and service providers for H3ravel.",
   "type": "module",
   "main": "dist/index.js",

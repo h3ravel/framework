@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/config",
-  "version": "0.5.2",
+  "version": "1.0.0",
   "description": "Environment/config loading and management system for H3ravel.",
   "type": "module",
   "main": "dist/index.js",

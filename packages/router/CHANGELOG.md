@@ -1,5 +1,21 @@
 # @h3ravel/router
 
+## 1.0.0
+
+### Major Changes
+
+- b40caeb: feat: make service providers sortable and unique while only loading the core providers by default.
+  Service providers are no longer loaded by default, asides the ones provided by @h3ravel/core
+  Service provides are sorted by an optional order and priority property.
+
+### Patch Changes
+
+- Updated dependencies [b40caeb]
+  - @h3ravel/core@1.0.0
+  - @h3ravel/http@4.0.0
+  - @h3ravel/shared@0.6.0
+  - @h3ravel/support@0.6.0
+
 ## 0.5.0
 
 ### Minor Changes

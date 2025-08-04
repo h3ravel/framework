@@ -1,5 +1,13 @@
 # @h3ravel/support
 
+## 0.6.0
+
+### Minor Changes
+
+- b40caeb: feat: make service providers sortable and unique while only loading the core providers by default.
+  Service providers are no longer loaded by default, asides the ones provided by @h3ravel/core
+  Service provides are sorted by an optional order and priority property.
+
 ## 0.5.0
 
 ### Minor Changes

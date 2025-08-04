@@ -1,5 +1,18 @@
 # @h3ravel/cache
 
+## 4.0.0
+
+### Minor Changes
+
+- b40caeb: feat: make service providers sortable and unique while only loading the core providers by default.
+  Service providers are no longer loaded by default, asides the ones provided by @h3ravel/core
+  Service provides are sorted by an optional order and priority property.
+
+### Patch Changes
+
+- Updated dependencies [b40caeb]
+  - @h3ravel/core@1.0.0
+
 ## 3.0.0
 
 ### Minor Changes
