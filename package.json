@@ -1,7 +1,7 @@
 {
   "name": "h3ravel-monorepo",
   "private": false,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Monorepo for H3ravel, a modern TypeScript runtime-agnostic web framework built on H3.",
   "type": "module",
   "scripts": {
