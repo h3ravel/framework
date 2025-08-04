@@ -7,6 +7,7 @@ export * from './Container';
 export * from './Controller';
 export * from './ServiceProvider';
 export * from './Contracts/BindingsContract';
+export * from './Contracts/ServiceProviderConstructor';
 export * from './Exceptions/Handler';
 export * from './Http/Kernel';
 export * from './Providers/AppServiceProvider';

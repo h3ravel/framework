@@ -1,5 +1,5 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "./.h3ravel/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist"
   },

@@ -10,6 +10,8 @@ import { ServiceProvider } from '@h3ravel/core'
  * Auto-Registered when in CLI mode
  */
 export class ConsoleServiceProvider extends ServiceProvider {
+    public static priority = 992;
+
     register () {
         // Core bindings
     }

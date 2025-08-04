@@ -12,6 +12,8 @@ import { statSync } from 'node:fs'
  * Auto-Registered
  */
 export class AssetsServiceProvider extends ServiceProvider {
+    public static priority = 996;
+
     register () {
         const app = this.app.make('router')
         const config = this.app.make('config')

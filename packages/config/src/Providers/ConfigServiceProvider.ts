@@ -10,10 +10,10 @@ import { ConfigRepository, EnvLoader } from '..'
  * Auto-Registered
  */
 export class ConfigServiceProvider extends ServiceProvider {
+    public static priority = 998;
+    // public static order = 'before:AppServiceProvider';
+
     async register () {
-
-        (await import('dotenv')).config({ quiet: true })
-
         /**
          * Create singleton to load env
          */

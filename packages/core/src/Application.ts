@@ -2,6 +2,7 @@ import { IApplication, IPathName, IServiceProvider } from '@h3ravel/shared'
 
 import { Container } from './Container'
 import { PathLoader } from './Utils/PathLoader'
+import dotenv from 'dotenv'
 import path from 'node:path'
 
 export class Application extends Container implements IApplication {
@@ -18,7 +19,8 @@ export class Application extends Container implements IApplication {
         this.basePath = basePath
         this.setPath('base', basePath)
         this.loadOptions()
-        this.registerBaseBindings()
+        this.registerBaseBindings();
+        dotenv.config({ quiet: true })
     }
 
     /**
@@ -65,23 +67,71 @@ export class Application extends Container implements IApplication {
      */
     protected async getConfiguredProviders (): Promise<Array<new (_app: Application) => IServiceProvider>> {
         return [
-            (await this.safeImport('@h3ravel/core')).AppServiceProvider,
-            (await this.safeImport('@h3ravel/http')).HttpServiceProvider,
-            (await this.safeImport('@h3ravel/config')).ConfigServiceProvider,
-            (await this.safeImport('@h3ravel/router')).RouteServiceProvider,
-            (await this.safeImport('@h3ravel/router')).AssetsServiceProvider,
-            (await this.safeImport('@h3ravel/core')).ViewServiceProvider,
-            (await this.safeImport('@h3ravel/database'))?.DatabaseServiceProvider,
-            (await this.safeImport('@h3ravel/cache'))?.CacheServiceProvider,
-            (await this.safeImport('@h3ravel/console'))?.ConsoleServiceProvider,
-            (await this.safeImport('@h3ravel/queue'))?.QueueServiceProvider,
-            (await this.safeImport('@h3ravel/mail'))?.MailServiceProvider,
+            (await import('@h3ravel/core')).AppServiceProvider,
+            (await import('@h3ravel/core')).ViewServiceProvider,
         ]
     }
 
     protected async getAllProviders (): Promise<Array<new (_app: Application) => IServiceProvider>> {
-        const coreProviders = await this.getConfiguredProviders()
-        return [...coreProviders, ...this.externalProviders]
+        const coreProviders = await this.getConfiguredProviders();
+        const allProviders = [...coreProviders, ...this.externalProviders];
+
+        /**
+         * Deduplicate by class reference
+         */
+        const uniqueProviders = Array.from(new Set(allProviders));
+
+        return this.sortProviders(uniqueProviders);
+    }
+
+    private sortProviders (providers: Array<new (_app: Application) => IServiceProvider>) {
+        const priorityMap = new Map<string, number>();
+
+        /**
+         * Base priority (default 0)
+         */
+        providers.forEach((Provider) => {
+            priorityMap.set(Provider.name, (Provider as any).priority ?? 0);
+        });
+
+        /**
+         * Handle before/after adjustments
+         */
+        providers.forEach((Provider) => {
+            const order = (Provider as any).order;
+            if (!order) return;
+
+            const [direction, target] = order.split(':');
+            const targetPriority = priorityMap.get(target) ?? 0;
+
+            if (direction === 'before') {
+                priorityMap.set(Provider.name, targetPriority - 1);
+            } else if (direction === 'after') {
+                priorityMap.set(Provider.name, targetPriority + 1);
+            }
+        });
+
+        /**
+         * Sort the service providers based on thier name and priority
+         */
+        const sorted = providers.sort(
+            (A, B) => (priorityMap.get(B.name) ?? 0) - (priorityMap.get(A.name) ?? 0)
+        );
+
+        /**
+         * If debug is enabled, let's show the loaded service provider info
+         */
+        if (process.env.APP_DEBUG === 'true') {
+            console.table(
+                sorted.map((P) => ({
+                    Provider: P.name,
+                    Priority: priorityMap.get(P.name),
+                    Order: (P as any).order || 'N/A',
+                }))
+            );
+        }
+
+        return sorted
     }
 
     registerProviders (providers: Array<new (_app: Application) => IServiceProvider>): void {

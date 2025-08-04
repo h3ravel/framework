@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsx watch src/server.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests"
@@ -20,8 +20,13 @@
     "@h3ravel/core": "workspace:*",
     "@h3ravel/http": "workspace:*",
     "@h3ravel/router": "workspace:*",
-    "reflect-metadata": "^0.2.2",
-    "@h3ravel/shared": "workspace:*"
+    "@h3ravel/shared": "workspace:*",
+    "@h3ravel/database": "workspace:*",
+    "@h3ravel/cache": "workspace:*",
+    "@h3ravel/console": "workspace:*",
+    "@h3ravel/queue": "workspace:*",
+    "@h3ravel/mail": "workspace:*",
+    "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@types/node": "^24.1.0",

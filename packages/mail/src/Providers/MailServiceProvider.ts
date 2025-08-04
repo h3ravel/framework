@@ -10,6 +10,8 @@ import { ServiceProvider } from '@h3ravel/core'
  * Auto-Registered if @h3ravel/mail is installed
  */
 export class MailServiceProvider extends ServiceProvider {
+    public static priority = 990;
+
     register () {
         // Core bindings
     }

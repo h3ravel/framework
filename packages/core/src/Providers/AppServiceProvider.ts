@@ -12,6 +12,8 @@ import { ServiceProvider } from '../ServiceProvider'
  * Auto-Registered
  */
 export class AppServiceProvider extends ServiceProvider {
+    public static priority = 999;
+
     register () {
         // Core bindings
     }

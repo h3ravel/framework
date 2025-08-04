@@ -10,6 +10,8 @@ import { ServiceProvider } from '@h3ravel/core'
  * Auto-Registered if @h3ravel/cache is installed.
  */
 export class CacheServiceProvider extends ServiceProvider {
+    public static priority = 993;
+
     register () {
         // Core bindings
     }

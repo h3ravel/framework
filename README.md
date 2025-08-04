@@ -1,5 +1,17 @@
 <p align="center"><a href="https://h3ravel.toneflix.net" target="_blank"><img src="https://raw.githubusercontent.com/h3ravel/assets/refs/heads/main/logo-full.svg" width="400" alt="H3ravel Logo"></a></p>
 
+[![Framework][ix]][lx]
+[![Latest Stable Version][i1]][l1]
+[![Latest Stable Version][i2]][l2]
+[![Latest Stable Version][i3]][l3]
+[![Latest Stable Version][i4]][l4]
+[![Latest Stable Version][i5]][l5]
+[![Latest Stable Version][i6]][l6]
+[![Latest Stable Version][i7]][l7]
+[![Latest Stable Version][i8]][l8]
+[![Latest Stable Version][i9]][l9]
+[![Latest Stable Version][i10]][l10]
+
 # About H3ravel
 
 H3ravel is a modern TypeScript runtime-agnostic web framework built on top of [H3](https://h3.dev), designed to bring the elegance and developer experience of [Laravel](https://laravel.com) to the JavaScript ecosystem.
@@ -63,3 +75,26 @@ If you discover a security vulnerability within H3ravel, please send an e-mail t
 ## License
 
 The H3ravel framework is open-sourced software licensed under the [MIT license](LICENSE).
+
+[ix]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=Framework&color=%230970ce
+[lx]: https://www.npmjs.com/package/@h3ravel/core
+[i1]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=core&color=%230970ce
+[l1]: https://www.npmjs.com/package/@h3ravel/core
+[i2]: https://img.shields.io/npm/v/%40h3ravel%2Fcache?style=flat-square&label=cache&color=%230970ce
+[l2]: https://www.npmjs.com/package/@h3ravel/cache
+[i3]: https://img.shields.io/npm/v/%40h3ravel%2Fconfig?style=flat-square&label=config&color=%230970ce
+[l3]: https://www.npmjs.com/package/@h3ravel/config
+[i4]: https://img.shields.io/npm/v/%40h3ravel%2Fconsole?style=flat-square&label=console&color=%230970ce
+[l4]: https://www.npmjs.com/package/@h3ravel/console
+[i5]: https://img.shields.io/npm/v/%40h3ravel%2Fdatabase?style=flat-square&label=database&color=%230970ce
+[l5]: https://www.npmjs.com/package/@h3ravel/database
+[i6]: https://img.shields.io/npm/v/%40h3ravel%2Fhttp?style=flat-square&label=http&color=%230970ce
+[l6]: https://www.npmjs.com/package/@h3ravel/http
+[i7]: https://img.shields.io/npm/v/%40h3ravel%2Fmail?style=flat-square&label=mail&color=%230970ce
+[l7]: https://www.npmjs.com/package/@h3ravel/mail
+[i8]: https://img.shields.io/npm/v/%40h3ravel%2Fqueue?style=flat-square&label=queue&color=%230970ce
+[l8]: https://www.npmjs.com/package/@h3ravel/queue
+[i9]: https://img.shields.io/npm/v/%40h3ravel%2Frouter?style=flat-square&label=router&color=%230970ce
+[l9]: https://www.npmjs.com/package/@h3ravel/router
+[i10]: https://img.shields.io/npm/v/%40h3ravel%2Fshared?style=flat-square&label=shared&color=%230970ce
+[l10]: https://www.npmjs.com/package/@h3ravel/shared

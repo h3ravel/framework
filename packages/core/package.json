@@ -22,7 +22,8 @@
     "reflect-metadata": "^0.2.2",
     "srvx": "^0.8.2",
     "tslib": "^2.6.0",
-    "@h3ravel/shared": "workspace:*"
+    "@h3ravel/shared": "workspace:*",
+    "dotenv": "^17.2.1"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

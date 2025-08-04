@@ -1,8 +1,10 @@
 {
   "extends": "../shared/tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "paths": {
+      "@h3ravel/core": ["./src/index.ts"]
+    }
   },
-  "include": ["src", "../http/src/Middleware", "../http/src/Middleware.ts"],
   "exclude": ["dist", "node_modules"]
 }

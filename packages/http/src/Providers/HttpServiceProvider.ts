@@ -12,6 +12,8 @@ import { ServiceProvider } from '@h3ravel/core'
  * Auto-Registered
  */
 export class HttpServiceProvider extends ServiceProvider {
+    public static priority = 998;
+
     register () {
         this.app.singleton('http.app', () => {
             return new H3()

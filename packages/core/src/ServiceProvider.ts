@@ -2,6 +2,8 @@ import { Application } from './Application'
 import { IServiceProvider } from '@h3ravel/shared'
 
 export abstract class ServiceProvider implements IServiceProvider {
+    public static order?: `before:${string}` | `after:${string}` | string | undefined;
+    public static priority = 0;
     protected app: Application
 
     constructor(app: Application) {
