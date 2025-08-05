@@ -21,10 +21,6 @@ H3ravel is a modern TypeScript runtime-agnostic web framework built on top of [H
 
 To get started, run the `create-h3ravel` script, which will seamlessly initialize a new project structure with all the necessary files and configurations tailored for [H3ravel](https://h3ravel.toneflix.net) development.
 
-# Documentation
-
-More information can be found in the [H3ravel documentation](#!).
-
 ```sh
 # Using npm
 npm init h3ravel
@@ -35,6 +31,10 @@ yarn create h3ravel
 # Using pnpm
 pnpm create h3ravel
 ```
+
+# Documentation
+
+More information can be found in the [H3ravel documentation](#!).
 
 ## Features
 
