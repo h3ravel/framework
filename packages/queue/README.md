@@ -2,6 +2,7 @@
 
 [![Framework][ix]][lx]
 [![Mail Package Version][i1]][l1]
+[![Downloads][d1]][d1]
 
 # About H3ravel/queue
 
@@ -27,3 +28,4 @@ The H3ravel framework is open-sourced software licensed under the [MIT license](
 [lx]: https://www.npmjs.com/package/@h3ravel/core
 [i1]: https://img.shields.io/npm/v/%40h3ravel%2Fqueue?style=flat-square&label=@h3ravel/queue&color=%230970ce
 [l1]: https://www.npmjs.com/package/@h3ravel/queue
+[d1]: https://img.shields.io/npm/dt/%40h3ravel%2Fqueue?style=flat-square&label=Downloads&link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40h3ravel%2Fqueue

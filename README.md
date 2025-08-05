@@ -1,5 +1,6 @@
 <p align="center"><a href="https://h3ravel.toneflix.net" target="_blank"><img src="https://raw.githubusercontent.com/h3ravel/assets/refs/heads/main/logo-full.svg" width="400" alt="H3ravel Logo"></a></p>
 
+[![Downloads][d1]][d1]
 [![Framework][ix]][lx]
 [![Core Package Version][i1]][l1]
 [![Cache Package Version][i2]][l2]
@@ -78,6 +79,7 @@ If you discover a security vulnerability within H3ravel, please send an e-mail t
 
 The H3ravel framework is open-sourced software licensed under the [MIT license](LICENSE).
 
+[d1]: https://img.shields.io/npm/dt/%40h3ravel%2Fcore?style=flat-square&label=Downloads&link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40h3ravel%2Fcore
 [ix]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=Framework&color=%230970ce
 [lx]: https://www.npmjs.com/package/@h3ravel/core
 [i1]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=@h3ravel/core&color=%230970ce
