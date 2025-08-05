@@ -248,15 +248,15 @@ importers:
 
   packages/shared:
     dependencies:
-      '@h3ravel/support':
-        specifier: workspace:*
-        version: link:../support
       h3:
         specifier: ^2.0.0-beta.1
         version: 2.0.0-beta.3
 
   packages/support:
     devDependencies:
+      '@h3ravel/shared':
+        specifier: workspace:*
+        version: link:../shared
       typescript:
         specifier: ^5.4.0
         version: 5.8.3

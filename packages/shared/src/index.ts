@@ -7,3 +7,4 @@ export * from './Contracts/IHttp';
 export * from './Contracts/IRequest';
 export * from './Contracts/IResponse';
 export * from './Contracts/IServiceProvider';
+export * from './Contracts/ObjContract';
