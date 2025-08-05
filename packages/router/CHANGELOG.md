@@ -1,5 +1,16 @@
 # @h3ravel/router
 
+## 1.0.3
+
+### Patch Changes
+
+- chore: add download count to readme
+- Updated dependencies
+  - @h3ravel/core@1.0.3
+  - @h3ravel/http@4.0.3
+  - @h3ravel/shared@0.7.1
+  - @h3ravel/support@0.7.1
+
 ## 1.0.2
 
 ### Patch Changes

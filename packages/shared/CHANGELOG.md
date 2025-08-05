@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.7.1
+
+### Patch Changes
+
+- chore: add download count to readme
+
 ## 0.7.0
 
 ### Minor Changes

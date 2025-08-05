@@ -1,5 +1,22 @@
 # @h3ravel/example
 
+## 1.0.2
+
+### Patch Changes
+
+- chore: add download count to readme
+- Updated dependencies
+  - @h3ravel/cache@4.0.3
+  - @h3ravel/config@1.0.3
+  - @h3ravel/console@4.0.3
+  - @h3ravel/core@1.0.3
+  - @h3ravel/database@4.0.3
+  - @h3ravel/http@4.0.3
+  - @h3ravel/mail@4.0.3
+  - @h3ravel/queue@4.0.3
+  - @h3ravel/router@1.0.3
+  - @h3ravel/shared@0.7.1
+
 ## 1.0.1
 
 ### Patch Changes

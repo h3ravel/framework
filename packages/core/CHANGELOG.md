@@ -1,5 +1,13 @@
 # @h3ravel/core
 
+## 1.0.3
+
+### Patch Changes
+
+- chore: add download count to readme
+- Updated dependencies
+  - @h3ravel/shared@0.7.1
+
 ## 1.0.2
 
 ### Patch Changes

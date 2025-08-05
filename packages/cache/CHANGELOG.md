@@ -1,5 +1,13 @@
 # @h3ravel/cache
 
+## 4.0.3
+
+### Patch Changes
+
+- chore: add download count to readme
+- Updated dependencies
+  - @h3ravel/core@1.0.3
+
 ## 4.0.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/example",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Example H3ravel App.",
   "type": "module",
   "main": "dist/index.js",
