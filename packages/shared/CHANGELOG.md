@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.7.0
+
+### Minor Changes
+
+- b0d1b7c: feat: flip @h3ravel/shared dependency on @h3ravel/support as it should be.
+
 ## 0.6.0
 
 ### Minor Changes

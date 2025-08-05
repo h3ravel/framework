@@ -1,5 +1,12 @@
 # @h3ravel/core
 
+## 1.0.2
+
+### Patch Changes
+
+- Updated dependencies [b0d1b7c]
+  - @h3ravel/shared@0.7.0
+
 ## 1.0.0
 
 ### Major Changes

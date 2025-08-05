@@ -1,5 +1,11 @@
 # @h3ravel/console
 
+## 4.0.2
+
+### Patch Changes
+
+- @h3ravel/core@1.0.2
+
 ## 4.0.0
 
 ### Minor Changes

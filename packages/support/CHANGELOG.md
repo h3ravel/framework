@@ -1,5 +1,15 @@
 # @h3ravel/support
 
+## 0.7.0
+
+### Minor Changes
+
+- b0d1b7c: feat: flip @h3ravel/shared dependency on @h3ravel/support as it should be.
+
+### Patch Changes
+
+- ce51a92: fix: re-export @h3ravel/shared object contract interfaces as types
+
 ## 0.6.0
 
 ### Minor Changes
