@@ -1,5 +1,12 @@
 # @h3ravel/router
 
+## 1.4.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/http@4.2.1
+
 ## 1.4.0
 
 ### Minor Changes

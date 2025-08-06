@@ -1,8 +1,9 @@
 import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
-import { IApplication, IResponse } from '@h3ravel/shared'
 import { html, redirect, } from 'h3'
 
+import { Application } from '@h3ravel/core'
 import type { H3Event } from 'h3'
+import { IResponse } from '@h3ravel/shared'
 
 export class Response implements IResponse {
     /**
@@ -18,7 +19,7 @@ export class Response implements IResponse {
         /**
          * The current app instance
          */
-        public app: IApplication
+        public app: Application
     ) {
         this.event = event
     }

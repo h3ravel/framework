@@ -1,5 +1,13 @@
 # @h3ravel/example
 
+## 1.1.1
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/http@4.2.1
+  - @h3ravel/router@1.4.1
+
 ## 1.1.0
 
 ### Minor Changes

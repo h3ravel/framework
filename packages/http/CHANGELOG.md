@@ -1,5 +1,11 @@
 # @h3ravel/http
 
+## 4.2.1
+
+### Patch Changes
+
+- fix: use the Application class directly as the app property of the Request and Response classes.
+
 ## 4.2.0
 
 ### Minor Changes

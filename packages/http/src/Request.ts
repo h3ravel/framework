@@ -1,7 +1,8 @@
 import { getQuery, getRouterParams, readBody, type H3Event } from 'h3'
 import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
 import type { ResponseHeaderMap, TypedHeaders } from 'fetchdts'
-import { IApplication, IRequest } from '@h3ravel/shared'
+import { IRequest } from '@h3ravel/shared'
+import { Application } from '@h3ravel/core'
 
 export class Request implements IRequest {
     /**
@@ -32,7 +33,7 @@ export class Request implements IRequest {
         /**
          * The current app instance
          */
-        public app: IApplication
+        public app: Application
     ) {
         this.event = event
         this.query = getQuery(this.event)
