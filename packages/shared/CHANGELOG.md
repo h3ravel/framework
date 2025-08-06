@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.12.1
+
+### Patch Changes
+
+- chore: regularize all interfaces.
+
 ## 0.12.0
 
 ### Minor Changes

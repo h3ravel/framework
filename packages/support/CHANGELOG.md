@@ -1,5 +1,11 @@
 # @h3ravel/support
 
+## 0.7.2
+
+### Patch Changes
+
+- chore: regularize all interfaces.
+
 ## 0.7.1
 
 ### Patch Changes

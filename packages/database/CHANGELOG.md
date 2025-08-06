@@ -1,5 +1,13 @@
 # @h3ravel/database
 
+## 4.0.9
+
+### Patch Changes
+
+- chore: regularize all interfaces.
+- Updated dependencies
+  - @h3ravel/core@1.0.9
+
 ## 4.0.8
 
 ### Patch Changes

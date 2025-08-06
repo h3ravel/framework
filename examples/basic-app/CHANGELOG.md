@@ -1,5 +1,22 @@
 # @h3ravel/example
 
+## 1.1.2
+
+### Patch Changes
+
+- chore: regularize all interfaces.
+- Updated dependencies
+  - @h3ravel/cache@4.0.9
+  - @h3ravel/config@1.0.9
+  - @h3ravel/console@4.0.9
+  - @h3ravel/core@1.0.9
+  - @h3ravel/database@4.0.9
+  - @h3ravel/http@4.2.2
+  - @h3ravel/mail@4.0.9
+  - @h3ravel/queue@4.0.9
+  - @h3ravel/router@1.4.2
+  - @h3ravel/shared@0.12.1
+
 ## 1.1.1
 
 ### Patch Changes
