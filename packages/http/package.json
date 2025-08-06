@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/http",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "HTTP kernel, middleware pipeline, request/response classes for H3ravel.",
   "type": "module",
   "main": "dist/index.js",

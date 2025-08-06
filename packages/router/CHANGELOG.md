@@ -1,5 +1,19 @@
 # @h3ravel/router
 
+## 1.1.0
+
+### Minor Changes
+
+- refactor!: make route definition more similar to the way it is handled in laravel.
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/shared@0.9.0
+  - @h3ravel/core@1.0.5
+  - @h3ravel/http@4.1.1
+  - @h3ravel/support@0.7.1
+
 ## 1.0.4
 
 ### Patch Changes

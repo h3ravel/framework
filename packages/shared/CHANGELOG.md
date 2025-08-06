@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.9.0
+
+### Minor Changes
+
+- refactor!: make route definition more similar to the way it is handled in laravel.
+
 ## 0.8.0
 
 ### Minor Changes

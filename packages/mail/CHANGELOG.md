@@ -1,5 +1,11 @@
 # @h3ravel/mail
 
+## 4.0.5
+
+### Patch Changes
+
+- @h3ravel/core@1.0.5
+
 ## 4.0.4
 
 ### Patch Changes
