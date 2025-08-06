@@ -2,7 +2,7 @@ import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Request, Response } from '@h3ravel/http'
 import { Application, Controller, Kernel } from '@h3ravel/core'
 import { afterLast } from '@h3ravel/support'
-import { EventHandler, IController, IMiddleware } from '@h3ravel/shared'
+import type { EventHandler, IController, IMiddleware, IRouter } from '@h3ravel/shared'
 
 interface RouteDefinition {
     method: string
@@ -11,9 +11,11 @@ interface RouteDefinition {
     handler: EventHandler
 }
 
-export class Router {
+export class Router implements IRouter {
     private routes: RouteDefinition[] = []
+    private nameMap: string[] = []
     private groupPrefix = ''
+    private middlewareMap: IMiddleware[] = []
     private groupMiddleware: EventHandler[] = []
 
     constructor(protected h3App: H3, private app: Application) { }
@@ -52,6 +54,20 @@ export class Router {
         name?: string,
         middleware: IMiddleware[] = []
     ) {
+        /**
+         * Join all defined route names to make a single route name
+         */
+        if (this.nameMap.length > 0) {
+            name = this.nameMap.join('.')
+        }
+
+        /**
+         * Join all defined middlewares
+         */
+        if (this.middlewareMap.length > 0) {
+            middleware = this.middlewareMap
+        }
+
         const fullPath = `${this.groupPrefix}${path}`.replace(/\/+/g, '/')
         this.routes.push({ method, path: fullPath, name, handler })
         this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
@@ -80,34 +96,50 @@ export class Router {
 
     get (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string, name?: string, middleware: IMiddleware[] = []
+        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        name?: string,
+        middleware: IMiddleware[] = []
     ) {
+        const handler = Array.isArray(definition) ? definition[0] : definition
+        const methodName = Array.isArray(definition) ? definition[1] : undefined
         this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        return this
     }
 
     post (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string, name?: string, middleware: IMiddleware[] = []
+        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        name?: string,
+        middleware: IMiddleware[] = []
     ) {
+        const handler = Array.isArray(definition) ? definition[0] : definition
+        const methodName = Array.isArray(definition) ? definition[1] : undefined
         this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        return this
     }
 
     put (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string, name?: string, middleware: IMiddleware[] = []
+        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        name?: string,
+        middleware: IMiddleware[] = []
     ) {
+        const handler = Array.isArray(definition) ? definition[0] : definition
+        const methodName = Array.isArray(definition) ? definition[1] : undefined
         this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        return this
     }
 
     delete (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string, name?: string, middleware: IMiddleware[] = []
+        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        name?: string,
+        middleware: IMiddleware[] = []
     ) {
+        const handler = Array.isArray(definition) ? definition[0] : definition
+        const methodName = Array.isArray(definition) ? definition[1] : undefined
         this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        return this
     }
 
     /**
@@ -134,6 +166,7 @@ export class Router {
         this.addRoute('put', `${basePath}/:id`, controller.update.bind(controller), `${name}.update`, middleware)
         this.addRoute('patch', `${basePath}/:id`, controller.update.bind(controller), `${name}.update`, middleware)
         this.addRoute('delete', `${basePath}/:id`, controller.destroy.bind(controller), `${name}.destroy`, middleware)
+        return this
     }
 
     /**
@@ -174,9 +207,31 @@ export class Router {
          */
         this.groupPrefix = prevPrefix
         this.groupMiddleware = prevMiddleware
+        return this
     }
 
-    middleware (path: string, handler: Middleware, opts?: MiddlewareOptions) {
-        this.h3App.use(path, handler, opts)
+    /**
+     * Set the name of the current route
+     * 
+     * @param name 
+     */
+    name (name: string) {
+        this.nameMap.push(name)
+        return this
+    }
+
+    /**
+     * Registers middleware for a specific path.
+     * @param path - The path to apply the middleware.
+     * @param handler - The middleware handler.
+     * @param opts - Optional middleware options.
+     */
+    middleware (path: string | IMiddleware[], handler: Middleware, opts?: MiddlewareOptions) {
+        if (typeof path === 'string') {
+            this.h3App.use(path, handler, opts)
+        } else {
+            this.middlewareMap.concat(path)
+        }
+        return this
     }
 }

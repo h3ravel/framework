@@ -11,66 +11,58 @@ export interface IRouter {
     /**
      * Registers a GET route.
      * @param path - The route path.
-     * @param handler - The handler function or controller class.
-     * @param methodName - Optional controller method name.
+     * @param definition - The handler function or [controller class, method] array.
      * @param name - Optional route name.
      * @param middleware - Optional middleware array.
      */
     get (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string,
+        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware?: IMiddleware[]
-    ): void;
+    ): this;
 
     /**
      * Registers a POST route.
      * @param path - The route path.
-     * @param handler - The handler function or controller class.
-     * @param methodName - Optional controller method name.
+     * @param definition - The handler function or [controller class, method] array.
      * @param name - Optional route name.
      * @param middleware - Optional middleware array.
      */
     post (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string,
+        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware?: IMiddleware[]
-    ): void;
+    ): this;
 
     /**
      * Registers a PUT route.
      * @param path - The route path.
-     * @param handler - The handler function or controller class.
-     * @param methodName - Optional controller method name.
+     * @param definition - The handler function or [controller class, method] array.
      * @param name - Optional route name.
      * @param middleware - Optional middleware array.
      */
     put (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string,
+        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware?: IMiddleware[]
-    ): void;
+    ): this;
 
     /**
      * Registers a DELETE route.
      * @param path - The route path.
-     * @param handler - The handler function or controller class.
-     * @param methodName - Optional controller method name.
+     * @param definition - The handler function or [controller class, method] array.
      * @param name - Optional route name.
      * @param middleware - Optional middleware array.
      */
     delete (
         path: string,
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string,
+        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware?: IMiddleware[]
-    ): void;
+    ): this;
 
     /**
      * Registers an API resource with standard CRUD routes.
@@ -82,7 +74,7 @@ export interface IRouter {
         path: string,
         controller: new (app: IApplication) => IController,
         middleware?: IMiddleware[]
-    ): void;
+    ): this;
 
     /**
      * Generates a URL for a named route.
@@ -92,12 +84,20 @@ export interface IRouter {
      */
     route (name: string, params?: Record<string, string>): string | undefined;
 
+
+    /**
+     * Set the name of the current route
+     * 
+     * @param name 
+     */
+    name (name: string): this
+
     /**
      * Groups routes with shared prefix or middleware.
      * @param options - Configuration for prefix or middleware.
      * @param callback - Callback function defining grouped routes.
      */
-    group (options: { prefix?: string; middleware?: EventHandler[] }, callback: () => void): void;
+    group (options: { prefix?: string; middleware?: EventHandler[] }, callback: () => void): this;
 
     /**
      * Registers middleware for a specific path.
@@ -105,7 +105,7 @@ export interface IRouter {
      * @param handler - The middleware handler.
      * @param opts - Optional middleware options.
      */
-    middleware (path: string, handler: Middleware, opts?: MiddlewareOptions): void;
+    middleware (path: string | IMiddleware[], handler: Middleware, opts?: MiddlewareOptions): this;
 }
 
 export interface HttpContext {
