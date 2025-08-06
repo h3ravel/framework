@@ -4,6 +4,8 @@ import { IApplication } from './IApplication'
 import { IRequest } from './IRequest'
 import { IResponse } from './IResponse'
 
+export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'apiResource' | 'name' | 'group' | 'route';
+
 /**
  * Interface for the Router contract, defining methods for HTTP routing.
  */
@@ -20,7 +22,7 @@ export interface IRouter {
         definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware?: IMiddleware[]
-    ): this;
+    ): Omit<this, RouterEnd>;
 
     /**
      * Registers a POST route.
@@ -34,7 +36,7 @@ export interface IRouter {
         definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware?: IMiddleware[]
-    ): this;
+    ): Omit<this, RouterEnd>;
 
     /**
      * Registers a PUT route.
@@ -48,7 +50,7 @@ export interface IRouter {
         definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware?: IMiddleware[]
-    ): this;
+    ): Omit<this, RouterEnd>;
 
     /**
      * Registers a DELETE route.
@@ -62,7 +64,7 @@ export interface IRouter {
         definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware?: IMiddleware[]
-    ): this;
+    ): Omit<this, RouterEnd>;
 
     /**
      * Registers an API resource with standard CRUD routes.
@@ -74,7 +76,7 @@ export interface IRouter {
         path: string,
         controller: new (app: IApplication) => IController,
         middleware?: IMiddleware[]
-    ): this;
+    ): Omit<this, RouterEnd>;
 
     /**
      * Generates a URL for a named route.

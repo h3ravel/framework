@@ -2,7 +2,7 @@ import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Request, Response } from '@h3ravel/http'
 import { Application, Controller, Kernel } from '@h3ravel/core'
 import { afterLast } from '@h3ravel/support'
-import type { EventHandler, IController, IMiddleware, IRouter } from '@h3ravel/shared'
+import type { EventHandler, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
 
 interface RouteDefinition {
     method: string
@@ -99,7 +99,7 @@ export class Router implements IRouter {
         definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
-    ) {
+    ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
         this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
@@ -111,7 +111,7 @@ export class Router implements IRouter {
         definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
-    ) {
+    ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
         this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
@@ -123,7 +123,7 @@ export class Router implements IRouter {
         definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
-    ) {
+    ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
         this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
@@ -135,7 +135,7 @@ export class Router implements IRouter {
         definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
-    ) {
+    ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
         this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
@@ -152,7 +152,7 @@ export class Router implements IRouter {
         path: string,
         Controller: new (app: Application) => IController,
         middleware: IMiddleware[] = []
-    ) {
+    ): Omit<this, RouterEnd> {
         path = path.replace(/\//g, '/')
 
         const name = afterLast(path, '/')
