@@ -35,9 +35,15 @@ importers:
       eslint:
         specifier: ^9.0.0
         version: 9.32.0
+      fetchdts:
+        specifier: ^0.1.6
+        version: 0.1.6
       husky:
         specifier: ^9.0.0
         version: 9.1.7
+      install:
+        specifier: ^0.13.0
+        version: 0.13.0
       jest:
         specifier: ^30.0.0
         version: 30.0.5(@types/node@24.1.0)(ts-node@10.9.2(@swc/core@1.13.3)(@types/node@24.1.0)(typescript@5.8.3))
@@ -47,6 +53,9 @@ importers:
       path:
         specifier: ^0.12.7
         version: 0.12.7
+      pnpm:
+        specifier: ^10.14.0
+        version: 10.14.0
       ts-jest:
         specifier: ^29.0.0
         version: 29.4.0(@babel/core@7.28.0)(@jest/transform@30.0.5)(@jest/types@30.0.5)(babel-jest@30.0.5(@babel/core@7.28.0))(esbuild@0.19.12)(jest-util@30.0.5)(jest@30.0.5(@types/node@24.1.0)(ts-node@10.9.2(@swc/core@1.13.3)(@types/node@24.1.0)(typescript@5.8.3)))(typescript@5.8.3)
@@ -251,6 +260,16 @@ importers:
       h3:
         specifier: ^2.0.0-beta.1
         version: 2.0.0-beta.3
+    devDependencies:
+      fetchdts:
+        specifier: ^0.1.6
+        version: 0.1.6
+      install:
+        specifier: ^0.13.0
+        version: 0.13.0
+      pnpm:
+        specifier: ^10.14.0
+        version: 10.14.0
 
   packages/support:
     devDependencies:
@@ -1881,8 +1900,8 @@ packages:
   fb-watchman@2.0.2:
     resolution: {integrity: sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==}
 
-  fetchdts@0.1.5:
-    resolution: {integrity: sha512-GCxyHdCCUm56atms+sIjOsAENvhebk3HAM1CfzgKCgMRjPUylpkkPmNknsaXe1gDRqM3cJbMhpkXMhCzXSE+Jg==}
+  fetchdts@0.1.6:
+    resolution: {integrity: sha512-yR7rc9v+7KOEnSU5sOJfH9OaxhWRfrrk3am1CUliTCy6Bc+JQtGcxFT9MxvmbU34wA8HYkCk5r9lVRAld8IAcQ==}
 
   figures@2.0.0:
     resolution: {integrity: sha512-Oa2M9atig69ZkfwiApY8F2Yy+tzMbazyvqv21R0NsSC8floSOC09BbT1ITWAdoMGQvJ/aZnR1KMwdx9tvHnTNA==}
@@ -2062,6 +2081,10 @@ packages:
 
   inherits@2.0.3:
     resolution: {integrity: sha512-x00IRNXNy63jwGkJmzPigoySHbaqpNuzKbBOmzK+g2OdZpQ9w+sxCN+VSB3ja7IAge2OP2qpfxTjeNcyjmW1uw==}
+
+  install@0.13.0:
+    resolution: {integrity: sha512-zDml/jzr2PKU9I8J/xyZBQn8rPCAY//UOYNmR01XwNwyfhEWObo2SWfSl1+0tm1u6PhxLwDnfsT/6jB7OUxqFA==}
+    engines: {node: '>= 0.10'}
 
   is-arrayish@0.2.1:
     resolution: {integrity: sha512-zz06S8t0ozoDXMG+ube26zeCTNXcKIPJZJi8hBrF4idCLms4CG9QtK7qBl1boi5ODzFpjswb5JPmHCbMpjaYzg==}
@@ -2590,6 +2613,11 @@ packages:
   pluralize@8.0.0:
     resolution: {integrity: sha512-Nc3IT5yHzflTfbjgqWcCPpo7DaKy4FnpB0l/zCAW0Tc7jxAiuqSxHasntB3D7887LSrA93kDJ9IXovxJYxyLCA==}
     engines: {node: '>=4'}
+
+  pnpm@10.14.0:
+    resolution: {integrity: sha512-rSenlkG0nD5IGhaoBbqnGBegS74Go40X5g4urug/ahRsamiBJfV5LkjdW6MOfaUqXNpMOZK5zPMz+c4iOvhHSA==}
+    engines: {node: '>=18.12'}
+    hasBin: true
 
   postcss-load-config@4.0.2:
     resolution: {integrity: sha512-bSVhyJGL00wMVoPUzAVAnbEoWyqRxkjv64tUl427SKnPrENtq6hJwUojroMz2VB+Q1edmi4IfrAPpami5VVgMQ==}
@@ -4772,7 +4800,7 @@ snapshots:
     dependencies:
       bser: 2.1.1
 
-  fetchdts@0.1.5: {}
+  fetchdts@0.1.6: {}
 
   figures@2.0.0:
     dependencies:
@@ -4893,7 +4921,7 @@ snapshots:
   h3@2.0.0-beta.3:
     dependencies:
       cookie-es: 2.0.0
-      fetchdts: 0.1.5
+      fetchdts: 0.1.6
       rou3: 0.7.3
       srvx: 0.8.2
 
@@ -4937,6 +4965,8 @@ snapshots:
       wrappy: 1.0.2
 
   inherits@2.0.3: {}
+
+  install@0.13.0: {}
 
   is-arrayish@0.2.1: {}
 
@@ -5598,6 +5628,8 @@ snapshots:
       find-up: 4.1.0
 
   pluralize@8.0.0: {}
+
+  pnpm@10.14.0: {}
 
   postcss-load-config@4.0.2(postcss@8.5.6)(ts-node@10.9.2(@swc/core@1.13.3)(@types/node@24.1.0)(typescript@5.8.3)):
     dependencies:

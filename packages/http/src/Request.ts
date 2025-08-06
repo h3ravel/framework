@@ -1,12 +1,34 @@
 import { getQuery, getRouterParams, readBody, type H3Event } from 'h3'
 import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
+import type { ResponseHeaderMap, TypedHeaders } from 'fetchdts'
 import { IRequest } from '@h3ravel/shared'
 
 export class Request implements IRequest {
+    /**
+     * Gets route parameters.
+     * @returns An object containing route parameters.
+     */
+    readonly params: NonNullable<H3Event["context"]["params"]>
+
+    /**
+     * Gets query parameters.
+     * @returns An object containing query parameters.
+     */
+    readonly query: Record<string, string>;
+
+    /**
+     * Gets the request headers.
+     * @returns An object containing request headers.
+     */
+    readonly headers: TypedHeaders<Record<keyof ResponseHeaderMap, string>>
+
     private readonly event: H3Event
 
     constructor(event: H3Event) {
         this.event = event
+        this.query = getQuery(this.event)
+        this.params = getRouterParams(this.event)
+        this.headers = this.event.req.headers
     }
 
     /**
@@ -33,20 +55,6 @@ export class Request implements IRequest {
     async input<T = unknown> (key: string, defaultValue?: T): Promise<T> {
         const data = await this.all<Record<string, T>>()
         return (data[key] ?? defaultValue) as T
-    }
-
-    /**
-     * Get route parameters.
-     */
-    params<T = Record<string, string>> (): T {
-        return getRouterParams(this.event) as T
-    }
-
-    /**
-     * Get query parameters.
-     */
-    query<T = Record<string, string>> (): T {
-        return getQuery(this.event) as T
     }
 
     /**

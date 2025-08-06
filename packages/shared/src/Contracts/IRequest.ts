@@ -1,4 +1,5 @@
 import { DotNestedKeys, DotNestedValue } from './ObjContract'
+import type { ResponseHeaderMap, TypedHeaders } from 'fetchdts'
 
 import type { H3Event } from 'h3'
 
@@ -24,13 +25,19 @@ export interface IRequest {
      * Gets route parameters.
      * @returns An object containing route parameters.
      */
-    params<T = Record<string, string>> (): T;
+    params: NonNullable<H3Event["context"]["params"]>;
 
     /**
      * Gets query parameters.
      * @returns An object containing query parameters.
      */
-    query<T = Record<string, string>> (): T;
+    query: Record<string, any>;
+
+    /**
+     * Gets the request headers.
+     * @returns An object containing request headers.
+     */
+    headers: TypedHeaders<Record<keyof ResponseHeaderMap, string>>;
 
     /**
      * Gets the underlying event object or a specific property of it.

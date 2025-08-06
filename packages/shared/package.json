@@ -28,5 +28,10 @@
   },
   "dependencies": {
     "h3": "^2.0.0-beta.1"
+  },
+  "devDependencies": {
+    "fetchdts": "^0.1.6",
+    "install": "^0.13.0",
+    "pnpm": "^10.14.0"
   }
 }
