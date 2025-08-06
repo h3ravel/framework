@@ -1,5 +1,11 @@
 # @h3ravel/cache
 
+## 4.0.7
+
+### Patch Changes
+
+- @h3ravel/core@1.0.7
+
 ## 4.0.6
 
 ### Patch Changes

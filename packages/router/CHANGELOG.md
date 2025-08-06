@@ -1,5 +1,19 @@
 # @h3ravel/router
 
+## 1.3.0
+
+### Minor Changes
+
+- remove 'name' from RouterEnd and only join in apiResource.
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/shared@0.11.0
+  - @h3ravel/core@1.0.7
+  - @h3ravel/http@4.1.3
+  - @h3ravel/support@0.7.1
+
 ## 1.2.0
 
 ### Minor Changes

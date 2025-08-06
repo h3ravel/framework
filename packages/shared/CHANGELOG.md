@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.11.0
+
+### Minor Changes
+
+- remove 'name' from RouterEnd and only join in apiResource.
+
 ## 0.10.0
 
 ### Minor Changes

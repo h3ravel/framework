@@ -4,7 +4,7 @@ import { IApplication } from './IApplication'
 import { IRequest } from './IRequest'
 import { IResponse } from './IResponse'
 
-export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'apiResource' | 'name' | 'group' | 'route';
+export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'apiResource' | 'group' | 'route';
 
 /**
  * Interface for the Router contract, defining methods for HTTP routing.
@@ -76,7 +76,7 @@ export interface IRouter {
         path: string,
         controller: new (app: IApplication) => IController,
         middleware?: IMiddleware[]
-    ): Omit<this, RouterEnd>;
+    ): Omit<this, RouterEnd | 'name'>;
 
     /**
      * Generates a URL for a named route.

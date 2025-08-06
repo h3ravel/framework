@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/queue",
-  "version": "4.0.6",
+  "version": "4.0.7",
   "description": "Job queues, workers and broadcasting support system for H3ravel.",
   "type": "module",
   "main": "dist/index.js",

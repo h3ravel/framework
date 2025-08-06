@@ -152,7 +152,7 @@ export class Router implements IRouter {
         path: string,
         Controller: new (app: Application) => IController,
         middleware: IMiddleware[] = []
-    ): Omit<this, RouterEnd> {
+    ): Omit<this, RouterEnd | 'name'> {
         path = path.replace(/\//g, '/')
 
         const name = afterLast(path, '/')
