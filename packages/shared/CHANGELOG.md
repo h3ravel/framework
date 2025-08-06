@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.8.0
+
+### Minor Changes
+
+- feat: convert Request params and query from a method to a property and add Request headers
+
 ## 0.7.1
 
 ### Patch Changes

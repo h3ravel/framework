@@ -1,5 +1,18 @@
 # @h3ravel/http
 
+## 4.1.0
+
+### Minor Changes
+
+- feat: convert Request params and query from a method to a property and add Request headers
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/shared@0.8.0
+  - @h3ravel/core@1.0.4
+  - @h3ravel/support@0.7.1
+
 ## 4.0.3
 
 ### Patch Changes
