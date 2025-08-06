@@ -1,5 +1,19 @@
 # @h3ravel/router
 
+## 1.2.0
+
+### Minor Changes
+
+- feat: hide RouterEnd from itslelf to prevent unintentional chaining.
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/shared@0.10.0
+  - @h3ravel/core@1.0.6
+  - @h3ravel/http@4.1.2
+  - @h3ravel/support@0.7.1
+
 ## 1.1.0
 
 ### Minor Changes

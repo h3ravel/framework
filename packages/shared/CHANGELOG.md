@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.10.0
+
+### Minor Changes
+
+- feat: hide RouterEnd from itslelf to prevent unintentional chaining.
+
 ## 0.9.0
 
 ### Minor Changes
