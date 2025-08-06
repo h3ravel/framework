@@ -1,11 +1,17 @@
 import { DotNestedKeys, DotNestedValue } from './ObjContract'
 
 import type { H3Event } from 'h3'
+import type { IApplication } from './IApplication';
 
 /**
  * Interface for the Response contract, defining methods for handling HTTP responses.
  */
 export interface IResponse {
+    /**
+     * The current app instance
+     */
+    app: IApplication
+
     /**
      * Sets the HTTP status code for the response.
      * @param code - The HTTP status code.

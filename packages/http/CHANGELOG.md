@@ -1,5 +1,18 @@
 # @h3ravel/http
 
+## 4.2.0
+
+### Minor Changes
+
+- feat: add the current app instance to the Request and Response object
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/shared@0.12.0
+  - @h3ravel/core@1.0.8
+  - @h3ravel/support@0.7.1
+
 ## 4.1.3
 
 ### Patch Changes

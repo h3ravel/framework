@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.12.0
+
+### Minor Changes
+
+- feat: add the current app instance to the Request and Response object
+
 ## 0.11.0
 
 ### Minor Changes

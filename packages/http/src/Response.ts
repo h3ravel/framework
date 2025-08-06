@@ -1,15 +1,25 @@
 import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
+import { IApplication, IResponse } from '@h3ravel/shared'
 import { html, redirect, } from 'h3'
 
 import type { H3Event } from 'h3'
-import { IResponse } from '@h3ravel/shared'
 
 export class Response implements IResponse {
+    /**
+     * The current H3 H3Event instance
+     */
     private readonly event: H3Event
+
     private statusCode: number = 200
     private headers: Record<string, string> = {}
 
-    constructor(event: H3Event) {
+    constructor(
+        event: H3Event,
+        /**
+         * The current app instance
+         */
+        public app: IApplication
+    ) {
         this.event = event
     }
 

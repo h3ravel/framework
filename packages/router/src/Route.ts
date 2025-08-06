@@ -30,8 +30,8 @@ export class Router implements IRouter {
     private resolveHandler (handler: EventHandler, middleware: IMiddleware[] = []) {
         return async (event: H3Event) => {
             const kernel = new Kernel(() => ({
-                request: new Request(event),
-                response: new Response(event)
+                request: new Request(event, this.app),
+                response: new Response(event, this.app)
             }), middleware)
 
             return kernel.handle(event, (ctx) => Promise.resolve(handler(ctx)))

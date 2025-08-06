@@ -1,5 +1,25 @@
 # @h3ravel/example
 
+## 1.1.0
+
+### Minor Changes
+
+- feat: add the current app instance to the Request and Response object
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/router@1.4.0
+  - @h3ravel/shared@0.12.0
+  - @h3ravel/http@4.2.0
+  - @h3ravel/config@1.0.8
+  - @h3ravel/core@1.0.8
+  - @h3ravel/cache@4.0.8
+  - @h3ravel/console@4.0.8
+  - @h3ravel/database@4.0.8
+  - @h3ravel/mail@4.0.8
+  - @h3ravel/queue@4.0.8
+
 ## 1.0.6
 
 ### Patch Changes
