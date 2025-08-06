@@ -12,6 +12,7 @@
 [![Queue Package Version][i8]][l8]
 [![Router Package Version][i9]][l9]
 [![Shared Package Version][i10]][l10]
+[![Support Package Version][i11]][l11]
 
 # About H3ravel
 
@@ -121,3 +122,5 @@ The H3ravel framework is open-sourced software licensed under the [MIT license](
 [l9]: https://www.npmjs.com/package/@h3ravel/router
 [i10]: https://img.shields.io/npm/v/%40h3ravel%2Fshared?style=flat-square&label=@h3ravel/shared&color=%230970ce
 [l10]: https://www.npmjs.com/package/@h3ravel/shared
+[i11]: https://img.shields.io/npm/v/%40h3ravel%2Fsupport?style=flat-square&label=@h3ravel/support&color=%230970ce
+[l11]: https://www.npmjs.com/package/@h3ravel/support
