@@ -1,5 +1,22 @@
 # @h3ravel/example
 
+## 1.3.3
+
+### Patch Changes
+
+- chore: update readme accros all packages
+- Updated dependencies
+  - @h3ravel/cache@6.0.1
+  - @h3ravel/config@1.1.6
+  - @h3ravel/console@6.0.1
+  - @h3ravel/core@1.2.1
+  - @h3ravel/database@6.0.1
+  - @h3ravel/http@6.0.1
+  - @h3ravel/mail@6.0.1
+  - @h3ravel/queue@6.0.1
+  - @h3ravel/router@1.5.3
+  - @h3ravel/shared@0.15.1
+
 ## 1.3.2
 
 ### Patch Changes

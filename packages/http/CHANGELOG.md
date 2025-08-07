@@ -1,5 +1,15 @@
 # @h3ravel/http
 
+## 6.0.1
+
+### Patch Changes
+
+- chore: update readme accros all packages
+- Updated dependencies
+  - @h3ravel/core@1.2.1
+  - @h3ravel/shared@0.15.1
+  - @h3ravel/support@0.7.4
+
 ## 6.0.0
 
 ### Patch Changes

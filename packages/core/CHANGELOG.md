@@ -1,5 +1,13 @@
 # @h3ravel/core
 
+## 1.2.1
+
+### Patch Changes
+
+- chore: update readme accros all packages
+- Updated dependencies
+  - @h3ravel/shared@0.15.1
+
 ## 1.2.0
 
 ### Minor Changes

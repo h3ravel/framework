@@ -1,5 +1,11 @@
 # @h3ravel/support
 
+## 0.7.4
+
+### Patch Changes
+
+- chore: update readme accros all packages
+
 ## 0.7.3
 
 ### Patch Changes

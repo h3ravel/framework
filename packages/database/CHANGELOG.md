@@ -1,5 +1,13 @@
 # @h3ravel/database
 
+## 6.0.1
+
+### Patch Changes
+
+- chore: update readme accros all packages
+- Updated dependencies
+  - @h3ravel/core@1.2.1
+
 ## 6.0.0
 
 ### Patch Changes
