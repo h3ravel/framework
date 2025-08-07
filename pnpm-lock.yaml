@@ -133,9 +133,6 @@ importers:
 
   packages/config:
     dependencies:
-      '@h3ravel/core':
-        specifier: workspace:^
-        version: link:../core
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -143,6 +140,9 @@ importers:
         specifier: workspace:^
         version: link:../support
     devDependencies:
+      '@h3ravel/core':
+        specifier: workspace:^
+        version: link:../core
       typescript:
         specifier: ^5.4.0
         version: 5.8.3

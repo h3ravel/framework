@@ -12,7 +12,10 @@
     "framework",
     "nodejs",
     "typescript",
-    "laravel"
+    "laravel",
+    "bun",
+    "denoland",
+    "deno"
   ],
   "scripts": {
     "barrel": "pnpm -r --filter './packages/*' run barrel",
