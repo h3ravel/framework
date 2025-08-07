@@ -1,5 +1,11 @@
 # @h3ravel/http
 
+## 5.0.4
+
+### Patch Changes
+
+- chore: remove core as a queue dependency, leave as peer
+
 ## 5.0.3
 
 ### Patch Changes
