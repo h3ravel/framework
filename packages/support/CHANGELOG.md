@@ -1,5 +1,11 @@
 # @h3ravel/support
 
+## 0.7.5
+
+### Patch Changes
+
+- feat: add homepage and repository to all packages.
+
 ## 0.7.4
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @h3ravel/core
 
+## 1.2.2
+
+### Patch Changes
+
+- feat: add homepage and repository to all packages.
+- Updated dependencies
+  - @h3ravel/shared@0.15.2
+
 ## 1.2.1
 
 ### Patch Changes

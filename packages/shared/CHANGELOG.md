@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.15.2
+
+### Patch Changes
+
+- feat: add homepage and repository to all packages.
+
 ## 0.15.1
 
 ### Patch Changes

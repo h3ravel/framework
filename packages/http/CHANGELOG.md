@@ -1,5 +1,15 @@
 # @h3ravel/http
 
+## 6.0.2
+
+### Patch Changes
+
+- feat: add homepage and repository to all packages.
+- Updated dependencies
+  - @h3ravel/core@1.2.2
+  - @h3ravel/shared@0.15.2
+  - @h3ravel/support@0.7.5
+
 ## 6.0.1
 
 ### Patch Changes

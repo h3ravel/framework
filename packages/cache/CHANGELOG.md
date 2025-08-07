@@ -1,5 +1,13 @@
 # @h3ravel/cache
 
+## 6.0.2
+
+### Patch Changes
+
+- feat: add homepage and repository to all packages.
+- Updated dependencies
+  - @h3ravel/core@1.2.2
+
 ## 6.0.1
 
 ### Patch Changes

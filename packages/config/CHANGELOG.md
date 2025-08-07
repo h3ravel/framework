@@ -1,5 +1,14 @@
 # @h3ravel/config
 
+## 1.1.7
+
+### Patch Changes
+
+- feat: add homepage and repository to all packages.
+- Updated dependencies
+  - @h3ravel/shared@0.15.2
+  - @h3ravel/support@0.7.5
+
 ## 1.1.6
 
 ### Patch Changes

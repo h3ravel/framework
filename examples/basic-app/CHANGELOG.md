@@ -1,5 +1,22 @@
 # @h3ravel/example
 
+## 1.3.4
+
+### Patch Changes
+
+- feat: add homepage and repository to all packages.
+- Updated dependencies
+  - @h3ravel/cache@6.0.2
+  - @h3ravel/config@1.1.7
+  - @h3ravel/console@6.0.2
+  - @h3ravel/core@1.2.2
+  - @h3ravel/database@6.0.2
+  - @h3ravel/http@6.0.2
+  - @h3ravel/mail@6.0.2
+  - @h3ravel/queue@6.0.2
+  - @h3ravel/router@1.5.4
+  - @h3ravel/shared@0.15.2
+
 ## 1.3.3
 
 ### Patch Changes

@@ -1,5 +1,16 @@
 # @h3ravel/router
 
+## 1.5.4
+
+### Patch Changes
+
+- feat: add homepage and repository to all packages.
+- Updated dependencies
+  - @h3ravel/core@1.2.2
+  - @h3ravel/http@6.0.2
+  - @h3ravel/shared@0.15.2
+  - @h3ravel/support@0.7.5
+
 ## 1.5.3
 
 ### Patch Changes
