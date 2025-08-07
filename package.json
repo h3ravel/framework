@@ -4,6 +4,8 @@
   "version": "0.1.2",
   "description": "Monorepo for H3ravel, a modern TypeScript runtime-agnostic web framework built on H3.",
   "type": "module",
+  "homepage": "https://h3ravel.toneflix.net",
+  "repository": "github:h3ravel/framework",
   "keywords": [
     "h3ravel",
     "modern",

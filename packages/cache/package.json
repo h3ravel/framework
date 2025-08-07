@@ -8,6 +8,12 @@
   "publishConfig": {
     "access": "public"
   },
+  "homepage": "https://h3ravel.toneflix.net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/h3ravel/framework.git",
+    "directory": "packages/cache"
+  },
   "keywords": [
     "h3ravel",
     "modern",
