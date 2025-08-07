@@ -111,6 +111,7 @@ export interface IRouter {
 }
 
 export interface HttpContext {
+    app: IApplication
     request: IRequest
     response: IResponse
 }

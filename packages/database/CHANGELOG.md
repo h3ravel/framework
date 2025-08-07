@@ -1,5 +1,11 @@
 # @h3ravel/database
 
+## 5.0.1
+
+### Patch Changes
+
+- @h3ravel/core@1.1.1
+
 ## 5.0.0
 
 ### Patch Changes

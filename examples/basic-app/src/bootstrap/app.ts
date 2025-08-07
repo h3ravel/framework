@@ -17,6 +17,7 @@ export default class {
         const serve = app.make('http.serve')
 
         const kernel = new Kernel((event) => ({
+            app,
             request: new Request(event, app),
             response: new Response(event, app)
         }), [new LogRequests()])

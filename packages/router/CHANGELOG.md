@@ -1,5 +1,19 @@
 # @h3ravel/router
 
+## 1.5.0
+
+### Minor Changes
+
+- feat: add app to HttpContext interface
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/shared@0.14.0
+  - @h3ravel/core@1.1.1
+  - @h3ravel/http@5.0.1
+  - @h3ravel/support@0.7.2
+
 ## 1.4.3
 
 ### Patch Changes

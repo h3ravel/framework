@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.14.0
+
+### Minor Changes
+
+- feat: add app to HttpContext interface
+
 ## 0.13.0
 
 ### Minor Changes

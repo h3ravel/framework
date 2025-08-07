@@ -1,5 +1,25 @@
 # @h3ravel/example
 
+## 1.3.0
+
+### Minor Changes
+
+- feat: add app to HttpContext interface
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/router@1.5.0
+  - @h3ravel/shared@0.14.0
+  - @h3ravel/config@1.1.1
+  - @h3ravel/core@1.1.1
+  - @h3ravel/http@5.0.1
+  - @h3ravel/cache@5.0.1
+  - @h3ravel/console@5.0.1
+  - @h3ravel/database@5.0.1
+  - @h3ravel/mail@5.0.1
+  - @h3ravel/queue@5.0.1
+
 ## 1.2.0
 
 ### Minor Changes
