@@ -1,5 +1,11 @@
 # @h3ravel/config
 
+## 1.1.4
+
+### Patch Changes
+
+- db0dd70: chore: revert to old workspace core dependency
+
 ## 1.1.3
 
 ### Patch Changes

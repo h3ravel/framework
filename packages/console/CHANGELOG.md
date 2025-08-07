@@ -1,5 +1,11 @@
 # @h3ravel/console
 
+## 5.0.4
+
+### Patch Changes
+
+- db0dd70: chore: revert to old workspace core dependency
+
 ## 5.0.3
 
 ### Patch Changes
