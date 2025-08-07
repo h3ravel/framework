@@ -33,7 +33,7 @@
     "srvx": "^0.8.2"
   },
   "peerDependencies": {
-    "@h3ravel/core": "^1.1.2"
+    "@h3ravel/core": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

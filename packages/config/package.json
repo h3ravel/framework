@@ -33,7 +33,6 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
-    "@h3ravel/core": "workspace:^",
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^"
   },
