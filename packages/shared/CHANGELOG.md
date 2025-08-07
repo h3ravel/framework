@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.15.3
+
+### Patch Changes
+
+- e3b3d6c: feat: add downloads count shield.
+
 ## 0.15.2
 
 ### Patch Changes
