@@ -1,7 +1,7 @@
 import { IApplication, IPathName, IServiceProvider } from '@h3ravel/shared'
 
 import { Container } from './Container'
-import { PathLoader } from './Utils/PathLoader'
+import { PathLoader } from '@h3ravel/shared'
 import dotenv from 'dotenv'
 import path from 'node:path'
 

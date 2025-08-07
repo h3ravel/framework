@@ -2,7 +2,9 @@
 import type { H3, serve } from 'h3'
 
 import type { Edge } from 'edge.js'
-import { IRouter } from '@h3ravel/shared'
+import { IRequest } from './IRequest'
+import { IResponse } from './IResponse'
+import { IRouter } from './IHttp'
 import { PathLoader } from '../Utils/PathLoader'
 
 type RemoveIndexSignature<T> = {
@@ -17,8 +19,9 @@ export type Bindings = {
     [key: string]: any;
     env (): NodeJS.ProcessEnv
     env<T extends string> (key: T, def?: any): any
-    view: Edge,
-    asset (key: string, def?: string): string,
+    view (templatePath: string, state?: Record<string, any>): Promise<string>
+    edge: Edge;
+    asset (key: string, def?: string): string
     router: IRouter
     config: {
         // get<X extends Record<string, any>> (): X
@@ -32,6 +35,8 @@ export type Bindings = {
     'path.base': string
     'app.paths': PathLoader
     'http.serve': typeof serve
+    'http.request': IRequest
+    'http.response': IResponse
 }
 
 export type UseKey = keyof RemoveIndexSignature<Bindings>

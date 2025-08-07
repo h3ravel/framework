@@ -1,5 +1,7 @@
-import { Bindings, ServiceProvider } from '@h3ravel/core'
 import { ConfigRepository, EnvLoader } from '..'
+
+import { Bindings } from '@h3ravel/shared';
+import { ServiceProvider } from '@h3ravel/core'
 
 /**
  * Loads configuration and environment files.

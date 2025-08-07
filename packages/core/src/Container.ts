@@ -1,8 +1,8 @@
-import type { Bindings, UseKey } from './Contracts/BindingsContract'
+import type { Bindings, IContainer, UseKey } from '@h3ravel/shared'
 
 type IBinding = UseKey | (new (..._args: any[]) => unknown)
 
-export class Container {
+export class Container implements IContainer {
     private bindings = new Map<IBinding, () => unknown>()
     private singletons = new Map<IBinding, unknown>()
 
@@ -37,12 +37,12 @@ export class Container {
      * Resolve a service from the container
      */
     make<T extends UseKey> (key: T | (new (..._args: any[]) => Bindings[T])): Bindings[T] {
-        // 1️⃣ Direct factory binding
+        // Direct factory binding
         if (this.bindings.has(key)) {
             return this.bindings.get(key)!() as Bindings[T]
         }
 
-        // 2️⃣ If class constructor → auto-resolve via reflection
+        // If class constructor → auto-resolve via reflection
         if (typeof key === 'function') {
             return this.build(key)
         }

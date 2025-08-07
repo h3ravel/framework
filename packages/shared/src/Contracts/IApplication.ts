@@ -1,8 +1,9 @@
+import { IContainer } from './IContainer';
 import { IServiceProvider } from './IServiceProvider'
 
 export type IPathName = 'views' | 'routes' | 'assets' | 'base' | 'public' | 'storage' | 'config'
 
-export interface IApplication {
+export interface IApplication extends IContainer {
     /**
      * Registers configured service providers.
      */
