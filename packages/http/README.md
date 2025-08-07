@@ -10,7 +10,7 @@ This is the middleware pipeline and HTTP kernel system for the [H3ravel](https:/
 
 ## Contributing
 
-Thank you for considering contributing to the H3ravel framework! The contribution guide can be found in the [H3ravel documentation](https://h3ravel.toneflix.net).
+Thank you for considering contributing to the H3ravel framework! The contribution guide can be found in the [H3ravel documentation](https://h3ravel.toneflix.net/contributing).
 
 ## Code of Conduct
 

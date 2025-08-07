@@ -85,7 +85,7 @@ This combination delivers the productivity of Laravel while leveraging the moder
 
 ## Contributing
 
-Thank you for considering contributing to the H3ravel framework! The contribution guide can be found in the [H3ravel documentation](https://h3ravel.toneflix.net).
+Thank you for considering contributing to the H3ravel framework! The contribution guide can be found in the [H3ravel documentation](https://h3ravel.toneflix.net/contributing).
 
 ## Code of Conduct
 
