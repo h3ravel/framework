@@ -27,7 +27,9 @@ export interface IContainer {
      * @param key - The key or constructor for the service.
      * @returns The resolved service instance.
      */
-    make<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T])): Bindings[T];
+    make<T extends UseKey, X = undefined> (
+        key: T | (new (..._args: any[]) => Bindings[T])
+    ): X extends undefined ? Bindings[T] : X
 
     /**
      * Checks if a service is registered in the container.

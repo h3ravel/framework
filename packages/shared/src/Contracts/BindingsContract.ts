@@ -17,6 +17,7 @@ type RemoveIndexSignature<T> = {
 
 export type Bindings = {
     [key: string]: any;
+    [key: `app.${string}`]: any;
     env (): NodeJS.ProcessEnv
     env<T extends string> (key: T, def?: any): any
     view (templatePath: string, state?: Record<string, any>): Promise<string>
@@ -33,7 +34,7 @@ export type Bindings = {
     }
     'http.app': H3
     'path.base': string
-    'app.paths': PathLoader
+    'load.paths': PathLoader
     'http.serve': typeof serve
     'http.request': IRequest
     'http.response': IResponse

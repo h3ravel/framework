@@ -29,7 +29,7 @@ export class Application extends Container implements IApplication {
     protected registerBaseBindings () {
         this.bind(Application, () => this)
         this.bind('path.base', () => this.basePath)
-        this.bind('app.paths', () => this.paths)
+        this.bind('load.paths', () => this.paths)
     }
 
     /**

@@ -36,13 +36,19 @@ export class Container implements IContainer {
     /**
      * Resolve a service from the container
      */
-    make<T extends UseKey> (key: T | (new (..._args: any[]) => Bindings[T])): Bindings[T] {
-        // Direct factory binding
+    make<T extends UseKey, X = undefined> (
+        key: T | (new (..._args: any[]) => Bindings[T])
+    ): X extends undefined ? Bindings[T] : X {
+        /**
+         * Direct factory binding
+         */
         if (this.bindings.has(key)) {
             return this.bindings.get(key)!() as Bindings[T]
         }
 
-        // If class constructor → auto-resolve via reflection
+        /**
+         * If this is a class constructor, auto-resolve via reflection
+         */
         if (typeof key === 'function') {
             return this.build(key)
         }
