@@ -1,5 +1,25 @@
 # @h3ravel/example
 
+## 1.2.0
+
+### Minor Changes
+
+- 6e249fe: feat: bind view as a self contained method to render views
+
+### Patch Changes
+
+- Updated dependencies [6e249fe]
+  - @h3ravel/config@1.1.0
+  - @h3ravel/shared@0.13.0
+  - @h3ravel/core@1.1.0
+  - @h3ravel/http@5.0.0
+  - @h3ravel/router@1.4.3
+  - @h3ravel/cache@5.0.0
+  - @h3ravel/console@5.0.0
+  - @h3ravel/database@5.0.0
+  - @h3ravel/mail@5.0.0
+  - @h3ravel/queue@5.0.0
+
 ## 1.1.2
 
 ### Patch Changes

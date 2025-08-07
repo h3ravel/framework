@@ -1,5 +1,18 @@
 # @h3ravel/config
 
+## 1.1.0
+
+### Minor Changes
+
+- 6e249fe: feat: bind view as a self contained method to render views
+
+### Patch Changes
+
+- Updated dependencies [6e249fe]
+  - @h3ravel/shared@0.13.0
+  - @h3ravel/core@1.1.0
+  - @h3ravel/support@0.7.2
+
 ## 1.0.9
 
 ### Patch Changes

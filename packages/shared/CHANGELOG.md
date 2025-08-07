@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.13.0
+
+### Minor Changes
+
+- 6e249fe: feat: bind view as a self contained method to render views
+
 ## 0.12.1
 
 ### Patch Changes

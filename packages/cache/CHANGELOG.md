@@ -1,5 +1,12 @@
 # @h3ravel/cache
 
+## 5.0.0
+
+### Patch Changes
+
+- Updated dependencies [6e249fe]
+  - @h3ravel/core@1.1.0
+
 ## 4.0.9
 
 ### Patch Changes
