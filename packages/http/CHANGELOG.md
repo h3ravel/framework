@@ -1,5 +1,14 @@
 # @h3ravel/http
 
+## 5.0.2
+
+### Patch Changes
+
+- chore: require the latest dependencies from the framework
+- Updated dependencies
+  - @h3ravel/support@0.7.3
+  - @h3ravel/core@1.1.2
+
 ## 5.0.1
 
 ### Patch Changes

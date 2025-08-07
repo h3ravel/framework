@@ -78,34 +78,34 @@ importers:
   examples/basic-app:
     dependencies:
       '@h3ravel/cache':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/cache
       '@h3ravel/config':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/config
       '@h3ravel/console':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/console
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/core
       '@h3ravel/database':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/database
       '@h3ravel/http':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/http
       '@h3ravel/mail':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/mail
       '@h3ravel/queue':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/queue
       '@h3ravel/router':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/router
       '@h3ravel/shared':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../../packages/shared
       reflect-metadata:
         specifier: ^0.2.2
@@ -124,7 +124,7 @@ importers:
   packages/cache:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       typescript:
@@ -134,13 +134,13 @@ importers:
   packages/config:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
       '@h3ravel/shared':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../support
     devDependencies:
       typescript:
@@ -150,7 +150,7 @@ importers:
   packages/console:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       typescript:
@@ -160,7 +160,7 @@ importers:
   packages/core:
     dependencies:
       '@h3ravel/shared':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../shared
       dotenv:
         specifier: ^17.2.1
@@ -188,7 +188,7 @@ importers:
   packages/database:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       typescript:
@@ -198,13 +198,13 @@ importers:
   packages/http:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
       '@h3ravel/shared':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../support
       h3:
         specifier: ^2.0.0-beta.1
@@ -220,7 +220,7 @@ importers:
   packages/mail:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       typescript:
@@ -230,7 +230,7 @@ importers:
   packages/queue:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
     devDependencies:
       typescript:
@@ -240,16 +240,16 @@ importers:
   packages/router:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../core
       '@h3ravel/http':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../http
       '@h3ravel/shared':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../support
       h3:
         specifier: ^2.0.0-beta.1
@@ -277,7 +277,7 @@ importers:
   packages/support:
     devDependencies:
       '@h3ravel/shared':
-        specifier: workspace:*
+        specifier: workspace:^
         version: link:../shared
       typescript:
         specifier: ^5.4.0

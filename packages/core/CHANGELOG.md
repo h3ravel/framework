@@ -1,5 +1,11 @@
 # @h3ravel/core
 
+## 1.1.2
+
+### Patch Changes
+
+- chore: require the latest dependencies from the framework
+
 ## 1.1.1
 
 ### Patch Changes

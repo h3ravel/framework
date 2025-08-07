@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/support",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Shared helpers, facades and utilities for H3ravel.",
   "type": "module",
   "main": "dist/index.js",
@@ -28,6 +28,6 @@
   },
   "devDependencies": {
     "typescript": "^5.4.0",
-    "@h3ravel/shared": "workspace:*"
+    "@h3ravel/shared": "workspace:^"
   }
 }

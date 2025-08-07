@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/router",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "type": "module",
   "main": "dist/index.js",
@@ -28,9 +28,9 @@
   },
   "dependencies": {
     "h3": "^2.0.0-beta.1",
-    "@h3ravel/http": "workspace:*",
-    "@h3ravel/core": "workspace:*",
-    "@h3ravel/support": "workspace:*",
-    "@h3ravel/shared": "workspace:*"
+    "@h3ravel/http": "workspace:^",
+    "@h3ravel/core": "workspace:^",
+    "@h3ravel/support": "workspace:^",
+    "@h3ravel/shared": "workspace:^"
   }
 }

@@ -1,5 +1,21 @@
 # @h3ravel/example
 
+## 1.3.1
+
+### Patch Changes
+
+- chore: require the latest dependencies from the framework
+- Updated dependencies
+  - @h3ravel/database@5.0.2
+  - @h3ravel/console@5.0.2
+  - @h3ravel/config@1.1.2
+  - @h3ravel/router@1.5.1
+  - @h3ravel/cache@5.0.2
+  - @h3ravel/queue@5.0.2
+  - @h3ravel/core@1.1.2
+  - @h3ravel/http@5.0.2
+  - @h3ravel/mail@5.0.2
+
 ## 1.3.0
 
 ### Minor Changes

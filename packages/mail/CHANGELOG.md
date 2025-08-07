@@ -1,5 +1,13 @@
 # @h3ravel/mail
 
+## 5.0.2
+
+### Patch Changes
+
+- chore: require the latest dependencies from the framework
+- Updated dependencies
+  - @h3ravel/core@1.1.2
+
 ## 5.0.1
 
 ### Patch Changes

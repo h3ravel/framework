@@ -1,5 +1,11 @@
 # @h3ravel/support
 
+## 0.7.3
+
+### Patch Changes
+
+- chore: require the latest dependencies from the framework
+
 ## 0.7.2
 
 ### Patch Changes

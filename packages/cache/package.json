@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/cache",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "description": "Cache system with multiple drivers for H3ravel.",
   "type": "module",
   "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "test": "jest --passWithNoTests"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:*"
+    "@h3ravel/core": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

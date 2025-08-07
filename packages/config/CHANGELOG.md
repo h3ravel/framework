@@ -1,5 +1,20 @@
 # @h3ravel/config
 
+## 1.1.3
+
+### Patch Changes
+
+- fix dependency.
+
+## 1.1.2
+
+### Patch Changes
+
+- chore: require the latest dependencies from the framework
+- Updated dependencies
+  - @h3ravel/support@0.7.3
+  - @h3ravel/core@1.1.2
+
 ## 1.1.1
 
 ### Patch Changes
