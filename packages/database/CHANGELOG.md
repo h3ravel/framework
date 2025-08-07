@@ -1,5 +1,11 @@
 # @h3ravel/database
 
+## 5.0.3
+
+### Patch Changes
+
+- version: explicitly set the latest version as pearDependency in requiring packages.
+
 ## 5.0.2
 
 ### Patch Changes

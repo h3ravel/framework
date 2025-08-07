@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/queue",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "Job queues, workers and broadcasting support system for H3ravel.",
   "type": "module",
   "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "test": "jest --passWithNoTests"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^"
+    "@h3ravel/core": "^1.1.2"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

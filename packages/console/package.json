@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/console",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
   "main": "dist/index.js",
@@ -27,7 +27,7 @@
     "test": "jest --passWithNoTests"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^"
+    "@h3ravel/core": "^1.1.2"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
