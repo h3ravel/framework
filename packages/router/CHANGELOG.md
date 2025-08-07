@@ -1,5 +1,15 @@
 # @h3ravel/router
 
+## 1.5.2
+
+### Patch Changes
+
+- Updated dependencies [d07ff49]
+  - @h3ravel/shared@0.15.0
+  - @h3ravel/core@1.2.0
+  - @h3ravel/http@6.0.0
+  - @h3ravel/support@0.7.3
+
 ## 1.5.1
 
 ### Patch Changes

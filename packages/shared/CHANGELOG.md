@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.15.0
+
+### Minor Changes
+
+- d07ff49: feat: reserve the `app.` namespace for generic service provider resolution.
+
 ## 0.14.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @h3ravel/core
 
+## 1.2.0
+
+### Minor Changes
+
+- d07ff49: feat: reserve the `app.` namespace for generic service provider resolution.
+
+### Patch Changes
+
+- Updated dependencies [d07ff49]
+  - @h3ravel/shared@0.15.0
+
 ## 1.1.2
 
 ### Patch Changes

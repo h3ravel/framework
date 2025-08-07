@@ -1,5 +1,12 @@
 # @h3ravel/console
 
+## 6.0.0
+
+### Patch Changes
+
+- Updated dependencies [d07ff49]
+  - @h3ravel/core@1.2.0
+
 ## 5.0.4
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @h3ravel/example
 
+## 1.3.2
+
+### Patch Changes
+
+- Updated dependencies [d07ff49]
+  - @h3ravel/shared@0.15.0
+  - @h3ravel/core@1.2.0
+  - @h3ravel/config@1.1.5
+  - @h3ravel/http@6.0.0
+  - @h3ravel/router@1.5.2
+  - @h3ravel/cache@6.0.0
+  - @h3ravel/console@6.0.0
+  - @h3ravel/database@6.0.0
+  - @h3ravel/mail@6.0.0
+  - @h3ravel/queue@6.0.0
+
 ## 1.3.1
 
 ### Patch Changes
