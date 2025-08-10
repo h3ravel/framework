@@ -1,7 +1,6 @@
-import 'reflect-metadata';
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Request, Response } from '@h3ravel/http'
-import { Application, Controller, Kernel } from '@h3ravel/core'
+import { Application, Container, Controller, Kernel } from '@h3ravel/core'
 import { afterLast } from '@h3ravel/support'
 import type { EventHandler, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
 
@@ -75,43 +74,15 @@ export class Router implements IRouter {
         this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
     }
 
-    private resolveControllerOrHandlerZ (
-        handler: EventHandler | (new (...args: any[]) => IController),
-        methodName?: string
-    ): EventHandler {
-        if (typeof handler === 'function' && (handler as any).prototype instanceof Controller) {
-            return (ctx) => {
-                /**
-                 * Use IoC container if available to make the controller instance
-                 */
-                const controller = this.app
-                    ? this.app.make<any, IController>(handler as any)
-                    : new (handler as new (...args: any[]) => IController)(this.app);
-
-                const action = (methodName || 'index') as keyof IController;
-
-                if (typeof controller[action] !== 'function') {
-                    throw new Error(`Method "${String(action)}" not found on controller ${handler.name}`);
-                }
-
-                return controller[action](ctx);
-            };
-        }
-
-        return handler as EventHandler;
-    }
-
     private resolveControllerOrHandler (
         handler: EventHandler | (new (...args: any[]) => IController),
         methodName?: string
     ): EventHandler {
         if (typeof handler === 'function' && (handler as any).prototype instanceof Controller) {
             return (ctx) => {
-                const isDecorated = Reflect.getMetadataKeys(handler).length > 0
-
                 let controller: IController
 
-                if (isDecorated) {
+                if (Container.hasAnyDecorator(handler)) {
                     /**
                      * If the controller is decorated use the IoC container
                      */
