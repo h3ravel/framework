@@ -1,5 +1,15 @@
 # @h3ravel/http
 
+## 8.0.7
+
+### Patch Changes
+
+- feat: add /.\*\/promises$/gi to external
+- Updated dependencies
+  - @h3ravel/core@1.4.5
+  - @h3ravel/shared@0.16.7
+  - @h3ravel/support@0.8.5
+
 ## 8.0.6
 
 ### Patch Changes

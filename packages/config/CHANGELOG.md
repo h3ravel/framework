@@ -1,5 +1,14 @@
 # @h3ravel/config
 
+## 1.3.5
+
+### Patch Changes
+
+- feat: add /.\*\/promises$/gi to external
+- Updated dependencies
+  - @h3ravel/shared@0.16.7
+  - @h3ravel/support@0.8.5
+
 ## 1.3.4
 
 ### Patch Changes

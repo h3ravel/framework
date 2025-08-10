@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.16.7
+
+### Patch Changes
+
+- feat: add /.\*\/promises$/gi to external
+
 ## 0.16.6
 
 ### Patch Changes

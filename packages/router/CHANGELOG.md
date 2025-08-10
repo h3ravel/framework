@@ -1,5 +1,16 @@
 # @h3ravel/router
 
+## 1.7.5
+
+### Patch Changes
+
+- feat: add /.\*\/promises$/gi to external
+- Updated dependencies
+  - @h3ravel/core@1.4.5
+  - @h3ravel/http@8.0.7
+  - @h3ravel/shared@0.16.7
+  - @h3ravel/support@0.8.5
+
 ## 1.7.4
 
 ### Patch Changes

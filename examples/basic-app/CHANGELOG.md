@@ -1,5 +1,22 @@
 # @h3ravel/example
 
+## 1.5.4
+
+### Patch Changes
+
+- feat: add /.\*\/promises$/gi to external
+- Updated dependencies
+  - @h3ravel/cache@8.0.7
+  - @h3ravel/config@1.3.5
+  - @h3ravel/console@8.0.7
+  - @h3ravel/core@1.4.5
+  - @h3ravel/database@8.0.7
+  - @h3ravel/http@8.0.7
+  - @h3ravel/mail@8.0.7
+  - @h3ravel/queue@8.0.7
+  - @h3ravel/router@1.7.5
+  - @h3ravel/shared@0.16.7
+
 ## 1.5.3
 
 ### Patch Changes

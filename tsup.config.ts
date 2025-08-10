@@ -11,7 +11,9 @@ export default defineConfig({
         'path',
         'os',
         'dotenv',
+        'crypto',
         'fs-readdir-recursive',
+        /.*\/promises$/gi,
         /^node:.*/gi
     ],
 }) 

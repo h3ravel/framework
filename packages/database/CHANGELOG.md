@@ -1,5 +1,13 @@
 # @h3ravel/database
 
+## 8.0.7
+
+### Patch Changes
+
+- feat: add /.\*\/promises$/gi to external
+- Updated dependencies
+  - @h3ravel/core@1.4.5
+
 ## 8.0.6
 
 ### Patch Changes

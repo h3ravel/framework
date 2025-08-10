@@ -1,5 +1,13 @@
 # @h3ravel/core
 
+## 1.4.5
+
+### Patch Changes
+
+- feat: add /.\*\/promises$/gi to external
+- Updated dependencies
+  - @h3ravel/shared@0.16.7
+
 ## 1.4.4
 
 ### Patch Changes

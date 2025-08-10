@@ -1,5 +1,11 @@
 # @h3ravel/support
 
+## 0.8.5
+
+### Patch Changes
+
+- feat: add /.\*\/promises$/gi to external
+
 ## 0.8.4
 
 ### Patch Changes
