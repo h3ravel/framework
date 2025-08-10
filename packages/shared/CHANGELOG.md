@@ -1,5 +1,35 @@
 # @h3ravel/shared
 
+## 0.16.6
+
+### Patch Changes
+
+- feat: remove edge.js from external and add all node internals with /^node:.\*/gi
+
+## 0.16.5
+
+### Patch Changes
+
+- feat: mark edge.js and fs-readdir-recursive as external
+
+## 0.16.4
+
+### Patch Changes
+
+- feat: bundle fs-readdir-recursive
+
+## 0.16.3
+
+### Patch Changes
+
+- feat: export tsconfig.json
+
+## 0.16.2
+
+### Patch Changes
+
+- feat: add tsconfig.json to files
+
 ## 0.16.1
 
 ### Patch Changes

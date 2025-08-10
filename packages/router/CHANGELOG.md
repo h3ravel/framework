@@ -1,5 +1,38 @@
 # @h3ravel/router
 
+## 1.7.4
+
+### Patch Changes
+
+- feat: remove edge.js from external and add all node internals with /^node:.\*/gi
+- Updated dependencies
+  - @h3ravel/support@0.8.4
+  - @h3ravel/shared@0.16.6
+  - @h3ravel/core@1.4.4
+  - @h3ravel/http@8.0.6
+
+## 1.7.3
+
+### Patch Changes
+
+- feat: mark edge.js and fs-readdir-recursive as external
+- Updated dependencies
+  - @h3ravel/support@0.8.3
+  - @h3ravel/shared@0.16.5
+  - @h3ravel/core@1.4.3
+  - @h3ravel/http@8.0.5
+
+## 1.7.2
+
+### Patch Changes
+
+- feat: bundle fs-readdir-recursive
+- Updated dependencies
+  - @h3ravel/shared@0.16.4
+  - @h3ravel/core@1.4.2
+  - @h3ravel/http@8.0.4
+  - @h3ravel/support@0.8.2
+
 ## 1.7.1
 
 ### Patch Changes

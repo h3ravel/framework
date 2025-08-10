@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/shared",
-  "version": "0.16.1",
+  "version": "0.16.6",
   "description": "Shared Utilities.",
   "type": "module",
   "main": "./dist/index.js",
@@ -11,10 +11,12 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs",
       "types": "./dist/index.d.ts"
-    }
+    },
+    "./tsconfig.json": "./tsconfig.json"
   },
   "files": [
-    "dist"
+    "dist",
+    "tsconfig.json"
   ],
   "publishConfig": {
     "access": "public"

@@ -1,5 +1,29 @@
 # @h3ravel/database
 
+## 8.0.6
+
+### Patch Changes
+
+- feat: remove edge.js from external and add all node internals with /^node:.\*/gi
+- Updated dependencies
+  - @h3ravel/core@1.4.4
+
+## 8.0.5
+
+### Patch Changes
+
+- feat: mark edge.js and fs-readdir-recursive as external
+- Updated dependencies
+  - @h3ravel/core@1.4.3
+
+## 8.0.4
+
+### Patch Changes
+
+- feat: bundle fs-readdir-recursive
+- Updated dependencies
+  - @h3ravel/core@1.4.2
+
 ## 8.0.3
 
 ### Patch Changes
