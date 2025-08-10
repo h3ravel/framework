@@ -7,6 +7,26 @@ export class Container implements IContainer {
     private singletons = new Map<IBinding, unknown>()
 
     /**
+     * Check if the target has any decorators
+     * 
+     * @param target 
+     * @returns 
+     */
+    static hasAnyDecorator (target: Function): boolean {
+        if (Reflect.getMetadataKeys(target).length > 0) return true
+
+        const paramLength = target.length
+
+        for (let i = 0; i < paramLength; i++) {
+            if (Reflect.getMetadataKeys(target, `__param_${i}`).length > 0) {
+                return true
+            }
+        }
+
+        return false
+    }
+
+    /**
      * Bind a transient service to the container
      */
     bind<T> (key: new (...args: any[]) => T, factory: () => T): void
