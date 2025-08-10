@@ -3,9 +3,7 @@
   "version": "1.5.4",
   "description": "Example H3ravel App.",
   "type": "module",
-  "publishConfig": {
-    "access": "public"
-  },
+  "private": true,
   "scripts": {
     "build": "NODE_ENV=production tsup",
     "dev": "NODE_ENV=development pnpm tsup-node",

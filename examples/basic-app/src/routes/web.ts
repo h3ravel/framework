@@ -1,8 +1,10 @@
 import { HomeController } from 'App/Http/Controllers/HomeController'
+import { MailController } from 'src/app/Http/Controllers/MailController'
 import { Router } from '@h3ravel/router'
 
 export default (Route: Router) => {
     Route.get('/', [HomeController, 'index'])
+    Route.get('/mail', [MailController, 'send'])
     Route.get('/app', async function ({ request, response }) {
         const view = request.app.make('view')
 

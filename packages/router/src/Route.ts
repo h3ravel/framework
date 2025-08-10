@@ -74,11 +74,28 @@ export class Router implements IRouter {
         this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
     }
 
+    /**
+     * Resolves a route handler definition into an executable EventHandler.
+     *
+     * A handler can be:
+     *   - A function matching the EventHandler signature
+     *   - A controller class (optionally decorated for IoC resolution)
+     *
+     * If it’s a controller class, this method will:
+     *   - Instantiate it (via IoC or manually)
+     *   - Call the specified method (defaults to `index`)
+     *
+     * @param handler     Event handler function OR controller class
+     * @param methodName  Method to invoke on the controller (defaults to 'index')
+     */
     private resolveControllerOrHandler (
-        handler: EventHandler | (new (...args: any[]) => IController),
+        handler: EventHandler | (new (...args: any[]) => Record<string, any>),
         methodName?: string
     ): EventHandler {
-        if (typeof handler === 'function' && (handler as any).prototype instanceof Controller) {
+        /**
+         * Checks if the handler is a function (either a plain function or a class constructor)
+         */
+        if (typeof handler === 'function') {
             return (ctx) => {
                 let controller: IController
 
@@ -94,12 +111,22 @@ export class Router implements IRouter {
                      */
                     controller = new (handler as new (...args: any[]) => IController)(this.app)
                 }
+
+                /**
+                 * The method to execute (defaults to 'index')
+                 */
                 const action = (methodName || 'index') as keyof IController
 
+                /**
+                 * Ensure the method exists on the controller
+                 */
                 if (typeof controller[action] !== 'function') {
                     throw new Error(`Method "${String(action)}" not found on controller ${handler.name}`)
                 }
 
+                /**
+                 * Call the method with the route context
+                 */
                 return controller[action](ctx)
             }
         }
@@ -107,21 +134,42 @@ export class Router implements IRouter {
         return handler as EventHandler
     }
 
+    /**
+     * Registers a route that responds to HTTP GET requests.
+     *
+     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
+     * @param definition  Either:
+     *                      - An EventHandler function
+     *                      - A tuple: [ControllerClass, methodName]
+     * @param name        Optional route name (for URL generation or referencing).
+     * @param middleware  Optional array of middleware functions to execute before the handler.
+     */
     get (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
+
         this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
         return this
     }
 
+    /**
+     * Registers a route that responds to HTTP POST requests.
+     *
+     * @param path        The URL pattern to match (can include parameters, e.g., '/users').
+     * @param definition  Either:
+     *                      - An EventHandler function
+     *                      - A tuple: [ControllerClass, methodName]
+     * @param name        Optional route name (for URL generation or referencing).
+     * @param middleware  Optional array of middleware functions to execute before the handler.
+     */
     post (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
@@ -131,9 +179,19 @@ export class Router implements IRouter {
         return this
     }
 
+    /**
+     * Registers a route that responds to HTTP PUT requests.
+     *
+     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
+     * @param definition  Either:
+     *                      - An EventHandler function
+     *                      - A tuple: [ControllerClass, methodName]
+     * @param name        Optional route name (for URL generation or referencing).
+     * @param middleware  Optional array of middleware functions to execute before the handler.
+     */
     put (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
@@ -143,9 +201,41 @@ export class Router implements IRouter {
         return this
     }
 
+    /**
+     * Registers a route that responds to HTTP PATCH requests.
+     *
+     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
+     * @param definition  Either:
+     *                      - An EventHandler function
+     *                      - A tuple: [ControllerClass, methodName]
+     * @param name        Optional route name (for URL generation or referencing).
+     * @param middleware  Optional array of middleware functions to execute before the handler.
+     */
+    patch (
+        path: string,
+        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        name?: string,
+        middleware: IMiddleware[] = []
+    ): Omit<this, RouterEnd> {
+        const handler = Array.isArray(definition) ? definition[0] : definition
+        const methodName = Array.isArray(definition) ? definition[1] : undefined
+        this.addRoute('patch', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        return this
+    }
+
+    /**
+     * Registers a route that responds to HTTP DELETE requests.
+     *
+     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
+     * @param definition  Either:
+     *                      - An EventHandler function
+     *                      - A tuple: [ControllerClass, methodName]
+     * @param name        Optional route name (for URL generation or referencing).
+     * @param middleware  Optional array of middleware functions to execute before the handler.
+     */
     delete (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
