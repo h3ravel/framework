@@ -1,5 +1,16 @@
 # @h3ravel/mail
 
+## 8.0.0
+
+### Minor Changes
+
+- 79f4045: feat: add add exports to package.json
+
+### Patch Changes
+
+- Updated dependencies [79f4045]
+  - @h3ravel/core@1.4.0
+
 ## 7.0.0
 
 ### Minor Changes

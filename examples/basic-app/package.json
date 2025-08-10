@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/example",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "Example H3ravel App.",
   "type": "module",
   "publishConfig": {

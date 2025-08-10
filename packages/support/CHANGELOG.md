@@ -1,5 +1,11 @@
 # @h3ravel/support
 
+## 0.8.0
+
+### Minor Changes
+
+- 79f4045: feat: add add exports to package.json
+
 ## 0.7.5
 
 ### Patch Changes

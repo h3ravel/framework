@@ -1,5 +1,25 @@
 # @h3ravel/example
 
+## 1.5.0
+
+### Minor Changes
+
+- 79f4045: feat: add add exports to package.json
+
+### Patch Changes
+
+- Updated dependencies [79f4045]
+  - @h3ravel/database@8.0.0
+  - @h3ravel/console@8.0.0
+  - @h3ravel/config@1.3.0
+  - @h3ravel/router@1.7.0
+  - @h3ravel/shared@0.16.0
+  - @h3ravel/cache@8.0.0
+  - @h3ravel/queue@8.0.0
+  - @h3ravel/core@1.4.0
+  - @h3ravel/http@8.0.0
+  - @h3ravel/mail@8.0.0
+
 ## 1.4.0
 
 ### Minor Changes

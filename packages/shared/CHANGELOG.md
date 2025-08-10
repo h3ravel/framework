@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.16.0
+
+### Minor Changes
+
+- 79f4045: feat: add add exports to package.json
+
 ## 0.15.4
 
 ### Patch Changes
