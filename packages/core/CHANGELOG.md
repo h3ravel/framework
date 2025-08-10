@@ -1,5 +1,13 @@
 # @h3ravel/core
 
+## 1.4.1
+
+### Patch Changes
+
+- feat: add files to package.json
+- Updated dependencies
+  - @h3ravel/shared@0.16.1
+
 ## 1.4.0
 
 ### Minor Changes

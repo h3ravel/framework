@@ -1,5 +1,14 @@
 # @h3ravel/config
 
+## 1.3.1
+
+### Patch Changes
+
+- feat: add files to package.json
+- Updated dependencies
+  - @h3ravel/support@0.8.1
+  - @h3ravel/shared@0.16.1
+
 ## 1.3.0
 
 ### Minor Changes

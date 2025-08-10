@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/console",
-  "version": "8.0.2",
+  "version": "8.0.3",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -13,6 +13,9 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },

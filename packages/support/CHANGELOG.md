@@ -1,5 +1,11 @@
 # @h3ravel/support
 
+## 0.8.1
+
+### Patch Changes
+
+- feat: add files to package.json
+
 ## 0.8.0
 
 ### Minor Changes

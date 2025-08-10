@@ -1,5 +1,15 @@
 # @h3ravel/http
 
+## 8.0.3
+
+### Patch Changes
+
+- feat: add files to package.json
+- Updated dependencies
+  - @h3ravel/support@0.8.1
+  - @h3ravel/shared@0.16.1
+  - @h3ravel/core@1.4.1
+
 ## 8.0.2
 
 ### Patch Changes

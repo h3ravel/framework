@@ -1,5 +1,13 @@
 # @h3ravel/database
 
+## 8.0.3
+
+### Patch Changes
+
+- feat: add files to package.json
+- Updated dependencies
+  - @h3ravel/core@1.4.1
+
 ## 8.0.2
 
 ### Patch Changes

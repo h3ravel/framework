@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/support",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Shared helpers, facades and utilities for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -13,6 +13,9 @@
       "types": "./dist/index.d.ts"
     }
   },
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },

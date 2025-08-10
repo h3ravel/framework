@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.16.1
+
+### Patch Changes
+
+- feat: add files to package.json
+
 ## 0.16.0
 
 ### Minor Changes
