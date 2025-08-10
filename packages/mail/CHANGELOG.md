@@ -1,5 +1,16 @@
 # @h3ravel/mail
 
+## 7.0.0
+
+### Minor Changes
+
+- feat: implement full IoC container resolution
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/core@1.3.0
+
 ## 6.0.2
 
 ### Patch Changes

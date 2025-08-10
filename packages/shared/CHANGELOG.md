@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.15.4
+
+### Patch Changes
+
+- feat: implement full IoC container resolution
+
 ## 0.15.3
 
 ### Patch Changes

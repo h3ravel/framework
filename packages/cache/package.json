@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/cache",
-  "version": "6.0.2",
+  "version": "7.0.0",
   "description": "Cache system with multiple drivers for H3ravel.",
   "type": "module",
   "main": "dist/index.js",

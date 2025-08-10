@@ -1,5 +1,25 @@
 # @h3ravel/example
 
+## 1.4.0
+
+### Minor Changes
+
+- feat: implement full IoC container resolution
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/config@1.2.0
+  - @h3ravel/core@1.3.0
+  - @h3ravel/mail@7.0.0
+  - @h3ravel/router@1.6.0
+  - @h3ravel/shared@0.15.4
+  - @h3ravel/cache@7.0.0
+  - @h3ravel/console@7.0.0
+  - @h3ravel/database@7.0.0
+  - @h3ravel/http@7.0.0
+  - @h3ravel/queue@7.0.0
+
 ## 1.3.4
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @h3ravel/router
 
+## 1.6.0
+
+### Minor Changes
+
+- feat: implement full IoC container resolution
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/core@1.3.0
+  - @h3ravel/shared@0.15.4
+  - @h3ravel/http@7.0.0
+
 ## 1.5.4
 
 ### Patch Changes

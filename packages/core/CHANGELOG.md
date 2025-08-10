@@ -1,5 +1,16 @@
 # @h3ravel/core
 
+## 1.3.0
+
+### Minor Changes
+
+- feat: implement full IoC container resolution
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/shared@0.15.4
+
 ## 1.2.2
 
 ### Patch Changes

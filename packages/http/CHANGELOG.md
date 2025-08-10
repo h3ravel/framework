@@ -1,5 +1,13 @@
 # @h3ravel/http
 
+## 7.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/core@1.3.0
+  - @h3ravel/shared@0.15.4
+
 ## 6.0.2
 
 ### Patch Changes
