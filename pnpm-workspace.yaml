@@ -5,3 +5,5 @@ packages:
 
 onlyBuiltDependencies:
   - esbuild
+
+shamefullyHoist: true

@@ -30,8 +30,8 @@
       "@h3ravel/support": ["../../../packages/support/src/index.ts"],
       "@h3ravel/shared": ["../../../packages/shared/src/index.ts"]
     },
-    "target": "ESNext",
-    "module": "ESNext",
+    "target": "es2022",
+    "module": "es2022",
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "strict": true,

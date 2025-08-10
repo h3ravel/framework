@@ -19,7 +19,9 @@
   "exclude": [
     "./dist",
     "./**/dist",
+    "./**/node_modules",
     "/.node_modules",
+    "./**/node_modules/*",
     "./**/public",
     "./public",
     "./**/storage",
@@ -28,5 +30,8 @@
     "**coverage**",
     "eslint.config.js",
     "jest.config.ts"
-  ]
+  ],
+  "ts-node": {
+    "require": ["tsconfig-paths/register"]
+  }
 }
