@@ -21,11 +21,14 @@ export class PathLoader {
      * @returns 
      */
     getPath (name: IPathName, base?: string): string {
-        if (base && name !== 'base') {
-            return nodepath.join(base, this.paths[name])
-        }
+        let path: string;
 
-        return this.paths[name]
+        if (base && name !== 'base') {
+            path = nodepath.join(base, this.paths[name])
+        } else {
+            path = this.paths[name]
+        }
+        return path.replace('/src/', `/${process.env.SRC_PATH ?? 'src'}/`.replace(/([^:]\/)\/+/g, "$1"))
     }
 
     /**

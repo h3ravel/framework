@@ -9,28 +9,31 @@
     "access": "public"
   },
   "scripts": {
-    "build": "tsup",
-    "dev": "tsx watch src/server.ts",
-    "start": "node dist/index.js",
+    "build": "NODE_ENV=production tsup",
+    "dev": "NODE_ENV=development pnpm tsup-node",
+    "start": "SRC_PATH=dist node -r tsconfig-paths/register dist/server.js",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
+    "@h3ravel/cache": "workspace:^",
     "@h3ravel/config": "workspace:^",
+    "@h3ravel/console": "workspace:^",
     "@h3ravel/core": "workspace:^",
+    "@h3ravel/database": "workspace:^",
     "@h3ravel/http": "workspace:^",
+    "@h3ravel/mail": "workspace:^",
+    "@h3ravel/queue": "workspace:^",
     "@h3ravel/router": "workspace:^",
     "@h3ravel/shared": "workspace:^",
-    "@h3ravel/database": "workspace:^",
-    "@h3ravel/cache": "workspace:^",
-    "@h3ravel/console": "workspace:^",
-    "@h3ravel/queue": "workspace:^",
-    "@h3ravel/mail": "workspace:^",
+    "h3": "2.0.0-beta.3",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
+    "tsup": "^8.0.0",
+    "@swc/core": "^1.13.3",
     "@types/node": "^24.1.0",
-    "tsx": "^4.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.0"
   }
 }

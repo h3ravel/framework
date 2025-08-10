@@ -2,16 +2,14 @@
   "compilerOptions": {
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "target": "esnext",
-    "module": "preserve",
+    "target": "es2022",
+    "module": "es2022",
     "moduleResolution": "Node",
     "esModuleInterop": true,
     "strict": true,
     "allowJs": true,
     "skipLibCheck": true,
     "resolveJsonModule": true
-    // "target": "ES2022",
-    // "module": "ESNext",
   },
   "exclude": ["./dist", "./**/dist", "/.node_modules"]
 }

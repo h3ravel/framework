@@ -33,11 +33,13 @@ export class ConfigRepository {
         if (!this.loaded) {
             const configPath = this.app.getPath('config')
 
-            const files = await readdir(configPath)
+            const files = (await readdir(configPath)).filter((e) => {
+                return !e.includes('.d.ts') && !e.includes('.map')
+            })
 
             for (let i = 0; i < files.length; i++) {
                 const configModule = await import(path.join(configPath, files[i]))
-                const name = files[i].replaceAll(/.ts|js/g, '')
+                const name = files[i].replaceAll(/\.ts|\.js/g, '')
                 if (typeof configModule.default === 'function') {
                     this.configs[name] = configModule.default(this.app)
                 }
@@ -45,7 +47,6 @@ export class ConfigRepository {
 
             this.loaded = true
         }
-
         return this
     }
 }

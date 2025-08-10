@@ -17,7 +17,9 @@ export class MailServiceProvider extends ServiceProvider {
         /**
          * Register Mailer instance
          */
-        this.app.singleton(Mailer, () => {
+
+        this.app.singleton<any>('mailer', () => {
+            // this.app.bind(Mailer, () => {
             const view = this.app.make('view');
             const config = this.app.make('config');
 

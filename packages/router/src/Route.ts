@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Request, Response } from '@h3ravel/http'
 import { Application, Controller, Kernel } from '@h3ravel/core'
@@ -74,13 +75,54 @@ export class Router implements IRouter {
         this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
     }
 
+    private resolveControllerOrHandlerZ (
+        handler: EventHandler | (new (...args: any[]) => IController),
+        methodName?: string
+    ): EventHandler {
+        if (typeof handler === 'function' && (handler as any).prototype instanceof Controller) {
+            return (ctx) => {
+                /**
+                 * Use IoC container if available to make the controller instance
+                 */
+                const controller = this.app
+                    ? this.app.make<any, IController>(handler as any)
+                    : new (handler as new (...args: any[]) => IController)(this.app);
+
+                const action = (methodName || 'index') as keyof IController;
+
+                if (typeof controller[action] !== 'function') {
+                    throw new Error(`Method "${String(action)}" not found on controller ${handler.name}`);
+                }
+
+                return controller[action](ctx);
+            };
+        }
+
+        return handler as EventHandler;
+    }
+
     private resolveControllerOrHandler (
         handler: EventHandler | (new (...args: any[]) => IController),
         methodName?: string
     ): EventHandler {
         if (typeof handler === 'function' && (handler as any).prototype instanceof Controller) {
             return (ctx) => {
-                const controller = new (handler as new (...args: any[]) => IController)(this.app)
+                const isDecorated = Reflect.getMetadataKeys(handler).length > 0
+
+                let controller: IController
+
+                if (isDecorated) {
+                    /**
+                     * If the controller is decorated use the IoC container
+                     */
+                    controller = this.app.make<any, IController>(handler as any)
+                } else {
+                    /**
+                     * Otherwise instantiate manually so that we can at least
+                     * pass the app instance
+                     */
+                    controller = new (handler as new (...args: any[]) => IController)(this.app)
+                }
                 const action = (methodName || 'index') as keyof IController
 
                 if (typeof controller[action] !== 'function') {
@@ -93,7 +135,6 @@ export class Router implements IRouter {
 
         return handler as EventHandler
     }
-
 
     get (
         path: string,

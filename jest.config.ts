@@ -1,4 +1,5 @@
 import { createJsWithTsEsmPreset, type JestConfigWithTsJest } from 'ts-jest'
+// import { compilerOptions } from './tsconfig.json'
 
 const tsJestTransformCfg = createJsWithTsEsmPreset().transform
 
@@ -11,6 +12,8 @@ const jestConfig: JestConfigWithTsJest = {
     '<rootDir>/packages/',   // Look for tests in all packages
   ],
   testMatch: ['**/tests/**/*.test.ts'],
+  // modulePaths: [compilerOptions.baseUrl],
+  // moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
   moduleNameMapper: {
     '@h3ravel/core': '<rootDir>/packages/core/src/index.ts',
     '@h3ravel/router': '<rootDir>/packages/router/src/index.ts',

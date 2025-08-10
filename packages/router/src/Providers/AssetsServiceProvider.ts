@@ -25,7 +25,7 @@ export class AssetsServiceProvider extends ServiceProvider {
                 indexNames: ['/index.html'],
                 getContents: (id) => {
                     const newId = id.replace(`/${fsconfig.public_mask}/`, '')
-                    return readFile(join(before(publicPath, newId), newId))
+                    return <never>readFile(join(before(publicPath, newId), newId))
                 },
                 getMeta: async (id) => {
                     const newId = id.replace(`/${fsconfig.public_mask}/`, '')
