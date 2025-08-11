@@ -46,6 +46,7 @@ export class Service {
              */
             ses: <SESConfig>{
                 key: config.get('services.ses.key', ''),
+                token: config.get('services.ses.token', ''),
                 secret: config.get('services.ses.secret', ''),
                 region: config.get('services.ses.region', 'us-east-1'),
                 maxConnections: config.get('mail.mailers.ses.connections', 10),

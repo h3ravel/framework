@@ -13,6 +13,7 @@ export class SESDriver implements MailDriverContract {
             region: config.region,
             credentials: {
                 accessKeyId: config.key,
+                sessionToken: config.token,
                 secretAccessKey: config.secret
             }
         });

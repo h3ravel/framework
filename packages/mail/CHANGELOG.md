@@ -1,5 +1,11 @@
 # @h3ravel/mail
 
+## 9.2.0
+
+### Minor Changes
+
+- feat: support temp tokens for amazon ses
+
 ## 9.1.0
 
 ### Minor Changes

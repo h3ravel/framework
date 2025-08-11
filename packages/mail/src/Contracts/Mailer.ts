@@ -44,6 +44,7 @@ export interface SESConfig extends SESConnection.Options {
     sendingRate?: number | undefined;
     region?: string
     secret: string
+    token?: string;
     key: string
 }
 
