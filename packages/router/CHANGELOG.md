@@ -1,5 +1,13 @@
 # @h3ravel/router
 
+## 1.8.2
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/core@1.6.0
+  - @h3ravel/http@10.0.0
+
 ## 1.8.1
 
 ### Patch Changes

@@ -13,7 +13,7 @@ import { ServiceProvider } from '@h3ravel/core'
  */
 export class ConfigServiceProvider extends ServiceProvider {
     public static priority = 998;
-    // public static order = 'before:AppServiceProvider';
+    // public static order = 'before:CoreServiceProvider';
 
     async register () {
         /**

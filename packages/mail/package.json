@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/mail",
-  "version": "9.2.0",
+  "version": "10.0.0",
   "description": "Mail drivers and templates system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",

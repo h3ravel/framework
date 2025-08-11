@@ -1,5 +1,12 @@
 # @h3ravel/mail
 
+## 10.0.0
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/core@1.6.0
+
 ## 9.2.0
 
 ### Minor Changes

@@ -10,5 +10,5 @@ export * from './Contracts/ServiceProviderConstructor';
 export * from './Di/Inject';
 export * from './Exceptions/Handler';
 export * from './Http/Kernel';
-export * from './Providers/AppServiceProvider';
+export * from './Providers/CoreServiceProvider';
 export * from './Providers/ViewServiceProvider';

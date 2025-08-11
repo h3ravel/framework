@@ -1,5 +1,11 @@
 # @h3ravel/core
 
+## 1.6.0
+
+### Minor Changes
+
+- feat: rename the app service provider to core service provider.
+
 ## 1.5.2
 
 ### Patch Changes

@@ -67,7 +67,7 @@ export class Application extends Container implements IApplication {
      */
     protected async getConfiguredProviders (): Promise<Array<new (_app: Application) => IServiceProvider>> {
         return [
-            (await import('@h3ravel/core')).AppServiceProvider,
+            (await import('@h3ravel/core')).CoreServiceProvider,
             (await import('@h3ravel/core')).ViewServiceProvider,
         ]
     }
