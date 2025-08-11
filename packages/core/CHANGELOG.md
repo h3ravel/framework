@@ -1,5 +1,17 @@
 # @h3ravel/core
 
+## 1.5.2
+
+### Patch Changes
+
+- fix: make Controler interface consitent with the Icontroller contract
+
+## 1.5.1
+
+### Patch Changes
+
+- fix: make Controler interface consitent with the Icontroller contract
+
 ## 1.5.0
 
 ### Minor Changes

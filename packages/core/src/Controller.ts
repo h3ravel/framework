@@ -1,6 +1,5 @@
-import { HttpContext, IController } from '@h3ravel/shared'
-
 import { Application } from '.'
+import { IController } from '@h3ravel/shared'
 
 /**
  * Base controller class
@@ -12,9 +11,9 @@ export abstract class Controller implements IController {
         this.app = app
     }
 
-    public show (_ctx: HttpContext): any { return }
-    public index (_ctx: HttpContext): any { return }
-    public store (_ctx: HttpContext): any { return }
-    public update (_ctx: HttpContext): any { return }
-    public destroy (_ctx: HttpContext): any { return }
+    public show (..._ctx: any[]): any { return }
+    public index (..._ctx: any[]): any { return }
+    public store (..._ctx: any[]): any { return }
+    public update (..._ctx: any[]): any { return }
+    public destroy (..._ctx: any[]): any { return }
 }
