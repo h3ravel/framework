@@ -1,5 +1,12 @@
 # @h3ravel/database
 
+## 9.0.0
+
+### Patch Changes
+
+- Updated dependencies [137b067]
+  - @h3ravel/core@1.5.0
+
 ## 8.0.7
 
 ### Patch Changes

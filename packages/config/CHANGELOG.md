@@ -1,5 +1,13 @@
 # @h3ravel/config
 
+## 1.3.6
+
+### Patch Changes
+
+- Updated dependencies [137b067]
+  - @h3ravel/shared@0.17.0
+  - @h3ravel/support@0.8.5
+
 ## 1.3.5
 
 ### Patch Changes

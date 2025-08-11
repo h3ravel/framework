@@ -1,5 +1,18 @@
 # @h3ravel/core
 
+## 1.5.0
+
+### Minor Changes
+
+- 137b067: feat: add support for controller method parameter bindings via the IoC
+  feat: match apiResource param with last url segment
+  feat: allow controllers to be defined without extending the base controller.
+
+### Patch Changes
+
+- Updated dependencies [137b067]
+  - @h3ravel/shared@0.17.0
+
 ## 1.4.5
 
 ### Patch Changes

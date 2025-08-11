@@ -1,5 +1,21 @@
 # @h3ravel/router
 
+## 1.8.0
+
+### Minor Changes
+
+- 137b067: feat: add support for controller method parameter bindings via the IoC
+  feat: match apiResource param with last url segment
+  feat: allow controllers to be defined without extending the base controller.
+
+### Patch Changes
+
+- Updated dependencies [137b067]
+  - @h3ravel/core@1.5.0
+  - @h3ravel/http@9.0.0
+  - @h3ravel/shared@0.17.0
+  - @h3ravel/support@0.8.5
+
 ## 1.7.5
 
 ### Patch Changes
