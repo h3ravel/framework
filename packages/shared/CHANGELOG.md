@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.17.1
+
+### Patch Changes
+
+- fix: fix IoC support for callables and API reousorces.
+
 ## 0.17.0
 
 ### Minor Changes

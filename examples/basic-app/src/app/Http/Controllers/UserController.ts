@@ -1,7 +1,8 @@
-import { Controller } from '@h3ravel/core'
-import { HttpContext } from '@h3ravel/http'
+import { Controller, Injectable } from '@h3ravel/core'
+import { HttpContext, Request } from '@h3ravel/http'
 
 export class UserController extends Controller {
+    @Injectable()
     index () {
         return [{ id: 1, name: 'John Doe' }]
     }

@@ -3,7 +3,7 @@ import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Application, Container, Kernel } from '@h3ravel/core'
 import { Request, Response } from '@h3ravel/http'
 import { singularize } from '@h3ravel/support'
-import { HttpContext, type EventHandler, type IController, type IMiddleware, type IRouter, type RouterEnd } from '@h3ravel/shared'
+import { HttpContext, RouteEventHandler, type EventHandler, type IController, type IMiddleware, type IRouter, type RouterEnd } from '@h3ravel/shared'
 
 interface RouteDefinition {
     method: string
@@ -96,7 +96,7 @@ export class Router implements IRouter {
         /**
          * Checks if the handler is a function (either a plain function or a class constructor)
          */
-        if (typeof handler === 'function') {
+        if (typeof handler === 'function' && typeof (handler as any).prototype !== 'undefined') {
             return (_ctx) => {
                 let controller: IController
 
@@ -126,18 +126,14 @@ export class Router implements IRouter {
                 }
 
                 /**
-                 * Get param types for the method
+                 * Get param types for the controller method
                  */
-                const paramTypes = Reflect.getMetadata(
-                    'design:paramtypes',
-                    controller,
-                    action
-                ) || [];
+                const paramTypes: [] = Reflect.getMetadata('design:paramtypes', controller, action) || [];
 
                 /**
                  * Resolve the bound dependencies
                  */
-                const args: [] = paramTypes.map((paramType: any) => {
+                let args: any[] = paramTypes.map((paramType: any) => {
                     switch (paramType?.name) {
                         case 'Application':
                             return this.app
@@ -151,6 +147,13 @@ export class Router implements IRouter {
                             return this.app.make(paramType);
                     }
                 });
+
+                /**
+                 * Ensure that the HttpContext is always available
+                 */
+                if (args.length < 1) {
+                    args = [_ctx]
+                }
 
                 /**
                  * Call the controller method, passing all resolved dependencies
@@ -174,7 +177,7 @@ export class Router implements IRouter {
      */
     get (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
@@ -197,7 +200,7 @@ export class Router implements IRouter {
      */
     post (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
@@ -219,7 +222,7 @@ export class Router implements IRouter {
      */
     put (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
@@ -241,7 +244,7 @@ export class Router implements IRouter {
      */
     patch (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
@@ -263,7 +266,7 @@ export class Router implements IRouter {
      */
     delete (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
@@ -290,14 +293,13 @@ export class Router implements IRouter {
         const name = basePath.substring(basePath.lastIndexOf('/') + 1).replaceAll(/\/|:/g, '') || '';
         const param = singularize(name)
 
-        const controller = new Controller(this.app)
+        this.get(basePath, [Controller, 'index'], `${name}.index`, middleware)
+        this.post(basePath, [Controller, 'store'], `${name}.store`, middleware)
+        this.get(`${basePath}/:${param}`, [Controller, 'show'], `${name}.show`, middleware)
+        this.put(`${basePath}/:${param}`, [Controller, 'update'], `${name}.update`, middleware)
+        this.patch(`${basePath}/:${param}`, [Controller, 'update'], `${name}.update`, middleware)
+        this.delete(`${basePath}/:${param}`, [Controller, 'destroy'], `${name}.destroy`, middleware)
 
-        this.addRoute('get', basePath, controller.index.bind(controller), `${name}.index`, middleware)
-        this.addRoute('post', basePath, controller.store.bind(controller), `${name}.store`, middleware)
-        this.addRoute('get', `${basePath}/:${param}`, controller.show.bind(controller), `${name}.show`, middleware)
-        this.addRoute('put', `${basePath}/:${param}`, controller.update.bind(controller), `${name}.update`, middleware)
-        this.addRoute('patch', `${basePath}/:${param}`, controller.update.bind(controller), `${name}.update`, middleware)
-        this.addRoute('delete', `${basePath}/:${param}`, controller.destroy.bind(controller), `${name}.destroy`, middleware)
         return this
     }
 
@@ -325,14 +327,14 @@ export class Router implements IRouter {
      * @param options 
      * @param callback 
      */
-    group (options: { prefix?: string; middleware?: EventHandler[] }, callback: () => void) {
+    group (options: { prefix?: string; middleware?: EventHandler[] }, callback: (_e: this) => void) {
         const prevPrefix = this.groupPrefix
         const prevMiddleware = [...this.groupMiddleware]
 
         this.groupPrefix += options.prefix || ''
         this.groupMiddleware.push(...(options.middleware || []))
 
-        callback()
+        callback(this)
 
         /**
          * Restore state after group

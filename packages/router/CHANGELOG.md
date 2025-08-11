@@ -1,5 +1,13 @@
 # @h3ravel/router
 
+## 1.8.1
+
+### Patch Changes
+
+- fix: fix IoC support for callables and API reousorces.
+- Updated dependencies
+  - @h3ravel/shared@0.17.1
+
 ## 1.8.0
 
 ### Minor Changes

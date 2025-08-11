@@ -99,7 +99,7 @@ export interface IRouter {
      * @param options - Configuration for prefix or middleware.
      * @param callback - Callback function defining grouped routes.
      */
-    group (options: { prefix?: string; middleware?: EventHandler[] }, callback: () => void): this;
+    group (options: { prefix?: string; middleware?: EventHandler[] }, callback: () => this): this;
 
     /**
      * Registers middleware for a specific path.
@@ -139,6 +139,7 @@ export class HttpContext {
  * Type for EventHandler, representing a function that handles an H3 event.
  */
 export type EventHandler = (ctx: HttpContext) => any
+export type RouteEventHandler = (...args: any[]) => any
 
 /**
  * Defines the contract for all controllers.
