@@ -2,6 +2,7 @@ import type { SendMailOptions as NodeMailerSendMailOptions, SentMessageInfo } fr
 
 import SESConnection from "nodemailer/lib/ses-transport";
 import SMTPConnection from "nodemailer/lib/smtp-connection";
+import SendmailTransport from "nodemailer/lib/sendmail-transport";
 
 export interface DeliveryReport {
     accepted: string[],
@@ -43,6 +44,11 @@ export interface SESConfig extends SESConnection.Options {
     maxConnections?: number | undefined;
     /** How many parallel connections to allow towards SES */
     sendingRate?: number | undefined;
+}
+
+export interface SendMailConfig extends SendmailTransport.Options {
+    /** path to the sendmail command (defaults to ‘sendmail’) */
+    path?: string | undefined;
 }
 
 export interface MailDriverContract {
