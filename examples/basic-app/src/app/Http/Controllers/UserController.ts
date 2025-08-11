@@ -1,5 +1,6 @@
 import { Controller, Injectable } from '@h3ravel/core'
-import { HttpContext, Request } from '@h3ravel/http'
+
+import { HttpContext } from '@h3ravel/http'
 
 export class UserController extends Controller {
     @Injectable()
