@@ -45,7 +45,9 @@ export class Service {
              * SES configuration with fallback defaults
              */
             ses: <SESConfig>{
-                SES: config.get('mail.mailers.ses.transport', 'ses'),
+                key: config.get('services.ses.key', ''),
+                secret: config.get('services.ses.secret', ''),
+                region: config.get('services.ses.region', 'us-east-1'),
                 maxConnections: config.get('mail.mailers.ses.connections', 10),
                 sendingRate: config.get('mail.mailers.ses.rate', 5),
             },

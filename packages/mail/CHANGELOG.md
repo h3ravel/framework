@@ -1,5 +1,11 @@
 # @h3ravel/mail
 
+## 9.1.0
+
+### Minor Changes
+
+- feat: add full support for mails with amazon ses.
+
 ## 9.0.0
 
 ### Minor Changes

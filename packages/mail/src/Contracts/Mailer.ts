@@ -38,12 +38,13 @@ export interface SMTPConfig extends SMTPConnection.Options {
 }
 
 export interface SESConfig extends SESConnection.Options {
-    /** is an option that expects an instantiated aws.SES object */
-    SES: any; // aws-sdk.SES object
     /** How many messages per second is allowed to be delivered to SES */
     maxConnections?: number | undefined;
     /** How many parallel connections to allow towards SES */
     sendingRate?: number | undefined;
+    region?: string
+    secret: string
+    key: string
 }
 
 export interface SendMailConfig extends SendmailTransport.Options {

@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/mail",
-  "version": "9.0.0",
+  "version": "9.1.0",
   "description": "Mail drivers and templates system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -41,6 +41,7 @@
     "typescript": "^5.4.0"
   },
   "dependencies": {
+    "@aws-sdk/client-sesv2": "^3.864.0",
     "nodemailer": "^7.0.5"
   }
 }
