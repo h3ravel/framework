@@ -1,19 +1,15 @@
 import nodemailer, { type SendMailOptions } from 'nodemailer';
 
-import { MailDriverContract, SMTPConfig } from '../Contracts/Mailer';
+import { MailDriverContract, SESConfig } from '../Contracts/Mailer';
 
-export class SMTPDriver implements MailDriverContract {
+export class SESDriver implements MailDriverContract {
     private transporter;
 
-    constructor(config: SMTPConfig) {
+    constructor(config: SESConfig) {
         this.transporter = nodemailer.createTransport({
-            host: config.host,
-            port: config.port,
-            secure: config.port === 465, // auto decide based on port
-            auth: {
-                user: config.auth.user,
-                pass: config.auth.pass
-            }
+            SES: config.SES,
+            maxConnections: config.maxConnections,
+            sendingRate: config.sendingRate
         });
     }
 

@@ -1,4 +1,5 @@
-import { MailDriverContract } from './Contracts/Mailer';
+import { DeliveryReport, MailDriverContract } from './Contracts/Mailer';
+
 import { Mailable } from './Mailable';
 
 export class Mailer {
@@ -7,7 +8,7 @@ export class Mailer {
         private edgeRenderer: (viewPath: string, data: Record<string, any>) => Promise<string>
     ) { }
 
-    async send (mailable: Mailable) {
+    async send (mailable: Mailable): Promise<DeliveryReport | undefined | void> {
         await mailable.build();
 
         const options = mailable.getMessageOptions();
@@ -16,6 +17,10 @@ export class Mailer {
             options.html = await this.edgeRenderer(options.viewPath, options.viewData || {});
         }
 
-        return this.driver.send(options);
+        try {
+            return this.driver.send(options);
+        } catch (error) {
+            return
+        }
     }
 }

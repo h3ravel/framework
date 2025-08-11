@@ -6,6 +6,6 @@ export * from './Helpers';
 export * from './Mailable';
 export * from './Mailer';
 export * from './Contracts/Mailer';
-export * from './Drivers/SES';
+export * from './Drivers/SESDriver';
 export * from './Drivers/SMTPDriver';
 export * from './Providers/MailServiceProvider';
