@@ -1,8 +1,9 @@
+import 'reflect-metadata';
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
+import { Application, Container, Kernel } from '@h3ravel/core'
 import { Request, Response } from '@h3ravel/http'
-import { Application, Container, Controller, Kernel } from '@h3ravel/core'
 import { singularize } from '@h3ravel/support'
-import type { EventHandler, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
+import { HttpContext, type EventHandler, type IController, type IMiddleware, type IRouter, type RouterEnd } from '@h3ravel/shared'
 
 interface RouteDefinition {
     method: string
@@ -29,7 +30,7 @@ export class Router implements IRouter {
      */
     private resolveHandler (handler: EventHandler, middleware: IMiddleware[] = []) {
         return async (event: H3Event) => {
-            const kernel = new Kernel(() => ({
+            const kernel = new Kernel(() => HttpContext.init({
                 app: this.app,
                 request: new Request(event, this.app),
                 response: new Response(event, this.app)
@@ -96,7 +97,7 @@ export class Router implements IRouter {
          * Checks if the handler is a function (either a plain function or a class constructor)
          */
         if (typeof handler === 'function') {
-            return (ctx) => {
+            return (_ctx) => {
                 let controller: IController
 
                 if (Container.hasAnyDecorator(handler)) {
@@ -125,9 +126,36 @@ export class Router implements IRouter {
                 }
 
                 /**
-                 * Call the method with the route context
+                 * Get param types for the method
                  */
-                return controller[action](ctx)
+                const paramTypes = Reflect.getMetadata(
+                    'design:paramtypes',
+                    controller,
+                    action
+                ) || [];
+
+                /**
+                 * Resolve the bound dependencies
+                 */
+                const args: [] = paramTypes.map((paramType: any) => {
+                    switch (paramType?.name) {
+                        case 'Application':
+                            return this.app
+                        case 'Request':
+                            return _ctx.request
+                        case 'Response':
+                            return _ctx.response
+                        case 'HttpContext':
+                            return _ctx
+                        default:
+                            return this.app.make(paramType);
+                    }
+                });
+
+                /**
+                 * Call the controller method, passing all resolved dependencies
+                 */
+                return controller[action](...args);
             }
         }
 

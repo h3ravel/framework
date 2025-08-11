@@ -110,11 +110,30 @@ export interface IRouter {
     middleware (path: string | IMiddleware[], handler: Middleware, opts?: MiddlewareOptions): this;
 }
 
-export interface HttpContext {
-    app: IApplication
-    request: IRequest
-    response: IResponse
+/**
+ * Represents the HTTP context for a single request lifecycle.
+ * Encapsulates the application instance, request, and response objects.
+ */
+export class HttpContext {
+    constructor(
+        public app: IApplication,
+        public request: IRequest,
+        public response: IResponse
+    ) { }
+
+    /**
+     * Factory method to create a new HttpContext instance from a context object.
+     * @param ctx - Object containing app, request, and response
+     * @returns A new HttpContext instance
+     */
+    static init (ctx: { app: IApplication; request: IRequest; response: IResponse }): HttpContext {
+        /**
+         * Return a new instance
+         */
+        return new HttpContext(ctx.app, ctx.request, ctx.response);
+    }
 }
+
 
 /**
  * Type for EventHandler, representing a function that handles an H3 event.
@@ -126,11 +145,11 @@ export type EventHandler = (ctx: HttpContext) => any
  * Any controller implementing this must define these methods.
  */
 export interface IController {
-    show (ctx: HttpContext): any
-    index (ctx: HttpContext): any
-    store (ctx: HttpContext): any
-    update (ctx: HttpContext): any
-    destroy (ctx: HttpContext): any
+    show (...ctx: any[]): any
+    index (...ctx: any[]): any
+    store (...ctx: any[]): any
+    update (...ctx: any[]): any
+    destroy (...ctx: any[]): any
 }
 
 /**

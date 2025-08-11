@@ -1,6 +1,7 @@
 import { LogRequests, Request, Response } from '@h3ravel/http'
 
 import { Application } from '@h3ravel/core'
+import { HttpContext } from '@h3ravel/shared'
 import { Kernel } from '@h3ravel/core'
 import providers from 'src/bootstrap/providers'
 
@@ -16,7 +17,7 @@ export default class {
         const h3App = app.make('http.app')
         const serve = app.make('http.serve')
 
-        const kernel = new Kernel((event) => ({
+        const kernel = new Kernel((event) => HttpContext.init({
             app,
             request: new Request(event, app),
             response: new Response(event, app)
