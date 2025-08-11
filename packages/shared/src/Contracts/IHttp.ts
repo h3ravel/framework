@@ -4,7 +4,7 @@ import { IApplication } from './IApplication'
 import { IRequest } from './IRequest'
 import { IResponse } from './IResponse'
 
-export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'apiResource' | 'group' | 'route';
+export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'patch' | 'apiResource' | 'group' | 'route';
 
 /**
  * Interface for the Router contract, defining methods for HTTP routing.

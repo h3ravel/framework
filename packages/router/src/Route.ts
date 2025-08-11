@@ -1,7 +1,7 @@
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Request, Response } from '@h3ravel/http'
 import { Application, Container, Controller, Kernel } from '@h3ravel/core'
-import { afterLast } from '@h3ravel/support'
+import { singularize } from '@h3ravel/support'
 import type { EventHandler, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
 
 interface RouteDefinition {
@@ -258,17 +258,18 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd | 'name'> {
         path = path.replace(/\//g, '/')
 
-        const name = afterLast(path, '/')
-        const basePath = `/${path}`.replace(/\/+/g, '/')
+        const basePath = `/${path}`.replace(/\/+$/, '').replace(/(\/)+/g, '$1');
+        const name = basePath.substring(basePath.lastIndexOf('/') + 1).replaceAll(/\/|:/g, '') || '';
+        const param = singularize(name)
 
         const controller = new Controller(this.app)
 
         this.addRoute('get', basePath, controller.index.bind(controller), `${name}.index`, middleware)
         this.addRoute('post', basePath, controller.store.bind(controller), `${name}.store`, middleware)
-        this.addRoute('get', `${basePath}/:id`, controller.show.bind(controller), `${name}.show`, middleware)
-        this.addRoute('put', `${basePath}/:id`, controller.update.bind(controller), `${name}.update`, middleware)
-        this.addRoute('patch', `${basePath}/:id`, controller.update.bind(controller), `${name}.update`, middleware)
-        this.addRoute('delete', `${basePath}/:id`, controller.destroy.bind(controller), `${name}.destroy`, middleware)
+        this.addRoute('get', `${basePath}/:${param}`, controller.show.bind(controller), `${name}.show`, middleware)
+        this.addRoute('put', `${basePath}/:${param}`, controller.update.bind(controller), `${name}.update`, middleware)
+        this.addRoute('patch', `${basePath}/:${param}`, controller.update.bind(controller), `${name}.update`, middleware)
+        this.addRoute('delete', `${basePath}/:${param}`, controller.destroy.bind(controller), `${name}.destroy`, middleware)
         return this
     }
 
