@@ -1,6 +1,5 @@
 import 'reflect-metadata'
 
-import { Registerer } from '../Registerer';
 import { ServiceProvider } from '../ServiceProvider'
 
 /**
@@ -16,6 +15,5 @@ export class CoreServiceProvider extends ServiceProvider {
     public static priority = 999;
 
     register () {
-        Registerer.register()
     }
 }

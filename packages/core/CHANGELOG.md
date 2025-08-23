@@ -1,5 +1,11 @@
 # @h3ravel/core
 
+## 1.7.1
+
+### Patch Changes
+
+- refactor: register the registerer in the Application service provider.
+
 ## 1.7.0
 
 ### Minor Changes

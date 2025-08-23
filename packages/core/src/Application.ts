@@ -2,6 +2,7 @@ import { IApplication, IPathName, IServiceProvider } from '@h3ravel/shared'
 
 import { Container } from './Container'
 import { PathLoader } from '@h3ravel/shared'
+import { Registerer } from './Registerer'
 import dotenv from 'dotenv'
 import path from 'node:path'
 
@@ -20,6 +21,7 @@ export class Application extends Container implements IApplication {
         this.setPath('base', basePath)
         this.loadOptions()
         this.registerBaseBindings();
+        Registerer.register()
         dotenv.config({ quiet: true })
     }
 
