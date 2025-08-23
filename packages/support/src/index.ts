@@ -5,6 +5,7 @@
 export * from './Contracts/ObjContract';
 export * from './Contracts/StrContract';
 export * from './Helpers/Arr';
+export * from './Helpers/DumpDie';
 export * from './Helpers/Number';
 export * from './Helpers/Obj';
 export * from './Helpers/Str';
