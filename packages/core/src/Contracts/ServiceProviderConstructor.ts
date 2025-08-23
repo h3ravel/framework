@@ -1,3 +1,5 @@
+/// <reference path="../globals.d.ts" />
+
 import { Application, ServiceProvider } from "..";
 
 import { IServiceProvider } from "@h3ravel/shared";

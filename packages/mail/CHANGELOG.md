@@ -1,5 +1,13 @@
 # @h3ravel/mail
 
+## 11.0.0
+
+### Patch Changes
+
+- feat: Add a dd() and dump() functions
+- Updated dependencies
+  - @h3ravel/core@1.7.0
+
 ## 10.0.0
 
 ### Patch Changes

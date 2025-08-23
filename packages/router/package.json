@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/router",
-  "version": "1.8.2",
+  "version": "1.8.3",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -8,9 +8,9 @@
   "module": "./dist/index.js",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.cjs"
     }
   },
   "files": [
@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "h3": "^2.0.0-beta.1",
+    "reflect-metadata": "^0.2.2",
     "@h3ravel/http": "workspace:^",
     "@h3ravel/core": "workspace:^",
     "@h3ravel/support": "workspace:^",

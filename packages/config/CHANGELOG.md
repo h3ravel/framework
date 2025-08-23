@@ -1,5 +1,14 @@
 # @h3ravel/config
 
+## 1.3.7
+
+### Patch Changes
+
+- feat: Add a dd() and dump() functions
+- Updated dependencies
+  - @h3ravel/support@0.9.0
+  - @h3ravel/shared@0.17.2
+
 ## 1.3.6
 
 ### Patch Changes

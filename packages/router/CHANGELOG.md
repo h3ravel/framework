@@ -1,5 +1,16 @@
 # @h3ravel/router
 
+## 1.8.3
+
+### Patch Changes
+
+- feat: Add a dd() and dump() functions
+- Updated dependencies
+  - @h3ravel/support@0.9.0
+  - @h3ravel/core@1.7.0
+  - @h3ravel/shared@0.17.2
+  - @h3ravel/http@11.0.0
+
 ## 1.8.2
 
 ### Patch Changes

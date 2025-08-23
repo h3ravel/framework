@@ -1,0 +1,94 @@
+{
+  "$schema": "node_modules/barrelize/schema.json",
+  "semi": false,
+  "barrels": [
+    {
+      "name": "index.ts",
+      "root": "packages/cache/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/config/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/console/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/core/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/database/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/http/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/mail/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/queue/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/router/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/shared/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/support/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    }
+  ]
+}

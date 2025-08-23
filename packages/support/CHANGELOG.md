@@ -1,5 +1,11 @@
 # @h3ravel/support
 
+## 0.9.0
+
+### Minor Changes
+
+- feat: Add a dd() and dump() functions
+
 ## 0.8.5
 
 ### Patch Changes

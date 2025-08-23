@@ -1,5 +1,17 @@
 # @h3ravel/core
 
+## 1.7.0
+
+### Minor Changes
+
+- feat: Add a dd() and dump() functions
+
+### Patch Changes
+
+- Updated dependencies
+  - @h3ravel/support@0.9.0
+  - @h3ravel/shared@0.17.2
+
 ## 1.6.0
 
 ### Minor Changes

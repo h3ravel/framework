@@ -20,7 +20,8 @@
     "deno"
   ],
   "scripts": {
-    "barrel": "pnpm -r --filter './packages/*' run barrel",
+    "barrel": "barrelize",
+    "_barrel": "pnpm -r --filter './packages/*' run barrel",
     "build": "pnpm barrel && pnpm -r --workspace-concurrency=1 --filter './packages/*' run build",
     "dev": "pnpm barrel && pnpm -r --parallel --filter './examples/*' run dev",
     "devx": "pnpm './packages/*' run dev",
@@ -43,6 +44,7 @@
     "@types/node": "^24.2.1",
     "@typescript-eslint/eslint-plugin": "^8.39.0",
     "@typescript-eslint/parser": "^8.39.0",
+    "barrelize": "^1.6.3",
     "barrelsby": "^2.8.1",
     "eslint": "^9.33.0",
     "fetchdts": "^0.1.6",

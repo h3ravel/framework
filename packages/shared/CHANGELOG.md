@@ -1,5 +1,11 @@
 # @h3ravel/shared
 
+## 0.17.2
+
+### Patch Changes
+
+- feat: Add a dd() and dump() functions
+
 ## 0.17.1
 
 ### Patch Changes

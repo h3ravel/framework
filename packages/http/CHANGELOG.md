@@ -1,5 +1,15 @@
 # @h3ravel/http
 
+## 11.0.0
+
+### Patch Changes
+
+- feat: Add a dd() and dump() functions
+- Updated dependencies
+  - @h3ravel/support@0.9.0
+  - @h3ravel/core@1.7.0
+  - @h3ravel/shared@0.17.2
+
 ## 10.0.0
 
 ### Patch Changes
