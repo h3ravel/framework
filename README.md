@@ -1,8 +1,13 @@
-<p align="center"><a href="https://h3ravel.toneflix.net" target="_blank"><img src="https://raw.githubusercontent.com/h3ravel/assets/refs/heads/main/logo-full.svg" width="400" alt="H3ravel Logo"></a></p>
+<div align="center">
+  <a href="https://h3ravel.toneflix.net"  target="_blank">
+    <img src="https://raw.githubusercontent.com/h3ravel/assets/refs/heads/main/logo-full.svg" width="200" alt="H3ravel Logo">
+  </a>
+  <h1 align="center"><a href="https://h3ravel.toneflix.net/arquebus">H3ravel Framework</a></h1>
 
 [![Downloads][d1]][d1]
 [![Framework][ix]][lx]
 [![Core Package Version][i1]][l1]
+[![Arquebus ORM][i12]][l12]
 [![Cache Package Version][i2]][l2]
 [![Config Package Version][i3]][l3]
 [![Console Package Version][i4]][l4]
@@ -13,6 +18,10 @@
 [![Router Package Version][i9]][l9]
 [![Shared Package Version][i10]][l10]
 [![Support Package Version][i11]][l11]
+[![Tests][tei]][tel]
+[![License][lini]][linl]
+
+</div>
 
 # About H3ravel
 
@@ -124,3 +133,9 @@ The H3ravel framework is open-sourced software licensed under the [MIT license](
 [l10]: https://www.npmjs.com/package/@h3ravel/shared
 [i11]: https://img.shields.io/npm/v/%40h3ravel%2Fsupport?style=flat-square&label=@h3ravel/support&color=%230970ce
 [l11]: https://www.npmjs.com/package/@h3ravel/support
+[i12]: https://img.shields.io/npm/v/%40h3ravel%2Farquebus?style=flat-square&label=@h3ravel/arquebus&color=%230970ce
+[l12]: https://www.npmjs.com/package/@h3ravel/arquebus
+[linl]: https://github.com/h3ravel/framework/blob/main/LICENSE
+[lini]: https://img.shields.io/github/license/h3ravel/framework
+[tel]: https://github.com/h3ravel/framework/actions/workflows/test.yml
+[tei]: https://github.com/h3ravel/framework/actions/workflows/test.yml/badge.svg
