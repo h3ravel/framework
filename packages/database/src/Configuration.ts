@@ -84,8 +84,7 @@ export const arquebusConfig = (config: any) => {
                 database: config.connections.mysql.database,
                 charset: config.connections.mysql.charset,
                 socketPath: config.connections.mysql.unix_socket,
-                urlocalAddressl: config.connections.mysql.url,
-                expirationChecker: config.connections.mysql.expirationChecker
+                localAddress: config.connections.mysql.url,
             },
         },
         mariadb: {
@@ -98,7 +97,7 @@ export const arquebusConfig = (config: any) => {
                 database: config.connections.mariadb.database,
                 charset: config.connections.mariadb.charset,
                 socketPath: config.connections.mariadb.unix_socket,
-                urlocalAddressl: config.connections.mariadb.url,
+                localAddress: config.connections.mariadb.url,
                 expirationChecker: config.connections.mariadb.expirationChecker
             },
         },

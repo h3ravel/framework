@@ -1,9 +1,9 @@
 import { Controller, Injectable } from '@h3ravel/core'
 
 import { HttpContext } from '@h3ravel/http'
+import { User } from 'src/database/Models/user'
 
 export class UserController extends Controller {
-    @Injectable()
     index () {
         return [{ id: 1, name: 'John Doe' }]
     }
@@ -14,9 +14,11 @@ export class UserController extends Controller {
             .json({ message: `User ${await request.input('name')} created` })
     }
 
-    show ({ request, response }: HttpContext) {
+    @Injectable()
+    async show ({ response }: HttpContext, user: User) {
+
         return response
-            .json({ id: request.input('id'), name: 'John Doe' })
+            .json({ id: user.id, name: user.name, created_at: user.created_at })
     }
 
     async update ({ request, response }: HttpContext) {

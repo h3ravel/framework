@@ -299,6 +299,9 @@ importers:
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
+      '@h3ravel/database':
+        specifier: workspace:^
+        version: link:../database
       '@h3ravel/http':
         specifier: workspace:^
         version: link:../http

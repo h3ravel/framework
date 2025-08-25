@@ -50,5 +50,8 @@
     "@h3ravel/core": "workspace:^",
     "@h3ravel/support": "workspace:^",
     "@h3ravel/shared": "workspace:^"
+  },
+  "peerDependencies": {
+    "@h3ravel/database": "workspace:^"
   }
 }

@@ -4,6 +4,8 @@ import { Application, Container, Kernel } from '@h3ravel/core'
 import { Request, Response } from '@h3ravel/http'
 import { singularize } from '@h3ravel/support'
 import { HttpContext, RouteEventHandler, type EventHandler, type IController, type IMiddleware, type IRouter, type RouterEnd } from '@h3ravel/shared'
+import { Helpers } from './Helpers';
+import { Model } from '@h3ravel/database';
 
 interface RouteDefinition {
     method: string
@@ -91,15 +93,15 @@ export class Router implements IRouter {
      */
     private resolveControllerOrHandler (
         handler: EventHandler | (new (...args: any[]) => Record<string, any>),
-        methodName?: string
+        methodName?: string,
+        path?: string,
     ): EventHandler {
         /**
          * Checks if the handler is a function (either a plain function or a class constructor)
          */
         if (typeof handler === 'function' && typeof (handler as any).prototype !== 'undefined') {
-            return (_ctx) => {
+            return async (ctx) => {
                 let controller: IController
-
                 if (Container.hasAnyDecorator(handler)) {
                     /**
                      * If the controller is decorated use the IoC container
@@ -133,32 +135,40 @@ export class Router implements IRouter {
                 /**
                  * Resolve the bound dependencies
                  */
-                let args: any[] = paramTypes.map((paramType: any) => {
-                    switch (paramType?.name) {
-                        case 'Application':
-                            return this.app
-                        case 'Request':
-                            return _ctx.request
-                        case 'Response':
-                            return _ctx.response
-                        case 'HttpContext':
-                            return _ctx
-                        default:
-                            return this.app.make(paramType);
-                    }
-                });
+                let args = await Promise.all(
+                    paramTypes.map(async (paramType: any) => {
+                        switch (paramType?.name) {
+                            case 'Application':
+                                return this.app
+                            case 'Request':
+                                return ctx.request
+                            case 'Response':
+                                return ctx.response
+                            case 'HttpContext':
+                                return ctx
+                            default: {
+                                const inst = this.app.make(paramType)
+                                if (inst instanceof Model) {
+                                    // Route model binding returns a Promise
+                                    return await Helpers.resolveRouteModelBinding(path ?? '', ctx, inst)
+                                }
+                                return inst
+                            }
+                        }
+                    })
+                )
 
                 /**
                  * Ensure that the HttpContext is always available
                  */
                 if (args.length < 1) {
-                    args = [_ctx]
+                    args = [ctx]
                 }
 
                 /**
                  * Call the controller method, passing all resolved dependencies
                  */
-                return controller[action](...args);
+                return await controller[action](...args)
             }
         }
 
@@ -184,7 +194,7 @@ export class Router implements IRouter {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
 
-        this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
         return this
     }
 
@@ -206,7 +216,7 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
         return this
     }
 
@@ -228,7 +238,7 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
         return this
     }
 
@@ -250,7 +260,7 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('patch', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        this.addRoute('patch', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
         return this
     }
 
@@ -272,7 +282,7 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName), name, middleware)
+        this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
         return this
     }
 

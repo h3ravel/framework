@@ -1,4 +1,5 @@
 export * from './Controller'
+export * from './Helpers'
 export * from './Providers/AssetsServiceProvider'
 export * from './Providers/RouteServiceProvider'
 export * from './Route'
