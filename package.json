@@ -20,7 +20,7 @@
     "deno"
   ],
   "scripts": {
-    "barrel": "barrelize",
+    "barrel": "barrelize >/dev/null",
     "_barrel": "pnpm -r --filter './packages/*' run barrel",
     "build": "pnpm barrel && pnpm -r --workspace-concurrency=1 --filter './packages/*' run build",
     "dev": "pnpm barrel && pnpm -r --parallel --filter './examples/*' run dev",
@@ -37,29 +37,33 @@
     "publish": "pnpm build && pnpm -r publish --access public"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.29.5",
-    "@eslint/js": "^9.33.0",
-    "@swc/core": "^1.13.3",
+    "@aws-sdk/client-sesv2": "^3.864.0",
+    "@changesets/cli": "^2.29.6",
+    "@eslint/js": "^9.34.0",
+    "@swc/core": "^1.13.5",
     "@types/jest": "^30.0.0",
-    "@types/node": "^24.2.1",
-    "@typescript-eslint/eslint-plugin": "^8.39.0",
-    "@typescript-eslint/parser": "^8.39.0",
+    "@types/node": "^24.3.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
     "barrelize": "^1.6.3",
     "barrelsby": "^2.8.1",
+    "dotenv": "^17.2.1",
+    "edge.js": "^6.3.0",
     "escalade": "^3.2.0",
-    "eslint": "^9.33.0",
+    "eslint": "^9.34.0",
     "fetchdts": "^0.1.6",
     "husky": "^9.1.7",
     "install": "^0.13.0",
     "jest": "^30.0.5",
     "jest-junit": "^16.0.0",
+    "nodemailer": "^7.0.5",
     "path": "^0.12.7",
-    "pnpm": "^10.14.0",
+    "pnpm": "^10.15.0",
     "ts-jest": "^29.4.1",
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.39.0"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.40.0"
   },
   "packageManager": "pnpm@10.14.0"
 }

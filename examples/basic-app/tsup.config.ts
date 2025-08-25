@@ -2,17 +2,20 @@ import { defineConfig } from 'tsup';
 
 const env = process.env.NODE_ENV || 'development'
 const postCmd = env === 'development'
-    ? `&& NODE_ENV=${env} node -r tsconfig-paths/register src/server.ts`
-    : `&& NODE_ENV=${env} SRC_PATH=dist node -r tsconfig-paths/register dist/server.js`
-console.log(env, '==============')
-export default defineConfig({
+    ? `&& NODE_ENV=${env} SRC_PATH=dist node -r tsconfig-paths/register dist/server.js`
+    : undefined
+
+export default defineConfig((options) => ({
     entry: ['src/**/*.ts'],
     format: ['esm'],
-    target: 'esnext',
-    sourcemap: true,
+    target: 'node22',
+    sourcemap: env === 'development',
     clean: true,
-    watch: env === 'development',
+    shims: true,
+    publicDir: true,
+    watch: env === 'development' ? ['.env', '.env.*', 'src/**/*.*', '../../packages/**/src/**/*.*'] : false,
     onSuccess: `cp -r ./src/resources ./dist ${postCmd}`,
     dts: true,
+    silent: true,
     skipNodeModulesBundle: true,
-});
+}));

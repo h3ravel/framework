@@ -38,6 +38,9 @@ export default defineConfig({
         'crypto',
         'fs-readdir-recursive',
         /.*\/promises$/gi,
-        /^node:.*/gi
+        /^node:.*/gi,
+        'edge.js',
+        'nodemailer',
+        'fs-readdir-recursive',
     ],
 }) 

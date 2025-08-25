@@ -14,11 +14,11 @@ export abstract class ServiceProvider implements IServiceProvider {
      * Register bindings to the container.
      * Runs before boot().
      */
-    abstract register (): void | Promise<void>
+    abstract register (...app: unknown[]): void | Promise<void>;
 
     /**
      * Perform post-registration booting of services.
      * Runs after all providers have been registered.
      */
-    boot?(): void | Promise<void>
+    boot?(...app: unknown[]): void | Promise<void>;
 }

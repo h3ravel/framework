@@ -43,6 +43,10 @@
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests"
   },
+  "dependencies": {
+    "@h3ravel/arquebus": "^0.2.2",
+    "mysql2": "^3.14.3"
+  },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^"
   },

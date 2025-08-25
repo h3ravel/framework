@@ -1,6 +1,9 @@
+import 'reflect-metadata';
+
 import { IApplication, IPathName, IServiceProvider } from '@h3ravel/shared'
 
 import { Container } from './Container'
+import { ContainerResolver } from './Di/ContainerResolver';
 import { PathLoader } from '@h3ravel/shared'
 import { Registerer } from './Registerer'
 import dotenv from 'dotenv'
@@ -144,7 +147,7 @@ export class Application extends Container implements IApplication {
      * Register a provider
      */
     public async register (provider: IServiceProvider) {
-        await provider.register()
+        await new ContainerResolver(this).resolveMethodParams(provider, 'register', this)
         this.providers.push(provider)
     }
 
@@ -156,7 +159,18 @@ export class Application extends Container implements IApplication {
 
         for (const provider of this.providers) {
             if (provider.boot) {
-                await provider.boot()
+                if (Container.hasAnyDecorator(provider.boot)) {
+                    /**
+                     * If the service provider is decorated use the IoC container
+                     */
+                    await this.make<any>(provider.boot)
+                } else {
+                    /**
+                     * Otherwise instantiate manually so that we can at least
+                     * pass the app instance
+                     */
+                    await provider.boot(this)
+                }
             }
         }
 
