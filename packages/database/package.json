@@ -45,10 +45,11 @@
   },
   "dependencies": {
     "@h3ravel/arquebus": "^0.2.2",
-    "mysql2": "^3.14.3"
+    "sqlite3": "^5.1.7"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^"
+    "@h3ravel/core": "workspace:^",
+    "@h3ravel/support": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

@@ -1,4 +1,4 @@
-/// <reference path="../globals.d.ts" />
+/// <reference path="../app.globals.d.ts" />
 
 import { Application, ServiceProvider } from "..";
 

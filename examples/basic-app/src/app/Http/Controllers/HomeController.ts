@@ -1,6 +1,7 @@
 import { Application, Controller } from '@h3ravel/core'
 
 import { HttpContext } from '@h3ravel/http'
+import { User } from 'src/database/Models/user'
 
 export class HomeController extends Controller {
     constructor(app: Application) {
@@ -8,6 +9,8 @@ export class HomeController extends Controller {
     }
     public async index ({ response }: HttpContext) {
         const view = this.app.make('view')
+
+        // console.log(await User.query().all())
 
         return response.html(await view('index', {
             links: {

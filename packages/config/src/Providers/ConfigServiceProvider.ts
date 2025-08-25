@@ -1,3 +1,5 @@
+/// <reference path="../../../core/src/app.globals.d.ts" />
+
 import { ConfigRepository, EnvLoader } from '..'
 
 import { Bindings } from '@h3ravel/shared';
@@ -20,7 +22,9 @@ export class ConfigServiceProvider extends ServiceProvider {
          * Create singleton to load env
          */
         this.app.singleton('env', () => {
-            return new EnvLoader(this.app).get
+            const env = new EnvLoader(this.app).get
+            globalThis.env = env
+            return env
         })
 
         /**

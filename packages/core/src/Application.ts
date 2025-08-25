@@ -20,12 +20,13 @@ export class Application extends Container implements IApplication {
 
     constructor(basePath: string) {
         super()
+        dotenv.config({ quiet: true })
+
         this.basePath = basePath
         this.setPath('base', basePath)
         this.loadOptions()
         this.registerBaseBindings();
-        Registerer.register()
-        dotenv.config({ quiet: true })
+        Registerer.register(this)
     }
 
     /**

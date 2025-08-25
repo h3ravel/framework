@@ -16,7 +16,7 @@
   "typesVersions": {
     "*": {
       "globals": [
-        "./dist/globals.d.ts"
+        "./dist/app.globals.d.ts"
       ]
     }
   },

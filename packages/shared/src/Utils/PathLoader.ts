@@ -10,6 +10,7 @@ export class PathLoader {
         config: '/src/config',
         public: '/public',
         storage: '/storage',
+        database: '/src/database',
     }
 
     /**

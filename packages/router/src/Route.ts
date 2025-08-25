@@ -148,8 +148,6 @@ export class Router implements IRouter {
                     }
                 });
 
-                console.log(args[0].constructor)
-
                 /**
                  * Ensure that the HttpContext is always available
                  */

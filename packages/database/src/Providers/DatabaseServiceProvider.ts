@@ -1,4 +1,7 @@
-import { ServiceProvider } from '@h3ravel/core'
+import { Application, Injectable, ServiceProvider } from '@h3ravel/core'
+
+import { arquebus } from '@h3ravel/arquebus';
+import { arquebusConfig } from '../Configuration';
 
 /**
  * Database connection, ORM, migrations.
@@ -12,7 +15,18 @@ import { ServiceProvider } from '@h3ravel/core'
 export class DatabaseServiceProvider extends ServiceProvider {
     public static priority = 994;
 
+    @Injectable()
     register () {
-        // Core bindings
+        const config = this.app.make('config')
+
+        const connection = Object.entries(arquebusConfig(config.get('database')))
+            .find(([client]) => client === config.get('database.default'))
+            ?.at(1)
+
+        if (connection) {
+            arquebus.addConnection(connection);
+            arquebus.connection()
+        }
+
     }
 }
