@@ -1,7 +1,7 @@
 import { Controller, Injectable } from '@h3ravel/core'
 
 import { HttpContext } from '@h3ravel/http'
-import { User } from 'src/database/Models/user'
+import { User } from 'App/Models/user'
 
 export class UserController extends Controller {
     index () {

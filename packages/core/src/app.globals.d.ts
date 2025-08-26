@@ -22,6 +22,10 @@ declare global {
     function env (): NodeJS.ProcessEnv;
     function env<T extends string> (key: T, def?: any): any;
 
+    function config<X extends Record<string, any>> (): X;
+    function config<X extends Record<string, any>, T extends Extract<keyof X, string>> (key: T, def?: any): X[T];
+    function config<T extends Record<string, any>> (key: T): void;
+
     /**
      * Get app path
      * 

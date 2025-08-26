@@ -37,10 +37,22 @@ export class ConfigServiceProvider extends ServiceProvider {
          * Create singleton to load configurations
          */
         this.app.singleton('config', () => {
-            return {
+            const config = {
                 get: (key, def) => repo.get(key as any, def),
                 set: repo.set
             } as Bindings['config']
+
+            globalThis.config = ((key: string | Record<string, any>, def: any) => {
+                if (!key || typeof key === 'string') {
+                    return config.get(key, def)
+                }
+
+                Object.entries(key).forEach(([key, value]) => {
+                    config.set(key, value)
+                })
+            }) as never
+
+            return config
         })
 
         this.app.make('http.app').use(e => {

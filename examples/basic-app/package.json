@@ -9,11 +9,16 @@
     "devx": "tsx watch ./src/server.ts",
     "dev": "NODE_ENV=development pnpm tsup-node",
     "start": "SRC_PATH=dist node -r tsconfig-paths/register dist/server.js",
+    "musket": "cross-env TEST=true APP_DEBUG=false tsx --experimental-specifier-resolution=node src/cli",
+    "musket:watch": "cross-env TEST=true APP_DEBUG=false tsx watch --experimental-specifier-resolution=node src/cli",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests"
   },
+  "bin": {
+    "musket": "dist/cli.js"
+  },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.2.3",
+    "@h3ravel/arquebus": "^0.2.5",
     "@h3ravel/cache": "workspace:^",
     "@h3ravel/config": "workspace:^",
     "@h3ravel/console": "workspace:^",
@@ -24,6 +29,7 @@
     "@h3ravel/queue": "workspace:^",
     "@h3ravel/router": "workspace:^",
     "@h3ravel/shared": "workspace:^",
+    "cross-env": "^10.0.0",
     "h3": "2.0.0-beta.3",
     "reflect-metadata": "^0.2.2"
   },

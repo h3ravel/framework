@@ -1,5 +1,7 @@
-import { ServiceProvider } from '@h3ravel/core'
+/// <reference path="../../../core/src/app.globals.d.ts" />
 
+import { Kernel } from '../Kernel';
+import { ServiceProvider } from '@h3ravel/core'
 /**
  * Handles CLI commands and tooling.
  * 
@@ -13,6 +15,6 @@ export class ConsoleServiceProvider extends ServiceProvider {
     public static priority = 992;
 
     register () {
-        // Core bindings
+        Kernel.init(this.app)
     }
 }

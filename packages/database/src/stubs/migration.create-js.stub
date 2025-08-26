@@ -1,0 +1,24 @@
+import { Migration } from '@h3ravel/arquebus'
+
+export default class extends Migration {
+  /**
+    * Run the migrations.
+    * 
+    * @param {(import('@h3ravel/arquebus/types/query-builder').SchemaBuilder)} schema 
+    */
+  async up(schema) {
+    await schema.createTable('{{ table }}', (table) => {
+      table.increments('id');
+      table.timestamps();
+    });
+  }
+
+  /**
+    * Reverse the migrations.
+    * 
+    * @param {(import('@h3ravel/arquebus/types/query-builder').SchemaBuilder)} schema 
+    */
+  async down(schema) {
+    await schema.dropTableIfExists('{{ table }}');
+  }
+};
