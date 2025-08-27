@@ -10,5 +10,6 @@ export default defineConfig(() => [
         entry: ['src/run.ts'],
         treeshake: true,
         outDir: 'bin',
+        minify: true,
     }
 ]);
