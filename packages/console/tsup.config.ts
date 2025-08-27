@@ -8,5 +8,7 @@ export default defineConfig(() => [
     {
         format: ['esm', 'cjs'],
         entry: ['src/run.ts'],
+        treeshake: true,
+        outDir: 'bin',
     }
 ]);

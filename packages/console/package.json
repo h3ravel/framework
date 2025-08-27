@@ -14,9 +14,10 @@
     }
   },
   "bin": {
-    "musket": "dist/run.js"
+    "musket": "bin/run.js"
   },
   "files": [
+    "bin",
     "dist"
   ],
   "publishConfig": {
