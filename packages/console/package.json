@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/console",
-  "version": "11.0.4",
+  "version": "11.0.5",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -48,7 +48,7 @@
     "test": "jest --passWithNoTests",
     "musket": "cross-env TEST=true APP_DEBUG=false tsx --experimental-specifier-resolution=node src/musket",
     "musket:watch": "cross-env TEST=true APP_DEBUG=false tsx watch --experimental-specifier-resolution=node src/musket",
-    "release:patch": "pnpm build && git add . && git commit -m \"version: bump version and publish\" && pnpm version patch && pnpm publish --tag latest"
+    "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump version and publish\" && pnpm publish --tag latest"
   },
   "peerDependencies": {
     "@h3ravel/arquebus": "^0.2.14",
