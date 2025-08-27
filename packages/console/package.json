@@ -47,7 +47,8 @@
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests",
     "musket": "cross-env TEST=true APP_DEBUG=false tsx --experimental-specifier-resolution=node src/musket",
-    "musket:watch": "cross-env TEST=true APP_DEBUG=false tsx watch --experimental-specifier-resolution=node src/musket"
+    "musket:watch": "cross-env TEST=true APP_DEBUG=false tsx watch --experimental-specifier-resolution=node src/musket",
+    "release:patch": "pnpm build && git add . && git commit -m \"version: bump version and publish\" && pnpm version patch && pnpm publish --tag latest"
   },
   "peerDependencies": {
     "@h3ravel/arquebus": "^0.2.14",
