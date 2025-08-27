@@ -5,6 +5,7 @@ import { Command } from "./Commands/Command";
 import { Kernel } from "./Kernel";
 import { MakeCommand } from "./Commands/MakeCommand";
 import { MigrateCommand } from "./Commands/MigrateCommand";
+import { ServeCommand } from "./Commands/ServeCommand";
 import { Signature } from "./Signature";
 import { Utils } from "./Utils";
 import chalk from "chalk";
@@ -27,6 +28,7 @@ export class Musket {
 
     private loadBaseCommands () {
         const commands: Command[] = [
+            new ServeCommand(this.app, this.kernel),
             new MakeCommand(this.app, this.kernel),
             new MigrateCommand(this.app, this.kernel),
         ]
@@ -115,6 +117,13 @@ export class Musket {
                          * Add the shared arguments here
                          */
                         command.subCommands?.filter(e => e.shared).forEach(opt => {
+                            this.makeOption(opt, cmd, false, sub)
+                        });
+
+                        /**
+                         * Add the shared options here
+                         */
+                        command.options?.filter(e => e.shared).forEach(opt => {
                             this.makeOption(opt, cmd, false, sub)
                         });
 

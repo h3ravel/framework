@@ -31,6 +31,8 @@ export class MakeCommand extends Command {
     protected description: string = 'Generate component classes';
 
     public async handle () {
+        const command = this.dictionary.baseCommand as never
+
         const methods = {
             controller: 'makeController',
             resource: 'makeResource',
@@ -40,7 +42,11 @@ export class MakeCommand extends Command {
             model: 'makeModel',
         } as const;
 
-        await (this as any)?.[methods[(this as any).dictionary.name as never]]()
+        try {
+            await (this as any)?.[methods[command]]()
+        } catch (e) {
+            this.kernel.output.error(e as any)
+        }
     }
 
     /**

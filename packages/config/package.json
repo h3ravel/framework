@@ -48,7 +48,7 @@
     "@h3ravel/support": "workspace:^"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@h3ravel/core": "workspace:^"
+    "@h3ravel/core": "workspace:^",
+    "typescript": "^5.9.2"
   }
 }

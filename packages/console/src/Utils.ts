@@ -35,7 +35,7 @@ export class Utils {
       error: (msg: string | string[] | Error & { detail?: string }, exit = true) => {
         if (msg instanceof Error) {
           if (msg.message) {
-            console.error(chalk.red('✖'), this.textFormat(msg.message, chalk.bgRed))
+            console.error(chalk.red('✖'), this.textFormat('ERROR:' + msg.message, chalk.bgRed))
           }
           console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`), '\n')
         }

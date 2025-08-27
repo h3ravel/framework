@@ -1,4 +1,4 @@
-import { Application, Injectable, ServiceProvider } from '@h3ravel/core'
+import { Injectable, ServiceProvider } from '@h3ravel/core'
 
 import { arquebus } from '@h3ravel/arquebus';
 import { arquebusConfig } from '../Configuration';
@@ -25,8 +25,6 @@ export class DatabaseServiceProvider extends ServiceProvider {
 
         if (connection) {
             arquebus.addConnection(connection);
-            arquebus.connection()
         }
-
     }
 }

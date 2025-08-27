@@ -5,17 +5,12 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production tsup",
+    "build": "NODE_ENV=production tsup-node",
     "devx": "tsx watch ./src/server.ts",
     "dev": "NODE_ENV=development pnpm tsup-node",
     "start": "SRC_PATH=dist node -r tsconfig-paths/register dist/server.js",
-    "musket": "cross-env TEST=true APP_DEBUG=false tsx --experimental-specifier-resolution=node src/cli",
-    "musket:watch": "cross-env TEST=true APP_DEBUG=false tsx watch --experimental-specifier-resolution=node src/cli",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests"
-  },
-  "bin": {
-    "musket": "dist/cli.js"
   },
   "dependencies": {
     "@h3ravel/arquebus": "^0.2.5",

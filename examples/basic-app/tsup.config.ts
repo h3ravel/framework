@@ -3,7 +3,7 @@ import { defineConfig } from 'tsup';
 const env = process.env.NODE_ENV || 'development'
 const postCmd = env === 'development'
     ? `&& NODE_ENV=${env} SRC_PATH=dist node -r tsconfig-paths/register dist/server.js`
-    : undefined
+    : ''
 
 export default defineConfig((options) => [
     {

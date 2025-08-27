@@ -2,7 +2,11 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig(() => [
     {
+        format: ['esm', 'cjs'],
         entry: ['src/**/*.ts'],
-        onSuccess: `cp -r ./src/stubs ./dist`,
+    },
+    {
+        format: ['esm', 'cjs'],
+        entry: ['src/run.ts'],
     }
 ]);

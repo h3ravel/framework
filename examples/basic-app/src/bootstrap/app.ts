@@ -26,6 +26,6 @@ export default class {
         h3App.use((event) => kernel.handle(event, async () => undefined))
 
         serve(h3App, { port: 3001 })
-        console.log('🚀 H3ravel running at http://localhost:3000')
+        console.log('🚀 H3ravel running at http://localhost:3001')
     }
 }
