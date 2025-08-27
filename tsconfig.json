@@ -17,6 +17,7 @@
     }
   },
   "exclude": [
+    "./**/console/bin",
     "./dist",
     "./**/dist",
     "./**/node_modules",

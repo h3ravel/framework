@@ -24,6 +24,7 @@
     "@h3ravel/queue": "workspace:^",
     "@h3ravel/router": "workspace:^",
     "@h3ravel/shared": "workspace:^",
+    "@h3ravel/support": "workspace:^",
     "cross-env": "^10.0.0",
     "h3": "2.0.0-beta.3",
     "reflect-metadata": "^0.2.2"

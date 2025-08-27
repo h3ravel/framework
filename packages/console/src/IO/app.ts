@@ -12,7 +12,7 @@ export default class {
         await app.registerConfiguredProviders()
         await app.boot()
 
-        new Kernel(app)
+        // new Kernel(app)
 
         new EventEmitter().once('SIGINT', () => process.exit(0));
 

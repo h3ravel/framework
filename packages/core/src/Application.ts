@@ -64,6 +64,13 @@ export class Application extends Container implements IApplication {
     }
 
     /**
+     * Get all registered providers
+     */
+    public getRegisteredProviders () {
+        return this.providers;
+    }
+
+    /**
      * Load default and optional providers dynamically
      * 
      * Auto-Registration Behavior
@@ -206,8 +213,8 @@ export class Application extends Container implements IApplication {
      * @param name - The base name of the path property
      * @returns 
      */
-    getPath (name: IPathName, pth?: string) {
-        return path.join(this.paths.getPath(name, this.basePath), pth ?? '')
+    getPath (name: IPathName, suffix?: string) {
+        return path.join(this.paths.getPath(name, this.basePath), suffix ?? '')
     }
 
     /**

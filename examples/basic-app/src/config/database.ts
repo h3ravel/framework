@@ -1,8 +1,9 @@
+import { Application } from '@h3ravel/core'
 import { slugify } from '@h3ravel/support'
 
-export default () => {
+export default (app: Application) => {
+    const env = app.make('env')
     return {
-
         /*
         |--------------------------------------------------------------------------
         | Default Database Connection Name

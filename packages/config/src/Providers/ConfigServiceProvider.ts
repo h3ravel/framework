@@ -15,12 +15,13 @@ import { ServiceProvider } from '@h3ravel/core'
  */
 export class ConfigServiceProvider extends ServiceProvider {
     public static priority = 998;
-    // public static order = 'before:CoreServiceProvider';
+    // public static order = 'before:DatabaseServiceProvider';
 
     async register () {
         /**
          * Create singleton to load env
          */
+        globalThis.env = () => ({})
         this.app.singleton('env', () => {
             const env = new EnvLoader(this.app).get
             globalThis.env = env

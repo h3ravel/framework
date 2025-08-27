@@ -1,5 +1,4 @@
-import { Injectable, ServiceProvider } from '@h3ravel/core'
-
+import { ServiceProvider } from '@h3ravel/core'
 import { arquebus } from '@h3ravel/arquebus';
 import { arquebusConfig } from '../Configuration';
 
@@ -10,12 +9,10 @@ import { arquebusConfig } from '../Configuration';
  * Set up ORM models and relationships.
  * Register migration and seeder commands.
  * 
- * Auto-Registered if @h3ravel/database is installed
  */
 export class DatabaseServiceProvider extends ServiceProvider {
     public static priority = 994;
 
-    @Injectable()
     register () {
         const config = this.app.make('config')
 

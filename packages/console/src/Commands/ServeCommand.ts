@@ -34,7 +34,7 @@ export class ServeCommand extends Command {
         });
 
         const cleanup = () => {
-            console.log(111)
+            console.log(111111)
             if (child.pid) {
                 process.kill(child.pid, 'SIGTERM')
             }

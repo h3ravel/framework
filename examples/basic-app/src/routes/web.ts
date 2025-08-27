@@ -11,7 +11,6 @@ export default (Route: Router) => {
 
 
     Route.get('/app', async function ({ request, response }: HttpContext, req: Request) {
-        console.log(req)
         const view = request.app.make('view')
 
         return response.html(await view('index', {
