@@ -1,9 +1,13 @@
 import { Application } from '@h3ravel/core'
-import { ConfigServiceProvider } from '@h3ravel/config'
-import { IServiceProvider } from '@h3ravel/shared'
-import { DatabaseServiceProvider } from '@h3ravel/database'
-import { ConsoleServiceProvider } from '../Providers/ConsoleServiceProvider'
 import { HttpServiceProvider } from '@h3ravel/http'
+import { IServiceProvider } from '@h3ravel/shared'
+import { RouteServiceProvider, AssetsServiceProvider } from '@h3ravel/router'
+import { DatabaseServiceProvider } from '@h3ravel/database'
+import { CacheServiceProvider } from '@h3ravel/cache'
+import { QueueServiceProvider } from '@h3ravel/queue'
+import { MailServiceProvider } from '@h3ravel/mail'
+import { ConfigServiceProvider } from '@h3ravel/config'
+import { ConsoleServiceProvider } from '../Providers/ConsoleServiceProvider'
 
 /**
  * Default service provider have a priority ranging from 999-990
@@ -12,7 +16,11 @@ import { HttpServiceProvider } from '@h3ravel/http'
 export default <Array<new (_app: Application) => IServiceProvider>>[
     HttpServiceProvider,
     ConfigServiceProvider,
+    RouteServiceProvider,
+    AssetsServiceProvider,
     DatabaseServiceProvider,
-    ConsoleServiceProvider,
-    // RouteServiceProvider, 
+    CacheServiceProvider,
+    QueueServiceProvider,
+    MailServiceProvider,
+    ConsoleServiceProvider
 ]

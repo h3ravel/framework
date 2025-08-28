@@ -1,5 +1,6 @@
 /// <reference path="../../../core/src/app.globals.d.ts" />
 
+import { EventEmitter } from 'node:events';
 import { Kernel } from '../Kernel';
 import { ServiceProvider } from '@h3ravel/core'
 /**
@@ -15,6 +16,18 @@ export class ConsoleServiceProvider extends ServiceProvider {
     public static priority = 992;
 
     register () {
+    }
+
+    boot (): void | Promise<void> {
         Kernel.init(this.app)
+
+        new EventEmitter().once('SIGINT', () => process.exit(0));
+
+        process.on("SIGINT", () => {
+            process.exit(0);
+        });
+        process.on("SIGTERM", () => {
+            process.exit(0);
+        });
     }
 }

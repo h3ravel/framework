@@ -30,7 +30,7 @@ export class ServeCommand extends Command {
             stdio: "inherit",
             shell: true,
             env: Object.assign({}, process.env, { NODE_ENV: 'development' }),
-            detached: true
+            detached: false
         });
 
         const cleanup = () => {
