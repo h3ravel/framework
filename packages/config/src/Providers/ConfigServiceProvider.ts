@@ -21,7 +21,6 @@ export class ConfigServiceProvider extends ServiceProvider {
         /**
          * Create singleton to load env
          */
-        globalThis.env = () => ({})
         this.app.singleton('env', () => {
             const env = new EnvLoader(this.app).get
             globalThis.env = env

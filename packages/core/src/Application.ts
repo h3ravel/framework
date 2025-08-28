@@ -42,6 +42,7 @@ export class Application extends Container implements IApplication {
      * Dynamically register all configured providers
      */
     public async registerConfiguredProviders () {
+        Registerer.register(this)
         const providers = await this.getAllProviders()
 
         for (const ProviderClass of providers) {

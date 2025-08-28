@@ -31,6 +31,7 @@ export class ConfigRepository {
 
     async load () {
         if (!this.loaded) {
+
             const configPath = this.app.getPath('config')
 
             const files = (await readdir(configPath)).filter((e) => {

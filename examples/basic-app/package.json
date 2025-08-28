@@ -10,7 +10,8 @@
     "dev": "NODE_ENV=development pnpm tsup-node",
     "start": "SRC_PATH=dist node -r tsconfig-paths/register dist/server.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "mosket": "tsx node_modules/@h3ravel/console/bin/run"
   },
   "dependencies": {
     "@h3ravel/arquebus": "^0.2.5",
