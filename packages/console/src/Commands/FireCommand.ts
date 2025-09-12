@@ -1,6 +1,5 @@
 import { Command } from "./Command";
 import { build } from 'tsup'
-// import { spawn } from "node:child_process";
 
 export class FireCommand extends Command {
 
@@ -31,34 +30,32 @@ export class FireCommand extends Command {
     }
 
     protected async fire () {
-        console.log(process.cwd())
-        // await build({
-        //     entry: ['src/index.ts'],
-        //     sourcemap: true,
-        //     dts: true,
-        // })
-        // const child = spawn("tsup-node", {
-        //     stdio: "inherit",
-        //     shell: true,
-        //     env: Object.assign({}, process.env, { NODE_ENV: 'development' }),
-        //     detached: false
-        // });
+        const db = base_path('src/database')
+        const env = process.env.NODE_ENV || 'development'
+        const dist = base_path('dist')
+        const base = base_path('src/resources')
+        const port = this.option('port')
+        const host = this.option('host')
+        const tries = this.option('tries')
+        const devMode = env === 'development'
 
-        const cleanup = () => {
-            console.log(111111)
-            // if (child.pid) {
-            //     process.kill(child.pid, 'SIGTERM')
-            // }
-        }
+        const postCmd = devMode
+            ? `&& NODE_ENV=${env} RETRIES=${tries} HOSTNAME=${host} PORT=${port} SRC_PATH=dist node -r tsconfig-paths/register dist/server.js`
+            : ''
 
-        process.on('SIGINT', () => {
-            cleanup()
-            process.exit(0)
-        })
-
-        process.on('SIGTERM', () => {
-            cleanup()
-            process.exit(0)
+        await build({
+            entry: ['src/**/*.ts'],
+            format: ['esm', 'cjs'],
+            target: 'node22',
+            sourcemap: devMode,
+            clean: true,
+            shims: true,
+            publicDir: true,
+            watch: devMode ? ['.env', '.env.*', base_path('src/**/*.*'), '../../packages/**/src/**/*.*'] : false,
+            onSuccess: `cp -r ${base} ${dist} && cp -r ${db} ${dist} ${postCmd}`,
+            dts: false,
+            silent: true,
+            skipNodeModulesBundle: true,
         })
     }
 }

@@ -213,32 +213,32 @@ importers:
         specifier: ^0.2.14
         version: 0.2.15
       '@h3ravel/cache':
-        specifier: ^11.0.0
-        version: 11.0.0(@h3ravel/core@packages+core)
+        specifier: workspace:^
+        version: link:../cache
       '@h3ravel/config':
-        specifier: ^1.3.7
-        version: 1.3.7
+        specifier: workspace:^
+        version: link:../config
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
       '@h3ravel/database':
-        specifier: ^11.0.0
-        version: 11.0.0(@h3ravel/core@packages+core)
+        specifier: workspace:^
+        version: link:../database
       '@h3ravel/http':
-        specifier: ^11.0.0
-        version: 11.0.0(@h3ravel/core@packages+core)
+        specifier: workspace:^
+        version: link:../http
       '@h3ravel/mail':
-        specifier: ^11.0.0
-        version: 11.0.0(@h3ravel/core@packages+core)
+        specifier: workspace:^
+        version: link:../mail
       '@h3ravel/queue':
-        specifier: ^11.0.0
-        version: 11.0.0(@h3ravel/core@packages+core)
+        specifier: workspace:^
+        version: link:../queue
       '@h3ravel/router':
-        specifier: ^1.8.3
-        version: 1.8.3
+        specifier: workspace:^
+        version: link:../router
       '@h3ravel/shared':
-        specifier: ^0.17.2
-        version: 0.17.2
+        specifier: workspace:^
+        version: link:../shared
       '@h3ravel/support':
         specifier: workspace:^
         version: link:../support
@@ -1172,46 +1172,6 @@ packages:
     resolution: {integrity: sha512-IO3lMSszxgCcmwpCLCLMhblTThR3yujMIwX3OcEe3JBiqypkwH+BycYPXZb4cNqm2/p6w9mZ5G5MKwEkTRT0wg==}
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
-
-  '@h3ravel/cache@11.0.0':
-    resolution: {integrity: sha512-w2R63zzRft2TYPwRSw8LJvWy9MemI39SSSyxyVuTQ9EM51fw9D06nCPwALlTu2Wis+N/U9X1CEWnqvIUxZbg7g==}
-    peerDependencies:
-      '@h3ravel/core': ^1.7.0
-
-  '@h3ravel/config@1.3.7':
-    resolution: {integrity: sha512-VUENLfvH1MQ7atXNDlkwlA67GcPUV5PT2w82u2vs3cwu7kHmt9RpN9GDVrI6GWA7mjIMj1mmVVX9UxKuOhX3xg==}
-
-  '@h3ravel/core@1.7.4':
-    resolution: {integrity: sha512-xeJRqjyHhWOlp7hnlBHzvZijB9LIPf7Ob+ETv78Cihb49hAxR3Z6TXTF9PJKpsse98j8Hb6RVDEVDlHKHnmeVw==}
-
-  '@h3ravel/database@11.0.0':
-    resolution: {integrity: sha512-ASS/NN1sApWV+mpX1zF/vMPbLIaycZdlrFuJVp28Z+1a4iNs6enZzDJHQwrjzCLpdv6AotlS9aH1Eh7KjIcLcA==}
-    peerDependencies:
-      '@h3ravel/core': ^1.7.0
-
-  '@h3ravel/http@11.0.0':
-    resolution: {integrity: sha512-JOxFwdmbEb4xC2n8S6zZkQhsNLQUiiSn3OQpkqyadFu5fY7zf3I+QBtdXdnttUF/nnVwxfrNmULnoMKoKSPn7g==}
-    peerDependencies:
-      '@h3ravel/core': ^1.7.0
-
-  '@h3ravel/mail@11.0.0':
-    resolution: {integrity: sha512-o///p7zNAP+P6alpChMAnZkeXIhTQLC2rbUzkJLIV6mVgDCud1+BJFeAHxnihqPg+Orm2XO1I7n+JXBKrVkxOw==}
-    peerDependencies:
-      '@h3ravel/core': ^1.7.0
-
-  '@h3ravel/queue@11.0.0':
-    resolution: {integrity: sha512-jGcmi6oNJQvUQ4+AQNMEg3SdWIWv45+uMZS5X5iiuK/KLnYlYKxcLyasYB4mb4+7awQZIVqL0MfK8d2A1uUinw==}
-    peerDependencies:
-      '@h3ravel/core': ^1.7.0
-
-  '@h3ravel/router@1.8.3':
-    resolution: {integrity: sha512-8MwH8v2YLZFFvizZOULy+m0aP62IbluTgu7MAFB8dAO6H/My+PnNGlT1BphcaHd6neEDP+8B6V5gTCHpGJ0UnA==}
-
-  '@h3ravel/shared@0.17.2':
-    resolution: {integrity: sha512-VuGpUba7ZOAbpS+HFwuFCw4n/jyCJEF/crOzqtiQhF++0yg3skV5dHTB5FmvTRk7paGeI+A/DBCP3GvqAzAtNA==}
-
-  '@h3ravel/support@0.9.0':
-    resolution: {integrity: sha512-Ifyd1PiYkMXvNjYHvr+lR8PURBSWaZ4zyzgV/OhzgBdPB8pNX0wKpztNNnOtQLwet0AuwHpQspLNrGui5ijQbA==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -6142,86 +6102,6 @@ snapshots:
       - pg-native
       - sqlite3
       - supports-color
-
-  '@h3ravel/cache@11.0.0(@h3ravel/core@packages+core)':
-    dependencies:
-      '@h3ravel/core': link:packages/core
-
-  '@h3ravel/config@1.3.7':
-    dependencies:
-      '@h3ravel/shared': 0.17.2
-      '@h3ravel/support': 0.9.0
-    transitivePeerDependencies:
-      - crossws
-
-  '@h3ravel/core@1.7.4':
-    dependencies:
-      '@h3ravel/shared': 0.17.2
-      '@h3ravel/support': 0.9.0
-      dotenv: 17.2.2
-      edge.js: 6.3.0
-      h3: 2.0.0-beta.4
-      reflect-metadata: 0.2.2
-      srvx: 0.8.7
-      tslib: 2.8.1
-    transitivePeerDependencies:
-      - crossws
-
-  '@h3ravel/database@11.0.0(@h3ravel/core@packages+core)':
-    dependencies:
-      '@h3ravel/core': link:packages/core
-
-  '@h3ravel/http@11.0.0(@h3ravel/core@1.7.4)':
-    dependencies:
-      '@h3ravel/core': 1.7.4
-      '@h3ravel/shared': 0.17.2
-      '@h3ravel/support': 0.9.0
-      h3: 2.0.0-beta.4
-      srvx: 0.8.7
-    transitivePeerDependencies:
-      - crossws
-
-  '@h3ravel/http@11.0.0(@h3ravel/core@packages+core)':
-    dependencies:
-      '@h3ravel/core': link:packages/core
-      '@h3ravel/shared': 0.17.2
-      '@h3ravel/support': 0.9.0
-      h3: 2.0.0-beta.4
-      srvx: 0.8.7
-    transitivePeerDependencies:
-      - crossws
-
-  '@h3ravel/mail@11.0.0(@h3ravel/core@packages+core)':
-    dependencies:
-      '@aws-sdk/client-sesv2': 3.883.0
-      '@h3ravel/core': link:packages/core
-      nodemailer: 7.0.6
-    transitivePeerDependencies:
-      - aws-crt
-
-  '@h3ravel/queue@11.0.0(@h3ravel/core@packages+core)':
-    dependencies:
-      '@h3ravel/core': link:packages/core
-
-  '@h3ravel/router@1.8.3':
-    dependencies:
-      '@h3ravel/core': 1.7.4
-      '@h3ravel/http': 11.0.0(@h3ravel/core@1.7.4)
-      '@h3ravel/shared': 0.17.2
-      '@h3ravel/support': 0.9.0
-      h3: 2.0.0-beta.4
-      reflect-metadata: 0.2.2
-    transitivePeerDependencies:
-      - crossws
-
-  '@h3ravel/shared@0.17.2':
-    dependencies:
-      edge.js: 6.3.0
-      h3: 2.0.0-beta.4
-    transitivePeerDependencies:
-      - crossws
-
-  '@h3ravel/support@0.9.0': {}
 
   '@humanfs/core@0.19.1': {}
 
