@@ -5,7 +5,7 @@ export default class extends Migration {
   /**
     * Run the migrations.
     */
-  async up(schema: SchemaBuilder) {
+  async up (schema: SchemaBuilder) {
     await schema.createTable('john_table_john', (table) => {
       table.increments('id');
       table.timestamps();
@@ -15,7 +15,7 @@ export default class extends Migration {
   /**
     * Reverse the migrations.
     */
-  async down(schema: SchemaBuilder) {
+  async down (schema: SchemaBuilder) {
     await schema.dropTableIfExists('john_table_john');
   }
 };

@@ -1,5 +1,16 @@
 packages:
-  - packages/*
+  # - packages/*
+  - packages/shared
+  - packages/support
+  - packages/core
+  - packages/database
+  - packages/http
+  - packages/cache
+  - packages/config
+  - packages/queue
+  - packages/mail
+  - packages/router
+  - packages/console
   - examples/*
   - docs
 

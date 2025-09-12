@@ -4,4 +4,4 @@ import "tsx/esm";
 
 import musket from './IO/app'
 
-new musket().bootstrap()
+new musket().fire()

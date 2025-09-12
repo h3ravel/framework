@@ -1,22 +1,16 @@
 {
-  "extends": "../../../tsconfig.json",
+  "extends": "@h3ravel/shared/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
       "src": ["./../src"],
       "src/*": ["./../src/*"],
-      "App": ["./../src/app"],
       "App/*": ["./../src/app/*"],
-      "root": ["./.."],
       "root/*": ["./../*"],
-      "config": ["./../src/config"],
       "config/*": ["./../src/config/*"],
-      "http": ["./../src/http"],
       "http/*": ["./../src/http/*"],
-      "resources": ["./../src/resources"],
       "resources/*": ["./../src/resources/*"],
-      "routes": ["./../src/routes"],
       "routes/*": ["./../src/routes/*"],
       "@h3ravel/core": ["../../../packages/core/src/index.ts"],
       "@h3ravel/router": ["../../../packages/router/src/index.ts"],

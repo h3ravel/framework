@@ -11,10 +11,10 @@
     "start": "SRC_PATH=dist node -r tsconfig-paths/register dist/server.js",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests",
-    "mosket": "tsx node_modules/@h3ravel/console/bin/run"
+    "mosket": "node node_modules/@h3ravel/console/bin/run"
   },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.2.5",
+    "@h3ravel/arquebus": "^0.2.17",
     "@h3ravel/cache": "workspace:^",
     "@h3ravel/config": "workspace:^",
     "@h3ravel/console": "workspace:^",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@swc/core": "^1.13.5",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.3.1",
     "tsconfig-paths": "^4.2.0",
     "tsup": "^8.5.0",
     "tsx": "^4.20.5",

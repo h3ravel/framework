@@ -3,7 +3,8 @@ import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Application, Container, Kernel } from '@h3ravel/core'
 import { Request, Response } from '@h3ravel/http'
 import { singularize } from '@h3ravel/support'
-import { HttpContext, RouteEventHandler, type EventHandler, type IController, type IMiddleware, type IRouter, type RouterEnd } from '@h3ravel/shared'
+import { HttpContext, RouteEventHandler } from '@h3ravel/shared'
+import type { EventHandler, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
 import { Helpers } from './Helpers';
 import { Model } from '@h3ravel/database';
 

@@ -35,7 +35,7 @@ export class ConfigRepository {
             const configPath = this.app.getPath('config')
 
             const files = (await readdir(configPath)).filter((e) => {
-                return !e.includes('.d.ts') && !e.includes('.map')
+                return !e.includes('.d.ts') && !e.includes('.d.cts') && !e.includes('.map')
             })
 
             for (let i = 0; i < files.length; i++) {

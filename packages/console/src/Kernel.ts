@@ -1,6 +1,5 @@
-import { CommandOption, ParsedCommand } from "./Contracts/ICommand";
-
 import { Application } from "@h3ravel/core";
+import { Logger } from "@h3ravel/shared";
 import { Musket } from "./Musket";
 import { Utils } from "./Utils";
 import { XGeneric } from "@h3ravel/support";
@@ -9,7 +8,7 @@ import path from "node:path";
 
 export class Kernel {
     public cwd!: string
-    public output = Utils.output()
+    public output = Logger.log()
     public basePath: string = ''
     public modulePath!: string
     public consolePath!: string

@@ -1,65 +1,10 @@
 import { access } from 'fs/promises'
-import chalk from 'chalk'
 import escalade from 'escalade/sync'
 import path from 'path'
 
 const join = path.join
 
 export class Utils {
-  /**
-   * Wraps text with chalk
-   * 
-   * @param txt 
-   * @param color 
-   * @returns 
-   */
-  static textFormat (txt: any, color: (txt: string) => string) {
-    return String(txt).split(':').map((e, i, a) => i == 0 && a.length > 1 ? color(' ' + e + ': ') : e).join('')
-  }
-
-  /**
-   * Ouput formater object
-   * 
-   * @returns 
-   */
-  static output () {
-    return {
-      success: (msg: any, exit = false) => {
-        console.log(chalk.green('✓'), this.textFormat(msg, chalk.bgGreen), '\n')
-        if (exit) process.exit(0)
-      },
-      info: (msg: any, exit = false) => {
-        console.log(chalk.blue('ℹ'), this.textFormat(msg, chalk.bgBlue), '\n')
-        if (exit) process.exit(0)
-      },
-      error: (msg: string | string[] | Error & { detail?: string }, exit = true) => {
-        if (msg instanceof Error) {
-          if (msg.message) {
-            console.error(chalk.red('✖'), this.textFormat('ERROR:' + msg.message, chalk.bgRed))
-          }
-          console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`), '\n')
-        }
-        else {
-          console.error(chalk.red('✖'), this.textFormat(msg, chalk.bgRed), '\n')
-        }
-        if (exit) process.exit(1)
-      },
-      split: (name: string, value: string, status?: 'success' | 'info' | 'error', exit = false) => {
-        status ??= 'info'
-        const color = { success: chalk.bgGreen, info: chalk.bgBlue, error: chalk.bgRed }
-        const regex = /\x1b\[\d+m/g
-        const width = Math.min(process.stdout.columns, 100)
-        const dots = Math.max(width - name.replace(regex, '').length - value.replace(regex, '').length - 10, 0)
-
-        console.log(this.textFormat(name, color[status]), chalk.gray('.'.repeat(dots)), value)
-        if (exit) process.exit(0)
-      },
-      quiet: () => {
-        process.exit(0)
-      }
-    }
-  }
-
   static findModulePkg (moduleId: string, cwd?: string) {
     const parts = moduleId.replace(/\\/g, '/').split('/')
 
@@ -89,14 +34,6 @@ export class Utils {
       ...migrator.getPaths(),
       join(cwd, defaultPath),
     ]
-  }
-
-  static twoColumnDetail (name: string, value: string) {
-    // eslint-disable-next-line no-control-regex
-    const regex = /\x1b\[\d+m/g
-    const width = Math.min(process.stdout.columns, 100)
-    const dots = Math.max(width - name.replace(regex, '').length - value.replace(regex, '').length - 10, 0)
-    return console.log(name, chalk.gray('.'.repeat(dots)), value)
   }
 
   /**

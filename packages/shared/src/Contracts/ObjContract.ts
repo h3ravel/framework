@@ -41,4 +41,11 @@ export type DotNestedValue<T, Path extends string> =
     : never
     : Path extends keyof T
     ? T[Path]
-    : never 
+    : never
+
+/**
+ * A generic object type that supports nullable string values
+ */
+export interface GenericWithNullableStringValues {
+    [name: string]: string | undefined;
+}

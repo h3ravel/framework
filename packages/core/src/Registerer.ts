@@ -8,14 +8,17 @@ export class Registerer {
 
     static register (app: Application) {
         const reg = new Registerer(app)
+        reg.bootRegister()
+    }
 
+    bootRegister () {
         globalThis.dd = dd
         globalThis.dump = dump
-        globalThis.app_path = (path?: string) => reg.appPath(path)
-        globalThis.base_path = (path?: string) => reg.basePath(path)
-        globalThis.public_path = (path?: string) => reg.publicPath(path)
-        globalThis.storage_path = (path?: string) => reg.storagePath(path)
-        globalThis.database_path = (path?: string) => reg.databasePath(path)
+        globalThis.app_path = (path?: string) => this.appPath(path)
+        globalThis.base_path = (path?: string) => this.basePath(path)
+        globalThis.public_path = (path?: string) => this.publicPath(path)
+        globalThis.storage_path = (path?: string) => this.storagePath(path)
+        globalThis.database_path = (path?: string) => this.databasePath(path)
     }
 
     private appPath (path?: string) {

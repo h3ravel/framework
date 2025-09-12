@@ -1,6 +1,6 @@
-import { AuthMiddleware } from 'App/Http/Middlewares/AuthMiddleware'
+// import { AuthMiddleware } from 'App/Http/Middlewares/AuthMiddleware'
 import { Router } from '@h3ravel/router'
-import { UserController } from 'App/Http/Controllers/UserController'
+// import { UserController } from 'App/Http/Controllers/UserController'
 
 export default (Route: Router) => {
     Route.group({
@@ -10,7 +10,7 @@ export default (Route: Router) => {
             }
         ]
     }, () => {
-        Route.apiResource('/users', UserController, [new AuthMiddleware()])
+        // Route.apiResource('/users', UserController, [new AuthMiddleware()])
     })
 
     Route.get('/hello', () => 'Hello', 'hello.route')

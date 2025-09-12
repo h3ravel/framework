@@ -1,16 +1,21 @@
 import 'reflect-metadata';
 
-import { IApplication, IPathName, IServiceProvider } from '@h3ravel/shared'
+import { IApplication, IPathName, IServiceProvider, Logger } from '@h3ravel/shared'
 
 import { Container } from './Container'
 import { ContainerResolver } from './Di/ContainerResolver';
+import type { H3 } from 'h3'
 import { PathLoader } from '@h3ravel/shared'
 import { Registerer } from './Registerer'
+import chalk from 'chalk';
+import { detect } from 'detect-port';
 import dotenv from 'dotenv'
+import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
 
 export class Application extends Container implements IApplication {
-    paths = new PathLoader()
+    public paths = new PathLoader()
+    private tries: number = 0
     private booted = false
     private versions = { app: '0', ts: '0' }
     private basePath: string
@@ -20,7 +25,8 @@ export class Application extends Container implements IApplication {
 
     constructor(basePath: string) {
         super()
-        dotenv.config({ quiet: true })
+
+        dotenvExpand.expand(dotenv.config({ quiet: true }))
 
         this.basePath = basePath
         this.setPath('base', basePath)
@@ -42,7 +48,6 @@ export class Application extends Container implements IApplication {
      * Dynamically register all configured providers
      */
     public async registerConfiguredProviders () {
-        Registerer.register(this)
         const providers = await this.getAllProviders()
 
         for (const ProviderClass of providers) {
@@ -135,7 +140,7 @@ export class Application extends Container implements IApplication {
         /**
          * If debug is enabled, let's show the loaded service provider info
          */
-        if (process.env.APP_DEBUG === 'true') {
+        if (process.env.APP_DEBUG === 'true' && !sorted.find(e => e.name === 'ConsoleServiceProvider')) {
             console.table(
                 sorted.map((P) => ({
                     Provider: P.name,
@@ -143,6 +148,8 @@ export class Application extends Container implements IApplication {
                     Order: (P as any).order || 'N/A',
                 }))
             );
+
+            console.info(`Set ${chalk.bgCyan(' APP_DEBUG = false ')} in your .env file to hide this information`, "\n")
         }
 
         return sorted
@@ -161,7 +168,7 @@ export class Application extends Container implements IApplication {
     }
 
     /**
-     * Boot all providers after registration
+     * Boot all service providers after registration
      */
     public async boot () {
         if (this.booted) return
@@ -184,6 +191,53 @@ export class Application extends Container implements IApplication {
         }
 
         this.booted = true
+    }
+
+    /**
+     * Fire up the developement server using the user provided arguments
+     * 
+     * Port will be auto assigned if provided one is not available
+     * 
+     * @param h3App The current H3 app instance
+     * @param preferedPort If provided, this will overide the port set in the evironment
+     */
+    public async fire (h3App: H3, preferedPort?: number) {
+        const serve = this.make('http.serve')
+
+        const port: number = preferedPort ?? env('PORT', 3000)
+        const tries: number = env('RETRIES', 1)
+        const hostname: string = env('HOSTNAME', 'localhost')
+
+        try {
+            const realPort = await detect(port)
+
+            if (port == realPort) {
+                const server = serve(h3App, {
+                    port,
+                    hostname,
+                    silent: true,
+                })
+
+                Logger.parse([
+                    [`🚀 H3ravel running at:`, 'green'],
+                    [`${server.options.protocol ?? 'http'}://${server.options.hostname}:${server.options.port}`, 'cyan']]
+                )
+            } else if (this.tries <= tries) {
+                await this.fire(h3App, realPort)
+                this.tries++
+            } else {
+                Logger.parse([
+                    ['ERROR:', 'bgRed'],
+                    ['No free port available', 'red'],
+                ])
+            }
+        } catch (e: any) {
+            Logger.parse([
+                ['An error occured', 'bgRed'],
+                [e.message, 'red'],
+                [e.stack, 'red']
+            ], "\n")
+        }
     }
 
     /**

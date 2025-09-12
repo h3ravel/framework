@@ -8,13 +8,26 @@
   "module": "./dist/index.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
+    },
+    "./Utils": {
+      "import": "./dist/Utils.js",
+      "require": "./dist/Utils.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "Utils": [
+        "dist/Utils.d.ts"
+      ],
+      "*": [
+        "dist/index.d.ts"
+      ]
     }
   },
   "bin": {
-    "musket": "bin/run.js"
+    "musket": "bin/fire.js"
   },
   "files": [
     "bin",

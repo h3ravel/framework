@@ -2,12 +2,12 @@ import { CommandOption, ParsedCommand } from "./Contracts/ICommand";
 
 import { Application } from "@h3ravel/core";
 import { Command } from "./Commands/Command";
+import { FireCommand } from "./Commands/FireCommand";
 import { Kernel } from "./Kernel";
+import { Logger } from "@h3ravel/shared";
 import { MakeCommand } from "./Commands/MakeCommand";
 import { MigrateCommand } from "./Commands/MigrateCommand";
-import { ServeCommand } from "./Commands/ServeCommand";
 import { Signature } from "./Signature";
-import { Utils } from "./Utils";
 import chalk from "chalk";
 import { program } from "commander";
 
@@ -15,7 +15,7 @@ import { program } from "commander";
  * Musket is H3ravel's CLI tool
  */
 export class Musket {
-    private output = Utils.output()
+    private output = Logger.log()
     private commands: ParsedCommand[] = []
 
     constructor(private app: Application, private kernel: Kernel) { }
@@ -28,7 +28,7 @@ export class Musket {
 
     private loadBaseCommands () {
         const commands: Command[] = [
-            new ServeCommand(this.app, this.kernel),
+            new FireCommand(this.app, this.kernel),
             new MakeCommand(this.app, this.kernel),
             new MigrateCommand(this.app, this.kernel),
         ]

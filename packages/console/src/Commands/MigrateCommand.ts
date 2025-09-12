@@ -95,7 +95,7 @@ export class MigrateCommand extends Command {
     protected async migrateStatus () {
         const path = app_path()
 
-        // console.log(arquebus.connection())
+        // console.log(arquebus.fire())
         // const migrations = await new Migrate(path, undefined, (msg, sts) => {
         //     if (sts) this.kernel.output[sts](msg)
         // }).status({ skipConnection: true }, this.options(), true)

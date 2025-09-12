@@ -1,6 +1,6 @@
+import { Options, defineConfig } from 'tsup'
 import { copyFile, glob } from 'node:fs/promises'
 
-import { defineConfig } from 'tsup'
 import escalade from 'escalade/sync'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
@@ -17,18 +17,23 @@ function findUpConfig (base: string, name: string, extensions: string[]) {
     })!
 }
 
-export default defineConfig({
+export const baseConfig: Options = {
     dts: true,
     clean: true,
+    shims: true,
     entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
     sourcemap: true,
     async onSuccess () {
-        const base = findUpConfig('framework', 'package', ['json'])
-        const ptrn = base.replace('package.json', 'packages/**/src/*.d.ts')
-        for await (const entry of glob(ptrn))
-            setTimeout(() => copyFile(entry, entry.replace('src', 'dist')), 3000)
+        try {
+            const base = findUpConfig('framework', 'package', ['json'])
+            const ptrn = base.replace('package.json', 'packages/**/src/*.d.ts')
 
+            for await (const entry of glob(ptrn)) {
+                if (existsSync(entry) && existsSync(entry.replace('src', 'dist')))
+                    setTimeout(() => copyFile(entry, entry.replace('src', 'dist')), 3000)
+            }
+        } catch { /** */ }
     },
     external: [
         'fs',
@@ -43,4 +48,6 @@ export default defineConfig({
         'nodemailer',
         'fs-readdir-recursive',
     ],
-}) 
+}
+
+export default defineConfig(baseConfig) 

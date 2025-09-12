@@ -1,9 +1,12 @@
-import { Application } from '@h3ravel/core';
+import { Application, Registerer } from '@h3ravel/core';
+
 import providers from './providers';
 
 export default class {
-    async bootstrap () {
+    async fire () {
         const app = new Application(process.cwd())
+
+        new Registerer(app)
 
         app.registerProviders(providers)
 
