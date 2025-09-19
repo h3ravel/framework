@@ -1,7 +1,7 @@
-import { baseConfig } from '../../tsup.config';
-import { defineConfig } from 'tsup';
+import { baseConfig } from '../../tsdown.config';
+import { defineConfig } from 'tsdown';
 
-export default defineConfig(() => [
+export default defineConfig([
   {
     ...baseConfig,
     onSuccess: undefined,
@@ -9,7 +9,7 @@ export default defineConfig(() => [
     entry: ['src/index.ts', 'src/Utils.ts'],
     sourcemap: false,
     target: "node22",
-    platform: "node",
+    platform: 'node',
   },
   {
     format: ['esm', 'cjs'],
@@ -17,9 +17,6 @@ export default defineConfig(() => [
     treeshake: true,
     outDir: 'bin',
     minify: true,
-    external: baseConfig.external,
-    esbuildOptions (options) {
-      options.sourcesContent = false
-    },
+    external: baseConfig.external
   }
 ]);

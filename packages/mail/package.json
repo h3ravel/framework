@@ -27,7 +27,7 @@
   },
   "scripts": {
     "barrel": "barrelsby --directory src --delete --singleQuotes",
-    "build": "tsup",
+    "build": "tsdown",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",

@@ -1,4 +1,4 @@
-import { Options, defineConfig } from 'tsup'
+import { Options, defineConfig } from 'tsdown'
 import { copyFile, glob } from 'node:fs/promises'
 
 import escalade from 'escalade/sync'
@@ -35,12 +35,17 @@ export const baseConfig: Options = {
             }
         } catch { /** */ }
     },
+    hooks (hooks) {
+        hooks.hook('build:done', () => {
+            // console.log('Hello World')
+        })
+    },
     external: [
         'fs',
         'os',
         'tsx',
         'path',
-        'tsup',
+        'tsdown',
         'dotenv',
         'crypto',
         'rollup',
