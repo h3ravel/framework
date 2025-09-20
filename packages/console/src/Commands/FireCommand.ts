@@ -1,6 +1,6 @@
 import { Command } from "./Command";
 import { build } from 'tsdown'
-import fs from 'node:fs/promises';
+import run from '@rollup/plugin-run';
 import { spawn } from "node:child_process";
 
 export class FireCommand extends Command {
@@ -32,61 +32,52 @@ export class FireCommand extends Command {
     }
 
     protected async fire () {
+        const outDir = '.h3ravel/serve'
+
         const db = base_path('src/database')
-        const dist = base_path('dist')
+        const dist = base_path(outDir)
         const base = base_path('src/resources')
         const port = this.option('port')
         const host = this.option('host')
         const tries = this.option('tries')
 
         let child: ReturnType<typeof spawn> | null = null;
+        const ENV_VARS = {
+            NODE_ENV: 'development',
+            SRC_PATH: outDir,
+            HOSTNAME: host,
+            RETRIES: tries,
+            PORT: port,
+        }
 
         await build({
+            outDir: dist,
             entry: ['src/**/*.ts'],
             format: ['esm', 'cjs'],
             target: 'node22',
             sourcemap: true,
             clean: true,
             shims: true,
-            copy: ['public', { from: 'public', to: 'dist' }],
-            watch: ['.env', '.env.*', base_path('src/**/*.*'), '../../packages/**/src/**/*.*'],
-            async onSuccess () {
-
-                /**
-                 * Copy resources
-                 */
-                await fs.cp(base, dist, { recursive: true });
-                await fs.cp(db, dist, { recursive: true });
-
-                /**
-                 * Kill previous server if running
-                 */
-                if (child) {
-                    child.kill('SIGTERM');
-                    child = null;
-                }
-
-                /**
-                 * Start fresh server
-                 */
-                child = spawn("node", ['-r', 'tsconfig-paths/register', base_path('dist/server.js')], {
-                    stdio: "inherit",
-                    shell: true,
-                    detached: false, // <-- important
-                    env: {
-                        ...process.env,
-                        NODE_ENV: 'development',
-                        SRC_PATH: 'dist',
-                        HOSTNAME: host,
-                        RETRIES: tries,
-                        PORT: port,
-                    }
-                });
+            watch: ['.env', '.env.*', base_path('.env'), base_path('src')],
+            copy: ['public', 'src/resources', 'src/database'],
+            // copy: [{ from: 'public', to: dist }, 'src/resources', 'src/database'],
+            env: ENV_VARS,
+            hooks (hooks) {
+                hooks.hook('build:done', () => {
+                })
             },
-            // onSuccess: `cp -r ${base} ${dist} && cp -r ${db} ${dist} ${postCmd}`,
             dts: false,
-            silent: true,
+            logLevel: 'silent',
+            nodeProtocol: true,
             skipNodeModulesBundle: true,
+            plugins: [
+                run({
+                    env: Object.assign({}, process.env, ENV_VARS),
+                    execArgv: ['-r', 'source-map-support/register'],
+                    allowRestarts: false,
+                    input: process.cwd() + '/src/server.ts'
+                })
+            ],
         })
     }
 }
