@@ -1,43 +1,35 @@
-import { Options, defineConfig } from 'tsdown'
-import { copyFile, glob } from 'node:fs/promises'
+import { type Options, defineConfig } from 'tsdown'
+import { copyFile, glob, mkdir } from 'node:fs/promises'
 
-import escalade from 'escalade/sync'
-import { existsSync } from 'node:fs'
 import path from 'node:path'
-
-function findUpConfig (base: string, name: string, extensions: string[]) {
-    return escalade(process.cwd(), (_dir) => {
-        for (const ext of extensions) {
-            const filename = path.join(_dir, base, name + '.' + ext)
-            if (existsSync(filename)) {
-                return filename
-            }
-        }
-        return ''
-    })!
-}
+import { exists, findUpConfig } from './utils/fs'
 
 export const baseConfig: Options = {
     dts: true,
     clean: true,
-    shims: false,
+    shims: true,
     entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
     sourcemap: true,
-    async onSuccess () {
-        try {
-            const base = findUpConfig('framework', 'package', ['json'])
-            const ptrn = base.replace('package.json', 'packages/**/src/*.d.ts')
-
-            for await (const entry of glob(ptrn)) {
-                if (existsSync(entry) && existsSync(entry.replace('src', 'dist')))
-                    setTimeout(() => copyFile(entry, entry.replace('src', 'dist')), 3000)
-            }
-        } catch { /** */ }
-    },
     hooks (hooks) {
-        hooks.hook('build:done', () => {
-            // console.log('Hello World')
+        hooks.hook('build:done', async (ctx) => {
+            // Get the absolute base path
+            const base = await findUpConfig('framework', 'package', ['json'])
+            if (!base) return
+            // Make globale DTS partern
+            const gdts = base.replace('package.json', 'packages/**/src/*.d.ts')
+            // Make globale stubs partern
+            const stubs = base.replace('package.json', 'packages/**/src/**/*.stub')
+
+            for await (const entry of glob([gdts, stubs])) {
+                const target = entry.replace('src', 'dist')
+                // Ensure the target dir exists
+                if (await exists(entry) && !await exists(path.dirname(target)))
+                    await mkdir(path.dirname(target))
+                // Copy required files only for current package
+                if (await exists(entry) && entry.includes(ctx.options.cwd))
+                    copyFile(entry, target)
+            }
         })
     },
     external: [

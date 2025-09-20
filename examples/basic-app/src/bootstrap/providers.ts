@@ -7,6 +7,7 @@ import { CacheServiceProvider } from '@h3ravel/cache'
 import { QueueServiceProvider } from '@h3ravel/queue'
 import { MailServiceProvider } from '@h3ravel/mail'
 import { ConfigServiceProvider } from '@h3ravel/config'
+import { AppServiceProvider } from 'src/app/Providers/AppServiceProvider'
 
 /**
  * Default service provider have a priority ranging from 999-990
@@ -21,4 +22,5 @@ export default <Array<new (_app: Application) => IServiceProvider>>[
     CacheServiceProvider,
     QueueServiceProvider,
     MailServiceProvider,
+    AppServiceProvider,
 ]

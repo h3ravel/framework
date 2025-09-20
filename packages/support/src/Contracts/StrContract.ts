@@ -18,3 +18,5 @@ export type SnakeToCamelCase<S extends string> =
 export type SnakeToTitleCase<S extends string> = S extends `${infer First}_${infer Rest}`
     ? `${Capitalize<Lowercase<First>>}${SnakeToTitleCase<Rest>}`
     : Capitalize<Lowercase<S>>;
+
+export default {}

@@ -4,10 +4,9 @@ import { defineConfig } from 'tsdown';
 export default defineConfig([
   {
     ...baseConfig,
-    onSuccess: undefined,
     format: ['esm', 'cjs'],
     entry: ['src/index.ts', 'src/Utils.ts'],
-    sourcemap: false,
+    sourcemap: true,
     target: "node22",
     platform: 'node',
   },

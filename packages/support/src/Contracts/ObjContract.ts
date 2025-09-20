@@ -1,4 +1,4 @@
-import { CamelToSnakeCase } from './StrContract'
+import type { CamelToSnakeCase } from './StrContract'
 
 export type { DotFlatten } from '@h3ravel/shared'
 export type { DotNestedKeys } from '@h3ravel/shared'
@@ -16,3 +16,5 @@ export type TGeneric<V = any, K extends string = string> = Record<K, V>
 export type XGeneric<V = TGeneric, T = any> = {
     [key: string]: T
 } & V
+
+export default {}

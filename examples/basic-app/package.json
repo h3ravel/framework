@@ -10,7 +10,6 @@
     "dev": "NODE_ENV=development pnpm tsdown",
     "start": "SRC_PATH=dist node -r tsconfig-paths/register dist/server.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests",
     "mosket": "node node_modules/@h3ravel/console/bin/run"
   },
   "dependencies": {
@@ -28,12 +27,13 @@
     "@h3ravel/support": "workspace:^",
     "cross-env": "^10.0.0",
     "h3": "2.0.0-beta.3",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "^0.2.2",
+    "source-map-support": "^0.5.21"
   },
   "devDependencies": {
+    "@rollup/plugin-run": "^3.1.0",
     "@swc/core": "^1.13.5",
     "@types/node": "^24.3.1",
-    "tsconfig-paths": "^4.2.0",
     "tsdown": "^0.15.2",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2"
