@@ -1,4 +1,4 @@
-import { DotNestedKeys, DotNestedValue } from './ObjContract'
+import { DotNestedKeys, DotNestedValue } from "@h3ravel/shared";
 
 import type { H3Event } from 'h3'
 import type { IApplication } from './IApplication';
