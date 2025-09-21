@@ -1,6 +1,5 @@
-import type { Argument, Command as Commander } from "commander";
-
 import { Application } from "@h3ravel/core";
+import type { Argument } from "commander";
 import { Kernel } from "../Kernel";
 import { XGeneric } from "@h3ravel/support";
 

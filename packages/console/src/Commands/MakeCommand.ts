@@ -58,8 +58,8 @@ export class MakeCommand extends Command {
         const force = this.option('force')
 
         const path = nodepath.join(app_path('Http/Controllers'), name + '.ts')
-        const dbPath = Utils.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
-        const stubPath = nodepath.join(dbPath, `dist/stubs/controller${type}.stub`)
+        const crtlrPath = Utils.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
+        const stubPath = nodepath.join(crtlrPath, `dist/stubs/controller${type}.stub`)
 
         if (!force && existsSync(path)) {
             this.kernel.output.error(`ERORR: ${name} controller already exists`)
@@ -84,7 +84,7 @@ export class MakeCommand extends Command {
         const datePrefix = dayjs().format('YYYY_MM_DD_HHmmss')
         const path = nodepath.join(database_path('migrations'), `${datePrefix}_${name}.ts`)
 
-        const dbPath = Utils.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
+        const crtlrPath = Utils.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
 
         let create = this.option('create', false)
         let table = this.option('table')
@@ -99,7 +99,7 @@ export class MakeCommand extends Command {
             create = !!guessed[1]
         }
 
-        const stubPath = nodepath.join(dbPath, this.getMigrationStubName(table, create))
+        const stubPath = nodepath.join(crtlrPath, this.getMigrationStubName(table, create))
         let stub = await readFile(stubPath, 'utf-8')
 
         if (table !== null) {
@@ -131,8 +131,8 @@ export class MakeCommand extends Command {
         // const force = this.argument('force')
 
         const path = nodepath.join(app_path('Models'), name.toLowerCase() + '.' + type)
-        const dbPath = Utils.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
-        const stubPath = nodepath.join(dbPath, `dist/stubs/model-${type}.stub`)
+        const crtlrPath = Utils.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
+        const stubPath = nodepath.join(crtlrPath, `dist/stubs/model-${type}.stub`)
 
         let stub = await readFile(stubPath, 'utf-8')
         stub = stub.replace(/{{ name }}/g, name)

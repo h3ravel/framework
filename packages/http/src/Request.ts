@@ -1,5 +1,6 @@
 import { getQuery, getRouterParams, readBody, type H3Event } from 'h3'
-import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
+import { safeDot } from '@h3ravel/support'
+import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 import type { ResponseHeaderMap, TypedHeaders } from 'fetchdts'
 import { IRequest } from '@h3ravel/shared'
 import { Application } from '@h3ravel/core'

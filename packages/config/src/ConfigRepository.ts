@@ -1,4 +1,5 @@
-import { DotNestedKeys, DotNestedValue, safeDot, setNested } from '@h3ravel/support'
+import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
+import { safeDot, setNested } from '@h3ravel/support'
 
 import { Application } from '@h3ravel/core'
 import path from 'node:path'

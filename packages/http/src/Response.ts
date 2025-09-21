@@ -1,9 +1,10 @@
-import { DotNestedKeys, DotNestedValue, safeDot } from '@h3ravel/support'
+import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 import { html, redirect, } from 'h3'
 
 import { Application } from '@h3ravel/core'
 import type { H3Event } from 'h3'
 import { IResponse } from '@h3ravel/shared'
+import { safeDot } from '@h3ravel/support'
 
 export class Response implements IResponse {
     /**

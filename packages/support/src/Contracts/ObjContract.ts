@@ -1,9 +1,5 @@
 import type { CamelToSnakeCase } from './StrContract'
 
-export type { DotFlatten } from '@h3ravel/shared'
-export type { DotNestedKeys } from '@h3ravel/shared'
-export type { DotNestedValue } from '@h3ravel/shared'
-
 /**
  * Convert CamelCased Object keys to snake_case
  */

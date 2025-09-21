@@ -1,9 +1,20 @@
+import { TBaseConfig, arquebusConfig } from "@h3ravel/database";
+
 import { Command } from "./Command";
 // import nodepath from "node:path";
 import { Migrate } from "@h3ravel/arquebus/migrations";
-import { arquebus } from "@h3ravel/arquebus";
+import chalk from "chalk";
 
 export class MigrateCommand extends Command {
+    /**
+     * The current database connection
+     */
+    private connection!: TBaseConfig;
+
+    /** 
+     * The base path for all database operations
+     */
+    private databasePath: string = database_path();
 
     /**
      * The name and signature of the console command.
@@ -19,6 +30,7 @@ export class MigrateCommand extends Command {
         {status : Show the status of each migration.}
         {publish : Publish any migration files from installed packages.}
         {^--s|seed : Seed the database}
+        {^--c|connection=mysql : The database connection to use}
     `;
     /**
      * The console command description.
@@ -32,6 +44,15 @@ export class MigrateCommand extends Command {
      */
     public async handle () {
         const command = (this.dictionary.name ?? this.dictionary.baseCommand) as never
+
+        this.connection = Object.entries(arquebusConfig(config('database')))
+            .find(([client]) => client === config('database.default'))
+            ?.at(1)
+
+        this.connection.migrations = {
+            path: 'migrations',
+            table: 'migrations',
+        }
 
         const methods = {
             migrate: 'migrateRun',
@@ -51,7 +72,13 @@ export class MigrateCommand extends Command {
      * Run all pending migrations.
      */
     protected async migrateRun () {
-        this.kernel.output.success(`Running migrations are not yet supported.`)
+        try {
+            await new Migrate(this.databasePath).run(this.connection, this.options(), true)
+
+            this.kernel.output.success(`Migration Complete.`)
+        } catch (e) {
+            this.kernel.output.error('ERROR: ' + e)
+        }
     }
 
     /**
@@ -65,7 +92,15 @@ export class MigrateCommand extends Command {
      * Create the migration repository.
      */
     protected async migrateInstall () {
-        this.kernel.output.success(`Create the migration repository.`)
+        try {
+            const migrate = new Migrate(this.databasePath)
+            const { migrator } = await migrate.setupConnection(this.connection)
+            await migrate.prepareDatabase(migrator)
+
+            this.kernel.output.success(`Migration repository installed.`)
+        } catch (e) {
+            this.kernel.output.error('ERROR: ' + e)
+        }
     }
 
     /**
@@ -86,22 +121,45 @@ export class MigrateCommand extends Command {
      * Rollback the last database migration.
      */
     protected async migrateRollback () {
-        this.kernel.output.success(`Rolling back the last migration is not yet supported.`)
+        try {
+            await new Migrate(this.databasePath).rollback(this.connection, this.options(), true)
+
+            this.kernel.output.success(`Rollback Complete.`)
+        } catch (e) {
+            this.kernel.output.error('ERROR: ' + e)
+        }
     }
 
     /**
      * Show the status of each migration.
      */
     protected async migrateStatus () {
-        const path = app_path()
+        const migrations = await new Migrate(this.databasePath, undefined, (msg, sts) => {
+            const hint = this.kernel.output.parse([
+                [' Did you forget to run', 'white'],
+                ['`musket migrate:install`?', 'grey']
+            ], ' ', false)
 
-        // console.log(arquebus.fire())
-        // const migrations = await new Migrate(path, undefined, (msg, sts) => {
-        //     if (sts) this.kernel.output[sts](msg)
-        // }).status({ skipConnection: true }, this.options(), true)
-        // console.log(migrations)
+            if (sts) this.kernel.output[sts](msg + hint, sts === 'error', true)
+        }).status(this.connection, this.options(), true)
 
-        this.kernel.output.success(`Show the status of each migration.`)
+        try {
+            if (migrations.length > 0) {
+                this.kernel.output.twoColumnLog('Migration name', 'Batch / Status')
+
+                migrations.forEach(migration => {
+                    const status = migration.ran
+                        ? `[${migration.batch}] ${chalk.green('Ran')}`
+                        : chalk.yellow('Pending')
+                    this.kernel.output.twoColumnLog(migration.name, status)
+                })
+            }
+            else {
+                this.kernel.output.info('No migrations found')
+            }
+        } catch (e) {
+            this.kernel.output.error(['ERROR: ' + e, 'Did you run musket migrate:install'])
+        }
     }
 
     /**

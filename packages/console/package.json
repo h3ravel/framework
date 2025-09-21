@@ -61,7 +61,7 @@
     "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump version and publish\" && pnpm publish --tag latest"
   },
   "peerDependencies": {
-    "@h3ravel/arquebus": "^0.2.14",
+    "@h3ravel/arquebus": "^0.3.2",
     "@h3ravel/core": "workspace:^",
     "@h3ravel/support": "workspace:^"
   },
@@ -77,9 +77,9 @@
     "@h3ravel/queue": "workspace:^",
     "@h3ravel/router": "workspace:^",
     "@h3ravel/shared": "workspace:^",
-    "chalk": "^5.6.0",
-    "commander": "^14.0.0",
-    "dayjs": "^1.11.14",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.1",
+    "dayjs": "^1.11.18",
     "execa": "^9.6.0",
     "preferred-pm": "^4.1.1",
     "radashi": "^12.6.2",
