@@ -1,7 +1,6 @@
 import { Command } from "./Command";
-import { build } from 'tsdown'
-import run from '@rollup/plugin-run';
-import { spawn } from "node:child_process";
+import { execa } from 'execa';
+import preferredPM from "preferred-pm"
 
 export class FireCommand extends Command {
 
@@ -11,9 +10,10 @@ export class FireCommand extends Command {
      * @var string
      */
     protected signature: string = `fire:
-        {--host=localhost : The host address to serve the application on}
-        {--port=3000 : The port to serve the application on}
-        {--tries=10 : The max number of ports to attempt to serve from}
+        {--a|host=localhost : The host address to serve the application on}
+        {--p|port=3000 : The port to serve the application on}
+        {--t|tries=10 : The max number of ports to attempt to serve from}
+        {--d|debug : Show extra debug info, like registered service providers and more}
     `;
 
     /**
@@ -34,15 +34,15 @@ export class FireCommand extends Command {
     protected async fire () {
         const outDir = '.h3ravel/serve'
 
-        const db = base_path('src/database')
-        const dist = base_path(outDir)
-        const base = base_path('src/resources')
+        const pm = (await preferredPM(base_path()))?.name ?? 'pnpm'
         const port = this.option('port')
         const host = this.option('host')
         const tries = this.option('tries')
+        const debug = this.option('debug')
 
-        let child: ReturnType<typeof spawn> | null = null;
         const ENV_VARS = {
+            EXTENDED_DEBUG: debug ? 'true' : 'false',
+            CLI_BUILD: 'false',
             NODE_ENV: 'development',
             SRC_PATH: outDir,
             HOSTNAME: host,
@@ -50,34 +50,10 @@ export class FireCommand extends Command {
             PORT: port,
         }
 
-        await build({
-            outDir: dist,
-            entry: ['src/**/*.ts'],
-            format: ['esm', 'cjs'],
-            target: 'node22',
-            sourcemap: true,
-            clean: true,
-            shims: true,
-            watch: ['.env', '.env.*', base_path('.env'), base_path('src')],
-            copy: ['public', 'src/resources', 'src/database'],
-            // copy: [{ from: 'public', to: dist }, 'src/resources', 'src/database'],
-            env: ENV_VARS,
-            hooks (hooks) {
-                hooks.hook('build:done', () => {
-                })
-            },
-            dts: false,
-            logLevel: 'silent',
-            nodeProtocol: true,
-            skipNodeModulesBundle: true,
-            plugins: [
-                run({
-                    env: Object.assign({}, process.env, ENV_VARS),
-                    execArgv: ['-r', 'source-map-support/register'],
-                    allowRestarts: false,
-                    input: process.cwd() + '/src/server.ts'
-                })
-            ],
-        })
+        await execa(
+            pm,
+            ['tsdown', '--silent', '--config-loader', 'unconfig', '-c', 'tsdown.default.config.ts'],
+            { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
+        );
     }
 }

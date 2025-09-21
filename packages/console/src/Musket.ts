@@ -9,6 +9,8 @@ import { MakeCommand } from "./Commands/MakeCommand";
 import { MigrateCommand } from "./Commands/MigrateCommand";
 import { Signature } from "./Signature";
 import chalk from "chalk";
+import { glob } from "node:fs/promises";
+import path from "node:path";
 import { program } from "commander";
 
 /**
@@ -38,7 +40,22 @@ export class Musket {
 
     private async loadDiscoveredCommands () {
         const commands: Command[] = [
+            ...this.app.registeredCommands.map(cmd => new cmd(this.app, this.kernel))
         ]
+
+        /**
+         * Musket Commands auto registration
+         */
+        const providers_path = app_path('Console/Commands/*.js').replace('/src/', '/.h3ravel/serve/')
+
+        /** Add the App Commands */
+        for await (const cmd of glob(providers_path)) {
+            const name = path.basename(cmd).replace('.js', '')
+            try {
+                const cmdClass = (await import(cmd))[name]
+                commands.push(new cmdClass(this.app, this.kernel))
+            } catch { /** */ }
+        }
 
         commands.forEach(e => this.addCommand(e))
     }
@@ -170,7 +187,11 @@ export class Musket {
 
         if (opt.isFlag) {
             if (parse) {
-                const flags = opt.flags?.map(f => (f.length === 1 ? `-${f}` : `--${f}`)).join(', ')!;
+                const flags = opt.flags
+                    ?.map(f => (f.length === 1 ? `-${f}` : `--${f}`)).join(', ')!
+                    .replaceAll('----', '--')
+                    .replaceAll('---', '-');
+
                 cmd.option(flags || '', description!, String(opt.defaultValue) || undefined);
             } else {
                 cmd.option(

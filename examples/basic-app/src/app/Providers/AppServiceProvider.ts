@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 
+import { ExampleCommand } from '../Console/Commands/ExampleCommand'
 import { ServiceProvider } from '@h3ravel/core'
 
 /**

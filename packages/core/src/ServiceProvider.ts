@@ -2,8 +2,27 @@ import { Application } from './Application'
 import { IServiceProvider } from '@h3ravel/shared'
 
 export abstract class ServiceProvider implements IServiceProvider {
+    /**
+     * Sort order
+     */
+
     public static order?: `before:${string}` | `after:${string}` | string | undefined;
+
+    /**
+     * Sort priority
+     */
     public static priority = 0;
+
+    /**
+     * Indicate that this service provider only runs in console
+     */
+    public static console = false;
+
+    /**
+     * List of registered console commands
+     */
+    public registeredCommands?: (new (app: any, kernel: any) => any)[];
+
     protected app: Application
 
     constructor(app: Application) {
@@ -21,4 +40,11 @@ export abstract class ServiceProvider implements IServiceProvider {
      * Runs after all providers have been registered.
      */
     boot?(...app: unknown[]): void | Promise<void>;
+
+    /**
+     * An array of console commands to register.
+     */
+    commands (commands: (new (app: any, kernel: any) => any)[]): void {
+        this.registeredCommands = commands
+    }
 }

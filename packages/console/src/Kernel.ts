@@ -15,7 +15,7 @@ export class Kernel {
     public modulePackage!: XGeneric<{ version: string }>
     public consolePackage!: XGeneric<{ version: string }>
 
-    constructor(public app: Application, basePath?: string) { }
+    constructor(public app: Application) { }
 
     static init (app: Application) {
         const instance = new Kernel(app)

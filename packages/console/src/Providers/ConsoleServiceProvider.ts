@@ -14,10 +14,15 @@ import { ServiceProvider } from '@h3ravel/core'
 export class ConsoleServiceProvider extends ServiceProvider {
     public static priority = 992;
 
+    /**
+     * Indicate that this service provider only runs in console
+     */
+    public static console = true;
+
     register () {
     }
 
-    boot (): void | Promise<void> {
+    boot () {
         Kernel.init(this.app)
 
         process.on("SIGINT", () => {

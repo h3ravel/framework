@@ -13,6 +13,8 @@ import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
 
+type AServiceProvider = (new (_app: Application) => IServiceProvider) & IServiceProvider
+
 export class Application extends Container implements IApplication {
     public paths = new PathLoader()
     private tries: number = 0
@@ -22,6 +24,11 @@ export class Application extends Container implements IApplication {
 
     private providers: IServiceProvider[] = []
     protected externalProviders: Array<new (_app: Application) => IServiceProvider> = []
+
+    /**
+     * List of registered console commands
+     */
+    public registeredCommands: (new (app: any, kernel: any) => any)[] = [];
 
     constructor(basePath: string) {
         super()
@@ -84,14 +91,14 @@ export class Application extends Container implements IApplication {
      * Minimal App: Loads only core, config, http, router by default.
      * Full-Stack App: Installs database, mail, queue, cache → they self-register via their providers.
      */
-    protected async getConfiguredProviders (): Promise<Array<new (_app: Application) => IServiceProvider>> {
+    protected async getConfiguredProviders (): Promise<Array<AServiceProvider>> {
         return [
             (await import('@h3ravel/core')).CoreServiceProvider,
             (await import('@h3ravel/core')).ViewServiceProvider,
         ]
     }
 
-    protected async getAllProviders (): Promise<Array<new (_app: Application) => IServiceProvider>> {
+    protected async getAllProviders (): Promise<Array<AServiceProvider>> {
         const coreProviders = await this.getConfiguredProviders();
         const allProviders = [...coreProviders, ...this.externalProviders];
 
@@ -103,7 +110,7 @@ export class Application extends Container implements IApplication {
         return this.sortProviders(uniqueProviders);
     }
 
-    private sortProviders (providers: Array<new (_app: Application) => IServiceProvider>) {
+    private sortProviders (providers: Array<AServiceProvider>) {
         const priorityMap = new Map<string, number>();
 
         /**
@@ -131,7 +138,7 @@ export class Application extends Container implements IApplication {
         });
 
         /**
-         * Sort the service providers based on thier name and priority
+         * Service providers sorted based on thier name and priority
          */
         const sorted = providers.sort(
             (A, B) => (priorityMap.get(B.name) ?? 0) - (priorityMap.get(A.name) ?? 0)
@@ -140,7 +147,7 @@ export class Application extends Container implements IApplication {
         /**
          * If debug is enabled, let's show the loaded service provider info
          */
-        if (process.env.APP_DEBUG === 'true' && !sorted.find(e => e.name === 'ConsoleServiceProvider')) {
+        if (process.env.APP_DEBUG === 'true' && process.env.EXTENDED_DEBUG !== 'false' && !sorted.some(e => e.console)) {
             console.table(
                 sorted.map((P) => ({
                     Provider: P.name,
@@ -155,7 +162,7 @@ export class Application extends Container implements IApplication {
         return sorted
     }
 
-    registerProviders (providers: Array<new (_app: Application) => IServiceProvider>): void {
+    registerProviders (providers: Array<AServiceProvider>): void {
         this.externalProviders.push(...providers)
     }
 
@@ -164,7 +171,30 @@ export class Application extends Container implements IApplication {
      */
     public async register (provider: IServiceProvider) {
         await new ContainerResolver(this).resolveMethodParams(provider, 'register', this)
+        if (provider.registeredCommands && provider.registeredCommands.length > 0) {
+            this.registeredCommands.push(...provider.registeredCommands)
+        }
         this.providers.push(provider)
+    }
+
+    /**
+     * checks if the application is running in CLI
+     */
+    public runningInConsole (): boolean {
+        return typeof process !== 'undefined'
+            && !!process.stdout
+            && !!process.stdin
+
+    }
+
+    public getRuntimeEnv (): 'browser' | 'node' | 'unknown' {
+        if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+            return 'browser'
+        }
+        if (typeof process !== 'undefined' && process.versions?.node) {
+            return 'node'
+        }
+        return 'unknown'
     }
 
     /**

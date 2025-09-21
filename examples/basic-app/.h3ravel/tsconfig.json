@@ -12,6 +12,7 @@
       "http/*": ["./../src/http/*"],
       "resources/*": ["./../src/resources/*"],
       "routes/*": ["./../src/routes/*"],
+      ".h3ravel/*": ["./../.h3ravel/*"],
       "@h3ravel/core": ["../../../packages/core/src/index.ts"],
       "@h3ravel/router": ["../../../packages/router/src/index.ts"],
       "@h3ravel/http": ["../../../packages/http/src/index.ts"],

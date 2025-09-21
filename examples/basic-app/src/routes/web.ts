@@ -1,7 +1,6 @@
 import { HttpContext, Request } from '@h3ravel/http'
 
 import { HomeController } from 'App/Http/Controllers/HomeController'
-import { Injectable } from '@h3ravel/core'
 import { MailController } from 'src/app/Http/Controllers/MailController'
 import { Router } from '@h3ravel/router'
 
