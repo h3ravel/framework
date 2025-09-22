@@ -44,7 +44,7 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.3.2",
+    "@h3ravel/arquebus": "^0.4.0",
     "sqlite3": "^5.1.7"
   },
   "peerDependencies": {

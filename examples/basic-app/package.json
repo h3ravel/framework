@@ -13,7 +13,7 @@
     "mosket": "node node_modules/@h3ravel/console/bin/fire"
   },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.3.2",
+    "@h3ravel/arquebus": "^0.4.0",
     "@h3ravel/cache": "workspace:^",
     "@h3ravel/config": "workspace:^",
     "@h3ravel/console": "workspace:^",

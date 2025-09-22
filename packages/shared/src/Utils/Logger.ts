@@ -111,11 +111,13 @@ export class Logger {
      * @param joiner 
      * @param log If set to false, string output will be returned and not logged 
      */
-    static parse (config: [string, keyof ChalkInstance][], joiner?: string, log?: true): void
-    static parse (config: [string, keyof ChalkInstance][], joiner?: string, log?: false): string
-    static parse (config: [string, keyof ChalkInstance][], joiner = ' ', log = true): string | void {
+    static parse (config: [string, keyof ChalkInstance | ChalkInstance][], joiner?: string, log?: true): void
+    static parse (config: [string, keyof ChalkInstance | ChalkInstance][], joiner?: string, log?: false): string
+    static parse (config: [string, keyof ChalkInstance | ChalkInstance][], joiner = ' ', log = true): string | void {
         const string = config.map(([str, opt]) => {
-            return typeof chalk[opt] === 'function' ? (chalk as any)[opt](str) : str
+            return typeof opt === 'string' && typeof chalk[opt] === 'function'
+                ? (chalk as any)[opt](str)
+                : typeof opt === 'function' ? opt(str) : str
         }).join(joiner)
 
         if (log) console.log(string)

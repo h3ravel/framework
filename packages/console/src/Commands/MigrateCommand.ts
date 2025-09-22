@@ -1,9 +1,11 @@
+// import nodepath from "node:path";
+import { Migrate, MigrationCreator } from "@h3ravel/arquebus/migrations";
 import { TBaseConfig, arquebusConfig } from "@h3ravel/database";
 
 import { Command } from "./Command";
-// import nodepath from "node:path";
-import { Migrate } from "@h3ravel/arquebus/migrations";
+import { Utils } from "../Utils";
 import chalk from "chalk";
+import path from "node:path";
 
 export class MigrateCommand extends Command {
     /**
@@ -28,7 +30,7 @@ export class MigrateCommand extends Command {
         {reset : Rollback all database migrations.}
         {rollback : Rollback the last database migration.}
         {status : Show the status of each migration.}
-        {publish : Publish any migration files from installed packages.}
+        {publish : Publish any migration files from installed packages. | {package : The package to publish migrations from}}
         {^--s|seed : Seed the database}
         {^--c|connection=mysql : The database connection to use}
     `;
@@ -74,8 +76,6 @@ export class MigrateCommand extends Command {
     protected async migrateRun () {
         try {
             await new Migrate(this.databasePath).run(this.connection, this.options(), true)
-
-            this.kernel.output.success(`Migration Complete.`)
         } catch (e) {
             this.kernel.output.error('ERROR: ' + e)
         }
@@ -85,7 +85,11 @@ export class MigrateCommand extends Command {
      * Drop all tables and re-run all migrations.
      */
     protected async migrateFresh () {
-        this.kernel.output.success(`Drop all tables and re-run all migrations.`)
+        try {
+            await new Migrate(this.databasePath).fresh(this.connection, this.options(), true)
+        } catch (e) {
+            this.kernel.output.error('ERROR: ' + e)
+        }
     }
 
     /**
@@ -107,14 +111,22 @@ export class MigrateCommand extends Command {
      * Reset and re-run all migrations.
      */
     protected async migrateRefresh () {
-        this.kernel.output.success(`Resetting and re-running migrations is not yet supported.`)
+        try {
+            await new Migrate(this.databasePath).refresh(this.connection, this.options(), true)
+        } catch (e) {
+            this.kernel.output.error('ERROR: ' + e)
+        }
     }
 
     /**
      * Rollback all database migrations.
      */
     protected async migrateReset () {
-        this.kernel.output.success(`Rolling back all migration is not yet supported.`)
+        try {
+            await new Migrate(this.databasePath).reset(this.connection, this.options(), true)
+        } catch (e) {
+            this.kernel.output.error('ERROR: ' + e)
+        }
     }
 
     /**
@@ -123,8 +135,6 @@ export class MigrateCommand extends Command {
     protected async migrateRollback () {
         try {
             await new Migrate(this.databasePath).rollback(this.connection, this.options(), true)
-
-            this.kernel.output.success(`Rollback Complete.`)
         } catch (e) {
             this.kernel.output.error('ERROR: ' + e)
         }
@@ -166,6 +176,45 @@ export class MigrateCommand extends Command {
      * Publish any migration files from installed packages.
      */
     protected async migratePublish () {
-        this.kernel.output.success(`Publish any migration files from installed packages.`)
+        const name = this.argument('package')
+
+        try {
+            /** Find the requested package */
+            const packagePath = Utils.findModulePkg(name) ?? null
+            if (!packagePath) throw new Error("Package not found");
+
+            /** Get the package,json and instanciate the migration creator */
+            const pkgJson = (await import(path.join(packagePath, 'package.json')))
+            const creator = new MigrationCreator(path.join(packagePath, pkgJson.migrations ?? 'migrations'))
+
+            const info = this.kernel.output.parse([
+                [' Publishing migrations from', 'white'],
+                [`${pkgJson.name}@${pkgJson.version}`, chalk.italic.gray]
+            ], ' ', false)
+
+            this.kernel.output.info(`INFO: ${info}`)
+
+            try {
+                /** Publish any existing migrations */
+                await creator.publish(this.databasePath, (fileName) => {
+                    this.kernel.output.twoColumnLog(fileName, chalk.green('PUBLISHED'))
+                })
+            } catch {
+                this.kernel.output.error([`ERROR: ${name} has no publishable migrations.`])
+            }
+        } catch (e) {
+            const hint = this.kernel.output.parse([
+                [' Did you forget to run', 'white'],
+                [`\`${await Utils.installCommand(name)}\``, 'grey']
+            ], ' ', false)
+
+            const error = this.kernel.output.parse([
+                ['Package `', 'white'],
+                [name, 'grey'],
+                ['` not found', 'white']
+            ], '', false)
+
+            this.kernel.output.error(['ERROR: ' + error, hint + '?', String(e)])
+        }
     }
 }
