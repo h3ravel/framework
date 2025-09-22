@@ -37,18 +37,19 @@
   ],
   "scripts": {
     "barrel": "barrelsby --directory src --delete --singleQuotes",
-    "build": "tsup",
+    "build": "tsdown --config-loader unconfig",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
-    "h3": "^2.0.0-beta.1",
-    "reflect-metadata": "^0.2.2",
-    "@h3ravel/http": "workspace:^",
     "@h3ravel/core": "workspace:^",
+    "@h3ravel/database": "workspace:^",
+    "@h3ravel/http": "workspace:^",
+    "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
-    "@h3ravel/shared": "workspace:^"
+    "h3": "2.0.0-beta.4",
+    "reflect-metadata": "^0.2.2"
   }
 }

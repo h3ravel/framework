@@ -1,0 +1,21 @@
+import { Migration } from '@h3ravel/arquebus'
+
+export default class extends Migration {
+  /**
+    * Run the migrations.
+    * 
+    * @param {(import('@h3ravel/arquebus/types/query-builder').SchemaBuilder)} schema 
+    */
+  async up(schema) {
+    //
+  }
+
+  /**
+    * Reverse the migrations.
+    * 
+    * @param {(import('@h3ravel/arquebus/types/query-builder').SchemaBuilder)} schema 
+    */
+  async down(schema) {
+    //
+  }
+};

@@ -2,7 +2,7 @@
   "extends": "../shared/tsconfig.json",
   "compilerOptions": {
     "outDir": "dist",
-    "types": ["./src/globals"],
+    "types": ["./src/app.globals"],
     "paths": {
       "@h3ravel/core": ["./src/index.ts"]
     }

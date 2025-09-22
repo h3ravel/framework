@@ -1,0 +1,34 @@
+import { Controller } from '@h3ravel/core'
+import { HttpContext } from '@h3ravel/http'
+
+export class {{ name }} extends Controller {
+    index ({ response }: HttpContext) {
+        return response
+            .setStatusCode(200)
+            .json([])
+    }
+
+    async store ({ request, response }: HttpContext) {
+        return response
+            .setStatusCode(202)
+            .json({})
+    }
+
+    async show ({ response }: HttpContext) {
+        return response
+            .setStatusCode(200)
+            .json({})
+    }
+
+    async update ({ request, response }: HttpContext) {
+        return response
+            .setStatusCode(201)
+            .json({})
+    }
+
+    destroy ({ request, response }: HttpContext) {
+        return response
+            .setStatusCode(201)
+            .json({})
+    }
+}

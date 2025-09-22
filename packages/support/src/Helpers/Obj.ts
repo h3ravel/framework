@@ -1,4 +1,6 @@
-import { DotFlatten, DotNestedKeys, DotNestedValue, KeysToSnakeCase } from '../Contracts/ObjContract'
+import type { DotFlatten, DotNestedKeys, DotNestedValue } from "@h3ravel/shared";
+
+import type { KeysToSnakeCase } from "../Contracts/ObjContract";
 
 /**
  * Flattens a nested object into a single-level object

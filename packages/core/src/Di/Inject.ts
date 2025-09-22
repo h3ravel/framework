@@ -21,3 +21,15 @@ export function Injectable (): ClassDecorator & MethodDecorator {
         }
     };
 }
+
+// export function Injectable (): MethodDecorator & ClassDecorator {
+//     return ((_target: any, _propertyKey?: string, descriptor?: PropertyDescriptor) => {
+//         if (descriptor) {
+//             const original = descriptor.value;
+//             descriptor.value = async function (...args: any[]) {
+//                 const resolvedArgs = await Promise.all(args);
+//                 return original.apply(this, resolvedArgs);
+//             };
+//         }
+//     }) as any;
+// }

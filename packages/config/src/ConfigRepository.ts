@@ -1,4 +1,5 @@
-import { DotNestedKeys, DotNestedValue, safeDot, setNested } from '@h3ravel/support'
+import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
+import { safeDot, setNested } from '@h3ravel/support'
 
 import { Application } from '@h3ravel/core'
 import path from 'node:path'
@@ -31,10 +32,11 @@ export class ConfigRepository {
 
     async load () {
         if (!this.loaded) {
+
             const configPath = this.app.getPath('config')
 
             const files = (await readdir(configPath)).filter((e) => {
-                return !e.includes('.d.ts') && !e.includes('.map')
+                return !e.includes('.d.ts') && !e.includes('.d.cts') && !e.includes('.map')
             })
 
             for (let i = 0; i < files.length; i++) {

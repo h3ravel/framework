@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/shared",
-  "version": "0.17.2",
+  "version": "0.17.4",
   "description": "Shared Utilities.",
   "type": "module",
   "main": "./dist/index.js",
@@ -8,11 +8,17 @@
   "module": "./dist/index.js",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./tsconfig.json": "./tsconfig.json"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/index.d.ts"
+      ]
+    }
   },
   "files": [
     "dist",
@@ -38,15 +44,17 @@
     "laravel"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsdown --config-loader unconfig",
     "barrel": "barrelsby --directory src --delete --singleQuotes",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump shared package and publish\" && pnpm publish --tag latest"
   },
   "dependencies": {
-    "h3": "^2.0.0-beta.1",
+    "h3": "^2.0.0-beta.4",
+    "chalk": "^5.6.0",
     "edge.js": "^6.3.0"
   },
   "devDependencies": {

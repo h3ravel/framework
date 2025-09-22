@@ -1,3 +1,5 @@
+/// <reference path="../../../core/src/app.globals.d.ts" />
+
 import { ConfigRepository, EnvLoader } from '..'
 
 import { Bindings } from '@h3ravel/shared';
@@ -13,14 +15,16 @@ import { ServiceProvider } from '@h3ravel/core'
  */
 export class ConfigServiceProvider extends ServiceProvider {
     public static priority = 998;
-    // public static order = 'before:CoreServiceProvider';
+    // public static order = 'before:DatabaseServiceProvider';
 
     async register () {
         /**
          * Create singleton to load env
          */
         this.app.singleton('env', () => {
-            return new EnvLoader(this.app).get
+            const env = new EnvLoader(this.app).get
+            globalThis.env = env
+            return env
         })
 
         /**
@@ -33,10 +37,22 @@ export class ConfigServiceProvider extends ServiceProvider {
          * Create singleton to load configurations
          */
         this.app.singleton('config', () => {
-            return {
+            const config = {
                 get: (key, def) => repo.get(key as any, def),
                 set: repo.set
             } as Bindings['config']
+
+            globalThis.config = ((key: string | Record<string, any>, def: any) => {
+                if (!key || typeof key === 'string') {
+                    return config.get(key, def)
+                }
+
+                Object.entries(key).forEach(([key, value]) => {
+                    config.set(key, value)
+                })
+            }) as never
+
+            return config
         })
 
         this.app.make('http.app').use(e => {

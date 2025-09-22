@@ -10,6 +10,7 @@ export class PathLoader {
         config: '/src/config',
         public: '/public',
         storage: '/storage',
+        database: '/src/database',
     }
 
     /**
@@ -17,18 +18,25 @@ export class PathLoader {
      * Any property ending with "Path" is accessible automatically.
      *
      * @param name - The base name of the path property
-     * @param base - The base path to include to the path
+     * @param prefix - The base path to prefix to the path
      * @returns 
      */
-    getPath (name: IPathName, base?: string): string {
+    getPath (name: IPathName, prefix?: string): string {
         let path: string;
 
-        if (base && name !== 'base') {
-            path = nodepath.join(base, this.paths[name])
+        if (prefix && name !== 'base') {
+            path = nodepath.join(prefix, this.paths[name])
         } else {
             path = this.paths[name]
         }
-        return path.replace('/src/', `/${process.env.SRC_PATH ?? 'src'}/`.replace(/([^:]\/)\/+/g, "$1"))
+
+        path = path.replace('/src/', `/${process.env.SRC_PATH ?? 'src'}/`.replace(/([^:]\/)\/+/g, "$1"))
+
+        if (name === 'database' && process.env.SRC_PATH && !'/src/'.includes(process.env.SRC_PATH)) {
+            return nodepath.resolve(path.replace(process.env.SRC_PATH, ''))
+        }
+
+        return path
     }
 
     /**

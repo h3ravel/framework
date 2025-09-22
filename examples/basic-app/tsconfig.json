@@ -3,6 +3,6 @@
   "compilerOptions": {
     "outDir": "dist"
   },
-  "include": ["src", "public"],
+  "include": ["src", "public", "../../packages/console/src/run.ts"],
   "exclude": ["dist", "node_modules"]
 }

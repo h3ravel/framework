@@ -22,6 +22,7 @@
       "name": "index.ts",
       "root": "packages/console/src",
       "exclude": [
+        "**/fire.ts",
         "**/*.test.ts",
         "**/*.d.ts"
       ]

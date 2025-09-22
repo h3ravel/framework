@@ -30,7 +30,7 @@ export class RouteServiceProvider extends ServiceProvider {
             const routePath = this.app.getPath('routes')
 
             const files = (await readdir(routePath)).filter((e) => {
-                return !e.includes('.d.ts') && !e.includes('.map')
+                return !e.includes('.d.ts') && !e.includes('.d.cts') && !e.includes('.map')
             })
 
             for (let i = 0; i < files.length; i++) {

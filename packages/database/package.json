@@ -37,16 +37,21 @@
   ],
   "scripts": {
     "barrel": "barrelsby --directory src --delete --singleQuotes",
-    "build": "tsup",
+    "build": "tsdown --config-loader unconfig",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests"
   },
+  "dependencies": {
+    "@h3ravel/arquebus": "^0.4.0",
+    "sqlite3": "^5.1.7"
+  },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^"
+    "@h3ravel/core": "workspace:^",
+    "@h3ravel/support": "workspace:^"
   },
   "devDependencies": {
-    "typescript": "^5.4.0"
+    "typescript": "^5.9.2"
   }
 }

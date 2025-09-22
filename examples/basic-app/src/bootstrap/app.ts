@@ -15,7 +15,6 @@ export default class {
         await app.boot()
 
         const h3App = app.make('http.app')
-        const serve = app.make('http.serve')
 
         const kernel = new Kernel((event) => HttpContext.init({
             app,
@@ -25,7 +24,6 @@ export default class {
 
         h3App.use((event) => kernel.handle(event, async () => undefined))
 
-        serve(h3App, { port: 3001 })
-        console.log('🚀 H3ravel running at http://localhost:3000')
+        await app.fire(h3App)
     }
 }

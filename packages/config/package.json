@@ -37,7 +37,7 @@
   ],
   "scripts": {
     "barrel": "barrelsby --directory src --delete --singleQuotes",
-    "build": "tsup",
+    "build": "tsdown --config-loader unconfig",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
@@ -48,7 +48,8 @@
     "@h3ravel/support": "workspace:^"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@h3ravel/core": "workspace:^"
+    "tsx": "^4.20.5",
+    "@h3ravel/core": "workspace:^",
+    "typescript": "^5.9.2"
   }
 }

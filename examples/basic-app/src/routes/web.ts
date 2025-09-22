@@ -1,7 +1,6 @@
 import { HttpContext, Request } from '@h3ravel/http'
 
 import { HomeController } from 'App/Http/Controllers/HomeController'
-import { Injectable } from '@h3ravel/core'
 import { MailController } from 'src/app/Http/Controllers/MailController'
 import { Router } from '@h3ravel/router'
 
@@ -11,7 +10,6 @@ export default (Route: Router) => {
 
 
     Route.get('/app', async function ({ request, response }: HttpContext, req: Request) {
-        console.log(req)
         const view = request.app.make('view')
 
         return response.html(await view('index', {
