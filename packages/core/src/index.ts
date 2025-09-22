@@ -1,4 +1,6 @@
 export * from './Application'
+export * from './Console/ConsoleCommand'
+export * from './Console/ConsoleKernel'
 export * from './Container'
 export * from './Contracts/ServiceProviderConstructor'
 export * from './Controller'

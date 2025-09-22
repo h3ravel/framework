@@ -3,6 +3,7 @@ packages:
   - packages/shared
   - packages/support
   - packages/core
+  - packages/filesystem
   - packages/database
   - packages/http
   - packages/cache

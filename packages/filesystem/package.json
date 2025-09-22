@@ -1,7 +1,7 @@
 {
-  "name": "@h3ravel/core",
-  "version": "1.8.0",
-  "description": "Core application container, lifecycle management and service providers for H3ravel.",
+  "name": "@h3ravel/filesystem",
+  "version": "0.1.0",
+  "description": "Filesystem manager for H3ravel.",
   "type": "module",
   "exports": {
     ".": {
@@ -27,7 +27,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/h3ravel/framework.git",
-    "directory": "packages/core"
+    "directory": "packages/filesystem"
   },
   "keywords": [
     "h3ravel",
@@ -37,7 +37,8 @@
     "framework",
     "nodejs",
     "typescript",
-    "laravel"
+    "laravel",
+    "filesystem"
   ],
   "scripts": {
     "barrel": "barrelsby --directory src --delete --singleQuotes",
@@ -50,18 +51,12 @@
   "dependencies": {
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
-    "chalk": "^5.6.2",
-    "commander": "^14.0.1",
-    "detect-port": "^2.1.0",
-    "dotenv": "^17.2.2",
-    "dotenv-expand": "^12.0.3",
-    "edge.js": "^6.3.0",
-    "h3": "2.0.0-beta.4",
-    "reflect-metadata": "^0.2.2",
-    "srvx": "^0.8.7",
-    "tslib": "^2.8.1"
+    "escalade": "^3.2.0"
+  },
+  "peerDependencies": {
+    "@h3ravel/core": "workspace:^"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.4.0"
   }
 }

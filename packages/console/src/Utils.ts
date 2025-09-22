@@ -27,16 +27,6 @@ export class Utils {
     return path.join(path.dirname(resolved), parts.join('/'))
   }
 
-  static async getMigrationPaths (cwd: string, migrator: any, defaultPath: string, path: string) {
-    if (path) {
-      return [join(cwd, path)]
-    }
-    return [
-      ...migrator.getPaths(),
-      join(cwd, defaultPath),
-    ]
-  }
-
   /**
    * Check if file exists
    * 

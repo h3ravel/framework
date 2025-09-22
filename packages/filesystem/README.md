@@ -2,19 +2,19 @@
   <a href="https://h3ravel.toneflix.net"  target="_blank">
     <img src="https://raw.githubusercontent.com/h3ravel/assets/refs/heads/main/logo-full.svg" width="200" alt="H3ravel Logo">
   </a>
-  <h1 align="center"><a href="https://h3ravel.toneflix.net">H3ravel Core</a></h1>
+  <h1 align="center"><a href="https://h3ravel.toneflix.net">H3ravel Filesystem</a></h1>
 
 [![Framework][ix]][lx]
-[![Core Package Version][i1]][l1]
+[![Filesystem Package Version][i1]][l1]
 [![Downloads][d1]][d1]
 [![Tests][tei]][tel]
 [![License][lini]][linl]
 
 </div>
 
-# About H3ravel/core
+# About H3ravel/filesystem
 
-This is core ofthe [H3ravel](https://h3ravel.toneflix.net) framework, it serves as the application container providing base service providers support and bootstraping.
+This is the filesystem manager for the [H3ravel](https://h3ravel.toneflix.net) framework.
 
 ## Contributing
 
@@ -34,9 +34,9 @@ The H3ravel framework is open-sourced software licensed under the [MIT license](
 
 [ix]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=Framework&color=%230970ce
 [lx]: https://www.npmjs.com/package/@h3ravel/core
-[i1]: https://img.shields.io/npm/v/%40h3ravel%2Fcore?style=flat-square&label=@h3ravel/core&color=%230970ce
-[l1]: https://www.npmjs.com/package/@h3ravel/core
-[d1]: https://img.shields.io/npm/dt/%40h3ravel%2Fcore?style=flat-square&label=Downloads&link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40h3ravel%2Fcore
+[i1]: https://img.shields.io/npm/v/%40h3ravel%2Fhttp?style=flat-square&label=@h3ravel/filesystem&color=%230970ce
+[l1]: https://www.npmjs.com/package/@h3ravel/filesystem
+[d1]: https://img.shields.io/npm/dt/%40h3ravel%2Fhttp?style=flat-square&label=Downloads&link=https%3A%2F%2Fwww.npmjs.com%2Fpackage%2F%40h3ravel%2Fhttp
 [linl]: https://github.com/h3ravel/framework/blob/main/LICENSE
 [lini]: https://img.shields.io/github/license/h3ravel/framework
 [tel]: https://github.com/h3ravel/framework/actions/workflows/test.yml
