@@ -3,18 +3,14 @@
   "version": "0.1.0",
   "description": "Filesystem manager for H3ravel.",
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "globals": [
-        "./dist/app.globals.d.ts"
-      ]
     }
   },
   "files": [
