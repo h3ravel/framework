@@ -49,8 +49,9 @@
     "test": "jest --passWithNoTests"
   },
   "dependencies": {
+    "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
-    "@h3ravel/shared": "workspace:^"
+    "escalade": "^3.2.0"
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^"

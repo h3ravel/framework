@@ -350,6 +350,9 @@ importers:
       '@h3ravel/support':
         specifier: workspace:^
         version: link:../support
+      escalade:
+        specifier: ^3.2.0
+        version: 3.2.0
     devDependencies:
       typescript:
         specifier: ^5.4.0
