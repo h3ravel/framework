@@ -1,0 +1,10 @@
+{
+  "extends": "../shared/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@h3ravel/filesystem": ["./src/index.ts"]
+    }
+  },
+  "exclude": ["dist", "node_modules"]
+}

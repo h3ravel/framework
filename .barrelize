@@ -45,6 +45,14 @@
     },
     {
       "name": "index.ts",
+      "root": "packages/filesystem/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
       "root": "packages/http/src",
       "exclude": [
         "**/*.test.ts",
