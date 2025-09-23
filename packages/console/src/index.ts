@@ -1,5 +1,4 @@
 export * from './Commands/Command'
-export * from './Commands/FireCommand'
 export * from './Commands/ListCommand'
 export * from './Commands/MakeCommand'
 export * from './Contracts/ICommand'

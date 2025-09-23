@@ -1,5 +1,8 @@
+/// <reference path="../../../core/src/app.globals.d.ts" />
+
 import { H3, serve } from 'h3'
 
+import { FireCommand } from '../Commands/FireCommand'
 import { ServiceProvider } from '@h3ravel/core'
 
 /**
@@ -12,7 +15,7 @@ import { ServiceProvider } from '@h3ravel/core'
  * Auto-Registered
  */
 export class HttpServiceProvider extends ServiceProvider {
-    public static priority = 998;
+    public static priority = 998
 
     register () {
         this.app.singleton('http.app', () => {
@@ -20,5 +23,6 @@ export class HttpServiceProvider extends ServiceProvider {
         })
 
         this.app.singleton('http.serve', () => serve)
+        this.commands([FireCommand])
     }
 }

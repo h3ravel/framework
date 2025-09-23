@@ -3,7 +3,6 @@ import { Option, program } from 'commander'
 
 import { Application } from '@h3ravel/core'
 import { Command } from './Commands/Command'
-import { FireCommand } from './Commands/FireCommand'
 import { Kernel } from './Kernel'
 import { ListCommand } from './Commands/ListCommand'
 import { Logger } from '@h3ravel/shared'
@@ -31,7 +30,6 @@ export class Musket {
 
     private loadBaseCommands () {
         const commands: Command[] = [
-            new FireCommand(this.app, this.kernel),
             new MakeCommand(this.app, this.kernel),
             new ListCommand(this.app, this.kernel),
         ]

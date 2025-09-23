@@ -2,7 +2,7 @@
 
 import { ConfigRepository, EnvLoader } from '..'
 
-import { Bindings } from '@h3ravel/shared';
+import { Bindings } from '@h3ravel/shared'
 import { ServiceProvider } from '@h3ravel/core'
 
 /**
@@ -14,7 +14,7 @@ import { ServiceProvider } from '@h3ravel/core'
  * Auto-Registered
  */
 export class ConfigServiceProvider extends ServiceProvider {
-    public static priority = 998;
+    public static priority = 998
     // public static order = 'before:DatabaseServiceProvider';
 
     async register () {

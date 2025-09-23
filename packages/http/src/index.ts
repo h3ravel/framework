@@ -1,3 +1,4 @@
+export * from './Commands/FireCommand'
 export * from './Contracts/HttpContract'
 export * from './Middleware'
 export * from './Middleware/LogRequests'

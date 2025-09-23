@@ -15,8 +15,6 @@ export class DatabaseServiceProvider extends ServiceProvider {
     public static priority = 994
 
     register () {
-        this.commands([MigrateCommand])
-
         const config = this.app.make('config')
 
         const connection = Object.entries(arquebusConfig(config.get('database')))
@@ -26,5 +24,7 @@ export class DatabaseServiceProvider extends ServiceProvider {
         if (connection) {
             arquebus.addConnection(connection)
         }
+
+        this.commands([MigrateCommand])
     }
 }

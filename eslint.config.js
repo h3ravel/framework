@@ -1,8 +1,9 @@
+import { defineConfig } from 'eslint/config';
 import { globalIgnores } from 'eslint/config'
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
 
-export default tseslint.config(
+export default defineConfig(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   [
@@ -28,7 +29,10 @@ export default tseslint.config(
           'varsIgnorePattern': '^I[A-Z]|^_',
         }
       ],
-      '@typescript-eslint/no-explicit-any': 'off'
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/triple-slash-reference': {
+        path: 'always'
+      }
     }
   },
 )
