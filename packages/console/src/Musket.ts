@@ -76,21 +76,27 @@ export class Musket {
             [this.kernel.modulePackage.version, 'green']
         ], ' ', false)
 
+        const additional = {
+            quiet: ['-q, --quiet', 'Do not output any message'],
+            silent: ['--silent', 'Do not output any message'],
+            verbose: ['-v, --verbose <number>', 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'],
+            lock: ['--lock', 'Locked and loaded, do not ask any interactive question'],
+        }
+
         /** Init Commander */
         program
             .name('musket')
             .version(`${cliVersion}\n${localVersion}`)
             .description(altLogo)
+            .addOption(new Option(additional.quiet[0], additional.quiet[1]).implies({ silent: true }))
+            .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
+            .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
+            .addOption(new Option(additional.lock[0], additional.lock[1]))
             .action(async () => {
                 const instance = new ListCommand(this.app, this.kernel)
                 instance.setInput(program.opts(), program.args, program.registeredArguments, {}, program)
                 instance.handle()
             })
-
-        /**
-         * Add default options
-         */
-        this.addDefaultOptions(program)
 
         /** Create the init Command */
         program
@@ -114,14 +120,14 @@ export class Musket {
                     : program
                         .command(command.baseCommand)
                         .description(command.description ?? '')
+                        .addOption(new Option(additional.quiet[0], additional.quiet[1]).implies({ silent: true }))
+                        .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
+                        .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
+                        .addOption(new Option(additional.lock[0], additional.lock[1]))
                         .action(async () => {
                             instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command, program)
                             await instance.handle()
                         })
-                /**
-                 * Add default options
-                 */
-                this.addDefaultOptions(cmd)
 
                 /**
                  * Add options to the base command if it has any
@@ -144,15 +150,14 @@ export class Musket {
                         const cmd = program
                             .command(`${command.baseCommand}:${sub.name}`)
                             .description(sub.description || '')
+                            .addOption(new Option(additional.quiet[0], additional.quiet[1]).implies({ silent: true }))
+                            .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
+                            .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
+                            .addOption(new Option(additional.lock[0], additional.lock[1]))
                             .action(async () => {
                                 instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, sub, program)
                                 await instance.handle()
                             })
-
-                        /**
-                         * Add default options
-                         */
-                        this.addDefaultOptions(cmd)
 
                         /**
                          * Add the shared arguments here
@@ -241,20 +246,6 @@ export class Musket {
                 opt.defaultValue
             )
         }
-    }
-
-    addDefaultOptions (cmd: Commander) {
-        const additional = {
-            quiet: ['-q, --quiet', 'Do not output any message'],
-            silent: ['--silent', 'Do not output any message'],
-            verbose: ['-v, --verbose <number>', 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'],
-            lock: ['--lock', 'Locked and loaded, do not ask any interactive question'],
-        }
-
-        cmd.addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
-            .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
-            .addOption(new Option(additional.quiet[0], additional.quiet[1]).implies({ silent: true }))
-            .addOption(new Option(additional.lock[0], additional.lock[1]))
     }
 
     static async parse (kernel: Kernel) {
