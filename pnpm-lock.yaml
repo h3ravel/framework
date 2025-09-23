@@ -328,6 +328,9 @@ importers:
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
+      '@h3ravel/filesystem':
+        specifier: workspace:^
+        version: link:../filesystem
       '@h3ravel/support':
         specifier: workspace:^
         version: link:../support
@@ -444,6 +447,9 @@ importers:
       h3:
         specifier: ^2.0.0-beta.4
         version: 2.0.0-beta.4
+      preferred-pm:
+        specifier: ^4.1.1
+        version: 4.1.1
     devDependencies:
       fetchdts:
         specifier: ^0.1.6

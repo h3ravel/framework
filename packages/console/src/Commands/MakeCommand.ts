@@ -17,13 +17,15 @@ export class MakeCommand extends Command {
      * @var string
      */
     protected signature: string = `#make:
-        {controller : Generates a new controller class. | {--a|api : Generate an API resource controller} | {--force : Overide existing controller.} }
+        {controller : Generates a new controller class. | {--a|api : Generate an API resource controller} }
         {resource : Generates a new API resource class.}
-        {migration : Generates a new database migration class. | {--l|type=ts : The file type to generate} | {--t|table : The table to migrate}  | {--c|create : The table to be created} }
+        {migration : Generates a new database migration class. | {--l|type=ts : The file type to generate} | {--t|table : The table to migrate} | {--c|create : The table to be created} }
         {factory : Generates a new database factory class.}
         {seeder : Generates a new database seeder class.}
+        {view : Create a new view.}
         {model : Generates a new Arquebus model class. | {--t|type=ts : The file type to generate}} 
         {^name : The name of the [name] to generate}
+        {^--force : Overide existing controller.}
     `
     /**
      * The console command description.
