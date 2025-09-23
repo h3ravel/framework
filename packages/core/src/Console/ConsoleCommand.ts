@@ -1,8 +1,8 @@
-import type { Argument, Command } from "commander";
+import type { Argument, Command } from 'commander'
 
-import { Application } from "../Application";
-import { ConsoleKernel } from "./ConsoleKernel";
-import { XGeneric } from "@h3ravel/support";
+import { Application } from '../Application'
+import { ConsoleKernel } from './ConsoleKernel'
+import { XGeneric } from '@h3ravel/support'
 
 export class ConsoleCommand {
     constructor(protected app: Application, protected kernel: ConsoleKernel) { }
@@ -12,14 +12,14 @@ export class ConsoleCommand {
      *
      * @var Command
      */
-    public program!: Command;
+    public program!: Command
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected signature!: string;
+    protected signature!: string
 
     /**
      * A dictionary of signatures or what not.
@@ -33,7 +33,7 @@ export class ConsoleCommand {
      *
      * @var string
      */
-    protected description?: string;
+    protected description?: string
 
     /**
      * The console command input.

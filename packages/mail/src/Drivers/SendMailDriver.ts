@@ -1,15 +1,15 @@
-import nodemailer, { type SendMailOptions } from 'nodemailer';
+import nodemailer, { type SendMailOptions } from 'nodemailer'
 
-import { MailDriverContract, SendMailConfig } from '../Contracts/Mailer';
+import { MailDriverContract, SendMailConfig } from '../Contracts/Mailer'
 
 export class SendMailDriver implements MailDriverContract {
-    private transporter;
+    private transporter
 
     constructor(config: SendMailConfig) {
         this.transporter = nodemailer.createTransport({
             sendmail: true,
             path: config.path,
-        });
+        })
     }
 
     async send (options: SendMailOptions) {
@@ -21,6 +21,6 @@ export class SendMailDriver implements MailDriverContract {
             html: options.html,
             text: options.text,
             attachments: options.attachments
-        });
+        })
     }
 }

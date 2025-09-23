@@ -10,13 +10,13 @@ export class Request implements IRequest {
      * Gets route parameters.
      * @returns An object containing route parameters.
      */
-    readonly params: NonNullable<H3Event["context"]["params"]>
+    readonly params: NonNullable<H3Event['context']['params']>
 
     /**
      * Gets query parameters.
      * @returns An object containing query parameters.
      */
-    readonly query: Record<string, string>;
+    readonly query: Record<string, string>
 
     /**
      * Gets the request headers.

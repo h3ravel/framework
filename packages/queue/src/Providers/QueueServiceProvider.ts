@@ -10,7 +10,7 @@ import { ServiceProvider } from '@h3ravel/core'
  * Auto-Registered if @h3ravel/queue is installed
  */
 export class QueueServiceProvider extends ServiceProvider {
-    public static priority = 991;
+    public static priority = 991
 
     register () {
         // Core bindings

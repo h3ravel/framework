@@ -1,7 +1,7 @@
-import { DotNestedKeys, DotNestedValue } from "@h3ravel/shared";
+import { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 
 import type { H3Event } from 'h3'
-import type { IApplication } from './IApplication';
+import type { IApplication } from './IApplication'
 
 /**
  * Interface for the Response contract, defining methods for handling HTTP responses.

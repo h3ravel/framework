@@ -13,7 +13,7 @@ import { readdir } from 'node:fs/promises'
  * Auto-Registered
  */
 export class RouteServiceProvider extends ServiceProvider {
-    public static priority = 997;
+    public static priority = 997
 
     register () {
         this.app.singleton('router', () => {

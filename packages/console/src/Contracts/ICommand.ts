@@ -1,4 +1,4 @@
-import { Command } from "../Commands/Command";
+import { Command } from '../Commands/Command'
 
 export type CommandOption = {
     name: string;

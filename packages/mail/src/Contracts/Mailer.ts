@@ -1,8 +1,8 @@
-import type { SendMailOptions as NodeMailerSendMailOptions, SentMessageInfo } from "nodemailer";
+import type { SendMailOptions as NodeMailerSendMailOptions, SentMessageInfo } from 'nodemailer'
 
-import SESConnection from "nodemailer/lib/ses-transport";
-import SMTPConnection from "nodemailer/lib/smtp-connection";
-import SendmailTransport from "nodemailer/lib/sendmail-transport";
+import SESConnection from 'nodemailer/lib/ses-transport'
+import SMTPConnection from 'nodemailer/lib/smtp-connection'
+import SendmailTransport from 'nodemailer/lib/sendmail-transport'
 
 export interface DeliveryReport {
     accepted: string[],

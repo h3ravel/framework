@@ -1,5 +1,5 @@
-import { ChalkInstance } from "chalk";
-import { Logger } from "../Utils/Logger";
+import { ChalkInstance } from 'chalk'
+import { Logger } from '../Utils/Logger'
 
 export type LoggerChalk = keyof ChalkInstance | ChalkInstance | (keyof ChalkInstance)[]
 export type LoggerParseSignature = [string, LoggerChalk][]

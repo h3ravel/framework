@@ -2,7 +2,7 @@ import { DotNestedKeys, DotNestedValue } from './ObjContract'
 import type { ResponseHeaderMap, TypedHeaders } from 'fetchdts'
 
 import type { H3Event } from 'h3'
-import type { IApplication } from './IApplication';
+import type { IApplication } from './IApplication'
 
 /**
  * Interface for the Request contract, defining methods for handling HTTP request data.
@@ -17,7 +17,7 @@ export interface IRequest {
      * Gets route parameters.
      * @returns An object containing route parameters.
      */
-    params: NonNullable<H3Event["context"]["params"]>;
+    params: NonNullable<H3Event['context']['params']>;
 
     /**
      * Gets query parameters.

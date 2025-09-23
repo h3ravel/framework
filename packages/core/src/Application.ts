@@ -1,14 +1,14 @@
-import 'reflect-metadata';
+import 'reflect-metadata'
 
 import { IApplication, IPathName, IServiceProvider, Logger } from '@h3ravel/shared'
 
 import { Container } from './Container'
-import { ContainerResolver } from './Di/ContainerResolver';
+import { ContainerResolver } from './Di/ContainerResolver'
 import type { H3 } from 'h3'
 import { PathLoader } from '@h3ravel/shared'
 import { Registerer } from './Registerer'
-import chalk from 'chalk';
-import { detect } from 'detect-port';
+import chalk from 'chalk'
+import { detect } from 'detect-port'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
@@ -28,7 +28,7 @@ export class Application extends Container implements IApplication {
     /**
      * List of registered console commands
      */
-    public registeredCommands: (new (app: any, kernel: any) => any)[] = [];
+    public registeredCommands: (new (app: any, kernel: any) => any)[] = []
 
     constructor(basePath: string) {
         super()
@@ -38,7 +38,7 @@ export class Application extends Container implements IApplication {
         this.basePath = basePath
         this.setPath('base', basePath)
         this.loadOptions()
-        this.registerBaseBindings();
+        this.registerBaseBindings()
         Registerer.register(this)
     }
 
@@ -80,7 +80,7 @@ export class Application extends Container implements IApplication {
      * Get all registered providers
      */
     public getRegisteredProviders () {
-        return this.providers;
+        return this.providers
     }
 
     /**
@@ -99,50 +99,50 @@ export class Application extends Container implements IApplication {
     }
 
     protected async getAllProviders (): Promise<Array<AServiceProvider>> {
-        const coreProviders = await this.getConfiguredProviders();
-        const allProviders = [...coreProviders, ...this.externalProviders];
+        const coreProviders = await this.getConfiguredProviders()
+        const allProviders = [...coreProviders, ...this.externalProviders]
 
         /**
          * Deduplicate by class reference
          */
-        const uniqueProviders = Array.from(new Set(allProviders));
+        const uniqueProviders = Array.from(new Set(allProviders))
 
-        return this.sortProviders(uniqueProviders);
+        return this.sortProviders(uniqueProviders)
     }
 
     private sortProviders (providers: Array<AServiceProvider>) {
-        const priorityMap = new Map<string, number>();
+        const priorityMap = new Map<string, number>()
 
         /**
          * Base priority (default 0)
          */
         providers.forEach((Provider) => {
-            priorityMap.set(Provider.name, (Provider as any).priority ?? 0);
-        });
+            priorityMap.set(Provider.name, (Provider as any).priority ?? 0)
+        })
 
         /**
          * Handle before/after adjustments
          */
         providers.forEach((Provider) => {
-            const order = (Provider as any).order;
-            if (!order) return;
+            const order = (Provider as any).order
+            if (!order) return
 
-            const [direction, target] = order.split(':');
-            const targetPriority = priorityMap.get(target) ?? 0;
+            const [direction, target] = order.split(':')
+            const targetPriority = priorityMap.get(target) ?? 0
 
             if (direction === 'before') {
-                priorityMap.set(Provider.name, targetPriority - 1);
+                priorityMap.set(Provider.name, targetPriority - 1)
             } else if (direction === 'after') {
-                priorityMap.set(Provider.name, targetPriority + 1);
+                priorityMap.set(Provider.name, targetPriority + 1)
             }
-        });
+        })
 
         /**
          * Service providers sorted based on thier name and priority
          */
         const sorted = providers.sort(
             (A, B) => (priorityMap.get(B.name) ?? 0) - (priorityMap.get(A.name) ?? 0)
-        );
+        )
 
         /**
          * If debug is enabled, let's show the loaded service provider info
@@ -154,9 +154,9 @@ export class Application extends Container implements IApplication {
                     Priority: priorityMap.get(P.name),
                     Order: (P as any).order || 'N/A',
                 }))
-            );
+            )
 
-            console.info(`Set ${chalk.bgCyan(' APP_DEBUG = false ')} in your .env file to hide this information`, "\n")
+            console.info(`Set ${chalk.bgCyan(' APP_DEBUG = false ')} in your .env file to hide this information`, '\n')
         }
 
         return sorted
@@ -249,7 +249,7 @@ export class Application extends Container implements IApplication {
                 })
 
                 Logger.parse([
-                    [`🚀 H3ravel running at:`, 'green'],
+                    ['🚀 H3ravel running at:', 'green'],
                     [`${server.options.protocol ?? 'http'}://${server.options.hostname}:${server.options.port}`, 'cyan']]
                 )
             } else if (this.tries <= tries) {
@@ -266,7 +266,7 @@ export class Application extends Container implements IApplication {
                 ['An error occured', 'bgRed'],
                 [e.message, 'red'],
                 [e.stack, 'red']
-            ], "\n")
+            ], '\n')
         }
     }
 

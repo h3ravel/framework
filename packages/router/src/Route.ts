@@ -1,12 +1,12 @@
-import 'reflect-metadata';
+import 'reflect-metadata'
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Application, Container, Kernel } from '@h3ravel/core'
 import { Request, Response } from '@h3ravel/http'
 import { singularize } from '@h3ravel/support'
 import { HttpContext, RouteEventHandler } from '@h3ravel/shared'
 import type { EventHandler, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
-import { Helpers } from './Helpers';
-import { Model } from '@h3ravel/database';
+import { Helpers } from './Helpers'
+import { Model } from '@h3ravel/database'
 
 interface RouteDefinition {
     method: string
@@ -131,7 +131,7 @@ export class Router implements IRouter {
                 /**
                  * Get param types for the controller method
                  */
-                const paramTypes: [] = Reflect.getMetadata('design:paramtypes', controller, action) || [];
+                const paramTypes: [] = Reflect.getMetadata('design:paramtypes', controller, action) || []
 
                 /**
                  * Resolve the bound dependencies
@@ -300,8 +300,8 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd | 'name'> {
         path = path.replace(/\//g, '/')
 
-        const basePath = `/${path}`.replace(/\/+$/, '').replace(/(\/)+/g, '$1');
-        const name = basePath.substring(basePath.lastIndexOf('/') + 1).replaceAll(/\/|:/g, '') || '';
+        const basePath = `/${path}`.replace(/\/+$/, '').replace(/(\/)+/g, '$1')
+        const name = basePath.substring(basePath.lastIndexOf('/') + 1).replaceAll(/\/|:/g, '') || ''
         const param = singularize(name)
 
         this.get(basePath, [Controller, 'index'], `${name}.index`, middleware)

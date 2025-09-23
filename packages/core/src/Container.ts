@@ -12,7 +12,7 @@ export class Container implements IContainer {
      * @param target 
      * @returns 
      */
-    static hasAnyDecorator (target: Function): boolean {
+    static hasAnyDecorator (target: (...prm: any[]) => any): boolean {
         if (Reflect.getMetadataKeys(target).length > 0) return true
 
         const paramLength = target.length
@@ -82,18 +82,18 @@ export class Container implements IContainer {
      * Automatically build a class with constructor dependency injection
      */
     private build<T extends UseKey> (ClassType: new (..._args: any[]) => Bindings[T]): Bindings[T] {
-        let dependencies: any[] = [];
+        let dependencies: any[] = []
 
         if (Array.isArray((ClassType as any).__inject__)) {
             dependencies = (ClassType as any).__inject__.map((alias: any) => {
                 return this.make(alias)
-            });
+            })
         } else {
             const paramTypes: any[] = Reflect.getMetadata('design:paramtypes', ClassType) || []
             dependencies = paramTypes.map((dep) => this.make(dep))
         }
 
-        return new ClassType(...dependencies);
+        return new ClassType(...dependencies)
     }
 
     /**

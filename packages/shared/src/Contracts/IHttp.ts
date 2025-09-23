@@ -130,7 +130,7 @@ export class HttpContext {
         /**
          * Return a new instance
          */
-        return new HttpContext(ctx.app, ctx.request, ctx.response);
+        return new HttpContext(ctx.app, ctx.request, ctx.response)
     }
 }
 

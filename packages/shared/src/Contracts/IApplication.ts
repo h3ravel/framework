@@ -1,4 +1,4 @@
-import { IContainer } from './IContainer';
+import { IContainer } from './IContainer'
 import { IServiceProvider } from './IServiceProvider'
 
 export type IPathName =

@@ -1,6 +1,6 @@
-import { CommandOption, ParsedCommand } from "./Contracts/ICommand";
+import { CommandOption, ParsedCommand } from './Contracts/ICommand'
 
-import { Command } from "./Commands/Command";
+import { Command } from './Commands/Command'
 
 export class Signature {
     /**
@@ -10,117 +10,117 @@ export class Signature {
      * @returns 
      */
     static parseOptions (block: string): CommandOption[] {
-        const options: CommandOption[] = [];
+        const options: CommandOption[] = []
         /**
          * Match { ... } blocks at top level 
          */
-        const regex = /\{([^{}]+(?:\{[^{}]*\}[^{}]*)*)\}/g;
-        let match;
+        const regex = /\{([^{}]+(?:\{[^{}]*\}[^{}]*)*)\}/g
+        let match
 
         while ((match = regex.exec(block)) !== null) {
-            const shared = '^' === match[1][0]! || /:[#^]/.test(match[1]);
-            const isHidden = (['#', '^'].includes(match[1][0]!) || /:[#^]/.test(match[1])) && !shared;
-            const content = match[1].trim().replace(/[#^]/, '');
+            const shared = '^' === match[1][0]! || /:[#^]/.test(match[1])
+            const isHidden = (['#', '^'].includes(match[1][0]!) || /:[#^]/.test(match[1])) && !shared
+            const content = match[1].trim().replace(/[#^]/, '')
             /**
              * Split by first ':' to separate name and description+nested
              */
-            const colonIndex = content.indexOf(':');
+            const colonIndex = content.indexOf(':')
             if (colonIndex === -1) {
                 /**
                  * No description, treat whole as name
                  */
-                options.push({ name: content });
-                continue;
+                options.push({ name: content })
+                continue
             }
 
-            const namePart = content.substring(0, colonIndex).trim();
-            let rest = content.substring(colonIndex + 1).trim();
+            const namePart = content.substring(0, colonIndex).trim()
+            const rest = content.substring(colonIndex + 1).trim()
 
             /**
              * Check for nested options after '|'
              */
-            let description = rest;
-            let nestedOptions: CommandOption[] | undefined;
+            let description = rest
+            let nestedOptions: CommandOption[] | undefined
 
-            const pipeIndex = rest.indexOf('|');
+            const pipeIndex = rest.indexOf('|')
             if (pipeIndex !== -1) {
-                description = rest.substring(0, pipeIndex).trim();
-                const nestedText = rest.substring(pipeIndex + 1).trim();
+                description = rest.substring(0, pipeIndex).trim()
+                const nestedText = rest.substring(pipeIndex + 1).trim()
                 /**
                  * nestedText should start with '{' and end with ')', clean it
                  * Also Remove trailing ')' if present
                  */
-                const cleanedNestedText = nestedText.replace(/^\{/, '').trim();
+                const cleanedNestedText = nestedText.replace(/^\{/, '').trim()
 
                 /**
                  * Parse nested options recursively
                  */
-                nestedOptions = Signature.parseOptions('{' + cleanedNestedText + '}');
+                nestedOptions = Signature.parseOptions('{' + cleanedNestedText + '}')
             } else {
                 /**
                  * Trim the string
                  */
-                description = description.trim();
+                description = description.trim()
             }
 
             /**
              * Parse name modifiers (?, *, ?*)
              */
-            let name = namePart;
-            let required = /[^a-zA-Z0-9_|-]/.test(name);
-            let multiple = false;
+            let name = namePart
+            let required = /[^a-zA-Z0-9_|-]/.test(name)
+            let multiple = false
 
             if (name.endsWith('?*')) {
-                required = false;
-                multiple = true;
-                name = name.slice(0, -2);
+                required = false
+                multiple = true
+                name = name.slice(0, -2)
             } else if (name.endsWith('*')) {
-                multiple = true;
-                name = name.slice(0, -1);
+                multiple = true
+                name = name.slice(0, -1)
             } else if (name.endsWith('?')) {
-                required = false;
-                name = name.slice(0, -1);
+                required = false
+                name = name.slice(0, -1)
             }
 
             /**
              * Check if it's a flag option (starts with --)
              */
-            const isFlag = name.startsWith('--');
-            let flags: string[] | undefined;
-            let defaultValue: string | number | boolean | undefined | string[];
+            const isFlag = name.startsWith('--')
+            let flags: string[] | undefined
+            let defaultValue: string | number | boolean | undefined | string[]
 
             if (isFlag) {
                 /**
                  * Parse flags and default values
                  */
-                const flagParts = name.split('|').map(s => s.trim());
+                const flagParts = name.split('|').map(s => s.trim())
 
-                flags = [];
+                flags = []
 
                 for (let part of flagParts) {
                     if (part.startsWith('--') && part.slice(2).length === 1) {
-                        part = '-' + part.slice(2);
+                        part = '-' + part.slice(2)
                     } else if (part.startsWith('-') && !part.startsWith('--') && part.slice(1).length > 1) {
-                        part = '--' + part.slice(1);
+                        part = '--' + part.slice(1)
                     } else if (!part.startsWith('-') && part.slice(1).length > 1) {
                         part = '--' + part
                     }
 
-                    const eqIndex = part.indexOf('=');
+                    const eqIndex = part.indexOf('=')
                     if (eqIndex !== -1) {
-                        flags.push(part.substring(0, eqIndex));
-                        const val = part.substring(eqIndex + 1);
+                        flags.push(part.substring(0, eqIndex))
+                        const val = part.substring(eqIndex + 1)
                         if (val === '*') {
-                            defaultValue = [];
+                            defaultValue = []
                         } else if (val === 'true' || val === 'false' || (!val && !required)) {
-                            defaultValue = val === 'true';
+                            defaultValue = val === 'true'
                         } else if (!isNaN(Number(val))) {
-                            defaultValue = Number(val);
+                            defaultValue = Number(val)
                         } else {
-                            defaultValue = val;
+                            defaultValue = val
                         }
                     } else {
-                        flags.push(part);
+                        flags.push(part)
                     }
                 }
             }
@@ -136,10 +136,10 @@ export class Signature {
                 isHidden,
                 defaultValue,
                 nestedOptions,
-            });
+            })
         }
 
-        return options;
+        return options
     }
 
     /**
@@ -150,21 +150,21 @@ export class Signature {
      * @returns 
      */
     static parseSignature (signature: string, commandClass: Command): ParsedCommand {
-        const lines = signature.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        const isHidden = ['#', '^'].includes(lines[0][0]!) || /:[#^]/.test(lines[0]);
+        const lines = signature.split('\n').map(l => l.trim()).filter(l => l.length > 0)
+        const isHidden = ['#', '^'].includes(lines[0][0]!) || /:[#^]/.test(lines[0])
         const baseCommand = lines[0].replace(/[^\w=:-]/g, '')
         const description = commandClass.getDescription()
-        const isNamespaceCommand = baseCommand.endsWith(':');
+        const isNamespaceCommand = baseCommand.endsWith(':')
 
         /**
          * Join the rest lines to a single string for parsing
          */
-        const rest = lines.slice(1).join(' ');
+        const rest = lines.slice(1).join(' ')
 
         /**
          * Parse all top-level options/subcommands
          */
-        const allOptions = Signature.parseOptions(rest);
+        const allOptions = Signature.parseOptions(rest)
 
         if (isNamespaceCommand) {
             /**
@@ -184,7 +184,7 @@ export class Signature {
                 commandClass,
                 options: allOptions.filter(e => !!e.flags),
                 isHidden,
-            };
+            }
         } else {
             return {
                 baseCommand,
@@ -193,7 +193,7 @@ export class Signature {
                 description,
                 commandClass,
                 isHidden,
-            };
+            }
         }
     }
 }

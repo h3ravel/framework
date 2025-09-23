@@ -1,7 +1,7 @@
-import { Application } from "../Application";
-import { Logger } from "@h3ravel/shared";
-import { XGeneric } from "@h3ravel/support";
-import { mkdir } from "node:fs/promises";
+import { Application } from '../Application'
+import { Logger } from '@h3ravel/shared'
+import { XGeneric } from '@h3ravel/support'
+import { mkdir } from 'node:fs/promises'
 
 export class ConsoleKernel {
     public cwd!: string

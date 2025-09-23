@@ -6,22 +6,22 @@ export abstract class ServiceProvider implements IServiceProvider {
      * Sort order
      */
 
-    public static order?: `before:${string}` | `after:${string}` | string | undefined;
+    public static order?: `before:${string}` | `after:${string}` | string | undefined
 
     /**
      * Sort priority
      */
-    public static priority = 0;
+    public static priority = 0
 
     /**
      * Indicate that this service provider only runs in console
      */
-    public static console = false;
+    public static console = false
 
     /**
      * List of registered console commands
      */
-    public registeredCommands?: (new (app: any, kernel: any) => any)[];
+    public registeredCommands?: (new (app: any, kernel: any) => any)[]
 
     protected app: Application
 

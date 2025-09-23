@@ -12,7 +12,7 @@ import { ServiceProvider } from '../ServiceProvider'
  * Auto-Registered
  */
 export class CoreServiceProvider extends ServiceProvider {
-    public static priority = 999;
+    public static priority = 999
 
     register () {
     }

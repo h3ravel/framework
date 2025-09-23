@@ -1,4 +1,4 @@
-import { Model as BaseModel } from "@h3ravel/arquebus";
+import { Model as BaseModel } from '@h3ravel/arquebus'
 
 export class Model<M extends BaseModel = any> extends BaseModel {
     /**
@@ -9,6 +9,6 @@ export class Model<M extends BaseModel = any> extends BaseModel {
      * @returns 
      */
     public resolveRouteBinding (value: any, field: undefined | string | null = null): Promise<M> {
-        return this.newQuery().where(field ?? 'ids', value).firstOrFail()! as Promise<M>;
+        return this.newQuery().where(field ?? 'ids', value).firstOrFail()! as Promise<M>
     }
 }

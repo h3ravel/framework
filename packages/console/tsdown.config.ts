@@ -1,5 +1,5 @@
-import { baseConfig } from '../../tsdown.config';
-import { defineConfig } from 'tsdown';
+import { baseConfig } from '../../tsdown.config'
+import { defineConfig } from 'tsdown'
 
 export default defineConfig([
   {
@@ -7,7 +7,7 @@ export default defineConfig([
     format: ['esm', 'cjs'],
     entry: ['src/index.ts', 'src/Utils.ts'],
     sourcemap: true,
-    target: "node22",
+    target: 'node22',
     platform: 'node',
   },
   {
@@ -18,4 +18,4 @@ export default defineConfig([
     minify: true,
     external: baseConfig.external
   }
-]);
+])

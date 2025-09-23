@@ -1,10 +1,10 @@
-import { Application } from "@h3ravel/core";
-import { SendMailConfig, SESConfig, SMTPConfig } from "./Contracts/Mailer";
-import { SESDriver } from "./Drivers/SESDriver";
-import { SMTPDriver } from "./Drivers/SMTPDriver";
-import { LOGDriver } from "./Drivers/LOGDriver";
-import { SendMailDriver } from "./Drivers/SendMailDriver";
-import { Mailer } from "./Mailer";
+import { Application } from '@h3ravel/core'
+import { SendMailConfig, SESConfig, SMTPConfig } from './Contracts/Mailer'
+import { SESDriver } from './Drivers/SESDriver'
+import { SMTPDriver } from './Drivers/SMTPDriver'
+import { LOGDriver } from './Drivers/LOGDriver'
+import { SendMailDriver } from './Drivers/SendMailDriver'
+import { Mailer } from './Mailer'
 
 /**
  * Service class to initialize and configure the mailer service
@@ -20,8 +20,8 @@ export class Service {
         /**
          * Resolve the view and config services from the container
          */
-        const view = app.make('view');
-        const config = app.make('config');
+        const view = app.make('view')
+        const config = app.make('config')
 
         /**
          * Configure mailer settings for different drivers
@@ -58,7 +58,7 @@ export class Service {
             sendmail: <SendMailConfig>{
                 path: config.get('mail.mailers.sendmail.path', 'sendmail'),
             },
-        };
+        }
 
         /**
          * Define available mail drivers
@@ -84,7 +84,7 @@ export class Service {
              * @returns 
              */
             sendmail: () => new SendMailDriver(mailConfig.sendmail),
-        };
+        }
 
         /**
          * Initialize Mailer with the selected driver (default to SMTP if not specified)
@@ -93,6 +93,6 @@ export class Service {
         return new Mailer(
             (driver[config.get('mail.default') as keyof typeof driver] ?? driver.smtp)(),
             async (viewPath, data) => await view(viewPath, data)
-        );
+        )
     }
 }

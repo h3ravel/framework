@@ -1,5 +1,5 @@
 /// <reference path="../../core/src/app.globals.d.ts" />
-import { Knex } from "knex";
+import { Knex } from 'knex'
 
 type TFunction = (...args: any[]) => any
 

@@ -1,7 +1,7 @@
 export function Inject (...dependencies: string[]) {
     return function (target: any) {
-        target.__inject__ = dependencies;
-    };
+        target.__inject__ = dependencies
+    }
 }
 
 /**
@@ -12,14 +12,14 @@ export function Inject (...dependencies: string[]) {
 export function Injectable (): ClassDecorator & MethodDecorator {
     return (...args: any[]) => {
         if (args.length === 1) {
-            void args[0]; // class target
+            void args[0] // class target
         }
         if (args.length === 3) {
-            void args[0]; // target
-            void args[1]; // propertyKey
-            void args[2]; // descriptor
+            void args[0] // target
+            void args[1] // propertyKey
+            void args[2] // descriptor
         }
-    };
+    }
 }
 
 // export function Injectable (): MethodDecorator & ClassDecorator {

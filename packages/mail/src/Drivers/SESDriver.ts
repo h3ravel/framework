@@ -1,10 +1,10 @@
-import nodemailer, { type SendMailOptions } from 'nodemailer';
+import nodemailer, { type SendMailOptions } from 'nodemailer'
 
-import { MailDriverContract, SESConfig } from '../Contracts/Mailer';
-import { SendEmailCommand, SESv2Client } from '@aws-sdk/client-sesv2';
+import { MailDriverContract, SESConfig } from '../Contracts/Mailer'
+import { SendEmailCommand, SESv2Client } from '@aws-sdk/client-sesv2'
 
 export class SESDriver implements MailDriverContract {
-    private transporter;
+    private transporter
 
     constructor(config: SESConfig) {
 
@@ -16,14 +16,14 @@ export class SESDriver implements MailDriverContract {
                 sessionToken: config.token,
                 secretAccessKey: config.secret
             }
-        });
+        })
 
         // 2. Create a Nodemailer transport that points at SES
         this.transporter = nodemailer.createTransport({
             SES: { sesClient, SendEmailCommand },
             maxConnections: config.maxConnections,
             sendingRate: config.sendingRate
-        });
+        })
     }
 
     async send (options: SendMailOptions) {
@@ -36,6 +36,6 @@ export class SESDriver implements MailDriverContract {
             html: options.html,
             text: options.text,
             attachments: options.attachments
-        });
+        })
     }
 }

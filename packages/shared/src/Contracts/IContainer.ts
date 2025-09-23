@@ -1,4 +1,4 @@
-import type { Bindings, UseKey } from './BindingsContract';
+import type { Bindings, UseKey } from './BindingsContract'
 
 /**
  * Interface for the Container contract, defining methods for dependency injection and service resolution.

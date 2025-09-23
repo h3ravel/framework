@@ -5,7 +5,7 @@ import { ServiceProvider } from '@h3ravel/core'
  * 
  */
 export class FilesystemProvider extends ServiceProvider {
-    public static priority = 997;
+    public static priority = 997
 
     register () {
     }

@@ -1,4 +1,4 @@
-import { defineConfig } from 'eslint/config';
+import { defineConfig } from 'eslint/config'
 import { globalIgnores } from 'eslint/config'
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
@@ -8,8 +8,11 @@ export default defineConfig(
   ...tseslint.configs.recommended,
   [
     globalIgnores([
+      'bin/**',
       'dist/**',
+      '**/bin',
       '**/dist',
+      '**/bin/**',
       '**/dist/**',
       'public/**/*.js',
       'node_modules/**'
@@ -30,9 +33,9 @@ export default defineConfig(
         }
       ],
       '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/triple-slash-reference': {
-        path: 'always'
-      }
+      '@typescript-eslint/triple-slash-reference': ['error', {
+        'path': 'always'
+      }]
     }
   },
 )

@@ -1,4 +1,4 @@
-import { IApplication } from "./IApplication";
+import { IApplication } from './IApplication'
 
 export interface IServiceProvider {
     /**

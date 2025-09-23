@@ -1,6 +1,6 @@
-import 'reflect-metadata';
+import 'reflect-metadata'
 
-import { Application } from '..';
+import { Application } from '..'
 
 export class ContainerResolver {
     constructor(private app: Application) { }
@@ -9,7 +9,7 @@ export class ContainerResolver {
         /**
          * Get param types for instance method
          */
-        let params: any[] = Reflect.getMetadata('design:paramtypes', instance, String(method)) || [];
+        let params: any[] = Reflect.getMetadata('design:paramtypes', instance, String(method)) || []
 
         /**
          * Ensure that the Application class is always available
@@ -21,9 +21,9 @@ export class ContainerResolver {
         /**
          * Resolve the bound dependencies
          */
-        let args: any[] = params.filter(e => ContainerResolver.isClass(e)).map((type: any) => {
+        const args: any[] = params.filter(e => ContainerResolver.isClass(e)).map((type: any) => {
             return this.app.make(type)
-        });
+        })
 
         return new Promise<I>((resolve) => {
             resolve(instance[method](...args))
@@ -31,7 +31,7 @@ export class ContainerResolver {
     }
 
     static isClass (C: any) {
-        return typeof C === "function" &&
+        return typeof C === 'function' &&
             C.prototype !== undefined &&
             Object.toString.call(C).substring(0, 5) === 'class'
     }

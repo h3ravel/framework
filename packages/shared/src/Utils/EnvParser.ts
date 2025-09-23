@@ -1,4 +1,4 @@
-import { GenericWithNullableStringValues } from '../Contracts/ObjContract';
+import { GenericWithNullableStringValues } from '../Contracts/ObjContract'
 
 export class EnvParser {
 
@@ -6,7 +6,7 @@ export class EnvParser {
         const parsed = { ...initial }
 
         for (const key in parsed) {
-            let value: any = parsed[key]
+            const value: any = parsed[key]
             parsed[key] = this.parseValue(value)
         }
 
@@ -17,30 +17,30 @@ export class EnvParser {
         /**
          * Null/undefined stay untouched 
          */
-        if (value === null || value === undefined) return value;
+        if (value === null || value === undefined) return value
 
         /**
          * Convert string "true"/"false" to boolean 
          */
-        if (value === 'true') return true;
-        if (value === 'false') return false;
+        if (value === 'true') return true
+        if (value === 'false') return false
 
         /**
          *  Convert string numbers to number 
          */
         if (!isNaN(value) && value.trim() !== '') {
-            return Number(value);
+            return Number(value)
         }
 
         /**
          * Convert string "null" and "undefined"
          */
-        if (value === 'null') return null;
-        if (value === 'undefined') return undefined;
+        if (value === 'null') return null
+        if (value === 'undefined') return undefined
 
         /**
          * Otherwise return as-is (string)
          */
-        return value;
+        return value
     }
 }

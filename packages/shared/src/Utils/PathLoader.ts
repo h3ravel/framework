@@ -22,7 +22,7 @@ export class PathLoader {
      * @returns 
      */
     getPath (name: IPathName, prefix?: string): string {
-        let path: string;
+        let path: string
 
         if (prefix && name !== 'base') {
             path = nodepath.join(prefix, this.paths[name])
@@ -30,7 +30,7 @@ export class PathLoader {
             path = this.paths[name]
         }
 
-        path = path.replace('/src/', `/${process.env.SRC_PATH ?? 'src'}/`.replace(/([^:]\/)\/+/g, "$1"))
+        path = path.replace('/src/', `/${process.env.SRC_PATH ?? 'src'}/`.replace(/([^:]\/)\/+/g, '$1'))
 
         if (name === 'database' && process.env.SRC_PATH && !'/src/'.includes(process.env.SRC_PATH)) {
             return nodepath.resolve(path.replace(process.env.SRC_PATH, ''))
