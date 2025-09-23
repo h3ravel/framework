@@ -67,6 +67,7 @@ export class ConsoleCommand {
         this.input.arguments = regArgs
             .map((e, i) => ({ [e.name()]: args[i] }))
             .reduce((e, x) => Object.assign(e, x), {})
+        this.loadBaseFlags()
     }
 
     getSignature () {
@@ -94,5 +95,12 @@ export class ConsoleCommand {
 
     arguments () {
         return this.input.arguments
+    }
+
+    loadBaseFlags () {
+        this.input.options.lock = this.program.getOptionValue('lock') ?? false
+        this.input.options.quiet = this.program.getOptionValue('quiet') ?? false
+        this.input.options.silent = this.program.getOptionValue('silent') ?? false
+        this.input.options.verbose = this.program.getOptionValue('verbose') ?? 0
     }
 }

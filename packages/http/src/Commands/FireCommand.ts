@@ -14,7 +14,6 @@ export class FireCommand extends ConsoleCommand {
         {--a|host=localhost : The host address to serve the application on}
         {--p|port=3000 : The port to serve the application on}
         {--t|tries=10 : The max number of ports to attempt to serve from}
-        {--d|debug : Show extra debug info, like registered service providers and more}
     `
 
     /**
@@ -39,7 +38,7 @@ export class FireCommand extends ConsoleCommand {
         const port = this.option('port')
         const host = this.option('host')
         const tries = this.option('tries')
-        const debug = this.option('debug')
+        const debug = Number(this.option('verbose', 0)) > 0
 
         const ENV_VARS = {
             EXTENDED_DEBUG: debug ? 'true' : 'false',
