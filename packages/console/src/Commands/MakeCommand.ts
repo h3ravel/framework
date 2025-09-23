@@ -1,10 +1,10 @@
 import { TableGuesser, Utils } from '../Utils'
-import { readFile, writeFile } from 'node:fs/promises'
+import { mkdir, readFile, writeFile } from 'node:fs/promises'
 
 import { Command } from './Command'
 import { Helpers } from '@h3ravel/filesystem'
 import { Logger } from '@h3ravel/shared'
-import chalk from 'chalk'
+import { beforeLast } from '@h3ravel/support'
 import dayjs from 'dayjs'
 import { existsSync } from 'node:fs'
 import nodepath from 'node:path'
@@ -17,20 +17,26 @@ export class MakeCommand extends Command {
      * @var string
      */
     protected signature: string = `#make:
-        {controller : Generates a new controller class. 
-            | {--a|api : Generate an API resource controller} 
+        {controller : Create a new controller class. 
+            | {--a|api : Exclude the create and edit methods from the controller} 
+            | {--m|model= : Generate a resource controller for the given model} 
+            | {--r|resource : Generate a resource controller class} 
+            | {--force : Create the controller even if it already exists}
         }
         {resource : Create a new resource. 
             | {--c|collection : Create a resource collection}
+            | {--force : Create the resource even if it already exists}
         }
         {migration : Generates a new database migration class. 
             | {--l|type=ts : The file type to generate} 
             | {--t|table : The table to migrate} 
             | {--c|create : The table to be created} 
         }
-        {factory : Generates a new database factory class.}
+        {factory : Create a new model factory.}
         {seeder : Create a new seeder class.}
-        {view : Create a new view.}
+        {view : Create a new view.
+            | {--force : Create the view even if it already exists}
+        }
         {model : Create a new Eloquent model class. 
             | {--api : Indicates if the generated controller should be an API resource controller} 
             | {--c|controller : Create a new controller for the model} 
@@ -40,9 +46,9 @@ export class MakeCommand extends Command {
             | {--a|all : Generate a migration, seeder, factory, policy, resource controller, and form request classes for the model} 
             | {--s|seed : Create a new seeder for the model} 
             | {--t|type=ts : The file type to generate}
+            | {--force : Create the model even if it already exists}
         } 
         {^name : The name of the [name] to generate}
-        {^--force : Create the [name] even if it already exists.}
     `
     /**
      * The console command description.
@@ -52,7 +58,7 @@ export class MakeCommand extends Command {
     protected description: string = 'Generate component classes'
 
     public async handle () {
-        const command = this.dictionary.baseCommand as never
+        const command = (this.dictionary.baseCommand ?? this.dictionary.name) as never
 
         const methods = {
             controller: 'makeController',
@@ -61,6 +67,7 @@ export class MakeCommand extends Command {
             factory: 'makeFactory',
             seeder: 'makeSeeder',
             model: 'makeModel',
+            view: 'makeView',
         } as const
 
         try {
@@ -71,7 +78,7 @@ export class MakeCommand extends Command {
     }
 
     /**
-     * Generate a new controller class.
+     * Create a new controller class.
      */
     protected async makeController () {
         const type = this.option('api') ? '-resource' : ''
@@ -82,6 +89,7 @@ export class MakeCommand extends Command {
         const crtlrPath = Helpers.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
         const stubPath = nodepath.join(crtlrPath, `dist/stubs/controller${type}.stub`)
 
+        /** Check if the controller already exists */
         if (!force && existsSync(path)) {
             Logger.error(`ERORR: ${name} controller already exists`)
         }
@@ -90,7 +98,7 @@ export class MakeCommand extends Command {
         stub = stub.replace(/{{ name }}/g, name)
 
         await writeFile(path, stub)
-        Logger.split('INFO: Controller Created', chalk.gray(nodepath.basename(path)))
+        Logger.split('INFO: Controller Created', Logger.log(nodepath.basename(path), 'gray', false))
     }
 
     protected makeResource () {
@@ -132,13 +140,19 @@ export class MakeCommand extends Command {
         await this.kernel.ensureDirectoryExists(nodepath.dirname(path))
         await writeFile(path, stub)
 
-        Logger.split('INFO: Migration Created', chalk.gray(nodepath.basename(path)))
+        Logger.split('INFO: Migration Created', Logger.log(nodepath.basename(path), 'gray', false))
     }
 
+    /**
+     * Create a new model factory
+     */
     protected makeFactory () {
         Logger.success('Factory support is not yet available')
     }
 
+    /**
+     * Create a new seeder class
+     */
     protected makeSeeder () {
         Logger.success('Seeder support is not yet available')
     }
@@ -149,9 +163,15 @@ export class MakeCommand extends Command {
     protected async makeModel () {
         const type = this.option('type', 'ts')
         const name = this.argument('name')
-        // const force = this.argument('force')
+        const force = this.argument('force')
 
-        const path = nodepath.join(app_path('Models'), name.toLowerCase() + '.' + type)
+        const path = nodepath.join(app_path('Models'), name.toLowerCase(), '.' + type)
+
+        /** Check if the model already exists */
+        if (!force && existsSync(path)) {
+            Logger.error(`ERORR: ${name} view already exists`)
+        }
+
         const crtlrPath = Utils.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
         const stubPath = nodepath.join(crtlrPath, `dist/stubs/model-${type}.stub`)
 
@@ -159,30 +179,29 @@ export class MakeCommand extends Command {
         stub = stub.replace(/{{ name }}/g, name)
 
         await writeFile(path, stub)
-        Logger.split('INFO: Model Created', chalk.gray(nodepath.basename(path)))
+        Logger.split('INFO: Model Created', Logger.log(nodepath.basename(path), 'gray', false))
     }
 
     /**
-     * Generate a new controller class.
+     * Create a new view.
      */
     protected async makeView () {
-        const type = this.option('api') ? '-resource' : ''
         const name = this.argument('name')
         const force = this.option('force')
 
-        const path = nodepath.join(app_path('Http/Controllers'), name + '.ts')
-        const crtlrPath = Helpers.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
-        const stubPath = nodepath.join(crtlrPath, `dist/stubs/controller${type}.stub`)
+        const path = nodepath.join(base_path('src/resources/views'), name + '.edge')
 
-        if (!force && existsSync(path)) {
-            Logger.error(`ERORR: ${name} controller already exists`)
+        if (name.includes('/')) {
+            await mkdir(beforeLast(path, '/'), { recursive: true })
         }
 
-        let stub = await readFile(stubPath, 'utf-8')
-        stub = stub.replace(/{{ name }}/g, name)
+        /** Check if the view already exists */
+        if (!force && existsSync(path)) {
+            Logger.error(`ERORR: ${name} view already exists`)
+        }
 
-        await writeFile(path, stub)
-        Logger.split('INFO: Controller Created', chalk.gray(nodepath.basename(path)))
+        await writeFile(path, `{{-- src/resources/views/${name}.edge --}}`)
+        Logger.split('INFO: View Created', Logger.log(`src/resources/views/${name}.edge`, 'gray', false))
     }
 
     /**
