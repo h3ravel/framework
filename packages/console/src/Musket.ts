@@ -8,7 +8,6 @@ import { Kernel } from './Kernel'
 import { ListCommand } from './Commands/ListCommand'
 import { Logger } from '@h3ravel/shared'
 import { MakeCommand } from './Commands/MakeCommand'
-import { MigrateCommand } from './Commands/MigrateCommand'
 import { Signature } from './Signature'
 import TsDownConfig from './TsdownConfig'
 import { altLogo } from './logo'
@@ -34,7 +33,6 @@ export class Musket {
         const commands: Command[] = [
             new FireCommand(this.app, this.kernel),
             new MakeCommand(this.app, this.kernel),
-            new MigrateCommand(this.app, this.kernel),
             new ListCommand(this.app, this.kernel),
         ]
 

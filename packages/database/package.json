@@ -49,6 +49,7 @@
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
+    "@h3ravel/filesystem": "workspace:^",
     "@h3ravel/support": "workspace:^"
   },
   "devDependencies": {

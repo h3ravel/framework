@@ -1,9 +1,6 @@
 import { access } from 'fs/promises'
 import escalade from 'escalade/sync'
 import path from 'path'
-import preferredPM from 'preferred-pm'
-
-const join = path.join
 
 export class Utils {
   static findModulePkg (moduleId: string, cwd?: string) {
@@ -52,18 +49,6 @@ export class Utils {
       }
       return false
     })
-  }
-
-  static async installCommand (pkg: string) {
-    const pm = (await preferredPM(process.cwd()))?.name ?? 'pnpm'
-
-    let cmd = 'install'
-    if (pm === 'yarn' || pm === 'pnpm')
-      cmd = 'add'
-    else if (pm === 'bun')
-      cmd = 'create'
-
-    return `${pm} ${cmd} ${pkg}`
   }
 }
 

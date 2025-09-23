@@ -55,7 +55,8 @@
   "dependencies": {
     "h3": "^2.0.0-beta.4",
     "chalk": "^5.6.0",
-    "edge.js": "^6.3.0"
+    "edge.js": "^6.3.0",
+    "preferred-pm": "^4.1.1"
   },
   "devDependencies": {
     "fetchdts": "^0.1.6",

@@ -1,6 +1,7 @@
+import { MigrateCommand } from '../Commands/MigrateCommand'
 import { ServiceProvider } from '@h3ravel/core'
-import { arquebus } from '@h3ravel/arquebus';
-import { arquebusConfig } from '../Configuration';
+import { arquebus } from '@h3ravel/arquebus'
+import { arquebusConfig } from '../Configuration'
 
 /**
  * Database connection, ORM, migrations.
@@ -11,9 +12,11 @@ import { arquebusConfig } from '../Configuration';
  * 
  */
 export class DatabaseServiceProvider extends ServiceProvider {
-    public static priority = 994;
+    public static priority = 994
 
     register () {
+        this.commands([MigrateCommand])
+
         const config = this.app.make('config')
 
         const connection = Object.entries(arquebusConfig(config.get('database')))
@@ -21,7 +24,7 @@ export class DatabaseServiceProvider extends ServiceProvider {
             ?.at(1)
 
         if (connection) {
-            arquebus.addConnection(connection);
+            arquebus.addConnection(connection)
         }
     }
 }

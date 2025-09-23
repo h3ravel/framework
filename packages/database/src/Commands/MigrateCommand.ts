@@ -1,14 +1,12 @@
-// import nodepath from "node:path";
+import { Logger, Resolver } from '@h3ravel/shared'
 import { Migrate, MigrationCreator } from '@h3ravel/arquebus/migrations'
-import { TBaseConfig, arquebusConfig } from '@h3ravel/database'
+import { TBaseConfig, arquebusConfig } from '..'
 
-import { Command } from './Command'
-import { Logger } from '@h3ravel/shared'
-import { Utils } from '../Utils'
-import chalk from 'chalk'
+import { ConsoleCommand } from '@h3ravel/core'
+import { Helpers } from '@h3ravel/filesystem'
 import path from 'node:path'
 
-export class MigrateCommand extends Command {
+export class MigrateCommand extends ConsoleCommand {
     /**
      * The current database connection
      */
@@ -183,7 +181,7 @@ export class MigrateCommand extends Command {
 
         try {
             /** Find the requested package */
-            const packagePath = Utils.findModulePkg(name) ?? null
+            const packagePath = Helpers.findModulePkg(name) ?? null
             if (!packagePath) throw new Error('Package not found')
 
             /** Get the package,json and instanciate the migration creator */
@@ -192,7 +190,7 @@ export class MigrateCommand extends Command {
 
             const info = Logger.parse([
                 [' Publishing migrations from', 'white'],
-                [`${pkgJson.name}@${pkgJson.version}`, chalk.italic.gray]
+                [`${pkgJson.name}@${pkgJson.version}`, ['italic', 'gray']]
             ], ' ', false)
 
             Logger.info(`INFO: ${info}`)
@@ -208,7 +206,7 @@ export class MigrateCommand extends Command {
         } catch (e) {
             const hint = Logger.parse([
                 [' Did you forget to run', 'white'],
-                [`\`${await Utils.installCommand(name)}\``, 'grey']
+                [`\`${await Resolver.getPakageInstallCommand(name)}\``, 'grey']
             ], ' ', false)
 
             const error = Logger.parse([

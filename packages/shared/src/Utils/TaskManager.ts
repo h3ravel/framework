@@ -1,4 +1,4 @@
-import { Logger } from "./Logger"
+import { Logger } from './Logger'
 
 export class TaskManager {
     public static async taskRunner (
