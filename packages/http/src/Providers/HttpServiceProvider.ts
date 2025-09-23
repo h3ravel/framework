@@ -18,11 +18,15 @@ export class HttpServiceProvider extends ServiceProvider {
     public static priority = 998
 
     register () {
+        /** Bind HTTP APP to the service container */
         this.app.singleton('http.app', () => {
             return new H3()
         })
 
+        /** Bind the HTTP server to the service container */
         this.app.singleton('http.serve', () => serve)
+
+        /** Register Musket Commands */
         this.commands([FireCommand])
     }
 }

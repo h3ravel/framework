@@ -25,6 +25,7 @@ export class DatabaseServiceProvider extends ServiceProvider {
             arquebus.addConnection(connection)
         }
 
+        /** Register Musket Commands */
         this.commands([MigrateCommand])
     }
 }
