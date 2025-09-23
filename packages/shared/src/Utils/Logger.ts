@@ -1,23 +1,46 @@
 import chalk, { type ChalkInstance } from 'chalk'
+import { LoggerChalk, LoggerLog, LoggerParseSignature } from '../Contracts/Utils'
 
 export class Logger {
     /**
      * Logs the message in two columns
+     * 
      * @param name 
      * @param value 
      * @param log If set to false, array of [name, dots, value] output will be returned and not logged 
      * @returns 
      */
-    static twoColumnLog (name: string, value: string, log?: true): void
-    static twoColumnLog (name: string, value: string, log?: false): [string, string, string]
-    static twoColumnLog (name: string, value: string, log = true): [string, string, string] | void {
+    static twoColumnLog (name: string, value: string, log?: true, spacer?: string): void
+    static twoColumnLog (name: string, value: string, log?: false, spacer?: string): [string, string, string]
+    static twoColumnLog (name: string, value: string, log = true, spacer = '.'): [string, string, string] | void {
         // eslint-disable-next-line no-control-regex
         const regex = /\x1b\[\d+m/g
         const width = Math.min(process.stdout.columns, 100)
         const dots = Math.max(width - name.replace(regex, '').length - value.replace(regex, '').length - 10, 0)
 
-        if (log) return console.log(name, chalk.gray('.'.repeat(dots)), value)
-        else return [name, chalk.gray('.'.repeat(dots)), value]
+        if (log) return console.log(name, chalk.gray(spacer.repeat(dots)), value)
+        else return [name, chalk.gray(spacer.repeat(dots)), value]
+    }
+
+    /**
+     * Logs the message in two columns
+     * 
+     * @param name 
+     * @param desc 
+     * @param width 
+     * @param log If set to false, array of [name, dots, value] output will be returned and not logged 
+     * @returns 
+     */
+    static describe (name: string, desc: string, width?: number, log?: true): void
+    static describe (name: string, desc: string, width?: number, log?: false): [string, string, string]
+    static describe (name: string, desc: string, width = 50, log = true): [string, string, string] | void {
+        width = Math.min(width, 30)
+        // eslint-disable-next-line no-control-regex
+        const regex = /\x1b\[\d+m/g
+        const dots = Math.max(width - name.replace(regex, '').length, 0)
+
+        if (log) return console.log(name, ' '.repeat(dots), desc)
+        else return [name, ' '.repeat(dots), desc]
     }
 
     /**
@@ -104,6 +127,19 @@ export class Logger {
         process.exit(0)
     }
 
+    static chalker (styles: LoggerChalk[]) {
+        return (input: any): string =>
+            styles.reduce((acc, style) => {
+                if ((style as any) in chalk) {
+                    const fn = typeof style === 'function'
+                        ? style
+                        : chalk[style as never]
+                    return fn(acc)
+                }
+                return acc
+            }, input)
+    }
+
     /**
      * Parse an array formated message and logs it
      * 
@@ -111,10 +147,14 @@ export class Logger {
      * @param joiner 
      * @param log If set to false, string output will be returned and not logged 
      */
-    static parse (config: [string, keyof ChalkInstance | ChalkInstance][], joiner?: string, log?: true): void
-    static parse (config: [string, keyof ChalkInstance | ChalkInstance][], joiner?: string, log?: false): string
-    static parse (config: [string, keyof ChalkInstance | ChalkInstance][], joiner = ' ', log = true): string | void {
+    static parse (config: LoggerParseSignature, joiner?: string, log?: true): void
+    static parse (config: LoggerParseSignature, joiner?: string, log?: false): string
+    static parse (config: LoggerParseSignature, joiner = ' ', log = true): string | void {
         const string = config.map(([str, opt]) => {
+            if (Array.isArray(opt)) {
+                opt = Logger.chalker(opt) as ChalkInstance
+            }
+
             return typeof opt === 'string' && typeof chalk[opt] === 'function'
                 ? (chalk as any)[opt](str)
                 : typeof opt === 'function' ? opt(str) : str
@@ -129,16 +169,14 @@ export class Logger {
      * 
      * @returns 
      */
-    static log (): typeof Logger
-    static log (config: string, joiner: keyof ChalkInstance): void
-    static log (config: [string, keyof ChalkInstance][], joiner?: string): void
-    static log (config?: string | [string, keyof ChalkInstance][], joiner?: string): void | Logger {
+    public static log: LoggerLog = ((config, joiner, log: boolean = true) => {
         if (typeof config === 'string') {
             const conf = [[config, joiner]] as [string, keyof ChalkInstance][]
-            return this.parse(conf)
+            return this.parse(conf, '', log as false)
         } else if (config) {
-            return this.parse(config, joiner)
+            return this.parse(config, String(joiner), log as false)
         }
+
         return this
-    }
+    }) as LoggerLog
 }

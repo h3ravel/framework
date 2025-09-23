@@ -1,22 +1,23 @@
 // import nodepath from "node:path";
-import { Migrate, MigrationCreator } from "@h3ravel/arquebus/migrations";
-import { TBaseConfig, arquebusConfig } from "@h3ravel/database";
+import { Migrate, MigrationCreator } from '@h3ravel/arquebus/migrations'
+import { TBaseConfig, arquebusConfig } from '@h3ravel/database'
 
-import { Command } from "./Command";
-import { Utils } from "../Utils";
-import chalk from "chalk";
-import path from "node:path";
+import { Command } from './Command'
+import { Logger } from '@h3ravel/shared'
+import { Utils } from '../Utils'
+import chalk from 'chalk'
+import path from 'node:path'
 
 export class MigrateCommand extends Command {
     /**
      * The current database connection
      */
-    private connection!: TBaseConfig;
+    private connection!: TBaseConfig
 
     /** 
      * The base path for all database operations
      */
-    private databasePath: string = database_path();
+    private databasePath: string = database_path()
 
     /**
      * The name and signature of the console command.
@@ -33,13 +34,13 @@ export class MigrateCommand extends Command {
         {publish : Publish any migration files from installed packages. | {package : The package to publish migrations from}}
         {^--s|seed : Seed the database}
         {^--c|connection=mysql : The database connection to use}
-    `;
+    `
     /**
      * The console command description.
      *
      * @var string
      */
-    protected description: string = 'Run all pending migrations.';
+    protected description: string = 'Run all pending migrations.'
 
     /**
      * Execute the console command.
@@ -65,7 +66,7 @@ export class MigrateCommand extends Command {
             rollback: 'migrateRollback',
             status: 'migrateStatus',
             publish: 'migratePublish',
-        } as const;
+        } as const
 
         await (this as any)?.[methods[command]]()
     }
@@ -77,7 +78,7 @@ export class MigrateCommand extends Command {
         try {
             await new Migrate(this.databasePath).run(this.connection, this.options(), true)
         } catch (e) {
-            this.kernel.output.error('ERROR: ' + e)
+            Logger.error('ERROR: ' + e)
         }
     }
 
@@ -88,7 +89,7 @@ export class MigrateCommand extends Command {
         try {
             await new Migrate(this.databasePath).fresh(this.connection, this.options(), true)
         } catch (e) {
-            this.kernel.output.error('ERROR: ' + e)
+            Logger.error('ERROR: ' + e)
         }
     }
 
@@ -101,9 +102,9 @@ export class MigrateCommand extends Command {
             const { migrator } = await migrate.setupConnection(this.connection)
             await migrate.prepareDatabase(migrator)
 
-            this.kernel.output.success(`Migration repository installed.`)
+            Logger.success('Migration repository installed.')
         } catch (e) {
-            this.kernel.output.error('ERROR: ' + e)
+            Logger.error('ERROR: ' + e)
         }
     }
 
@@ -114,7 +115,7 @@ export class MigrateCommand extends Command {
         try {
             await new Migrate(this.databasePath).refresh(this.connection, this.options(), true)
         } catch (e) {
-            this.kernel.output.error('ERROR: ' + e)
+            Logger.error('ERROR: ' + e)
         }
     }
 
@@ -125,7 +126,7 @@ export class MigrateCommand extends Command {
         try {
             await new Migrate(this.databasePath).reset(this.connection, this.options(), true)
         } catch (e) {
-            this.kernel.output.error('ERROR: ' + e)
+            Logger.error('ERROR: ' + e)
         }
     }
 
@@ -136,7 +137,7 @@ export class MigrateCommand extends Command {
         try {
             await new Migrate(this.databasePath).rollback(this.connection, this.options(), true)
         } catch (e) {
-            this.kernel.output.error('ERROR: ' + e)
+            Logger.error('ERROR: ' + e)
         }
     }
 
@@ -145,32 +146,34 @@ export class MigrateCommand extends Command {
      */
     protected async migrateStatus () {
         const migrations = await new Migrate(this.databasePath, undefined, (msg, sts) => {
-            const hint = this.kernel.output.parse([
+            const hint = Logger.parse([
                 [' Did you forget to run', 'white'],
                 ['`musket migrate:install`?', 'grey']
             ], ' ', false)
 
-            if (sts) this.kernel.output[sts](msg + hint, sts === 'error', true)
+            if (sts) Logger[sts](msg + hint, sts === 'error', true)
         }).status(this.connection, this.options(), true)
 
         try {
             if (migrations.length > 0) {
-                this.kernel.output.twoColumnLog('Migration name', 'Batch / Status')
+                Logger.twoColumnLog('Migration name', 'Batch / Status')
 
                 migrations.forEach(migration => {
                     const status = migration.ran
-                        ? `[${migration.batch}] ${chalk.green('Ran')}`
-                        : chalk.yellow('Pending')
-                    this.kernel.output.twoColumnLog(migration.name, status)
+                        ? Logger.parse([[`[${migration.batch}]`, 'white'], ['Ran', 'green']], ' ', false)
+                        : Logger.parse([['Pending', 'yellow']], '', false)
+                    Logger.twoColumnLog(migration.name, status)
                 })
             }
             else {
-                this.kernel.output.info('No migrations found')
+                Logger.info('No migrations found')
             }
         } catch (e) {
-            this.kernel.output.error(['ERROR: ' + e, 'Did you run musket migrate:install'])
+            Logger.error(['ERROR: ' + e, 'Did you run musket migrate:install'])
         }
     }
+
+
 
     /**
      * Publish any migration files from installed packages.
@@ -181,40 +184,40 @@ export class MigrateCommand extends Command {
         try {
             /** Find the requested package */
             const packagePath = Utils.findModulePkg(name) ?? null
-            if (!packagePath) throw new Error("Package not found");
+            if (!packagePath) throw new Error('Package not found')
 
             /** Get the package,json and instanciate the migration creator */
             const pkgJson = (await import(path.join(packagePath, 'package.json')))
             const creator = new MigrationCreator(path.join(packagePath, pkgJson.migrations ?? 'migrations'))
 
-            const info = this.kernel.output.parse([
+            const info = Logger.parse([
                 [' Publishing migrations from', 'white'],
                 [`${pkgJson.name}@${pkgJson.version}`, chalk.italic.gray]
             ], ' ', false)
 
-            this.kernel.output.info(`INFO: ${info}`)
+            Logger.info(`INFO: ${info}`)
 
             try {
                 /** Publish any existing migrations */
                 await creator.publish(this.databasePath, (fileName) => {
-                    this.kernel.output.twoColumnLog(fileName, chalk.green('PUBLISHED'))
+                    Logger.twoColumnLog(fileName, Logger.parse([['PUBLISHED', 'green']], '', false))
                 })
             } catch {
-                this.kernel.output.error([`ERROR: ${name} has no publishable migrations.`])
+                Logger.error([`ERROR: ${name} has no publishable migrations.`])
             }
         } catch (e) {
-            const hint = this.kernel.output.parse([
+            const hint = Logger.parse([
                 [' Did you forget to run', 'white'],
                 [`\`${await Utils.installCommand(name)}\``, 'grey']
             ], ' ', false)
 
-            const error = this.kernel.output.parse([
+            const error = Logger.parse([
                 ['Package `', 'white'],
                 [name, 'grey'],
                 ['` not found', 'white']
             ], '', false)
 
-            this.kernel.output.error(['ERROR: ' + error, hint + '?', String(e)])
+            Logger.error(['ERROR: ' + error, hint + '?', String(e)])
         }
     }
 }

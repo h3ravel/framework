@@ -1,6 +1,7 @@
-import { Command } from "./Command";
-import { execa } from 'execa';
-import preferredPM from "preferred-pm"
+import { Command } from './Command'
+import { Logger } from '@h3ravel/shared'
+import { execa } from 'execa'
+import preferredPM from 'preferred-pm'
 
 export class FireCommand extends Command {
 
@@ -14,20 +15,20 @@ export class FireCommand extends Command {
         {--p|port=3000 : The port to serve the application on}
         {--t|tries=10 : The max number of ports to attempt to serve from}
         {--d|debug : Show extra debug info, like registered service providers and more}
-    `;
+    `
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected description: string = 'Fire up the developement server';
+    protected description: string = 'Fire up the developement server'
 
     public async handle () {
         try {
             await this.fire()
         } catch (e) {
-            this.kernel.output.error(e as any)
+            Logger.error(e as any)
         }
     }
 
@@ -54,6 +55,6 @@ export class FireCommand extends Command {
             pm,
             ['tsdown', '--silent', '--config-loader', 'unconfig', '-c', 'tsdown.default.config.ts'],
             { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
-        );
+        )
     }
 }

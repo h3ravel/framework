@@ -1,10 +1,18 @@
+import type { Argument, Command } from "commander";
+
 import { Application } from "../Application";
-import type { Argument } from "commander";
 import { ConsoleKernel } from "./ConsoleKernel";
 import { XGeneric } from "@h3ravel/support";
 
 export class ConsoleCommand {
     constructor(protected app: Application, protected kernel: ConsoleKernel) { }
+
+    /**
+     * The underlying commander instance.
+     *
+     * @var Command
+     */
+    public program!: Command;
 
     /**
      * The name and signature of the console command.
@@ -46,7 +54,14 @@ export class ConsoleCommand {
         this.app = app
     }
 
-    setInput (options: XGeneric, args: string[], regArgs: readonly Argument[], dictionary: Record<string, any>) {
+    setInput (
+        options: XGeneric,
+        args: string[],
+        regArgs: readonly Argument[],
+        dictionary: Record<string, any>,
+        program: Command,
+    ) {
+        this.program = program
         this.dictionary = dictionary
         this.input.options = options
         this.input.arguments = regArgs

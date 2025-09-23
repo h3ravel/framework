@@ -1,21 +1,13 @@
-import { Application } from "@h3ravel/core";
-import { Logger } from "@h3ravel/shared";
-import { Musket } from "./Musket";
-import { Utils } from "./Utils";
-import { XGeneric } from "@h3ravel/support";
-import { mkdir } from "node:fs/promises";
-import path from "node:path";
+import { Application, ConsoleKernel } from '@h3ravel/core'
 
-export class Kernel {
-    public cwd!: string
-    public output = Logger.log()
-    public basePath: string = ''
-    public modulePath!: string
-    public consolePath!: string
-    public modulePackage!: XGeneric<{ version: string }>
-    public consolePackage!: XGeneric<{ version: string }>
+import { Helpers } from '@h3ravel/filesystem'
+import { Musket } from './Musket'
+import path from 'node:path'
 
-    constructor(public app: Application) { }
+export class Kernel extends ConsoleKernel {
+    constructor(public app: Application) {
+        super(app)
+    }
 
     static init (app: Application) {
         const instance = new Kernel(app)
@@ -26,18 +18,14 @@ export class Kernel {
 
 
     private async run () {
-        await Musket.parse(this);
+        await Musket.parse(this)
         process.exit(0)
-    }
-
-    async ensureDirectoryExists (dir: string) {
-        await mkdir(dir, { recursive: true })
     }
 
     private async loadRequirements () {
         this.cwd = path.join(process.cwd(), this.basePath)
-        this.modulePath = Utils.findModulePkg('@h3ravel/core', this.cwd) ?? ''
-        this.consolePath = Utils.findModulePkg('@h3ravel/console', this.cwd) ?? ''
+        this.modulePath = Helpers.findModulePkg('@h3ravel/core', this.cwd) ?? ''
+        this.consolePath = Helpers.findModulePkg('@h3ravel/console', this.cwd) ?? ''
 
         try {
             this.modulePackage = await import(path.join(this.modulePath, 'package.json'))

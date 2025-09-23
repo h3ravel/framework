@@ -1,7 +1,7 @@
-import { Options } from 'tsdown';
-import run from '@rollup/plugin-run';
+import { Options } from 'tsdown'
+import run from '@rollup/plugin-run'
 
-const env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'development'
 const outDir = env === 'development' ? '.h3ravel/serve' : 'dist'
 
 export const TsDownConfig: Options = {
@@ -36,6 +36,6 @@ export const TsDownConfig: Options = {
             input: process.cwd() + '/src/server.ts'//
         })
     ] : [],
-};
+}
 
-export default TsDownConfig;
+export default TsDownConfig

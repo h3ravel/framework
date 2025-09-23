@@ -2,7 +2,7 @@ import { access } from 'fs/promises'
 import escalade from 'escalade/sync'
 import path from 'path'
 
-export class Utils {
+export class Helpers {
     static findModulePkg (moduleId: string, cwd?: string) {
         const parts = moduleId.replace(/\\/g, '/').split('/')
 

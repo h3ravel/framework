@@ -1,28 +1,11 @@
-import { Application } from '@h3ravel/core';
+import { Application } from '@h3ravel/core'
 import { ConsoleServiceProvider } from '@h3ravel/console'
-import { execa } from 'execa';
-import { glob } from 'node:fs/promises';
-import path from 'node:path';
-import preferredPM from 'preferred-pm';
-import providers from './providers';
+import { glob } from 'node:fs/promises'
+import path from 'node:path'
+import providers from './providers'
 
 export default class {
     async fire () {
-
-        const pm = (await preferredPM(process.cwd()))?.name ?? 'pnpm'
-
-        const ENV_VARS = {
-            EXTENDED_DEBUG: 'false',
-            CLI_BUILD: 'true',
-            NODE_ENV: 'development',
-        }
-
-        /** Build the library to avoid TS errors */
-        await execa(
-            pm,
-            ['tsdown', '--silent', '--config-loader', 'unconfig', '-c', 'tsdown.default.config.ts'],
-            { stdout: 'inherit', stderr: 'inherit', env: Object.assign({}, process.env, ENV_VARS) }
-        );
 
         const app = new Application(process.cwd())
 

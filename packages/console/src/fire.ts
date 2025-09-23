@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import "tsx/esm";
+import 'tsx/esm'
 
 import musket from './IO/app'
 

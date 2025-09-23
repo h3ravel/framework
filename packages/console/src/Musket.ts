@@ -1,23 +1,25 @@
-import { CommandOption, ParsedCommand } from "./Contracts/ICommand";
+import { CommandOption, ParsedCommand } from './Contracts/ICommand'
+import { Option, program } from 'commander'
 
-import { Application } from "@h3ravel/core";
-import { Command } from "./Commands/Command";
-import { FireCommand } from "./Commands/FireCommand";
-import { Kernel } from "./Kernel";
-import { Logger } from "@h3ravel/shared";
-import { MakeCommand } from "./Commands/MakeCommand";
-import { MigrateCommand } from "./Commands/MigrateCommand";
-import { Signature } from "./Signature";
-import chalk from "chalk";
-import { glob } from "node:fs/promises";
-import path from "node:path";
-import { program } from "commander";
+import { Application } from '@h3ravel/core'
+import { Command } from './Commands/Command'
+import { FireCommand } from './Commands/FireCommand'
+import { Kernel } from './Kernel'
+import { ListCommand } from './Commands/ListCommand'
+import { Logger } from '@h3ravel/shared'
+import { MakeCommand } from './Commands/MakeCommand'
+import { MigrateCommand } from './Commands/MigrateCommand'
+import { Signature } from './Signature'
+import TsDownConfig from './TsdownConfig'
+import { altLogo } from './logo'
+import { build } from 'tsdown'
+import { glob } from 'node:fs/promises'
+import path from 'node:path'
 
 /**
  * Musket is H3ravel's CLI tool
  */
 export class Musket {
-    private output = Logger.log()
     private commands: ParsedCommand[] = []
 
     constructor(private app: Application, private kernel: Kernel) { }
@@ -33,6 +35,7 @@ export class Musket {
             new FireCommand(this.app, this.kernel),
             new MakeCommand(this.app, this.kernel),
             new MigrateCommand(this.app, this.kernel),
+            new ListCommand(this.app, this.kernel),
         ]
 
         commands.forEach(e => this.addCommand(e))
@@ -65,29 +68,44 @@ export class Musket {
     }
 
     private initialize () {
-        const cliVersion = [
-            'H3ravel Version:',
-            chalk.green(this.kernel.consolePackage.version),
-        ].join(' ')
+        /** Init the Musket Version */
+        const cliVersion = Logger.parse([
+            ['Musket CLI:', 'white'],
+            [this.kernel.consolePackage.version, 'green']
+        ], ' ', false)
 
-        const localVersion = [
-            'Musket Version:',
-            chalk.green(this.kernel.modulePackage.version || 'None'),
-        ].join(' ')
+        /** Init the App Version */
+        const localVersion = Logger.parse([
+            ['H3ravel Framework:', 'white'],
+            [this.kernel.modulePackage.version, 'green']
+        ], ' ', false)
 
+        /** Init Commander */
         program
             .name('musket')
             .version(`${cliVersion}\n${localVersion}`)
+            .addOption(new Option('--silent', 'Do not output any message').implies({ quiet: true }))
+            .option('-q, --quiet', 'Do not output any message')
+            .option('-n, --no-interaction', 'Do not ask any interactive question')
+            .option('-v, --verbose <number>', 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug')
+            .description(altLogo)
+            .action(async () => {
+                const instance = new ListCommand(this.app, this.kernel)
+                instance.setInput(program.opts(), program.args, program.registeredArguments, {}, program)
+                instance.handle()
+            })
 
+        /** Create the init Command */
         program
             .command('init')
             .description('Initialize H3ravel.')
             .action(async () => {
-                this.output.success(`Initialized: H3ravel has been initialized!`)
+                Logger.success('Initialized: H3ravel has been initialized!')
             })
 
+        /** Loop through all the available commands */
         for (let i = 0; i < this.commands.length; i++) {
-            const command = this.commands[i];
+            const command = this.commands[i]
             const instance = command.commandClass
 
             if (command.isNamespaceCommand && command.subCommands) {
@@ -100,7 +118,7 @@ export class Musket {
                         .command(command.baseCommand)
                         .description(command.description ?? '')
                         .action(async () => {
-                            instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command)
+                            instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command, program)
                             await instance.handle()
                         })
 
@@ -126,7 +144,7 @@ export class Musket {
                             .command(`${command.baseCommand}:${sub.name}`)
                             .description(sub.description || '')
                             .action(async () => {
-                                instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, sub)
+                                instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, sub, program)
                                 await instance.handle()
                             })
 
@@ -135,14 +153,14 @@ export class Musket {
                          */
                         command.subCommands?.filter(e => e.shared).forEach(opt => {
                             this.makeOption(opt, cmd, false, sub)
-                        });
+                        })
 
                         /**
                          * Add the shared options here
                          */
                         command.options?.filter(e => e.shared).forEach(opt => {
                             this.makeOption(opt, cmd, false, sub)
-                        });
+                        })
 
                         /**
                          * Add options to the sub command if it has any
@@ -154,7 +172,7 @@ export class Musket {
                                     this.makeOption(opt, cmd)
                                 })
                         }
-                    });
+                    })
             } else {
                 /**
                  * Initialize command with options
@@ -168,17 +186,27 @@ export class Musket {
                     ?.filter((v, i, a) => a.findIndex(t => t.name === v.name) === i)
                     .forEach(opt => {
                         this.makeOption(opt, cmd, true)
-                    });
+                    })
 
                 cmd.action(async () => {
-                    instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command)
+                    instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command, program)
                     await instance.handle()
-                });
+                })
             }
         }
 
-        return program
+        /** Rebuild the app on every command except fire so we wont need TS */
+        program.hook('preAction', async (_, cmd) => {
+            if (cmd.name() !== 'fire') {
+                await build({
+                    ...TsDownConfig,
+                    watch: false,
+                    plugins: []
+                })
+            }
+        })
 
+        return program
     }
 
     makeOption (opt: CommandOption, cmd: typeof program, parse?: boolean, parent?: any) {
@@ -190,22 +218,22 @@ export class Musket {
                 const flags = opt.flags
                     ?.map(f => (f.length === 1 ? `-${f}` : `--${f}`)).join(', ')!
                     .replaceAll('----', '--')
-                    .replaceAll('---', '-');
+                    .replaceAll('---', '-')
 
-                cmd.option(flags || '', description!, String(opt.defaultValue) || undefined);
+                cmd.option(flags || '', description!, String(opt.defaultValue) || undefined)
             } else {
                 cmd.option(
-                    opt.flags?.join(', ')! + (opt.required ? ` <${type}>` : ''),
+                    opt.flags?.join(', ') + (opt.required ? ` <${type}>` : ''),
                     description!,
                     opt.defaultValue as any
-                );
+                )
             }
         } else {
             cmd.argument(
                 opt.required ? `<${opt.name}>` : `[${opt.name}]`,
                 description,
                 opt.defaultValue
-            );
+            )
         }
     }
 
