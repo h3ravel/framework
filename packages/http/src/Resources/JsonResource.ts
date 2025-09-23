@@ -182,8 +182,8 @@ export class JsonResource<R extends Resource = any> {
      */
     #send () {
         if (!this.responseSent) {
-            this.event.context.
-                this.response.json(this.body)
+            // this.event.context.
+            //     this.response.json(this.body)
 
             // Mark response as sent
             this.responseSent = true

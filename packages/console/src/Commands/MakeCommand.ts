@@ -17,15 +17,32 @@ export class MakeCommand extends Command {
      * @var string
      */
     protected signature: string = `#make:
-        {controller : Generates a new controller class. | {--a|api : Generate an API resource controller} }
-        {resource : Generates a new API resource class.}
-        {migration : Generates a new database migration class. | {--l|type=ts : The file type to generate} | {--t|table : The table to migrate} | {--c|create : The table to be created} }
+        {controller : Generates a new controller class. 
+            | {--a|api : Generate an API resource controller} 
+        }
+        {resource : Create a new resource. 
+            | {--c|collection : Create a resource collection}
+        }
+        {migration : Generates a new database migration class. 
+            | {--l|type=ts : The file type to generate} 
+            | {--t|table : The table to migrate} 
+            | {--c|create : The table to be created} 
+        }
         {factory : Generates a new database factory class.}
-        {seeder : Generates a new database seeder class.}
+        {seeder : Create a new seeder class.}
         {view : Create a new view.}
-        {model : Generates a new Arquebus model class. | {--t|type=ts : The file type to generate}} 
+        {model : Create a new Eloquent model class. 
+            | {--api : Indicates if the generated controller should be an API resource controller} 
+            | {--c|controller : Create a new controller for the model} 
+            | {--f|factory : Create a new factory for the model} 
+            | {--m|migration : Create a new migration file for the model} 
+            | {--r|resource : Indicates if the generated controller should be a resource controller} 
+            | {--a|all : Generate a migration, seeder, factory, policy, resource controller, and form request classes for the model} 
+            | {--s|seed : Create a new seeder for the model} 
+            | {--t|type=ts : The file type to generate}
+        } 
         {^name : The name of the [name] to generate}
-        {^--force : Overide existing controller.}
+        {^--force : Create the [name] even if it already exists.}
     `
     /**
      * The console command description.
@@ -143,6 +160,29 @@ export class MakeCommand extends Command {
 
         await writeFile(path, stub)
         Logger.split('INFO: Model Created', chalk.gray(nodepath.basename(path)))
+    }
+
+    /**
+     * Generate a new controller class.
+     */
+    protected async makeView () {
+        const type = this.option('api') ? '-resource' : ''
+        const name = this.argument('name')
+        const force = this.option('force')
+
+        const path = nodepath.join(app_path('Http/Controllers'), name + '.ts')
+        const crtlrPath = Helpers.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
+        const stubPath = nodepath.join(crtlrPath, `dist/stubs/controller${type}.stub`)
+
+        if (!force && existsSync(path)) {
+            Logger.error(`ERORR: ${name} controller already exists`)
+        }
+
+        let stub = await readFile(stubPath, 'utf-8')
+        stub = stub.replace(/{{ name }}/g, name)
+
+        await writeFile(path, stub)
+        Logger.split('INFO: Controller Created', chalk.gray(nodepath.basename(path)))
     }
 
     /**

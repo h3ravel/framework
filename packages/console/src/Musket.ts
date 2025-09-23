@@ -76,14 +76,21 @@ export class Musket {
             [this.kernel.modulePackage.version, 'green']
         ], ' ', false)
 
+        const additional = {
+            quiet: ['-q, --quiet', 'Do not output any message'],
+            silent: ['--silent', 'Do not output any message'],
+            verbose: ['-v, --verbose <number>', 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'],
+            interaction: ['-n, --no-interaction', 'Do not ask any interactive question'],
+        }
+
         /** Init Commander */
         program
             .name('musket')
             .version(`${cliVersion}\n${localVersion}`)
-            .addOption(new Option('--silent', 'Do not output any message').implies({ quiet: true }))
-            .option('-q, --quiet', 'Do not output any message')
-            .option('-n, --no-interaction', 'Do not ask any interactive question')
-            .option('-v, --verbose <number>', 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug')
+            .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
+            .option(additional.quiet[0], additional.quiet[1])
+            .option(additional.verbose[0], additional.verbose[1])
+            .option(additional.interaction[0], additional.interaction[1])
             .description(altLogo)
             .action(async () => {
                 const instance = new ListCommand(this.app, this.kernel)
@@ -113,6 +120,10 @@ export class Musket {
                     : program
                         .command(command.baseCommand)
                         .description(command.description ?? '')
+                        .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
+                        .option(additional.quiet[0], additional.quiet[1])
+                        .option(additional.verbose[0], additional.verbose[1])
+                        .option(additional.interaction[0], additional.interaction[1])
                         .action(async () => {
                             instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command, program)
                             await instance.handle()
@@ -139,6 +150,10 @@ export class Musket {
                         const cmd = program
                             .command(`${command.baseCommand}:${sub.name}`)
                             .description(sub.description || '')
+                            .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
+                            .option(additional.quiet[0], additional.quiet[1])
+                            .option(additional.verbose[0], additional.verbose[1])
+                            .option(additional.interaction[0], additional.interaction[1])
                             .action(async () => {
                                 instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, sub, program)
                                 await instance.handle()
@@ -176,6 +191,10 @@ export class Musket {
                 const cmd = program
                     .command(command.baseCommand)
                     .description(command.description ?? '')
+                    .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
+                    .option(additional.quiet[0], additional.quiet[1])
+                    .option(additional.verbose[0], additional.verbose[1])
+                    .option(additional.interaction[0], additional.interaction[1])
 
                 command
                     ?.options
