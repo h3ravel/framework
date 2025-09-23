@@ -34,13 +34,27 @@ export class Kernel {
         const { app } = ctx.request
 
         /**
+         * Initialize the view handler method
+         * 
+         * @param template 
+         * @param params 
+         * @returns 
+         */
+        const view = async (template: string, params?: Record<string, any>) => {
+            const edge = app.make('edge')
+            return ctx.response.html(await edge.render(template, params))
+        }
+
+        /**
+         * Bind the view method to the global variable space
+         */
+        globalThis.view = view
+
+        /**
          * Dynamically bind the view renderer to the service container.
          * This allows any part of the request lifecycle to render templates using Edge.
          */
-        app.bind('view', () => async (template: string, params?: Record<string, any>) => {
-            const edge = app.make('edge')
-            return ctx.response.html(await edge.render(template, params))
-        })
+        app.bind('view', () => view)
 
         /**
          * Run middleware stack and obtain result

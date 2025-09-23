@@ -26,6 +26,8 @@ declare global {
     function config<X extends Record<string, any>, T extends Extract<keyof X, string>> (key: T, def?: any): X[T];
     function config<T extends Record<string, any>> (key: T): void;
 
+    function view (viewPath: string, params?: Record<string, any> | undefined): Promise<string>
+
     /**
      * Get app path
      * 

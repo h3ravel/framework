@@ -19,7 +19,7 @@ export type Bindings = {
     [key: `app.${string}`]: any;
     env (): NodeJS.ProcessEnv
     env<T extends string> (key: T, def?: any): any
-    view (templatePath: string, state?: Record<string, any>): Promise<string>
+    view (viewPath: string, params?: Record<string, any>): Promise<string>
     edge: Edge;
     asset (key: string, def?: string): string
     router: IRouter

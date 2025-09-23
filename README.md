@@ -52,9 +52,9 @@ More information can be found in the [H3ravel documentation](https://h3ravel.ton
 - Clean Routing – Dedicated routes directory with web and api route files
 - Controllers with decorators – Class-based controllers like Laravel
 - HTTP Kernel – Centralized middleware and request lifecycle handling
-- Arquebus ORM (CS) – Fluent, model-based database interactions
-- Musket CLI (CS) - Our Powerful Artisan-like command-line tool for generating code and running tasks
-- Modular Services – Mail, Queue, Cache, Broadcasting support
+- Arquebus ORM – Beautiful, expressive ORM inspired by Laravel's Eloquent, designed for TypeScript applications
+- Musket CLI - Our Powerful Artisan-like command-line tool for generating code and running tasks
+- Modular Services – Mail, Queue, Cache, Filesystem and Broadcasting support
 - Runtime Agnostic – Works seamlessly across Node.js, Bun, and Deno
 - Type-safe everything – Fully written in TypeScript
 
