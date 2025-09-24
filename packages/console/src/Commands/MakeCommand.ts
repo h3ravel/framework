@@ -170,7 +170,7 @@ export class MakeCommand extends Command {
     protected async makeModel () {
         const type = this.option('type', 'ts')
         const name = this.argument('name')
-        const force = this.argument('force')
+        const force = this.option('force')
 
         const path = app_path(`Models/${name.toLowerCase()}.${type}`)
 
