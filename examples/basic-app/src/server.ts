@@ -5,5 +5,5 @@ import app from 'src/bootstrap/app'
 new app().bootstrap();
 
 ['SIGINT', 'SIGTERM', 'SIGTSTP'].forEach(sig => process.on(sig, () => {
-    process.exit(0);
-}));
+    process.exit(0)
+}))
