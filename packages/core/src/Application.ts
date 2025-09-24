@@ -23,6 +23,7 @@ export class Application extends Container implements IApplication {
     private tries: number = 0
     private booted = false
     private versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
+    private static versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
     private basePath: string
 
     private providers: IServiceProvider[] = []
@@ -75,9 +76,11 @@ export class Application extends Container implements IApplication {
 
             if (core) {
                 this.versions.app = semver.minVersion(core.version)?.version ?? this.versions.app
+                Application.versions.app = this.versions.app
             }
             if (app && app.devDependencies) {
                 this.versions.ts = semver.minVersion(app.devDependencies.typescript)?.version ?? this.versions.ts
+                Application.versions.ts = this.versions.ts
             }
             if (app && app.dependencies) {
                 const versions = Object.fromEntries(Object.entries(app.dependencies)
@@ -88,6 +91,7 @@ export class Application extends Container implements IApplication {
                     ]))
 
                 Object.assign(this.versions, versions)
+                Object.assign(Application.versions, versions)
             }
         } catch { /** */ }
     }
@@ -334,7 +338,16 @@ export class Application extends Container implements IApplication {
      *
      * @returns 
      */
-    getVersion (key: 'app' | 'ts') {
+    getVersion (key: string) {
+        return this.versions[key]?.replaceAll(/\^|~/g, '')
+    }
+
+    /**
+     * Returns the installed version of the system core and typescript.
+     *
+     * @returns 
+     */
+    static getVersion (key: string) {
         return this.versions[key]?.replaceAll(/\^|~/g, '')
     }
 }

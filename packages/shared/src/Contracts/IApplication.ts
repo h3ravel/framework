@@ -55,5 +55,5 @@ export interface IApplication extends IContainer {
      * @param key - The key to retrieve ('app' or 'ts').
      * @returns The version string or undefined.
      */
-    getVersion (key: 'app' | 'ts'): string | undefined;
+    getVersion (key: string): string | undefined;
 }
