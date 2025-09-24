@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 
-import { IApplication, IPathName, IServiceProvider, Logger } from '@h3ravel/shared'
+import { FileSystem, IApplication, IPathName, IServiceProvider, Logger } from '@h3ravel/shared'
 
 import { Container } from './Container'
 import { ContainerResolver } from './Di/ContainerResolver'
@@ -12,6 +12,8 @@ import { detect } from 'detect-port'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
+import { readFile } from 'node:fs/promises'
+import semver from 'semver'
 
 type AServiceProvider = (new (_app: Application) => IServiceProvider) & IServiceProvider
 
@@ -19,7 +21,7 @@ export class Application extends Container implements IApplication {
     public paths = new PathLoader()
     private tries: number = 0
     private booted = false
-    private versions = { app: '0', ts: '0' }
+    private versions = { app: '0.0.0', ts: '0.0.0' }
     private basePath: string
 
     private providers: IServiceProvider[] = []
@@ -65,15 +67,18 @@ export class Application extends Container implements IApplication {
     }
 
     protected async loadOptions () {
-        const app = await this.safeImport(this.getPath('base', 'package.json'))
-        const core = await this.safeImport('../package.json')
+        try {
+            const corePath = FileSystem.findModulePkg('@h3ravel/core', process.cwd()) ?? ''
+            const app = JSON.parse(await readFile(path.join(process.cwd(), '/package.json'), { encoding: 'utf8' }))
+            const core = JSON.parse(await readFile(path.join(corePath, 'package.json'), { encoding: 'utf8' }))
 
-        if (app && app.dependencies) {
-            this.versions.app = app.dependencies['@h3ravel/core']
-        }
-        if (core && core.devDependencies) {
-            this.versions.ts = app.devDependencies.typescript
-        }
+            if (app) {
+                this.versions.app = semver.minVersion(app.version)?.version ?? this.versions.app
+            }
+            if (core && core.devDependencies) {
+                this.versions.ts = semver.minVersion(app.devDependencies.typescript)?.version ?? this.versions.ts
+            }
+        } catch { /** */ }//
     }
 
     /**

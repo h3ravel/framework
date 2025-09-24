@@ -309,6 +309,9 @@ importers:
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
+      semver:
+        specifier: ^7.7.2
+        version: 7.7.2
       srvx:
         specifier: ^0.8.7
         version: 0.8.7
@@ -316,6 +319,9 @@ importers:
         specifier: ^2.8.1
         version: 2.8.1
     devDependencies:
+      '@types/semver':
+        specifier: ^7.7.1
+        version: 7.7.1
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
@@ -353,9 +359,6 @@ importers:
       '@h3ravel/support':
         specifier: workspace:^
         version: link:../support
-      escalade:
-        specifier: ^3.2.0
-        version: 3.2.0
     devDependencies:
       typescript:
         specifier: ^5.4.0
@@ -444,6 +447,9 @@ importers:
       edge.js:
         specifier: ^6.3.0
         version: 6.3.0
+      escalade:
+        specifier: ^3.2.0
+        version: 3.2.0
       h3:
         specifier: ^2.0.0-beta.4
         version: 2.0.0-beta.4
@@ -2004,6 +2010,9 @@ packages:
 
   '@types/readable-stream@4.0.21':
     resolution: {integrity: sha512-19eKVv9tugr03IgfXlA9UVUVRbW6IuqRO5B92Dl4a6pT7K8uaGrNS0GkxiZD0BOk6PLuXl5FhWl//eX/pzYdTQ==}
+
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
@@ -7195,6 +7204,8 @@ snapshots:
   '@types/readable-stream@4.0.21':
     dependencies:
       '@types/node': 24.5.2
+
+  '@types/semver@7.7.1': {}
 
   '@types/stack-utils@2.0.3': {}
 
