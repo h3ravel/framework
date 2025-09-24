@@ -7,6 +7,7 @@ import { ContainerResolver } from './Di/ContainerResolver'
 import type { H3 } from 'h3'
 import { PathLoader } from '@h3ravel/shared'
 import { Registerer } from './Registerer'
+import { afterLast } from '@h3ravel/support'
 import chalk from 'chalk'
 import { detect } from 'detect-port'
 import dotenv from 'dotenv'
@@ -21,7 +22,7 @@ export class Application extends Container implements IApplication {
     public paths = new PathLoader()
     private tries: number = 0
     private booted = false
-    private versions = { app: '0.0.0', ts: '0.0.0' }
+    private versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
     private basePath: string
 
     private providers: IServiceProvider[] = []
@@ -72,13 +73,23 @@ export class Application extends Container implements IApplication {
             const app = JSON.parse(await readFile(path.join(process.cwd(), '/package.json'), { encoding: 'utf8' }))
             const core = JSON.parse(await readFile(path.join(corePath, 'package.json'), { encoding: 'utf8' }))
 
-            if (app) {
-                this.versions.app = semver.minVersion(app.version)?.version ?? this.versions.app
+            if (core) {
+                this.versions.app = semver.minVersion(core.version)?.version ?? this.versions.app
             }
-            if (core && core.devDependencies) {
+            if (app && app.devDependencies) {
                 this.versions.ts = semver.minVersion(app.devDependencies.typescript)?.version ?? this.versions.ts
             }
-        } catch { /** */ }//
+            if (app && app.dependencies) {
+                const versions = Object.fromEntries(Object.entries(app.dependencies)
+                    .filter(([e]) => e.includes('@h3ravel'))
+                    .map(([name, ver]: [string, any]) => [
+                        afterLast(name, '/'),
+                        semver.minVersion(ver.includes('work') ? this.versions.app : ver)?.version
+                    ]))
+
+                Object.assign(this.versions, versions)
+            }
+        } catch { /** */ }
     }
 
     /**
