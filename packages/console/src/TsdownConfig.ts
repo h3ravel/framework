@@ -1,4 +1,7 @@
 import { Options } from 'tsdown'
+import { existsSync } from 'node:fs'
+import path from 'node:path'
+import { rm } from 'node:fs/promises'
 import run from '@rollup/plugin-run'
 
 const env = process.env.NODE_ENV || 'development'
@@ -25,6 +28,16 @@ export const TsDownConfig: Options = {
     logLevel: 'silent',
     nodeProtocol: true,
     skipNodeModulesBundle: true,
+    hooks (e) {
+        e.hook('build:done', async () => {
+            const paths = ['database/migrations', 'database/factories', 'database/seeders']
+            for (let i = 0; i < paths.length; i++) {
+                const name = paths[i]
+                if (existsSync(path.join(outDir, name)))
+                    await rm(path.join(outDir, name), { recursive: true })
+            }
+        })
+    },
     plugins: env === 'development' && process.env.CLI_BUILD !== 'true' ? [
         run({
             env: Object.assign({}, process.env, {
