@@ -32,10 +32,6 @@ export class PathLoader {
 
         path = path.replace('/src/', `/${process.env.DIST_DIR ?? 'src'}/`.replace(/([^:]\/)\/+/g, '$1'))
 
-        if (name === 'database' && process.env.DIST_DIR && !'/src/'.includes(process.env.DIST_DIR)) {
-            return nodepath.resolve(path.replace(process.env.DIST_DIR, ''))
-        }
-
         return path
     }
 

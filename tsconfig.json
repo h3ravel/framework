@@ -32,7 +32,8 @@
     "./storage",
     "**coverage**",
     "eslint.config.js",
-    "jest.config.ts"
+    "jest.config.ts",
+    "arquebus.config.*"
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]

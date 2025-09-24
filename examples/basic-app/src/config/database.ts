@@ -1,8 +1,6 @@
-import { Application } from '@h3ravel/core'
 import { slugify } from '@h3ravel/support'
 
-export default (app: Application) => {
-    const env = app.make('env')
+export default () => {
     return {
         /*
         |--------------------------------------------------------------------------
