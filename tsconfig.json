@@ -33,7 +33,7 @@
     "**coverage**",
     "eslint.config.js",
     "jest.config.ts",
-    "arquebus.config.*"
+    "arquebus.config.js"
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
