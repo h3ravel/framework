@@ -1,4 +1,4 @@
-import { DotNestedKeys, DotNestedValue } from './ObjContract'
+import type { DotNestedKeys, DotNestedValue } from './ObjContract'
 import type { ResponseHeaderMap, TypedHeaders } from 'fetchdts'
 
 import type { H3Event } from 'h3'

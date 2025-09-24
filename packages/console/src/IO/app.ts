@@ -1,5 +1,5 @@
 import { Application } from '@h3ravel/core'
-import { ConsoleServiceProvider } from '@h3ravel/console'
+import { ConsoleServiceProvider } from '..'
 import { glob } from 'node:fs/promises'
 import path from 'node:path'
 import providers from './providers'
