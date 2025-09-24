@@ -44,7 +44,7 @@ export class FireCommand extends ConsoleCommand {
             EXTENDED_DEBUG: debug ? 'true' : 'false',
             CLI_BUILD: 'false',
             NODE_ENV: 'development',
-            SRC_PATH: outDir,
+            DIST_DIR: outDir,
             HOSTNAME: host,
             RETRIES: tries,
             PORT: port,

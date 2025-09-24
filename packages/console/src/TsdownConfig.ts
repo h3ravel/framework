@@ -18,7 +18,7 @@ export const TsDownConfig: Options = {
     copy: [{ from: 'public', to: outDir }, 'src/resources', 'src/database'],
     env: env === 'development' ? {
         NODE_ENV: env,
-        SRC_PATH: outDir,
+        DIST_DIR: outDir,
     } : {},
     watch:
         env === 'development' && process.env.CLI_BUILD !== 'true'
@@ -42,7 +42,7 @@ export const TsDownConfig: Options = {
         run({
             env: Object.assign({}, process.env, {
                 NODE_ENV: env,
-                SRC_PATH: outDir,
+                DIST_DIR: outDir,
             }),
             execArgv: ['-r', 'source-map-support/register'],
             allowRestarts: false,

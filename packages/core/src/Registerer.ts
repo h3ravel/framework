@@ -23,7 +23,7 @@ export class Registerer {
 
     private appPath (path?: string) {
         return this.app.getPath(
-            'base', nodepath.join(`/${process.env.SRC_PATH ?? 'src'}/`.replace(/([^:]\/)\/+/g, '$1'), 'app', path ?? '')
+            'base', nodepath.join(`/${process.env.DIST_DIR ?? 'src'}/`.replace(/([^:]\/)\/+/g, '$1'), 'app', path ?? '')
         )
     }
 
