@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/core",
-  "version": "1.9.5",
+  "version": "1.9.6",
   "description": "Core application container, lifecycle management and service providers for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -48,7 +48,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump core package version\" && pnpm publish --tag latest"
   },
   "dependencies": {
     "@h3ravel/shared": "workspace:^",
