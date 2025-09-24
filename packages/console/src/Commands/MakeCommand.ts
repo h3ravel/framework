@@ -87,9 +87,14 @@ export class MakeCommand extends Command {
         const name = this.argument('name')
         const force = this.option('force')
 
-        const path = app_path(`Http/Controllers/${name}.ts`)
         const crtlrPath = FileSystem.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
         const stubPath = nodepath.join(crtlrPath, `dist/stubs/controller${type}.stub`)
+        const path = app_path(`Http/Controllers/${name}.ts`)
+
+        /** The Controller is scoped to a path make sure to create the associated directories */
+        if (name.includes('/')) {
+            await mkdir(beforeLast(path, '/'), { recursive: true })
+        }
 
         /** Check if the controller already exists */
         if (!force && await FileSystem.fileExists(path)) {
@@ -169,6 +174,11 @@ export class MakeCommand extends Command {
 
         const path = app_path(`Models/${name.toLowerCase()}.${type}`)
 
+        /** The model is scoped to a path make sure to create the associated directories */
+        if (name.includes('/')) {
+            await mkdir(beforeLast(path, '/'), { recursive: true })
+        }
+
         /** Check if the model already exists */
         if (!force && await FileSystem.fileExists(path)) {
             Logger.error(`ERORR: ${name} model already exists`)
@@ -181,7 +191,7 @@ export class MakeCommand extends Command {
         stub = stub.replace(/{{ name }}/g, name)
 
         await writeFile(path, stub)
-        Logger.split('INFO: Model Created', Logger.log(nodepath.basename(path), 'gray', false))
+        Logger.split(`INFO: ${name} Model Created`, Logger.log(nodepath.basename(path), 'gray', false))
     }
 
     /**
@@ -193,6 +203,7 @@ export class MakeCommand extends Command {
 
         const path = base_path(`src/resources/views/${name}.edge`)
 
+        /** The view is scoped to a path make sure to create the associated directories */
         if (name.includes('/')) {
             await mkdir(beforeLast(path, '/'), { recursive: true })
         }
