@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/example",
-  "version": "1.6.1",
+  "version": "1.6.2",
   "description": "Example H3ravel App.",
   "type": "module",
   "private": true,
@@ -14,7 +14,7 @@
     "postinstall": "musket postinstall"
   },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.4.0",
+    "@h3ravel/arquebus": "^0.5.0",
     "@h3ravel/cache": "workspace:^",
     "@h3ravel/config": "workspace:^",
     "@h3ravel/console": "workspace:^",

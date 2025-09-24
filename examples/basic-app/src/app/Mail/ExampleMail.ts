@@ -1,8 +1,8 @@
-import { Mailable } from '@h3ravel/mail';
+import { Mailable } from '@h3ravel/mail'
 
 export class ExampleMail extends Mailable {
     constructor(private name: string, private recipient: string) {
-        super();
+        super()
     }
 
     async build () {
