@@ -23,7 +23,14 @@ export class PostinstallCommand extends Command {
         this.createSqliteDB()
     }
 
+    /**
+     * Create sqlite database if none exist
+     * 
+     * @returns 
+     */
     private async createSqliteDB () {
+        if (config('database.default') !== 'sqlite') return
+
         if (!await FileSystem.fileExists(database_path())) {
             await mkdir(database_path(), { recursive: true })
         }
