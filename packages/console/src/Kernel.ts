@@ -1,6 +1,6 @@
 import { Application, ConsoleKernel } from '@h3ravel/core'
 
-import { Helpers } from '@h3ravel/filesystem'
+import { FileSystem } from '@h3ravel/shared'
 import { Musket } from './Musket'
 import path from 'node:path'
 
@@ -24,8 +24,8 @@ export class Kernel extends ConsoleKernel {
 
     private async loadRequirements () {
         this.cwd = path.join(process.cwd(), this.basePath)
-        this.modulePath = Helpers.findModulePkg('@h3ravel/core', this.cwd) ?? ''
-        this.consolePath = Helpers.findModulePkg('@h3ravel/console', this.cwd) ?? ''
+        this.modulePath = FileSystem.findModulePkg('@h3ravel/core', this.cwd) ?? ''
+        this.consolePath = FileSystem.findModulePkg('@h3ravel/console', this.cwd) ?? ''
 
         try {
             this.modulePackage = await import(path.join(this.modulePath, 'package.json'))

@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/filesystem",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Filesystem manager for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -46,8 +46,7 @@
   },
   "dependencies": {
     "@h3ravel/shared": "workspace:^",
-    "@h3ravel/support": "workspace:^",
-    "escalade": "^3.2.0"
+    "@h3ravel/support": "workspace:^"
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^"

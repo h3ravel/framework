@@ -1,6 +1,7 @@
 export * from './Commands/Command'
 export * from './Commands/ListCommand'
 export * from './Commands/MakeCommand'
+export * from './Commands/PostinstallCommand'
 export * from './Contracts/ICommand'
 export * from './IO/app'
 export * from './IO/providers'

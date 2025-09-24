@@ -1,9 +1,8 @@
-import { TableGuesser, Utils } from '../Utils'
+import { FileSystem, Logger } from '@h3ravel/shared'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 
 import { Command } from './Command'
-import { Helpers } from '@h3ravel/filesystem'
-import { Logger } from '@h3ravel/shared'
+import { TableGuesser } from '../Utils'
 import { beforeLast } from '@h3ravel/support'
 import dayjs from 'dayjs'
 import { existsSync } from 'node:fs'
@@ -86,7 +85,7 @@ export class MakeCommand extends Command {
         const force = this.option('force')
 
         const path = nodepath.join(app_path('Http/Controllers'), name + '.ts')
-        const crtlrPath = Helpers.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
+        const crtlrPath = FileSystem.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
         const stubPath = nodepath.join(crtlrPath, `dist/stubs/controller${type}.stub`)
 
         /** Check if the controller already exists */
@@ -113,7 +112,7 @@ export class MakeCommand extends Command {
         const datePrefix = dayjs().format('YYYY_MM_DD_HHmmss')
         const path = nodepath.join(database_path('migrations'), `${datePrefix}_${name}.ts`)
 
-        const crtlrPath = Utils.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
+        const crtlrPath = FileSystem.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
 
         let create = this.option('create', false)
         let table = this.option('table')
@@ -172,7 +171,7 @@ export class MakeCommand extends Command {
             Logger.error(`ERORR: ${name} view already exists`)
         }
 
-        const crtlrPath = Utils.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
+        const crtlrPath = FileSystem.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
         const stubPath = nodepath.join(crtlrPath, `dist/stubs/model-${type}.stub`)
 
         let stub = await readFile(stubPath, 'utf-8')

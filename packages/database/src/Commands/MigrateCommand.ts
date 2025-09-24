@@ -1,9 +1,8 @@
-import { Logger, Resolver } from '@h3ravel/shared'
+import { FileSystem, Logger, Resolver } from '@h3ravel/shared'
 import { Migrate, MigrationCreator } from '@h3ravel/arquebus/migrations'
 import { TBaseConfig, arquebusConfig } from '..'
 
 import { ConsoleCommand } from '@h3ravel/core'
-import { Helpers } from '@h3ravel/filesystem'
 import path from 'node:path'
 
 export class MigrateCommand extends ConsoleCommand {
@@ -181,7 +180,7 @@ export class MigrateCommand extends ConsoleCommand {
 
         try {
             /** Find the requested package */
-            const packagePath = Helpers.findModulePkg(name) ?? null
+            const packagePath = FileSystem.findModulePkg(name) ?? null
             if (!packagePath) throw new Error('Package not found')
 
             /** Get the package,json and instanciate the migration creator */

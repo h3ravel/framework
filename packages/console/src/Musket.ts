@@ -13,6 +13,7 @@ import { altLogo } from './logo'
 import { build } from 'tsdown'
 import { glob } from 'node:fs/promises'
 import path from 'node:path'
+import { PostinstallCommand } from './Commands/PostinstallCommand'
 
 /**
  * Musket is H3ravel's CLI tool
@@ -32,6 +33,7 @@ export class Musket {
         const commands: Command[] = [
             new MakeCommand(this.app, this.kernel),
             new ListCommand(this.app, this.kernel),
+            new PostinstallCommand(this.app, this.kernel),
         ]
 
         commands.forEach(e => this.addCommand(e))

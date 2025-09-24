@@ -2,7 +2,7 @@ import { access } from 'fs/promises'
 import escalade from 'escalade/sync'
 import path from 'path'
 
-export class Helpers {
+export class FileSystem {
     static findModulePkg (moduleId: string, cwd?: string) {
         const parts = moduleId.replace(/\\/g, '/').split('/')
 
@@ -39,6 +39,14 @@ export class Helpers {
         }
     }
 
+    /**
+     * Recursively find files
+     * 
+     * @param cwd 
+     * @param name 
+     * @param extensions 
+     * @returns 
+     */
     static findUpConfig (cwd: string, name: string, extensions: string[]) {
         return escalade(cwd, (_dir, names) => {
             for (const ext of extensions) {
