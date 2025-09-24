@@ -5,7 +5,6 @@ import { Command } from './Command'
 import { TableGuesser } from '../Utils'
 import { beforeLast } from '@h3ravel/support'
 import dayjs from 'dayjs'
-import { existsSync } from 'node:fs'
 import nodepath from 'node:path'
 
 export class MakeCommand extends Command {
@@ -59,6 +58,10 @@ export class MakeCommand extends Command {
     public async handle () {
         const command = (this.dictionary.baseCommand ?? this.dictionary.name) as never
 
+        if (!this.argument('name')) {
+            this.program.error('Please provide a valid name for the ' + command)
+        }
+
         const methods = {
             controller: 'makeController',
             resource: 'makeResource',
@@ -84,12 +87,12 @@ export class MakeCommand extends Command {
         const name = this.argument('name')
         const force = this.option('force')
 
-        const path = nodepath.join(app_path('Http/Controllers'), name + '.ts')
+        const path = app_path(`Http/Controllers/${name}.ts`)
         const crtlrPath = FileSystem.findModulePkg('@h3ravel/http', this.kernel.cwd) ?? ''
         const stubPath = nodepath.join(crtlrPath, `dist/stubs/controller${type}.stub`)
 
         /** Check if the controller already exists */
-        if (!force && existsSync(path)) {
+        if (!force && await FileSystem.fileExists(path)) {
             Logger.error(`ERORR: ${name} controller already exists`)
         }
 
@@ -110,7 +113,7 @@ export class MakeCommand extends Command {
     protected async makeMigration () {
         const name = this.argument('name')
         const datePrefix = dayjs().format('YYYY_MM_DD_HHmmss')
-        const path = nodepath.join(database_path('migrations'), `${datePrefix}_${name}.ts`)
+        const path = database_path(`migrations/${datePrefix}_${name}.ts`)
 
         const crtlrPath = FileSystem.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
 
@@ -164,11 +167,11 @@ export class MakeCommand extends Command {
         const name = this.argument('name')
         const force = this.argument('force')
 
-        const path = nodepath.join(app_path('Models'), name.toLowerCase(), '.' + type)
+        const path = app_path(`Models/${name.toLowerCase()}.${type}`)
 
         /** Check if the model already exists */
-        if (!force && existsSync(path)) {
-            Logger.error(`ERORR: ${name} view already exists`)
+        if (!force && await FileSystem.fileExists(path)) {
+            Logger.error(`ERORR: ${name} model already exists`)
         }
 
         const crtlrPath = FileSystem.findModulePkg('@h3ravel/database', this.kernel.cwd) ?? ''
@@ -188,14 +191,14 @@ export class MakeCommand extends Command {
         const name = this.argument('name')
         const force = this.option('force')
 
-        const path = nodepath.join(base_path('src/resources/views'), name + '.edge')
+        const path = base_path(`src/resources/views/${name}.edge`)
 
         if (name.includes('/')) {
             await mkdir(beforeLast(path, '/'), { recursive: true })
         }
 
         /** Check if the view already exists */
-        if (!force && existsSync(path)) {
+        if (!force && await FileSystem.fileExists(path)) {
             Logger.error(`ERORR: ${name} view already exists`)
         }
 
