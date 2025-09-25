@@ -29,9 +29,16 @@ jobs:
         with:
           version: 10
 
+      # - name: Patch example app package.json
+      #   run: |
+      #     jq '.scripts.prepare = "musket postinstall" | .scripts.postinstall = "build"' \
+      #       examples/basic-app/package.json > tmp.$$.json
+      #     mv tmp.$$.json examples/basic-app/package.json
+      #     cat examples/basic-app/package.json
+
       - name: Patch example app package.json
         run: |
-          jq '.scripts.prepare = "musket postinstall" | .scripts.postinstall = "build"' \
+          jq '.scripts.postinstall = "mosket postinstall"' \
             examples/basic-app/package.json > tmp.$$.json
           mv tmp.$$.json examples/basic-app/package.json
           cat examples/basic-app/package.json
