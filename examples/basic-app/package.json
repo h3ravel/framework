@@ -5,8 +5,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "NODE_ENV=production tsdown --config-loader unconfig -c tsdown.default.config.ts --tsconfig tsconfig.json",
-    "devx": "tsx watch ./src/server.ts",
+    "build": "NODE_ENV=production tsdown --config-loader unconfig -c tsdown.default.config.ts",
+    "serve": "tsx watch ./src/server.ts",
     "dev": "NODE_ENV=development pnpm tsdown --config-loader unconfig -c tsdown.default.config.ts",
     "start": "DIST_DIR=dist node -r source-map-support/register dist/server.js",
     "lint": "eslint . --ext .ts",
