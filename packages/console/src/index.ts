@@ -1,3 +1,4 @@
+export * from './Commands/BuildCommand'
 export * from './Commands/Command'
 export * from './Commands/ListCommand'
 export * from './Commands/MakeCommand'

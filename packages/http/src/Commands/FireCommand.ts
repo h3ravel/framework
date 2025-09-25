@@ -39,6 +39,13 @@ export class FireCommand extends ConsoleCommand {
         const host = this.option('host')
         const tries = this.option('tries')
         const debug = Number(this.option('verbose', 0)) > 0
+        const LOG_LEVELS = [
+            'silent',
+            'silent',
+            'info',
+            'warn',
+            'error',
+        ]
 
         const ENV_VARS = {
             EXTENDED_DEBUG: debug ? 'true' : 'false',
@@ -48,11 +55,14 @@ export class FireCommand extends ConsoleCommand {
             HOSTNAME: host,
             RETRIES: tries,
             PORT: port,
+            LOG_LEVEL: LOG_LEVELS[Number(this.option('verbose', 0))],
         }
+
+        const silent = ENV_VARS.LOG_LEVEL === 'silent' ? '--silent' : null
 
         await execa(
             pm,
-            ['tsdown', '--silent', '--config-loader', 'unconfig', '-c', 'tsdown.default.config.ts'],
+            ['tsdown', silent, '--config-loader', 'unconfig', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
             { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
         )
     }

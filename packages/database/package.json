@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/database",
-  "version": "11.2.4",
+  "version": "11.2.5",
   "description": "Modeling data and migration system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
