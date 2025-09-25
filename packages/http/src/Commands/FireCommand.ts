@@ -32,7 +32,7 @@ export class FireCommand extends ConsoleCommand {
     }
 
     protected async fire () {
-        const outDir = '.h3ravel/serve'
+        const outDir = env('DIST_DIR', '.h3ravel/serve')
 
         const pm = (await preferredPM(base_path()))?.name ?? 'pnpm'
         const port = this.option('port')

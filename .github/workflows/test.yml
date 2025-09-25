@@ -38,7 +38,7 @@ jobs:
 
       - name: Patch example app package.json
         run: |
-          jq '.scripts.postinstall = "mosket postinstall"' \
+          jq '.scripts.postinstall = "pnpm ci-postinstall"' \
             examples/basic-app/package.json > tmp.$$.json
           mv tmp.$$.json examples/basic-app/package.json
           cat examples/basic-app/package.json

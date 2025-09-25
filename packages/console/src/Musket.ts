@@ -40,6 +40,7 @@ export class Musket {
     }
 
     private async loadDiscoveredCommands () {
+        const DIST_DIR = `/${env('DIST_DIR', '.h3ravel/serve')}/`.replaceAll('//', '')
         const commands: Command[] = [
             ...this.app.registeredCommands.map(cmd => new cmd(this.app, this.kernel))
         ]
@@ -47,7 +48,7 @@ export class Musket {
         /**
          * Musket Commands auto registration
          */
-        const providers_path = app_path('Console/Commands/*.js').replace('/src/', '/.h3ravel/serve/')
+        const providers_path = app_path('Console/Commands/*.js').replace('/src/', DIST_DIR)
 
         /** Add the App Commands */
         for await (const cmd of glob(providers_path)) {

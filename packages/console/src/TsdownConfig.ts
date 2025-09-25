@@ -5,7 +5,10 @@ import { rm } from 'node:fs/promises'
 import run from '@rollup/plugin-run'
 
 const env = process.env.NODE_ENV || 'development'
-const outDir = env === 'development' ? '.h3ravel/serve' : 'dist'
+let outDir = env === 'development' ? '.h3ravel/serve' : 'dist'
+if (process.env.DIST_DIR) {
+    outDir = process.env.DIST_DIR
+}
 
 export const TsDownConfig: Options = {
     outDir,
