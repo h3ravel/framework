@@ -29,6 +29,13 @@ jobs:
         with:
           version: 10
 
+      - name: Patch example app package.json
+        run: |
+          jq '.scripts.prepare = "musket postinstall" | .scripts.postinstall = "build"' \
+            examples/basic-app/package.json > tmp.$$.json
+          mv tmp.$$.json examples/basic-app/package.json
+          cat examples/basic-app/package.json
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
