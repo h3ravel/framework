@@ -1,14 +1,15 @@
 import 'reflect-metadata'
 
-import { FileSystem, IApplication, IPathName, IServiceProvider, Logger } from '@h3ravel/shared'
+import { FileSystem, IApplication, IPathName, Logger } from '@h3ravel/shared'
 
 import { Container } from './Container'
 import { ContainerResolver } from './Di/ContainerResolver'
 import type { H3 } from 'h3'
 import { PathLoader } from '@h3ravel/shared'
+import { ProviderRegistry } from './ProviderRegistry'
 import { Registerer } from './Registerer'
+import { ServiceProvider } from './ServiceProvider'
 import { afterLast } from '@h3ravel/support'
-import chalk from 'chalk'
 import { detect } from 'detect-port'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
@@ -16,7 +17,7 @@ import path from 'node:path'
 import { readFile } from 'node:fs/promises'
 import semver from 'semver'
 
-type AServiceProvider = (new (_app: Application) => IServiceProvider) & IServiceProvider
+type AServiceProvider = (new (_app: Application) => ServiceProvider) & Partial<ServiceProvider>
 
 export class Application extends Container implements IApplication {
     public paths = new PathLoader()
@@ -26,8 +27,9 @@ export class Application extends Container implements IApplication {
     private static versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
     private basePath: string
 
-    private providers: IServiceProvider[] = []
-    protected externalProviders: Array<new (_app: Application) => IServiceProvider> = []
+    private providers: ServiceProvider[] = []
+    protected externalProviders: Array<AServiceProvider> = []
+    protected filteredProviders: Array<string> = []
 
     /**
      * List of registered console commands
@@ -53,19 +55,6 @@ export class Application extends Container implements IApplication {
         this.bind(Application, () => this)
         this.bind('path.base', () => this.basePath)
         this.bind('load.paths', () => this.paths)
-    }
-
-    /**
-     * Dynamically register all configured providers
-     */
-    public async registerConfiguredProviders () {
-        const providers = await this.getAllProviders()
-
-        for (const ProviderClass of providers) {
-            if (!ProviderClass) continue
-            const provider = new ProviderClass(this)
-            await this.register(provider)
-        }
     }
 
     protected async loadOptions () {
@@ -120,76 +109,53 @@ export class Application extends Container implements IApplication {
 
     protected async getAllProviders (): Promise<Array<AServiceProvider>> {
         const coreProviders = await this.getConfiguredProviders()
-        const allProviders = [...coreProviders, ...this.externalProviders]
-
-        /**
-         * Deduplicate by class reference
-         */
-        const uniqueProviders = Array.from(new Set(allProviders))
-
-        return this.sortProviders(uniqueProviders)
+        return [...coreProviders, ...this.externalProviders]
     }
 
-    private sortProviders (providers: Array<AServiceProvider>) {
-        const priorityMap = new Map<string, number>()
+    /**
+     * Configure and Dynamically register all configured service providers, then boot the app.
+     * 
+     * @param providers All regitererable service providers
+     * @param filtered A list of service provider name strings we do not want to register at all cost
+     * @returns 
+     */
+    public async quickStartup (providers: Array<AServiceProvider>, filtered: string[] = []) {
+        this.registerProviders(providers, filtered)
+        await this.registerConfiguredProviders()
+        return this.boot()
+    }
 
-        /**
-         * Base priority (default 0)
-         */
-        providers.forEach((Provider) => {
-            priorityMap.set(Provider.name, (Provider as any).priority ?? 0)
-        })
+    /**
+     * Dynamically register all configured providers
+     */
+    public async registerConfiguredProviders () {
+        const providers = await this.getAllProviders()
 
-        /**
-         * Handle before/after adjustments
-         */
-        providers.forEach((Provider) => {
-            const order = (Provider as any).order
-            if (!order) return
+        ProviderRegistry.setFiltered(this.filteredProviders)
+        ProviderRegistry.registerMany(providers)
 
-            const [direction, target] = order.split(':')
-            const targetPriority = priorityMap.get(target) ?? 0
-
-            if (direction === 'before') {
-                priorityMap.set(Provider.name, targetPriority - 1)
-            } else if (direction === 'after') {
-                priorityMap.set(Provider.name, targetPriority + 1)
-            }
-        })
-
-        /**
-         * Service providers sorted based on thier name and priority
-         */
-        const sorted = providers.sort(
-            (A, B) => (priorityMap.get(B.name) ?? 0) - (priorityMap.get(A.name) ?? 0)
-        )
-
-        /**
-         * If debug is enabled, let's show the loaded service provider info
-         */
-        if (process.env.APP_DEBUG === 'true' && process.env.EXTENDED_DEBUG !== 'false' && !sorted.some(e => e.console)) {
-            console.table(
-                sorted.map((P) => ({
-                    Provider: P.name,
-                    Priority: priorityMap.get(P.name),
-                    Order: (P as any).order || 'N/A',
-                }))
-            )
-
-            console.info(`Set ${chalk.bgCyan(' APP_DEBUG = false ')} in your .env file to hide this information`, '\n')
+        for (const ProviderClass of ProviderRegistry.all()) {
+            if (!ProviderClass) continue
+            const provider = new ProviderClass(this)
+            await this.register(provider)
         }
-
-        return sorted
     }
 
-    registerProviders (providers: Array<AServiceProvider>): void {
+    /**
+     * Register service providers
+     * 
+     * @param providers 
+     * @param filtered 
+     */
+    registerProviders (providers: Array<AServiceProvider>, filtered: string[] = []): void {
         this.externalProviders.push(...providers)
+        this.filteredProviders = filtered
     }
 
     /**
      * Register a provider
      */
-    public async register (provider: IServiceProvider) {
+    public async register (provider: ServiceProvider) {
         await new ContainerResolver(this).resolveMethodParams(provider, 'register', this)
         if (provider.registeredCommands && provider.registeredCommands.length > 0) {
             this.registeredCommands.push(...provider.registeredCommands)
@@ -221,7 +187,15 @@ export class Application extends Container implements IApplication {
      * Boot all service providers after registration
      */
     public async boot () {
+
         if (this.booted) return
+
+        /**
+         * If debug is enabled, let's show the loaded service provider info
+         */
+        if (process.env.APP_DEBUG === 'true' && process.env.EXTENDED_DEBUG !== 'false' && !this.providers.some(e => e.console)) {
+            ProviderRegistry.log(this.providers)
+        }
 
         for (const provider of this.providers) {
             if (provider.boot) {
@@ -287,18 +261,6 @@ export class Application extends Container implements IApplication {
                 [e.message, 'red'],
                 [e.stack, 'red']
             ], '\n')
-        }
-    }
-
-    /**
-     * Attempt to dynamically import an optional module
-     */
-    private async safeImport (moduleName: string) {
-        try {
-            const mod = await import(moduleName)
-            return mod.default ?? mod ?? {}
-        } catch {
-            return null
         }
     }
 

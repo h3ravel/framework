@@ -1,7 +1,14 @@
 import { Application } from './Application'
 import { IServiceProvider } from '@h3ravel/shared'
 
-export abstract class ServiceProvider implements IServiceProvider {
+const Inference = class { } as { new(): IServiceProvider }
+
+export abstract class ServiceProvider extends Inference {
+    /**
+     * Unique Identifier for the service providers
+     */
+    public static uid?: number
+
     /**
      * Sort order
      */
@@ -26,6 +33,7 @@ export abstract class ServiceProvider implements IServiceProvider {
     protected app: Application
 
     constructor(app: Application) {
+        super()
         this.app = app
     }
 

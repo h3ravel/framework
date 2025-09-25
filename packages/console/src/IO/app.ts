@@ -1,34 +1,27 @@
-import { Application } from '@h3ravel/core'
+import { Application, ServiceProvider } from '@h3ravel/core'
+
 import { ConsoleServiceProvider } from '..'
-import { glob } from 'node:fs/promises'
 import path from 'node:path'
-import providers from './providers'
+
+type AServiceProvider = (new (_app: Application) => ServiceProvider) & Partial<ServiceProvider>
 
 export default class {
     async fire () {
 
+        const DIST_DIR = process.env.DIST_DIR ?? '/.h3ravel/serve/'
+        const providers: AServiceProvider[] = []
         const app = new Application(process.cwd())
 
         /**
-         * Service providers auto registration
+         * Load Service Providers already registered by the app
          */
-        const providers_path = app_path('Providers/*.js').replace('/src/', '/.h3ravel/serve/')
-
-        /** Add the App Service Providers */
-        for await (const provider of glob(providers_path)) {
-            const name = path.basename(provider).replace('.js', '')
-            try {
-                providers.push((await import(provider))[name])
-            } catch { /** */ }
-        }
+        const app_providers = base_path(path.join(DIST_DIR, 'bootstrap/providers.js'))
+        providers.push(...(await import(app_providers)).default)
 
         /** Add the ConsoleServiceProvider */
         providers.push(ConsoleServiceProvider)
 
         /** Register all the Service Providers */
-        app.registerProviders(providers)
-
-        await app.registerConfiguredProviders()
-        await app.boot()
+        await app.quickStartup(providers, ['CoreServiceProvider'])
     }
 }

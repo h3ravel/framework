@@ -27,4 +27,4 @@ export default <Array<new (_app: Application) => IServiceProvider>>[
     MailServiceProvider,
     AppServiceProvider,
     FilesystemProvider,
-]
+] 

@@ -1,0 +1,182 @@
+import type { Application } from './Application'
+import { ContainerResolver } from '../src/Di/ContainerResolver'
+import { Logger } from '@h3ravel/shared'
+import { ServiceProvider } from './ServiceProvider'
+
+type ProviderCtor = (new (_app: Application) => ServiceProvider) & Partial<ServiceProvider>
+
+export class ProviderRegistry {
+    private static providers = new Map<string, ProviderCtor>()
+    private static filteredProviders: string[] = []
+
+    /**
+     * Get a unique identifier for the Provider.
+     * 
+     * @param provider 
+     * @returns 
+     */
+    private static getKey (provider: ProviderCtor): string {
+        // If provider has a declared static uid/id → prefer that
+        const anyProvider = provider as any
+        if (typeof anyProvider.uid === 'string') {
+            return anyProvider.uid
+        }
+        if (typeof anyProvider.id === 'string') {
+            return anyProvider.id
+        }
+
+        // Otherwise fallback to class name + source file (if available)
+        // Works for both Node.js (filename from stack) and bundlers
+        return provider.name || 'AnonymousProvider'
+    }
+
+    /**
+     * Register one or more providers.
+     * Duplicate constructors will be ignored.
+     * 
+     * @param providers 
+     * @returns 
+     */
+    static register (...providers: ProviderCtor[]): void {
+        for (const provider of this.sort(providers)) {
+            const key = this.getKey(provider)
+            this.providers.set(key, provider) // overwrites duplicates
+        }
+    }
+
+    /**
+     * Bulk register providers from an array.
+     * 
+     * @param providers 
+     * @returns 
+     */
+    static registerMany (providers: ProviderCtor[]): void {
+        for (const provider of this.sort(providers)) {
+            const key = this.getKey(provider)
+            this.providers.set(key, provider)
+        }
+    }
+
+    /**
+     * Get all registered providers as an array.
+     *  
+     * @returns 
+     */
+    static setFiltered (filtered: string[]): void {
+        this.filteredProviders = filtered
+    }
+
+    /**
+     * Resolve (instantiate) all providers with the given application or Service Container.
+     * 
+     * @param app 
+     * @returns 
+     */
+    static async resolve (app: Application, useServiceContainer: boolean = false): Promise<ServiceProvider[]> {
+
+        // Remove all filtered service providers 
+        const providers = Array.from(this.providers.values()).filter(e => {
+            return !!e && (this.filteredProviders.length < 1 || !this.filteredProviders.includes(e.name))
+        })
+
+        return await Promise.all(providers.map(async (ProviderClass) => {
+            // Don't bind to the service container if we don't have to
+            const provider = new ProviderClass(app)
+            if (!useServiceContainer) return Promise.resolve(provider)
+
+            // Bind to the service container
+            await new ContainerResolver(app).resolveMethodParams(provider, 'register', app)
+            return provider
+        }))
+    }
+
+    /**
+     * Sort the service providers
+     * 
+     * @param providers 
+     * @returns 
+     */
+    static sort (providers: ProviderCtor[]) {
+        const priorityMap = new Map<string, number>()
+
+        /**
+         * Base priority (default 0)
+         */
+        providers.forEach((Provider) => {
+            const key = this.getKey(Provider)
+            priorityMap.set(`${Provider.name}::${key}`, (Provider as any).priority ?? 0)
+        })
+
+        /**
+         * Handle before/after adjustments
+         */
+        providers.forEach((Provider) => {
+            const order = (Provider as any).order
+            if (!order) return
+
+            const [direction, target] = order.split(':')
+            const targetPriority = priorityMap.get(target) ?? 0
+            const key = this.getKey(Provider)
+
+            if (direction === 'before') {
+                priorityMap.set(`${Provider.name}::${key}`, targetPriority - 1)
+            } else if (direction === 'after') {
+                priorityMap.set(`${Provider.name}::${key}`, targetPriority + 1)
+            }
+        })
+
+        /**
+         * Return service providers sorted based on thier name and priority
+         */
+        return providers.sort(
+            (A, B) => {
+                const keyA = this.getKey(A)
+                const keyB = this.getKey(B)
+                return (priorityMap.get(`${B.name}::${keyB}`) ?? 0) - (priorityMap.get(`${A.name}::${keyA}`) ?? 0)
+            }
+        )
+    }
+
+    /**
+     * Log the service providers in a table
+     * 
+     * @param priorityMap 
+     */
+    static log<P extends ServiceProvider> (providers?: Array<P> | Map<string, P>) {
+        const sorted = Array.from((<any>providers ?? this.providers).values())
+
+        console.table(
+            sorted.map((P: any) => ({
+                Provider: P.name,
+                Priority: P.priority,
+                Order: P.order || 'N/A',
+            }))
+        )
+
+        Logger.log([
+            ['Set', 'white'],
+            ['APP_DEBUG = false', 'bgCyan'],
+            ['in your .env file to hide this information', 'white']
+        ], ' ')
+        console.info('')
+    }
+
+    /**
+     * Get all registered providers as an array.
+     *  
+     * @returns 
+     */
+    static all (): ProviderCtor[] {
+        return Array.from(this.providers.values())
+    }
+
+    /**
+     * Check if a provider is already registered.
+     * 
+     * @param provider 
+     * @returns 
+     */
+    static has (provider: ProviderCtor): boolean {
+        return this.providers.has(this.getKey(provider))
+    }
+}

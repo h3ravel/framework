@@ -18,6 +18,7 @@ export class ConsoleServiceProvider extends ServiceProvider {
      * Indicate that this service provider only runs in console
      */
     public static console = true
+    public console = true
 
     register () {
     }

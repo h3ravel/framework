@@ -2,6 +2,11 @@ import { IApplication } from './IApplication'
 
 export interface IServiceProvider {
     /**
+     * Unique Identifier for service providers
+     */
+    uid?: number;
+
+    /**
      * Sort order
      */
     order?: `before:${string}` | `after:${string}` | string | undefined

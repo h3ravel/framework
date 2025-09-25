@@ -69,13 +69,6 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@h3ravel/cache": "workspace:^",
-    "@h3ravel/config": "workspace:^",
-    "@h3ravel/database": "workspace:^",
-    "@h3ravel/http": "workspace:^",
-    "@h3ravel/mail": "workspace:^",
-    "@h3ravel/queue": "workspace:^",
-    "@h3ravel/router": "workspace:^",
     "@h3ravel/shared": "workspace:^",
     "chalk": "^5.6.2",
     "commander": "^14.0.1",

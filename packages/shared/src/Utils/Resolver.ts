@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import preferredPM from 'preferred-pm'
 
 export class Resolver {
@@ -11,5 +12,18 @@ export class Resolver {
             cmd = 'create'
 
         return `${pm} ${cmd} ${pkg}`
+    }
+
+    /**
+     * Create a hash for a function or an object
+     * 
+     * @param provider 
+     * @returns 
+     */
+    static hashObjectOrFunction (provider: object | ((..._: any[]) => any)): string {
+        return crypto
+            .createHash('sha1')
+            .update(provider.toString())
+            .digest('hex')
     }
 }

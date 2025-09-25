@@ -1,5 +1,6 @@
 import { IContainer } from './IContainer'
 import { IServiceProvider } from './IServiceProvider'
+// import { IServiceProvider } from './IServiceProvider'
 
 export type IPathName =
     | 'views' | 'routes' | 'assets' | 'base' | 'public'
@@ -15,13 +16,13 @@ export interface IApplication extends IContainer {
      * Registers an array of external service provider classes.
      * @param providers - Array of service provider constructor functions.
      */
-    registerProviders (providers: Array<new (app: IApplication) => IServiceProvider>): void;
+    registerProviders (providers: Array<new <A = IApplication, S = IServiceProvider>(app: A) => S>): void;
 
     /**
      * Registers a single service provider.
      * @param provider - The service provider instance to register.
      */
-    register (provider: IServiceProvider): Promise<void>;
+    // register (provider: IServiceProvider): Promise<void>;
 
     /**
      * Boots all registered providers.

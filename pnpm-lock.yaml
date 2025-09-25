@@ -218,30 +218,9 @@ importers:
       '@h3ravel/arquebus':
         specifier: ^0.5.0
         version: 0.5.0(sqlite3@5.1.7)
-      '@h3ravel/cache':
-        specifier: workspace:^
-        version: link:../cache
-      '@h3ravel/config':
-        specifier: workspace:^
-        version: link:../config
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
-      '@h3ravel/database':
-        specifier: workspace:^
-        version: link:../database
-      '@h3ravel/http':
-        specifier: workspace:^
-        version: link:../http
-      '@h3ravel/mail':
-        specifier: workspace:^
-        version: link:../mail
-      '@h3ravel/queue':
-        specifier: workspace:^
-        version: link:../queue
-      '@h3ravel/router':
-        specifier: workspace:^
-        version: link:../router
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
