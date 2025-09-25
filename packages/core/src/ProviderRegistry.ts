@@ -7,6 +7,7 @@ type ProviderCtor = (new (_app: Application) => ServiceProvider) & Partial<Servi
 
 export class ProviderRegistry {
     private static providers = new Map<string, ProviderCtor>()
+    private static priorityMap = new Map<string, number>()
     private static filteredProviders: string[] = []
 
     /**
@@ -38,9 +39,9 @@ export class ProviderRegistry {
      * @returns 
      */
     static register (...providers: ProviderCtor[]): void {
-        for (const provider of this.sort(providers)) {
+        for (const provider of this.sort(providers.concat(...this.providers.values()))) {
             const key = this.getKey(provider)
-            this.providers.set(key, provider) // overwrites duplicates
+            this.providers.set(key, provider)
         }
     }
 
@@ -51,7 +52,7 @@ export class ProviderRegistry {
      * @returns 
      */
     static registerMany (providers: ProviderCtor[]): void {
-        for (const provider of this.sort(providers)) {
+        for (const provider of this.sort(providers.concat(...this.providers.values()))) {
             const key = this.getKey(provider)
             this.providers.set(key, provider)
         }
@@ -97,14 +98,12 @@ export class ProviderRegistry {
      * @returns 
      */
     static sort (providers: ProviderCtor[]) {
-        const priorityMap = new Map<string, number>()
-
         /**
          * Base priority (default 0)
          */
         providers.forEach((Provider) => {
             const key = this.getKey(Provider)
-            priorityMap.set(`${Provider.name}::${key}`, (Provider as any).priority ?? 0)
+            this.priorityMap.set(`${Provider.name}::${key}`, (Provider as any).priority ?? 0)
         })
 
         /**
@@ -115,13 +114,13 @@ export class ProviderRegistry {
             if (!order) return
 
             const [direction, target] = order.split(':')
-            const targetPriority = priorityMap.get(target) ?? 0
+            const targetPriority = this.priorityMap.get(target) ?? 0
             const key = this.getKey(Provider)
 
             if (direction === 'before') {
-                priorityMap.set(`${Provider.name}::${key}`, targetPriority - 1)
+                this.priorityMap.set(`${Provider.name}::${key}`, targetPriority - 1)
             } else if (direction === 'after') {
-                priorityMap.set(`${Provider.name}::${key}`, targetPriority + 1)
+                this.priorityMap.set(`${Provider.name}::${key}`, targetPriority + 1)
             }
         })
 
@@ -132,7 +131,7 @@ export class ProviderRegistry {
             (A, B) => {
                 const keyA = this.getKey(A)
                 const keyB = this.getKey(B)
-                return (priorityMap.get(`${B.name}::${keyB}`) ?? 0) - (priorityMap.get(`${A.name}::${keyA}`) ?? 0)
+                return (this.priorityMap.get(`${B.name}::${keyB}`) ?? 0) - (this.priorityMap.get(`${A.name}::${keyA}`) ?? 0)
             }
         )
     }
@@ -143,13 +142,13 @@ export class ProviderRegistry {
      * @param priorityMap 
      */
     static log<P extends ServiceProvider> (providers?: Array<P> | Map<string, P>) {
-        const sorted = Array.from((<any>providers ?? this.providers).values())
+        const sorted = Array.from(((providers as unknown as P[]) ?? this.providers).values())
 
         console.table(
             sorted.map((P: any) => ({
-                Provider: P.name,
-                Priority: P.priority,
-                Order: P.order || 'N/A',
+                Name: P.constructor.name,
+                Order: P.constructor.order ?? 'N/A',
+                Priority: P.constructor.priority,
             }))
         )
 

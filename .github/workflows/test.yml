@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   check:
-    name: Check Resource Status
+    name: Run Available Tests
     runs-on: ubuntu-latest
 
     steps:
@@ -29,22 +29,18 @@ jobs:
         with:
           version: 10
 
-      # - name: Patch example app package.json
-      #   run: |
-      #     jq '.scripts.prepare = "musket postinstall" | .scripts.postinstall = "build"' \
-      #       examples/basic-app/package.json > tmp.$$.json
-      #     mv tmp.$$.json examples/basic-app/package.json
-      #     cat examples/basic-app/package.json
-
-      - name: Patch example app package.json
+      - name: Install dependencies (skip postinstall)
         run: |
-          jq '.scripts.postinstall = "pnpm ci-postinstall"' \
-            examples/basic-app/package.json > tmp.$$.json
-          mv tmp.$$.json examples/basic-app/package.json
-          cat examples/basic-app/package.json
+          pnpm install --ignore-scripts --frozen-lockfile
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Build Packages
+        run: |
+          pnpm build
+          NODE_ENV=production DIST_DIR=dist pnpm -r --filter './examples/basic-app' build
+
+      - name: Run musket postinstall
+        run: |
+          pnpm -r --filter './examples/*' postinstall
 
       - name: Run tests and generate code coverage
         run: pnpm coverage

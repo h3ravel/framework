@@ -4,4 +4,4 @@ import { Application, ServiceProvider } from '..'
 
 import { IServiceProvider } from '@h3ravel/shared'
 
-export type ServiceProviderConstructor = (new (app: Application) => ServiceProvider) & IServiceProvider;
+export type ServiceProviderConstructor = (new (app: Application) => ServiceProvider) & IServiceProvider; 

@@ -5,6 +5,11 @@ const Inference = class { } as { new(): IServiceProvider }
 
 export abstract class ServiceProvider extends Inference {
     /**
+     * The current app instance
+     */
+    protected app: Application
+
+    /**
      * Unique Identifier for the service providers
      */
     public static uid?: number
@@ -29,8 +34,6 @@ export abstract class ServiceProvider extends Inference {
      * List of registered console commands
      */
     public registeredCommands?: (new (app: any, kernel: any) => any)[]
-
-    protected app: Application
 
     constructor(app: Application) {
         super()
