@@ -79,7 +79,8 @@ export class ConsoleCommand {
     }
 
     option (key: string, def?: any) {
-        return this.input.options[key] ?? def
+        const option = this.input.options[key] ?? def
+        return option === 'null' || option === 'undefined' ? undefined : option
     }
 
     options (key?: string) {

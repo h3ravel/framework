@@ -50,6 +50,7 @@ export default () => {
 
         links: {
             [public_path('storage')]: storage_path('app/public'),
+            [public_path('music')]: storage_path('app/public'),
         },
     }
 }

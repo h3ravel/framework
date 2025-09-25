@@ -32,7 +32,11 @@ export class PathLoader {
 
         path = path.replace('/src/', `/${process.env.DIST_DIR ?? 'src'}/`.replace(/([^:]\/)\/+/g, '$1'))
 
-        return path
+        if (name === 'public') {
+            path = path.replace('/public', process.env.DIST_DIR ?? '/.h3ravel/serve')
+        }
+
+        return nodepath.normalize(path)
     }
 
     /**
