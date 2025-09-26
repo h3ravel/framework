@@ -103,7 +103,7 @@ export class Router implements IRouter {
         if (typeof handler === 'function' && typeof (handler as any).prototype !== 'undefined') {
             return async (ctx) => {
                 let controller: IController
-                if (Container.hasAnyDecorator(handler)) {
+                if (Container.hasAnyDecorator(handler as any)) {
                     /**
                      * If the controller is decorated use the IoC container
                      */
@@ -371,12 +371,18 @@ export class Router implements IRouter {
      * @param handler - The middleware handler.
      * @param opts - Optional middleware options.
      */
-    middleware (path: string | IMiddleware[], handler: Middleware, opts?: MiddlewareOptions) {
-        if (typeof path === 'string') {
-            this.h3App.use(path, handler, opts)
-        } else {
+    middleware (path: string | IMiddleware[] | Middleware, handler: Middleware | MiddlewareOptions, opts?: MiddlewareOptions) {
+        opts = typeof handler === 'object' ? handler : (typeof opts === 'function' ? opts : {})
+        handler = typeof path === 'function' ? path : (typeof handler === 'function' ? handler : () => { })
+
+        if (Array.isArray(path)) {
             this.middlewareMap.concat(path)
+        } else if (typeof path === 'function') {
+            this.h3App.use('/', () => { }).use(path)
+        } else {
+            this.h3App.use(path, handler, opts)
         }
+
         return this
     }
 }

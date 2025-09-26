@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/core",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "description": "Core application container, lifecycle management and service providers for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -49,6 +49,7 @@
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests",
+    "version-patch": "pnpm version patch",
     "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump core package version\" && pnpm publish --tag latest"
   },
   "dependencies": {

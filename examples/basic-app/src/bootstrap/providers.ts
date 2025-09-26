@@ -1,6 +1,5 @@
-import { Application } from '@h3ravel/core'
+import { Application, ServiceProvider } from '@h3ravel/core'
 import { HttpServiceProvider } from '@h3ravel/http'
-import { IServiceProvider } from '@h3ravel/shared'
 import { RouteServiceProvider, AssetsServiceProvider } from '@h3ravel/router'
 import { DatabaseServiceProvider } from '@h3ravel/database'
 import { CacheServiceProvider } from '@h3ravel/cache'
@@ -16,7 +15,7 @@ import { AppServiceProvider } from 'src/app/Providers/AppServiceProvider'
  * Service provider names should be unique as duplicates might be filtered out
  * including custom providers matching core provider names
  */
-export default <Array<new (_app: Application) => IServiceProvider>>[
+export default <Array<new (_app: Application) => ServiceProvider>>[
     HttpServiceProvider,
     ConfigServiceProvider,
     RouteServiceProvider,

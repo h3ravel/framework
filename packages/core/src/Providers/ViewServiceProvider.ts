@@ -12,7 +12,6 @@ export class ViewServiceProvider extends ServiceProvider {
 
         edge.mount(this.app.getPath('views'))
 
-        edge.global('asset', this.app.make('asset'))
         edge.global('config', config.get)
         edge.global('app', this.app)
 

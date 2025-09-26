@@ -22,11 +22,28 @@ declare global {
     function env (): NodeJS.ProcessEnv;
     function env<T extends string> (key: T, def?: any): any;
 
+    /**
+     * Load config option
+     */
     function config<X extends Record<string, any>> (): X;
     function config<X extends Record<string, any>, T extends Extract<keyof X, string>> (key: T, def?: any): X[T];
     function config<T extends Record<string, any>> (key: T): void;
 
+    /**
+     * Render a view
+     * 
+     * @param viewPath 
+     * @param params 
+     */
     function view (viewPath: string, params?: Record<string, any> | undefined): Promise<string>
+
+    /**
+     * Get static asset
+     * 
+     * @param asset Name of the asset to serve
+     * @param def Default asset to serve if asset does not exist 
+     */
+    function asset (asset: string, def: string): string
 
     /**
      * Get app path

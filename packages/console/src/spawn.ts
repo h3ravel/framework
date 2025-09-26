@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import musket from './IO/app'
+import zero from './IO/zero'
 
-new musket().spawn()
+new zero().spawn()
 

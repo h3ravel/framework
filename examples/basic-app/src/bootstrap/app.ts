@@ -9,10 +9,7 @@ export default class {
     async bootstrap () {
         const app = new Application(process.cwd())
 
-        app.registerProviders(providers)
-
-        await app.registerConfiguredProviders()
-        await app.boot()
+        await app.quickStartup(providers)
 
         const h3App = app.make('http.app')
 

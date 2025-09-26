@@ -1,20 +1,5 @@
 export default () => {
     return {
-
-        /*
-        |--------------------------------------------------------------------------
-        | Public Mask
-        |--------------------------------------------------------------------------
-        |
-        | Because of our current setup, we cannot serve static assets directly from
-        | the root path of our app, (Attempting to serve /logo.png will break the /
-        | route) because of this, static assets in the public directory will be
-        | served from a masked path.
-        |
-        */
-
-        public_mask: 'assets',
-
         /*
         |--------------------------------------------------------------------------
         | Filesystem Disks

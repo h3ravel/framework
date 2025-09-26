@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/queue",
-  "version": "11.0.2",
+  "version": "11.0.3",
   "description": "Job queues, workers and broadcasting support system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -41,7 +41,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^"

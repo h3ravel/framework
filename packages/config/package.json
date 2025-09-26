@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/config",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "Environment/config loading and management system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -41,7 +41,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "version-patch": "pnpm version patch"
   },
   "dependencies": {
     "@h3ravel/shared": "workspace:^",

@@ -107,7 +107,8 @@ export interface IRouter {
      * @param handler - The middleware handler.
      * @param opts - Optional middleware options.
      */
-    middleware (path: string | IMiddleware[], handler: Middleware, opts?: MiddlewareOptions): this;
+    middleware (path: Middleware, opts?: Middleware | MiddlewareOptions): this
+    middleware (path: string | IMiddleware[] | Middleware, handler: Middleware | MiddlewareOptions, opts?: MiddlewareOptions): this;
 }
 
 /**

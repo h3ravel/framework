@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/router",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -41,7 +41,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "version-patch": "pnpm version patch"
   },
   "dependencies": {
     "@h3ravel/core": "workspace:^",
