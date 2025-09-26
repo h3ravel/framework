@@ -24,7 +24,7 @@ export const mainTsconfig = {
     emitDecoratorMetadata: true
   },
   include: ['./**/*.d.ts', './../**/*'],
-  exclude: ['./dist', './node_modules']
+  exclude: ['./dist', '../public', './node_modules']
 }
 
 export const baseTsconfig = {
