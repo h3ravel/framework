@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/filesystem",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Filesystem manager for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
