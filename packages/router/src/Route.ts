@@ -7,13 +7,7 @@ import { HttpContext, RouteEventHandler } from '@h3ravel/shared'
 import type { EventHandler, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
 import { Helpers } from './Helpers'
 import { Model } from '@h3ravel/database'
-
-interface RouteDefinition {
-    method: string
-    path: string
-    name?: string
-    handler: EventHandler
-}
+import { RouteDefinition, RouteMethod } from './Contracts/Router'
 
 export class Router implements IRouter {
     private routes: RouteDefinition[] = []
@@ -53,11 +47,12 @@ export class Router implements IRouter {
      * @param middleware 
      */
     private addRoute (
-        method: string,
+        method: RouteMethod,
         path: string,
         handler: EventHandler,
         name?: string,
-        middleware: IMiddleware[] = []
+        middleware: IMiddleware[] = [],
+        signature: RouteDefinition['signature'] = ['', '']
     ) {
         /**
          * Join all defined route names to make a single route name
@@ -74,8 +69,9 @@ export class Router implements IRouter {
         }
 
         const fullPath = `${this.groupPrefix}${path}`.replace(/\/+/g, '/')
-        this.routes.push({ method, path: fullPath, name, handler })
+        this.routes.push({ method, path: fullPath, name, handler, signature })
         this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
+        this.app.singleton<any>('routes', () => this.routes)
     }
 
     /**
@@ -195,7 +191,7 @@ export class Router implements IRouter {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
 
-        this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
+        this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
         return this
     }
 
@@ -217,7 +213,8 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
+
+        this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
         return this
     }
 
@@ -239,7 +236,7 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
+        this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
         return this
     }
 
@@ -261,7 +258,7 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('patch', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
+        this.addRoute('patch', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
         return this
     }
 
@@ -283,7 +280,7 @@ export class Router implements IRouter {
     ): Omit<this, RouterEnd> {
         const handler = Array.isArray(definition) ? definition[0] : definition
         const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware)
+        this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
         return this
     }
 

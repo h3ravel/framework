@@ -1,3 +1,4 @@
+import { RouteListCommand } from '../Commands/RouteListCommand'
 import { Router } from '../Route'
 import { ServiceProvider } from '@h3ravel/core'
 import path from 'node:path'
@@ -20,6 +21,7 @@ export class RouteServiceProvider extends ServiceProvider {
             const h3App = this.app.make('http.app')
             return new Router(h3App, this.app)
         })
+        this.commands([RouteListCommand])
     }
 
     /**

@@ -1,0 +1,102 @@
+import { RouteDefinition, RouteMethod } from '../Contracts/Router'
+
+import { ConsoleCommand } from '@h3ravel/core'
+import { Logger } from '@h3ravel/shared'
+import { LoggerChalk } from '@/packages/shared/dist'
+
+export class RouteListCommand extends ConsoleCommand {
+
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected signature: string = `#route:
+        {list : List all registered routes. 
+            | {--json : Output the route list as JSON}
+            | {--r|reverse : Reverse the ordering of the routes}
+        }
+    `
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected description: string = 'List all registered routes.'
+
+    /**
+     * Execute the console command.
+     */
+    public async handle (this: any) {
+        console.log('')
+        const command = (this.dictionary.baseCommand ?? this.dictionary.name)
+
+        await this[command]()
+    }
+
+    /**
+     * List all registered routes.
+     */
+    protected async list () {
+        const list = [...(this.app.make<any>('routes') as RouteDefinition[])].sort((a, b) => {
+            if (a.path === '/' && b.path !== '/') return -1
+            if (b.path === '/' && a.path !== '/') return 1
+            return a.path.localeCompare(b.path)
+        })
+
+
+        list.forEach(route => {
+            const path = route.path === '/'
+                ? route.path
+                : Logger.log((route.path.slice(1)).split('/').map(e => [
+                    (e.includes(':') ? Logger.log('/', 'white', false) : '') + e,
+                    e.startsWith(':') ? 'yellow' : 'white'
+                ] as [string, LoggerChalk]), '', false)
+
+            const method = (route.method.startsWith('/') ? route.method.slice(1) : route.method).toUpperCase() as RouteMethod
+            const name = route.signature[1] ? [route.name ?? '', route.name ? '›' : '', route.signature.join('@')].join(' ') : ''
+
+            const desc = Logger.describe(
+                Logger.log(Logger.log(method + this.pair(method), this.color(method), false), 'green', false), path, 15, false
+            )
+            return Logger.twoColumnLog(desc.join(''), name)
+        })
+    }
+
+    /**
+     * Get the color
+     * 
+     * @param method 
+     * @returns 
+     */
+    private color (method: RouteMethod): LoggerChalk {
+        switch (method.toLowerCase()) {
+            case 'get':
+                return 'blue'
+            case 'head':
+                return 'gray'
+            case 'delete':
+                return 'red'
+            default:
+                return 'yellow'
+        }
+    }
+
+    /**
+     * Get the alternate method
+     * 
+     * @param method 
+     * @returns 
+     */
+    private pair (method: RouteMethod) {
+        switch (method.toLowerCase()) {
+            case 'get':
+                return '|HEAD'
+            case 'put':
+                return '|PATCH'
+            default:
+                return ''
+        }
+    }
+}
