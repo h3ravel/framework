@@ -11,7 +11,7 @@
     "start": "DIST_DIR=dist node -r source-map-support/register dist/server.js",
     "lint": "eslint . --ext .ts",
     "mosket": "node node_modules/@h3ravel/console/bin/fire",
-    "postinstall": "spawn"
+    "postinstall": "npx spawn"
   },
   "dependencies": {
     "@h3ravel/arquebus": "^0.5.0",
