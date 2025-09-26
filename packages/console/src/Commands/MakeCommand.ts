@@ -59,7 +59,7 @@ export class MakeCommand extends Command {
      */
     protected description: string = 'Generate component classes'
 
-    public async handle () {
+    public async handle (this: any) {
         const command = (this.dictionary.baseCommand ?? this.dictionary.name) as never
 
         if (!this.argument('name')) {
@@ -77,11 +77,7 @@ export class MakeCommand extends Command {
             command: 'makeCommand',
         } as const
 
-        try {
-            await (this as any)?.[methods[command]]()
-        } catch (e) {
-            Logger.error(e as any)
-        }
+        await this[methods[command]]()
     }
 
     /**
