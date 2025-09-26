@@ -1,4 +1,4 @@
-import { Command } from "@h3ravel/console";
+import { Command } from '@h3ravel/console'
 
 export class ExampleCommand extends Command {
 
@@ -10,14 +10,14 @@ export class ExampleCommand extends Command {
     protected signature: string = `example
         {name : Name of the example.}
         {--d|debug : Show debug info}
-    `;
+    `
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected description: string = 'An example command';
+    protected description: string = 'An example command'
 
     public async handle () {
         const name = this.argument('name')

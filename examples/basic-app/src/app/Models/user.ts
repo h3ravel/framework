@@ -1,3 +1,3 @@
-import { Model } from "@h3ravel/database";
+import { Model } from '@h3ravel/database'
 
-export class User extends Model { protected table: string | null = 'users'; }
+export class User extends Model { protected table: string | null = 'users' }

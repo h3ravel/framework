@@ -16,8 +16,6 @@ export class AssetsServiceProvider extends ServiceProvider {
 
     register () {
         const app = this.app.make('router')
-        const config = this.app.make('config')
-        const fsconfig = config.get('filesystem')
         const publicPath = this.app.getPath('public')
 
         /**
