@@ -38,6 +38,9 @@
     "publish": "pnpm patch-all && pnpm -r publish --access public",
     "patch-all": "pnpm build && pnpm -r version patch"
   },
+  "publishConfig": {
+    "access": "restricted"
+  },
   "devDependencies": {
     "@aws-sdk/client-sesv2": "^3.893.0",
     "@changesets/cli": "^2.29.7",
