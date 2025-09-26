@@ -24,7 +24,23 @@ export const mainTsconfig = {
     emitDecoratorMetadata: true
   },
   include: ['./**/*.d.ts', './../**/*'],
-  exclude: ['./dist', '../public', './node_modules']
+  exclude: [
+    '.',
+    './../**/console/bin',
+    './../dist',
+    './../**/dist',
+    './../**/node_modules',
+    './../.node_modules',
+    './../**/node_modules/*',
+    './../**/public',
+    './../public',
+    './../**/storage',
+    './../storage',
+    './../**coverage**',
+    './../eslint.config.js',
+    './../jest.config.ts',
+    './../arquebus.config.js'
+  ]
 }
 
 export const baseTsconfig = {

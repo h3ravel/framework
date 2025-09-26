@@ -9,5 +9,5 @@ fetch('/h3ravel-logo.svg')
       background-size: contain;
       background-position: center center;
       background-repeat: no-repeat;
-    `, 'H3ravel - Welcome to the future of web frameworks!')
+    `, 'H3ravel - The web framework that masks your fears!')
   })
