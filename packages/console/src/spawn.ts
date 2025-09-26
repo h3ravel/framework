@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { FileSystem } from '@h3ravel/shared'
 import { execa } from 'execa'
 import { join } from 'node:path'
 import preferredPM from 'preferred-pm'
@@ -7,6 +8,8 @@ import preferredPM from 'preferred-pm'
 const build = async () => {
     const pm = (await preferredPM(process.cwd()))?.name ?? 'npm'
     const outDir = join(process.env.DIST_DIR ?? '.h3ravel/serve')
+
+    if (await FileSystem.fileExists(outDir)) return
 
     const ENV_VARS = {
         EXTENDED_DEBUG: 'false',
