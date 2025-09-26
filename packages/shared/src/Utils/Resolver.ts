@@ -2,7 +2,23 @@ import crypto from 'crypto'
 import preferredPM from 'preferred-pm'
 
 export class Resolver {
-    static async getPakageInstallCommand (pkg: string) {
+    static async getPakageInstallCommand (pkg?: string) {
+        const pm = (await preferredPM(process.cwd()))?.name ?? 'pnpm'
+
+        let cmd = 'install '
+
+        if (!pkg) {
+            if (pm === 'npm' || pm === 'pnpm' || pm === 'bun')
+                cmd = 'install'
+            else
+                cmd = ''
+        } else if (pm === 'yarn' || pm === 'pnpm' || pm === 'bun')
+            cmd = 'add '
+
+        return `${pm} ${cmd}${pkg ?? ''}`
+    }
+
+    static async getInstallCommand (pkg: string) {
         const pm = (await preferredPM(process.cwd()))?.name ?? 'pnpm'
 
         let cmd = 'install'
@@ -13,6 +29,7 @@ export class Resolver {
 
         return `${pm} ${cmd} ${pkg}`
     }
+
 
     /**
      * Create a hash for a function or an object
