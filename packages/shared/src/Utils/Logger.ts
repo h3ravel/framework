@@ -15,7 +15,7 @@ export class Logger {
     static twoColumnLog (name: string, value: string, log = true, spacer = '.'): [string, string, string] | void {
         // eslint-disable-next-line no-control-regex
         const regex = /\x1b\[\d+m/g
-        const width = Math.min(process.stdout.columns, 100)
+        const width = Math.max(process.stdout.columns, 100)
         const dots = Math.max(width - name.replace(regex, '').length - value.replace(regex, '').length - 10, 0)
 
         if (log) return console.log(name, chalk.gray(spacer.repeat(dots)), value)

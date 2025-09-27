@@ -63,6 +63,7 @@ export const baseConfig: Options = {
         'edge.js',
         'nodemailer',
         'typescript',
+        /^@h3ravel\/.*/gi,
         /^node:.*/gi,
         /.*\/promises$/gi,
         'fs-readdir-recursive',

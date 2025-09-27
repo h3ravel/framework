@@ -4,18 +4,37 @@ import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
 
 export default defineConfig(
+  {
+    languageOptions: {
+      parserOptions: {
+        // eslint-disable-next-line no-undef
+        tsconfigRootDir: process.cwd()
+      },
+    },
+  },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   [
     globalIgnores([
       'bin/**',
+      '**/bin',
+      '**/bin/**',
       'dist/**',
+      '**/dist',
+      '**/dist/**',
+      'public/**',
+      '**/public',
+      '**/public/**',
+      '.h3ravel/**',
+      '**/.h3ravel',
+      '**/.h3ravel/**',
+      'node_modules/**',
+
       '**/bin',
       '**/dist',
-      '**/bin/**',
-      '**/dist/**',
-      'public/**/*.js',
-      'node_modules/**'
+      '**/public',
+      '**/.h3ravel',
+      '**/node_modules'
     ])
   ],
   {

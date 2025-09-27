@@ -42,7 +42,7 @@ export class MigrateCommand extends ConsoleCommand {
     /**
      * Execute the console command.
      */
-    public async handle () {
+    public async handle (this: any) {
         const command = (this.dictionary.name ?? this.dictionary.baseCommand) as never
 
         this.connection = Object.entries(arquebusConfig(config('database')))
@@ -65,7 +65,7 @@ export class MigrateCommand extends ConsoleCommand {
             publish: 'migratePublish',
         } as const
 
-        await (this as any)?.[methods[command]]()
+        await this[methods[command]]()
     }
 
     /**

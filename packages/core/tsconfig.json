@@ -1,11 +1,8 @@
 {
-  "extends": "../shared/tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "dist",
-    "types": ["./src/app.globals"],
-    "paths": {
-      "@h3ravel/core": ["./src/index.ts"]
-    }
+    "types": ["./src/app.globals"]
   },
   "exclude": ["dist", "node_modules"]
 }

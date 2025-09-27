@@ -16,6 +16,10 @@ export const TsDownConfig: Options = {
     format: ['esm'],//, 'cjs'],
     target: 'node22',
     sourcemap: env === 'development',
+    minify: !!process.env.DIST_MINIFY,
+    external: [
+        /^@h3ravel\/.*/gi,
+    ],
     clean: true,
     shims: true,
     copy: [{ from: 'public', to: outDir }, 'src/resources', 'src/database'],

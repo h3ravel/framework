@@ -30,6 +30,10 @@ export class MakeCommand extends Command {
             | {--t|table : The table to migrate} 
             | {--c|create : The table to be created} 
         }
+        {command : Create a new Musket command. 
+            | {--command : The terminal command that will be used to invoke the class} 
+            | {--force : Create the class even if the console command already exists}
+        }
         {factory : Create a new model factory.}
         {seeder : Create a new seeder class.}
         {view : Create a new view.
@@ -55,7 +59,7 @@ export class MakeCommand extends Command {
      */
     protected description: string = 'Generate component classes'
 
-    public async handle () {
+    public async handle (this: any) {
         const command = (this.dictionary.baseCommand ?? this.dictionary.name) as never
 
         if (!this.argument('name')) {
@@ -70,13 +74,10 @@ export class MakeCommand extends Command {
             seeder: 'makeSeeder',
             model: 'makeModel',
             view: 'makeView',
+            command: 'makeCommand',
         } as const
 
-        try {
-            await (this as any)?.[methods[command]]()
-        } catch (e) {
-            Logger.error(e as any)
-        }
+        await this[methods[command]]()
     }
 
     /**
@@ -155,6 +156,13 @@ export class MakeCommand extends Command {
      */
     protected makeFactory () {
         Logger.success('Factory support is not yet available')
+    }
+
+    /**
+     * Create a new Musket command
+     */
+    protected makeCommand () {
+        Logger.success('Musket command creation is not yet available')
     }
 
     /**

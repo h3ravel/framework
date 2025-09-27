@@ -16,4 +16,8 @@ export class CoreServiceProvider extends ServiceProvider {
 
     register () {
     }
+
+    boot (): void | Promise<void> {
+        globalThis.asset = this.app.make('asset')
+    }
 }

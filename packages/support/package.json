@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/support",
-  "version": "0.10.1",
+  "version": "0.10.3",
   "description": "Shared helpers, facades and utilities for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -41,7 +41,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "version-patch": "pnpm version patch"
   },
   "devDependencies": {
     "typescript": "^5.4.0",

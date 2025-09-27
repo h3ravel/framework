@@ -1,6 +1,5 @@
 import type { Application } from './Application'
 import { ContainerResolver } from '../src/Di/ContainerResolver'
-import { Logger } from '@h3ravel/shared'
 import { ServiceProvider } from './ServiceProvider'
 
 type ProviderCtor = (new (_app: Application) => ServiceProvider) & Partial<ServiceProvider>
@@ -152,11 +151,6 @@ export class ProviderRegistry {
             }))
         )
 
-        Logger.log([
-            ['Set', 'white'],
-            ['APP_DEBUG = false', 'bgCyan'],
-            ['in your .env file to hide this information', 'white']
-        ], ' ')
         console.info('')
     }
 

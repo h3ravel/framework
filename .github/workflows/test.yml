@@ -36,11 +36,11 @@ jobs:
       - name: Build Packages
         run: |
           pnpm build
-          NODE_ENV=production DIST_DIR=dist pnpm -r --filter './examples/basic-app' build
+          NODE_ENV=production DIST_DIR=dist pnpm -r --workspace-concurrency=1 --filter './examples/*' run build
 
       - name: Run musket postinstall
         run: |
-          pnpm -r --filter './examples/*' postinstall
+          pnpm -r --workspace-concurrency=1 --filter './examples/*' run postinstall
 
       - name: Run tests and generate code coverage
         run: pnpm coverage

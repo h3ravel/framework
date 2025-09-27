@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
@@ -16,26 +15,16 @@
       "@h3ravel/support": ["packages/support/src/index.ts"],
       "@h3ravel/shared": ["packages/shared/src/index.ts"],
       "@h3ravel/filesystem": ["packages/filesystem/src/index.ts"]
-    }
-  },
-  "exclude": [
-    "./**/console/bin",
-    "./dist",
-    "./**/dist",
-    "./**/node_modules",
-    "/.node_modules",
-    "./**/node_modules/*",
-    "./**/public",
-    "./public",
-    "./**/storage",
-    "./storage",
-    "./storage",
-    "**coverage**",
-    "eslint.config.js",
-    "jest.config.ts",
-    "arquebus.config.js"
-  ],
-  "ts-node": {
-    "require": ["tsconfig-paths/register"]
+    },
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "target": "es2022",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "esModuleInterop": true,
+    "strict": true,
+    "allowJs": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   }
 }

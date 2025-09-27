@@ -1,5 +1,5 @@
 import { FileSystem, Logger } from '@h3ravel/shared'
-import { rm, symlink } from 'fs/promises'
+import { rm, symlink, unlink } from 'fs/promises'
 
 import { ConsoleCommand } from '@h3ravel/core'
 
@@ -10,10 +10,14 @@ export class StorageLinkCommand extends ConsoleCommand {
      *
      * @var string
      */
-    protected signature: string = `storage:link
-        {--r|relative : Create the symbolic link using relative paths}
-        {--force : Recreate existing symbolic links}
+    protected signature: string = `#storage:
+        {link : Create the symbolic links configured for the application. 
+            | {--r|relative : Create the symbolic link using relative paths}
+            | {--force : Recreate existing symbolic links}
+        }
+        {unlink : Delete existing symbolic links configured for the application.}
     `
+
     /**
      * The console command description.
      *
@@ -24,8 +28,17 @@ export class StorageLinkCommand extends ConsoleCommand {
     /**
      * Execute the console command.
      */
-    public async handle () {
+    public async handle (this: any) {
         console.log('')
+        const command = (this.dictionary.baseCommand ?? this.dictionary.name)
+
+        await this[command]()
+    }
+
+    /**
+     * Create the symbolic links configured for the application.
+     */
+    public async link () {
         const links = config('filesystem.links')
 
         for (const key in links) {
@@ -43,10 +56,12 @@ export class StorageLinkCommand extends ConsoleCommand {
                 continue
             } else if (force) {
                 await rm(newPath, { recursive: true, force: true })
-                await symlink(existingPath, newPath)
-            } else {
-                await symlink(existingPath, newPath)
             }
+
+            /**
+             * Create the symlink
+             */
+            await symlink(existingPath, newPath)
 
             Logger.log([
                 [' INFO ', 'bgBlue'],
@@ -56,6 +71,31 @@ export class StorageLinkCommand extends ConsoleCommand {
                 [`[${existingPath.replace(process.cwd(), '')}]`, 'bold'],
                 ['.\n', 'white']
             ], '')
+        }
+    }
+
+    /**
+     * Delete existing symbolic links configured for the application.
+     */
+    public async unlink () {
+        const links = config('filesystem.links')
+
+        for (const path in links) {
+            if (await FileSystem.fileExists(path)) {
+                /**
+                 * Remove the symlink
+                 */
+                await unlink(path)
+
+                Logger.log([
+                    [' INFO ', 'bgBlue'],
+                    [' The ', 'white'],
+                    [`[${path.replace(process.cwd(), '')}] `, 'bold'],
+                    ['link has been deleted', 'white'],
+                    ['.\n', 'white']
+                ], '')
+
+            }
         }
     }
 }

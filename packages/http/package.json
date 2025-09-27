@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/http",
-  "version": "11.2.2",
+  "version": "11.3.1",
   "description": "HTTP kernel, middleware pipeline, request/response classes for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -41,7 +41,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "version-patch": "pnpm version patch"
   },
   "dependencies": {
     "@h3ravel/support": "workspace:^",

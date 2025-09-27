@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/mail",
-  "version": "11.0.2",
+  "version": "11.0.4",
   "description": "Mail drivers and templates system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -31,7 +31,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests"
+    "test": "jest --passWithNoTests",
+    "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^"
