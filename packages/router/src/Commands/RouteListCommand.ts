@@ -39,13 +39,19 @@ export class RouteListCommand extends ConsoleCommand {
      * List all registered routes.
      */
     protected async list () {
+        /**
+         * Sort the routes alphabetically
+         */
         const list = [...(this.app.make<any>('routes') as RouteDefinition[])].sort((a, b) => {
             if (a.path === '/' && b.path !== '/') return -1
             if (b.path === '/' && a.path !== '/') return 1
             return a.path.localeCompare(b.path)
-        })
+        }).filter(e => !['head', 'patch'].includes(e.method))
 
 
+        /**
+         * Log the route list
+         */
         list.forEach(route => {
             const path = route.path === '/'
                 ? route.path
@@ -92,9 +98,9 @@ export class RouteListCommand extends ConsoleCommand {
     private pair (method: RouteMethod) {
         switch (method.toLowerCase()) {
             case 'get':
-                return '|HEAD'
+                return Logger.log('|', 'gray', false) + Logger.log('HEAD', this.color('head'), false)
             case 'put':
-                return '|PATCH'
+                return Logger.log('|', 'gray', false) + Logger.log('PATCH', this.color('patch'), false)
             default:
                 return ''
         }
