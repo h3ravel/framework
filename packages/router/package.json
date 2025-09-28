@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/router",
-  "version": "1.10.1",
+  "version": "1.10.2",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
