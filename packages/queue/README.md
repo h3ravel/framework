@@ -41,3 +41,31 @@ The H3ravel framework is open-sourced software licensed under the [MIT license](
 [lini]: https://img.shields.io/github/license/h3ravel/framework
 [tel]: https://github.com/h3ravel/framework/actions/workflows/test.yml
 [tei]: https://github.com/h3ravel/framework/actions/workflows/test.yml/badge.svg
+
+
+# Queue Package
+
+This package provides background job processing with multiple drivers. Inspired by Laravel queues.
+
+## Features
+- Dispatch jobs to different drivers (memory, database, redis stub).
+- Worker processes jobs and supports retry/backoff.
+- Familiar developer experience with some unique twists.
+
+## Usage
+
+### Creating a Job
+```ts
+import { JobContract } from "@h3ravel/queue";
+
+export class SendEmailJob implements JobContract {
+  constructor(private email: string) {}
+
+  async handle() {
+    console.log(`Sending email to ${this.email}`);
+  }
+
+  serialize() {
+    return { email: this.email };
+  }
+}
