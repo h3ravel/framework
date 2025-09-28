@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/shared",
-  "version": "0.20.10",
+  "version": "0.20.11",
   "description": "Shared Utilities.",
   "type": "module",
   "main": "./dist/index.js",
