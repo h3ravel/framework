@@ -43,12 +43,12 @@ npx musket make:model User --force
 - Model class names should be descriptive and meaningful
 
 ```bash
-# ✅ Good naming
+# Good naming
 npx musket make:model User
 npx musket make:model BlogPost  
 npx musket make:model OrderItem
 
-# ❌ Avoid
+# Avoid
 npx musket make:model users      # Should be singular
 npx musket make:model user       # Should be PascalCase
 npx musket make:model Data       # Too generic
@@ -401,7 +401,7 @@ export default class User extends Model {
 ### Model Organization
 
 ```bash
-# ✅ Logical grouping
+# Logical grouping
 src/app/Models/
 ├── User/
 │   ├── user.ts
@@ -420,7 +420,7 @@ src/app/Models/
 ### Naming Consistency
 
 ```typescript
-// ✅ Good practices
+// Good practices
 export default class User extends Model {
     protected table = 'users'           // Plural table name
     protected primaryKey = 'id'         // Clear primary key
