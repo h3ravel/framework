@@ -1,5 +1,7 @@
 import * as Time from '../src/Helpers/Time'
 
+import { describe, expect, test } from 'vitest'
+
 describe('Time helpers', () => {
   test('now/unix monotonicity', () => {
     const a = Time.now()
@@ -37,8 +39,8 @@ describe('Time helpers', () => {
     const origM = Date.prototype.getMinutes
     Date.prototype.getHours = function () { return 14 }
     Date.prototype.getMinutes = function () { return 30 }
-    expect(Time.isBetween('14:00','15:00')).toBe(true)
-    expect(Time.isBetween('15:00','16:00')).toBe(false)
+    expect(Time.isBetween('14:00', '15:00')).toBe(true)
+    expect(Time.isBetween('15:00', '16:00')).toBe(false)
     Date.prototype.getHours = origH
     Date.prototype.getMinutes = origM
     expect(Time.dayOfYear(new Date('2023-01-01'))).toBe(1)

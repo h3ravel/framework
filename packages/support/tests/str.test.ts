@@ -1,4 +1,5 @@
-import { after, afterLast, before, beforeLast, capitalize, pluralize, singularize, slugify, subString, substitute, truncate, substr, sub, esc, padString, split, chop, isNumber, isInteger, rot, replacePunctuation, translate, ss, firstLines, lastLines } from '../src/Helpers/Str'
+import { after, afterLast, before, beforeLast, capitalize, chop, esc, firstLines, isInteger, isNumber, lastLines, padString, pluralize, replacePunctuation, rot, singularize, slugify, split, ss, sub, subString, substitute, substr, translate, truncate } from '../src/Helpers/Str'
+import { describe, expect, test } from 'vitest'
 
 describe('Str helpers', () => {
   test('after/afterLast/before/beforeLast', () => {
@@ -28,7 +29,7 @@ describe('Str helpers', () => {
   test('pad/split/chop/number checks/rot', () => {
     expect(padString('1', 3, '0')).toBe('100')
     expect(padString('1', 3, '0', false)).toBe('001')
-    expect(split('a,b,c', ',')).toEqual(['a','b','c'])
+    expect(split('a,b,c', ',')).toEqual(['a', 'b', 'c'])
     expect(split(',a,b,', ',')).toEqual([''])
     expect(chop('abc')).toBe('ab')
     expect(isNumber('12.3')).toBe(true)
@@ -40,7 +41,7 @@ describe('Str helpers', () => {
   test('replace/translate/strip slashes/first-last lines', () => {
     expect(replacePunctuation('hello...', '!')).toBe('hello!')
     expect(translate('hello world', { 'world': 'earth' })).toBe('hello earth')
-    expect(translate('foo bar baz', [['foo','f'], ['bar','b']])).toBe('f b baz')
+    expect(translate('foo bar baz', [['foo', 'f'], ['bar', 'b']])).toBe('f b baz')
     expect(ss('a\\/b')).toBe('a/b')
     const text = 'l1\nl2\nl3\nl4'
     expect(firstLines(text, 2)).toBe('l1\nl2')

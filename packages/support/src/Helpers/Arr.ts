@@ -77,6 +77,9 @@ export const last = <T> (arr: T[]): [T, T[]] => {
 /** Check if array is empty. */
 export const isEmpty = <T> (arr: T[]): boolean => arr.length === 0
 
+/** Check if array is empty. */
+export const isNotEmpty = <T> (arr: T[]): boolean => arr.length > 0
+
 /** Pop the element off the end of array. */
 export const pop = <T> (arr: T[]): T[] => arr.slice(0, -1)
 

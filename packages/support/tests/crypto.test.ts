@@ -1,5 +1,7 @@
 import * as Crypto from '../src/Helpers/Crypto'
 
+import { describe, expect, test } from 'vitest'
+
 describe('Crypto helpers', () => {
   test('uuid format', () => {
     const id = Crypto.uuid()
@@ -14,7 +16,7 @@ describe('Crypto helpers', () => {
   test('hash/hmac/base64/xor', () => {
     const h = Crypto.hash('hello')
     expect(h).toHaveLength(64)
-    const hm = Crypto.hmac('data','key')
+    const hm = Crypto.hmac('data', 'key')
     expect(hm).toHaveLength(64)
     const b64 = Crypto.base64Encode('hi')
     expect(Crypto.base64Decode(b64)).toBe('hi')
