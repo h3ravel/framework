@@ -3,6 +3,31 @@ import { LoggerChalk, LoggerLog, LoggerParseSignature } from '../Contracts/Utils
 
 export class Logger {
     /**
+     * Global verbosity configuration
+     */
+    private static verbosity: number = 0
+    private static isQuiet: boolean = false
+    private static isSilent: boolean = false
+
+    /**
+     * Configure global verbosity levels
+     */
+    static configure(options: { verbosity?: number, quiet?: boolean, silent?: boolean } = {}) {
+        this.verbosity = options.verbosity ?? 0
+        this.isQuiet = options.quiet ?? false
+        this.isSilent = options.silent ?? false
+    }
+
+    /**
+     * Check if output should be suppressed
+     */
+    private static shouldSuppressOutput(level: 'debug' | 'info' | 'warn' | 'error' | 'success'): boolean {
+        if (this.isSilent) return true
+        if (this.isQuiet && (level === 'info' || level === 'success')) return true
+        if (level === 'debug' && this.verbosity < 3) return true
+        return false
+    }
+    /**
      * Logs the message in two columns
      * 
      * @param name 
@@ -84,7 +109,9 @@ export class Logger {
      * @param preserveCol 
      */
     static success (msg: any, exit = false, preserveCol = false) {
-        console.log(chalk.green('✓'), this.textFormat(msg, chalk.bgGreen, preserveCol), '\n')
+        if (!this.shouldSuppressOutput('success')) {
+            console.log(chalk.green('✓'), this.textFormat(msg, chalk.bgGreen, preserveCol), '\n')
+        }
         if (exit) process.exit(0)
     }
 
@@ -96,7 +123,9 @@ export class Logger {
      * @param preserveCol 
      */
     static info (msg: any, exit = false, preserveCol = false) {
-        console.log(chalk.blue('ℹ'), this.textFormat(msg, chalk.bgBlue, preserveCol), '\n')
+        if (!this.shouldSuppressOutput('info')) {
+            console.log(chalk.blue('ℹ'), this.textFormat(msg, chalk.bgBlue, preserveCol), '\n')
+        }
         if (exit) process.exit(0)
     }
 
@@ -108,16 +137,46 @@ export class Logger {
      * @param preserveCol 
      */
     static error (msg: string | string[] | Error & { detail?: string }, exit = true, preserveCol = false) {
-        if (msg instanceof Error) {
-            if (msg.message) {
-                console.error(chalk.red('✖'), this.textFormat('ERROR:' + msg.message, chalk.bgRed, preserveCol))
+        if (!this.shouldSuppressOutput('error')) {
+            if (msg instanceof Error) {
+                if (msg.message) {
+                    console.error(chalk.red('✖'), this.textFormat('ERROR:' + msg.message, chalk.bgRed, preserveCol))
+                }
+                console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`), '\n')
             }
-            console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`), '\n')
-        }
-        else {
-            console.error(chalk.red('✖'), this.textFormat(msg, chalk.bgRed, preserveCol), '\n')
+            else {
+                console.error(chalk.red('✖'), this.textFormat(msg, chalk.bgRed, preserveCol), '\n')
+            }
         }
         if (exit) process.exit(1)
+    }
+
+    /**
+     * Logs a warning message
+     * 
+     * @param msg 
+     * @param exit 
+     * @param preserveCol 
+     */
+    static warn (msg: any, exit = false, preserveCol = false) {
+        if (!this.shouldSuppressOutput('warn')) {
+            console.warn(chalk.yellow('⚠'), this.textFormat(msg, chalk.bgYellow, preserveCol), '\n')
+        }
+        if (exit) process.exit(0)
+    }
+
+    /**
+     * Logs a debug message (only shown with verbosity >= 3)
+     * 
+     * @param msg 
+     * @param exit 
+     * @param preserveCol 
+     */
+    static debug (msg: any, exit = false, preserveCol = false) {
+        if (!this.shouldSuppressOutput('debug')) {
+            console.log(chalk.gray('🐛'), this.textFormat(msg, chalk.bgGray, preserveCol), '\n')
+        }
+        if (exit) process.exit(0)
     }
 
     /**
