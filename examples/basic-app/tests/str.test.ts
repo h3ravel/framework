@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest'
+
 import { pluralize } from '@h3ravel/support'
 
 describe('Support Package\'s Str', () => {
