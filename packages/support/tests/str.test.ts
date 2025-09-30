@@ -10,13 +10,15 @@ describe('Str helpers', () => {
     expect(beforeLast('a.b.c', '.')).toBe('a.b')
   })
 
-  test('capitalize/slugify/subString/substring variants', () => {
+  test('capitalize/singularize/pluralize/slugify/subString/substring variants', () => {
     expect(capitalize('hello')).toBe('Hello')
     expect(slugify('Hello World!')).toBe('hello_world_')
     expect(subString('abcdef', 4)).toBe('a...')
     expect(substr('abcdef', 2)).toBe('cdef')
     expect(substr('abcdef', -2)).toBe('ef')
     expect(sub('abcdef', 1, 3)).toBe('bc')
+    expect(singularize('books')).toBe('book')
+    expect(pluralize('book', 2)).toBe('books')
   })
 
   test('substitute/truncate/esc', () => {

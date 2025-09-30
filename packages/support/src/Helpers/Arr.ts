@@ -75,7 +75,10 @@ export const last = <T> (arr: T[]): [T, T[]] => {
 }
 
 /** Check if array is empty. */
-export const isEmpty = <T> (arr: T[]): boolean => arr.length === 0
+export const isEmpty = <T> (arr: T[]): boolean => {
+    if (arr.length === 0) return true
+    else return false
+}
 
 /** Check if array is empty. */
 export const isNotEmpty = <T> (arr: T[]): boolean => arr.length > 0
