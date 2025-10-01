@@ -1,6 +1,5 @@
 import { type Options, defineConfig } from 'tsdown'
-import { glob } from 'glob'
-import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { copyFile, mkdir, readFile, glob, writeFile } from 'node:fs/promises'
 
 import path from 'node:path'
 import { exists, findUpConfig } from './utils/fs'
