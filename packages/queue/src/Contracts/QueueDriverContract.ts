@@ -1,8 +1,8 @@
-import { JobContract } from "./JobContract";
+import { JobContract } from '../Contracts/JobContract';
 
 export interface QueueDriverContract {
-  push(job: JobContract): Promise<void>;
-  pop(): Promise<JobContract | null>;
-  release(job: JobContract, delay?: number): Promise<void>;
-  fail(job: JobContract, error: Error): Promise<void>;
+  push(job: JobContract): any;
+  pop(queue?: string): Promise<JobContract | null> | JobContract | null;
+  size(queue?: string): Promise<number> | number;
+  release(job: JobContract, delay?: number): void;
 }

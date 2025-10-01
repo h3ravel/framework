@@ -1,41 +1,114 @@
-import { describe, it, expect } from "@jest/globals";
-import { QueueManager } from "../src/QueueManager";
-import { JobContract } from "../src/Contracts/JobContract";
+import { QueueManager } from '../src/QueueManager';
+import { JobContract } from '../src/Contracts/JobContract';
+import { QueueWorker } from '../src/Workers/QueueWorker';
 
 class TestJob implements JobContract {
-  public executed = false;
+  constructor(public payload: any) {}
 
-  async handle(): Promise<void> {
-    this.executed = true;
+  handle() {
+    console.log('Job handled', this.payload);
   }
 
   serialize() {
-    return { executed: this.executed };
+    return this.payload;
   }
 }
 
-describe("Queue Drivers", () => {
-  it("pushes and pops jobs from MemoryDriver", async () => {
-    const manager = new QueueManager();
-    const job = new TestJob();
+class FailingJob implements JobContract {
+  public tries?: number;
+  public backoff?: number;
 
-    await manager.dispatch(job, "memory");
-    const popped = await manager.get("memory").pop();
+  constructor(public payload: any) {}
 
-    expect(popped).not.toBeNull();
-    await popped?.handle();
-    expect((popped as TestJob).executed).toBe(true);
+  handle() {
+    throw new Error('Job failed');
+  }
+
+  serialize() {
+    return this.payload;
+  }
+
+  failed(error: Error) {
+    console.log('Job failed', error.message);
+  }
+}
+
+import { ArrayDriver } from '../src/Drivers/ArrayDriver';
+
+describe('Queue', () => {
+  beforeEach(() => {
+    // Reset drivers before each test
+    QueueManager.addDriver('array', new ArrayDriver());
   });
 
-  it("persists jobs in DatabaseDriver", async () => {
-    const manager = new QueueManager();
-    const job = new TestJob();
+  it('should dispatch a job to the sync driver', () => {
+    const job = new TestJob({ foo: 'bar' });
+    const spy = jest.spyOn(job, 'handle');
+    QueueManager.dispatch(job);
+    expect(spy).toHaveBeenCalled();
+  });
 
-    await manager.dispatch(job, "database");
-    const popped = await manager.get("database").pop();
+  it('should dispatch a job to the array driver', () => {
+    const job = new TestJob({ foo: 'bar' });
+    QueueManager.dispatch(job, 'array');
+    const driver = QueueManager.via('array');
+    expect(driver.size()).toBe(1);
+  });
 
-    expect(popped).not.toBeNull();
-    await popped?.handle();
-    expect((popped as TestJob).executed).toBe(true);
+  it('should process a job from the array driver', async () => {
+    const job = new TestJob({ foo: 'bar' });
+    const spy = jest.spyOn(job, 'handle');
+    QueueManager.dispatch(job, 'array');
+
+    const worker = new QueueWorker();
+    const workerSpy = jest.spyOn(worker, 'run').mockImplementation(async (driver) => {
+      const queueDriver = QueueManager.via(driver);
+      const job = await queueDriver.pop();
+      if (job) {
+        await job.handle();
+      }
+    });
+
+    await worker.run('array');
+
+    expect(spy).toHaveBeenCalled();
+    const driver = QueueManager.via('array');
+    expect(driver.size()).toBe(0);
+    workerSpy.mockRestore();
+  });
+
+  it('should retry a failed job', async () => {
+    const job = new FailingJob({ foo: 'bar' });
+    job.tries = 2;
+    job.backoff = 1;
+
+    QueueManager.dispatch(job, 'array');
+
+    const worker = new QueueWorker();
+    const workerSpy = jest.spyOn(worker, 'run').mockImplementation(async (driver) => {
+      const queueDriver = QueueManager.via(driver);
+      let job = await queueDriver.pop();
+      if (job) {
+        try {
+          await job.handle();
+        } catch (error) {
+          if (job.attempts && job.attempts > 0) {
+            job.attempts--;
+            await queueDriver.release(job, job.backoff || 0);
+          } else {
+            if (job.failed) {
+              job.failed(error as Error);
+            }
+          }
+        }
+      }
+    });
+
+    await worker.run('array');
+
+    const driver = QueueManager.via('array');
+    expect(driver.size()).toBe(1);
+
+    workerSpy.mockRestore();
   });
 });

@@ -1,18 +1,10 @@
-import { ServiceProvider } from '@h3ravel/core'
+import { ServiceProvider } from "@h3ravel/core";
+import { QueueManager } from "../QueueManager";
 
-/**
- * Queues and workers.
- * 
- * Register QueueManager.
- * Load drivers (Redis, in-memory).
- * Register job dispatcher and workers.
- * 
- * Auto-Registered if @h3ravel/queue is installed
- */
 export class QueueServiceProvider extends ServiceProvider {
-    public static priority = 991
-
-    register () {
-        // Core bindings
-    }
+  public register(): void {
+    this.app.singleton("queue", (app) => {
+      return new QueueManager(app);
+    });
+  }
 }

@@ -44,7 +44,7 @@
     "test": "jest --passWithNoTests",
     "version-patch": "pnpm version patch"
   },
-  "peerDependencies": {
+  "dependencies": {
     "@h3ravel/core": "workspace:^"
   },
   "devDependencies": {

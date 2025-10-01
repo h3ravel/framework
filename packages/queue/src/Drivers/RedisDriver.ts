@@ -1,22 +1,19 @@
-import { QueueDriverContract } from "../Contracts/QueueDriverContract";
-import { JobContract } from "../Contracts/JobContract";
+import { JobContract } from '../Contracts/JobContract';
+import { QueueDriverContract } from '../Contracts/QueueDriverContract';
 
 export class RedisDriver implements QueueDriverContract {
-  private queue: JobContract[] = []; // stub with in-memory
-
-  async push(job: JobContract): Promise<void> {
-    this.queue.push(job);
+  public push(job: JobContract) {
+    // TODO: Implement redis logic
+    return null;
   }
 
-  async pop(): Promise<JobContract | null> {
-    return this.queue.shift() ?? null;
+  public pop(): Promise<JobContract | null> {
+    // TODO: Implement redis logic
+    return Promise.resolve(null);
   }
 
-  async release(job: JobContract): Promise<void> {
-    this.queue.push(job);
-  }
-
-  async fail(job: JobContract, error: Error): Promise<void> {
-    console.error("Redis Job failed:", error.message);
+  public size(): Promise<number> {
+    // TODO: Implement redis logic
+    return Promise.resolve(0);
   }
 }
