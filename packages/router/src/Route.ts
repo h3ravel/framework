@@ -71,7 +71,7 @@ export class Router implements IRouter {
         const fullPath = `${this.groupPrefix}${path}`.replace(/\/+/g, '/')
         this.routes.push({ method, path: fullPath, name, handler, signature })
         this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
-        this.app.singleton<any>('routes', () => this.routes)
+        this.app.singleton('app.routes', () => this.routes)
     }
 
     /**

@@ -25,15 +25,12 @@
     "./**/node_modules",
     "/.node_modules",
     "./**/node_modules/*",
-    "./**/public",
-    "./public",
-    "./**/storage",
-    "./storage",
-    "./storage",
-    "**coverage**",
+    "**/public/**",
+    "**/storage/**",
     "eslint.config.js",
     "jest.config.ts",
-    "arquebus.config.js"
+    "arquebus.config.js",
+    "**/coverage/**"
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]

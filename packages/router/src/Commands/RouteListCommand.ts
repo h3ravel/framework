@@ -42,7 +42,7 @@ export class RouteListCommand extends ConsoleCommand {
         /**
          * Sort the routes alphabetically
          */
-        const list = [...(this.app.make<any>('routes') as RouteDefinition[])].sort((a, b) => {
+        const list = [...(this.app.make('app.routes') as RouteDefinition[])].sort((a, b) => {
             if (a.path === '/' && b.path !== '/') return -1
             if (b.path === '/' && a.path !== '/') return 1
             return a.path.localeCompare(b.path)
