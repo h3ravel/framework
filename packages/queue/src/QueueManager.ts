@@ -23,7 +23,7 @@ export class QueueManager {
   }
 
   protected getDefaultDriver(): string {
-    return this.app.config.get("queue.default", "sync");
+    return this.app.make<any>('config').get("queue.default", "sync");
   }
 
   protected resolve(name: string): Queue {
@@ -31,7 +31,7 @@ export class QueueManager {
       return QueueManager.customDrivers.get(name)!;
     }
 
-    const config = this.app.config.get(`queue.connections.${name}`);
+    const config = this.app.make<any>('config').get(`queue.connections.${name}`);
 
     if (!config) {
       throw new Error(`Queue connection [${name}] not configured.`);
