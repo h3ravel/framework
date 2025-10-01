@@ -16,6 +16,6 @@ export default defineConfig([
     treeshake: true,
     outDir: 'bin',
     minify: true,
-    external: [...baseConfig.external, 'glob']
+    external: baseConfig.external
   }
 ])
