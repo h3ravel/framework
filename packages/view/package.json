@@ -1,0 +1,53 @@
+{
+  "name": "@h3ravel/view",
+  "version": "1.0.0",
+  "description": "View rendering system for H3ravel framework",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "keywords": [
+    "h3ravel",
+    "view",
+    "template",
+    "edge",
+    "rendering"
+  ],
+  "author": "H3ravel Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tusharshah21/framework.git",
+    "directory": "packages/view"
+  },
+  "bugs": {
+    "url": "https://github.com/tusharshah21/framework/issues"
+  },
+  "homepage": "https://h3ravel.toneflix.net",
+  "scripts": {
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "edge.js": "^6.3.0"
+  },
+  "devDependencies": {
+    "@h3ravel/shared": "workspace:*",
+    "typescript": "^5.0.0",
+    "vitest": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@h3ravel/shared": "workspace:*"
+  }
+}
