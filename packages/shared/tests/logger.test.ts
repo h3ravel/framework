@@ -1,5 +1,5 @@
 import { Logger } from '../src/Utils/Logger'
-import { beforeEach, afterEach, describe, test, expect } from 'vitest'
+import { beforeEach, afterEach, describe, test, expect, vi } from 'vitest'
 
 // Mock console methods
 const originalConsoleLog = console.log
@@ -10,14 +10,14 @@ let mockConsoleOutput: Array<{ method: string, args: any[] }> = []
 
 beforeEach(() => {
   mockConsoleOutput = []
-  
-  console.log = jest.fn((...args) => {
+   
+  vi.spyOn(console, 'log').mockImplementation((...args) => {
     mockConsoleOutput.push({ method: 'log', args })
-  })
-  console.error = jest.fn((...args) => {
+  }) 
+  vi.spyOn(console, 'log').mockImplementation((...args) => {
     mockConsoleOutput.push({ method: 'error', args })
-  })
-  console.warn = jest.fn((...args) => {
+  }) 
+  vi.spyOn(console, 'log').mockImplementation((...args) => {
     mockConsoleOutput.push({ method: 'warn', args })
   })
   
