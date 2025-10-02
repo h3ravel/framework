@@ -1,10 +1,10 @@
 import * as Arr from './Helpers/Arr'
 import * as Crypto from './Helpers/Crypto'
+import * as DumpDie from './Helpers/DumpDie'
 import * as Number from './Helpers/Number'
 import * as Obj from './Helpers/Obj'
 import * as Str from './Helpers/Str'
 import * as Time from './Helpers/Time'
-import * as DumpDie from './Helpers/DumpDie'
 
 /**
  * Global helpers interface that mirrors Laravel's helpers
@@ -30,7 +30,7 @@ export interface GlobalHelpers {
     shift: typeof Arr.shift
     range: typeof Arr.range
     flatten: typeof Arr.flatten
-    
+
     // String helpers
     Str: typeof Str
     after: typeof Str.after
@@ -58,7 +58,7 @@ export interface GlobalHelpers {
     ss: typeof Str.ss
     firstLines: typeof Str.firstLines
     lastLines: typeof Str.lastLines
-    
+
     // Object helpers
     Obj: typeof Obj
     dot: typeof Obj.dot
@@ -68,7 +68,7 @@ export interface GlobalHelpers {
     safeDot: typeof Obj.safeDot
     setNested: typeof Obj.setNested
     slugifyKeys: typeof Obj.slugifyKeys
-    
+
     // Crypto helpers
     Crypto: typeof Crypto
     uuid: typeof Crypto.uuid
@@ -85,7 +85,7 @@ export interface GlobalHelpers {
     checksum: typeof Crypto.checksum
     verifyChecksum: typeof Crypto.verifyChecksum
     caesarCipher: typeof Crypto.caesarCipher
-    
+
     // Time helpers
     Time: typeof Time
     now: typeof Time.now
@@ -104,14 +104,14 @@ export interface GlobalHelpers {
     firstDayOfMonth: typeof Time.firstDayOfMonth
     lastDayOfMonth: typeof Time.lastDayOfMonth
     isLeapYear: typeof Time.isLeapYear
-    
+
     // Number helpers
     Number: typeof Number
     abbreviate: typeof Number.abbreviate
     humanize: typeof Number.humanize
     toBytes: typeof Number.toBytes
     toHumanTime: typeof Number.toHumanTime
-    
+
     // Debug helpers
     dump: typeof DumpDie.dump
     dd: typeof DumpDie.dd
@@ -139,7 +139,7 @@ export interface GlobalHelpers {
  * 
  * @param target - The target object to attach helpers to (default: globalThis)
  */
-export function bootstrap(target: any = globalThis): void {
+export function bootstrap (target: any = globalThis): void {
     const globalHelpers: GlobalHelpers = {
         // Re-export helpers as modules
         Arr,
@@ -148,7 +148,7 @@ export function bootstrap(target: any = globalThis): void {
         Obj,
         Str,
         Time,
-        
+
         // Array helpers
         chunk: Arr.chunk,
         collapse: Arr.collapse,
@@ -167,7 +167,7 @@ export function bootstrap(target: any = globalThis): void {
         shift: Arr.shift,
         range: Arr.range,
         flatten: Arr.flatten,
-        
+
         // String helpers
         after: Str.after,
         afterLast: Str.afterLast,
@@ -194,7 +194,7 @@ export function bootstrap(target: any = globalThis): void {
         ss: Str.ss,
         firstLines: Str.firstLines,
         lastLines: Str.lastLines,
-        
+
         // Object helpers
         dot: Obj.dot,
         extractProperties: Obj.extractProperties,
@@ -203,7 +203,7 @@ export function bootstrap(target: any = globalThis): void {
         safeDot: Obj.safeDot as any,
         setNested: Obj.setNested,
         slugifyKeys: Obj.slugifyKeys,
-        
+
         // Crypto helpers
         uuid: Crypto.uuid,
         random: Crypto.random,
@@ -219,7 +219,7 @@ export function bootstrap(target: any = globalThis): void {
         checksum: Crypto.checksum,
         verifyChecksum: Crypto.verifyChecksum,
         caesarCipher: Crypto.caesarCipher,
-        
+
         // Time helpers
         now: Time.now,
         unix: Time.unix,
@@ -237,18 +237,18 @@ export function bootstrap(target: any = globalThis): void {
         firstDayOfMonth: Time.firstDayOfMonth,
         lastDayOfMonth: Time.lastDayOfMonth,
         isLeapYear: Time.isLeapYear,
-        
+
         // Number helpers
         abbreviate: Number.abbreviate,
         humanize: Number.humanize,
         toBytes: Number.toBytes,
         toHumanTime: Number.toHumanTime,
-        
+
         // Debug helpers
         dump: DumpDie.dump,
         dd: DumpDie.dd,
     }
-    
+
     // Attach helpers to target
     Object.assign(target, globalHelpers)
 }
@@ -259,40 +259,40 @@ export function bootstrap(target: any = globalThis): void {
  * 
  * @param target - The target object to clean up (default: globalThis)
  */
-export function cleanBootstrap(target: any = globalThis): void {
+export function cleanBootstrap (target: any = globalThis): void {
     const helpersToRemove = [
         // Array helpers
         'Arr', 'chunk', 'collapse', 'alternate', 'combine', 'each', 'keys', 'find',
         'forget', 'first', 'last', 'isEmpty', 'isNotEmpty', 'pop', 'prepend', 'take',
         'reverse', 'shift', 'range', 'where', 'skip', 'flatten',
-        
+
         // String helpers
         'Str', 'after', 'afterLast', 'before', 'beforeLast', 'capitalize', 'pluralize',
         'singularize', 'slugify', 'subString', 'substitute', 'truncate', 'startsWith',
         'endsWith', 'substr', 'sub', 'esc', 'padString', 'trim', 'ltrim', 'rtrim',
         'trimChars', 'split', 'chop', 'isNumber', 'isInteger', 'rot', 'replacePunctuation',
         'translate', 'ss', 'firstLines', 'lastLines',
-        
+
         // Object helpers
         'Obj', 'dot', 'extractProperties', 'getValue', 'modObj', 'safeDot', 'setNested', 'slugifyKeys',
-        
+
         // Crypto helpers
         'Crypto', 'uuid', 'random', 'randomSecure', 'hash', 'hmac', 'base64Encode',
         'base64Decode', 'xor', 'randomColor', 'randomPassword', 'secureToken',
         'checksum', 'verifyChecksum', 'caesarCipher',
-        
+
         // Time helpers
         'Time', 'now', 'unix', 'format', 'fromTimestamp', 'diff', 'subtract', 'add',
         'start', 'end', 'fromNow', 'randomTime', 'isBetween', 'dayOfYear',
         'firstDayOfMonth', 'lastDayOfMonth', 'isLeapYear',
-        
+
         // Number helpers
         'Number', 'abbreviate', 'humanize', 'toBytes', 'toHumanTime',
-        
+
         // Debug helpers
         'dump', 'dd'
     ]
-    
+
     helpersToRemove.forEach(helper => {
         if (helper in target) {
             delete target[helper]
