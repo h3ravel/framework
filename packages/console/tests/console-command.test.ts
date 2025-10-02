@@ -17,20 +17,20 @@ let mockLoggerOutput: Array<{ level: string, message: string }> = []
 beforeEach(() => {
   mockLoggerOutput = []
   
-  vi.spyOn(Logger, 'info').mockImplementation((msg: any) => {
-    mockConsoleOutput.push({ level: 'info', message: msg })
+  Logger.info = vi.fn((msg: any) => {
+    mockConsoleOutput.push({ method: 'info', args })
   })
-  vi.spyOn(Logger, 'success').mockImplementation((msg: any) => {
-    mockConsoleOutput.push({ level: 'success', message: msg })
+  Logger.success = vi.fn((msg: any) => {
+    mockConsoleOutput.push({ method: 'success', args })
   })
-  vi.spyOn(Logger, 'error').mockImplementation((msg: any) => {
-    mockConsoleOutput.push({ level: 'error', message: msg })
+  Logger.error = vi.fn((msg: any) => {
+    mockConsoleOutput.push({ method: 'error', args })
   })
-  vi.spyOn(Logger, 'warn').mockImplementation((msg: any) => {
-    mockConsoleOutput.push({ level: 'warn', message: msg })
+  Logger.warn = vi.fn((msg: any) => {
+    mockConsoleOutput.push({ method: 'warn', args })
   })
-  vi.spyOn(Logger, 'debug').mockImplementation((msg: any) => {
-    mockConsoleOutput.push({ level: 'debug', message: msg })
+  Logger.debug = vi.fn((msg: any) => {
+    mockConsoleOutput.push({ method: 'debug', args })
   })
 })
 
