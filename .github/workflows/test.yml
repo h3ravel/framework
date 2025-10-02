@@ -31,7 +31,7 @@ jobs:
 
       - name: Install dependencies (skip postinstall)
         run: |
-          pnpm install --ignore-scripts --frozen-lockfile
+          pnpm install --ignore-scripts --no-frozen-lockfile
 
       - name: Build Packages
         run: |
