@@ -8,6 +8,8 @@ export default class extends Migration {
   async up (schema: SchemaBuilder) {
     await schema.createTable('john_table_john', (table) => {
       table.increments('id')
+      table.string('email')
+      table.integer('code')
       table.timestamps()
     })
   }

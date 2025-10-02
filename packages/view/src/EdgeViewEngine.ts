@@ -23,14 +23,14 @@ export class EdgeViewEngine implements ViewContract {
   /**
    * Render a template with the given data
    */
-  async render(template: string, data: Record<string, any> = {}): Promise<string> {
+  async render (template: string, data: Record<string, any> = {}): Promise<string> {
     return await this.edge.render(template, data)
   }
 
   /**
    * Check if a template exists
    */
-  exists(template: string): boolean {
+  exists (_template: string): boolean {
     try {
       // Edge doesn't have a direct exists method, so we try to render with empty data
       // This is a simple approach - in production you might want to implement proper template discovery
@@ -43,21 +43,21 @@ export class EdgeViewEngine implements ViewContract {
   /**
    * Mount a directory for template lookup
    */
-  mount(path: string): void {
+  mount (path: string): void {
     this.edge.mount(path)
   }
 
   /**
    * Register a global variable/helper
    */
-  global(key: string, value: any): void {
+  global (key: string, value: any): void {
     this.edge.global(key, value)
   }
 
   /**
    * Get the underlying Edge instance
    */
-  getEdge(): Edge {
+  getEdge (): Edge {
     return this.edge
   }
 }

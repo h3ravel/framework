@@ -66,9 +66,6 @@
     "srvx": "^0.8.7",
     "tslib": "^2.8.1"
   },
-  "optionalDependencies": {
-    "@h3ravel/view": "workspace:^"
-  },
   "devDependencies": {
     "@types/semver": "^7.7.1",
     "typescript": "^5.9.2"

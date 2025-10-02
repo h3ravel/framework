@@ -307,10 +307,6 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.2
-    optionalDependencies:
-      '@h3ravel/view':
-        specifier: workspace:^
-        version: link:../view
 
   packages/database:
     dependencies:
@@ -464,13 +460,19 @@ importers:
 
   packages/view:
     dependencies:
+      '@h3ravel/core':
+        specifier: workspace:*
+        version: link:../core
+      '@h3ravel/http':
+        specifier: workspace:*
+        version: link:../http
+      '@h3ravel/shared':
+        specifier: workspace:*
+        version: link:../shared
       edge.js:
         specifier: ^6.3.0
         version: 6.3.0
     devDependencies:
-      '@h3ravel/shared':
-        specifier: workspace:*
-        version: link:../shared
       typescript:
         specifier: ^5.0.0
         version: 5.9.2
