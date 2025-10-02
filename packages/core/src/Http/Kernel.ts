@@ -47,7 +47,6 @@ export class Kernel {
     app.bind('http.request', () => {
       return ctx.request
     })
-    console.log(app)
 
     /**
      * Run middleware stack and obtain result
