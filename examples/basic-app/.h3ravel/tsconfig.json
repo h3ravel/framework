@@ -4,24 +4,12 @@
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
-      "src/*": [
-        "./../src/*"
-      ],
-      "App/*": [
-        "./../src/app/*"
-      ],
-      "root/*": [
-        "./../*"
-      ],
-      "routes/*": [
-        "./../src/routes/*"
-      ],
-      "config/*": [
-        "./../src/config/*"
-      ],
-      "resources/*": [
-        "./../src/resources/*"
-      ]
+      "src/*": ["./../src/*"],
+      "App/*": ["./../src/app/*"],
+      "root/*": ["./../*"],
+      "routes/*": ["./../src/routes/*"],
+      "config/*": ["./../src/config/*"],
+      "resources/*": ["./../src/resources/*"]
     },
     "target": "es2022",
     "module": "es2022",
@@ -35,25 +23,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": [
-    "./**/*.d.ts",
-    "./../**/*"
-  ],
-  "exclude": [
-    ".",
-    "./../**/console/bin",
-    "./../dist",
-    "./../**/dist",
-    "./../**/node_modules",
-    "./../.node_modules",
-    "./../**/node_modules/*",
-    "./../**/public",
-    "./../public",
-    "./../**/storage",
-    "./../storage",
-    "./../**coverage**",
-    "./../eslint.config.js",
-    "./../jest.config.ts",
-    "./../arquebus.config.js"
-  ]
+  "include": ["./**/*.d.ts", "./../**/*"],
+  "exclude": ["./dist", "../public", "./node_modules"]
 }
