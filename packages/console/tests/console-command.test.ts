@@ -18,19 +18,19 @@ beforeEach(() => {
   mockLoggerOutput = []
   
   Logger.info = vi.fn((msg: any) => {
-    mockConsoleOutput.push({ method: 'info', args })
+    mockConsoleOutput.push({ method: 'info', message: msg })
   })
   Logger.success = vi.fn((msg: any) => {
-    mockConsoleOutput.push({ method: 'success', args })
+    mockConsoleOutput.push({ method: 'success', message: msg })
   })
   Logger.error = vi.fn((msg: any) => {
-    mockConsoleOutput.push({ method: 'error', args })
+    mockConsoleOutput.push({ method: 'error', message: msg })
   })
   Logger.warn = vi.fn((msg: any) => {
-    mockConsoleOutput.push({ method: 'warn', args })
+    mockConsoleOutput.push({ method: 'warn', message: msg })
   })
   Logger.debug = vi.fn((msg: any) => {
-    mockConsoleOutput.push({ method: 'debug', args })
+    mockConsoleOutput.push({ method: 'debug', message: msg })
   })
 })
 
