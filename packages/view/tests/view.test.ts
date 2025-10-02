@@ -1,6 +1,7 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
+
 import { EdgeViewEngine } from '../src/EdgeViewEngine'
-import { mkdtemp, writeFile, rm } from 'node:fs/promises'
 import { join } from 'node:path'
 import { tmpdir } from 'node:os'
 
@@ -11,7 +12,7 @@ describe('EdgeViewEngine', () => {
   beforeEach(async () => {
     // Create a temporary directory for test templates
     tempDir = await mkdtemp(join(tmpdir(), 'h3ravel-view-test-'))
-    
+
     // Create a test template
     await writeFile(
       join(tempDir, 'test.edge'),
@@ -49,7 +50,7 @@ describe('EdgeViewEngine', () => {
     )
 
     viewEngine.global('appName', 'H3ravel')
-    
+
     const result = await viewEngine.render('global', {})
     expect(result.trim()).toBe('<p>App: H3ravel</p>')
   })
@@ -57,7 +58,7 @@ describe('EdgeViewEngine', () => {
   it('should mount additional directories', async () => {
     // Create another temp directory
     const tempDir2 = await mkdtemp(join(tmpdir(), 'h3ravel-view-test2-'))
-    
+
     try {
       await writeFile(
         join(tempDir2, 'mounted.edge'),
@@ -65,7 +66,7 @@ describe('EdgeViewEngine', () => {
       )
 
       viewEngine.mount(tempDir2)
-      
+
       const result = await viewEngine.render('mounted', { message: 'Success' })
       expect(result.trim()).toBe('<div>Success</div>')
     } finally {
