@@ -11,7 +11,7 @@ import { Signature } from './Signature'
 import TsDownConfig from './TsdownConfig'
 import { altLogo } from './logo'
 import { build } from 'tsdown'
-import { glob } from 'glob'
+import { glob } from 'node:fs/promises'
 import path from 'node:path'
 import { PostinstallCommand } from './Commands/PostinstallCommand'
 import { BuildCommand } from './Commands/BuildCommand'
@@ -52,10 +52,8 @@ export class Musket {
          */
         const providers_path = app_path('Console/Commands/*.js').replace('/src/', DIST_DIR)
 
-        const commandsFound = glob.sync(providers_path)
-
         /** Add the App Commands */
-        for (const cmd of commandsFound) {
+        for await (const cmd of glob(providers_path)) {
             const name = path.basename(cmd).replace('.js', '')
             try {
                 const cmdClass = (await import(cmd))[name]
