@@ -28,8 +28,8 @@
     "devx": "pnpm './packages/*' run dev",
     "start": "pnpm --filter @h3ravel/core start",
     "lint": "pnpm -r --filter './packages/*' run lint",
-    "test": "NODE_NO_WARNINGS=1 NODE_ENV=testing jest --passWithNoTests",
-    "coverage": "NODE_NO_WARNINGS=1 NODE_ENV=testing JEST_JUNIT_CLASSNAME=coverage jest --passWithNoTests --coverage --coverageDirectory=coverage",
+    "test": "NODE_NO_WARNINGS=1 NODE_ENV=testing vitest",
+    "coverage": "NODE_NO_WARNINGS=1 NODE_ENV=testing vitest run --coverage",
     "prepare": "husky",
     "postinstall": "pnpm barrel",
     "undev": "tsx watch packages/core/src/main.ts",
@@ -50,6 +50,7 @@
     "@types/node": "^24.5.2",
     "@typescript-eslint/eslint-plugin": "^8.44.0",
     "@typescript-eslint/parser": "^8.44.0",
+    "@vitest/coverage-v8": "^3.2.4",
     "barrelize": "^1.6.4",
     "barrelsby": "^2.8.1",
     "chalk": "^5.6.2",
@@ -76,7 +77,9 @@
     "tsdown": "^0.15.4",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.0",
-    "utility-types": "^3.11.0"
+    "utility-types": "^3.11.0",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   },
   "packageManager": "pnpm@10.14.0"
 }
