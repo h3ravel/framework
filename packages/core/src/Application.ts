@@ -20,6 +20,7 @@ import semver from 'semver'
 type AServiceProvider = (new (_app: Application) => ServiceProvider) & Partial<ServiceProvider>
 
 export class Application extends Container implements IApplication {
+    private static instance: Application;
     public paths = new PathLoader()
     private tries: number = 0
     private booted = false
@@ -39,6 +40,8 @@ export class Application extends Container implements IApplication {
     constructor(basePath: string) {
         super()
 
+        Application.instance = this;
+
         dotenvExpand.expand(dotenv.config({ quiet: true }))
 
         this.basePath = basePath
@@ -46,6 +49,10 @@ export class Application extends Container implements IApplication {
         this.loadOptions()
         this.registerBaseBindings()
         Registerer.register(this)
+    }
+
+    public static getInstance(): Application {
+        return Application.instance;
     }
 
     /**
