@@ -11,13 +11,13 @@ let mockConsoleOutput: Array<{ method: string, args: any[] }> = []
 beforeEach(() => {
   mockConsoleOutput = []
    
-  vi.spyOn(console, 'log').mockImplementation((...args) => {
+  console.log = vi.fn((...args) => {
     mockConsoleOutput.push({ method: 'log', args })
-  }) 
-  vi.spyOn(console, 'log').mockImplementation((...args) => {
+  })
+  console.error = vi.fn((...args) => {
     mockConsoleOutput.push({ method: 'error', args })
-  }) 
-  vi.spyOn(console, 'log').mockImplementation((...args) => {
+  })
+  console.warn = vi.fn((...args) => {
     mockConsoleOutput.push({ method: 'warn', args })
   })
   
