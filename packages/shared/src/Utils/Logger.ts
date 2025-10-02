@@ -71,10 +71,21 @@ export class Logger {
      * @param preserveCol 
      * @returns 
      */
-    static textFormat (txt: any, color: (txt: string) => string, preserveCol = false) {
-        if (preserveCol) return String(txt)
-        return String(txt).split(':').map((e, i, a) => i == 0 && a.length > 1 ? color(' ' + e + ': ') : e).join('')
+    static textFormat (
+        txt: unknown,
+        color: (txt: string) => string,
+        preserveCol = false
+    ): string {
+        const str = String(txt)
+
+        if (preserveCol) return str
+
+        const [first, ...rest] = str.split(':')
+        if (rest.length === 0) return str
+
+        return color(` ${first} `) + rest.join(':')
     }
+
 
     /**
      * Logs a success message
