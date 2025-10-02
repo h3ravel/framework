@@ -1,5 +1,5 @@
 import { Logger } from '../src/Utils/Logger'
-import { beforeEach, afterEach, describe, test, expect } from vitest
+import { beforeEach, afterEach, describe, test, expect } from 'vitest'
 
 // Mock console methods
 const originalConsoleLog = console.log
