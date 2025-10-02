@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/view",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "View rendering system for H3ravel framework",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
