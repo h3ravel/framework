@@ -1,4 +1,4 @@
-import { beforeEach, afterEach, describe, test, expect } from 'vitest'
+import { beforeEach, afterEach, describe, test, expect, vi } from 'vitest'
 import { ConsoleCommand } from '@h3ravel/core'
 import { Application } from '@h3ravel/core'
 import { ConsoleKernel } from '@h3ravel/core'
@@ -17,20 +17,20 @@ let mockLoggerOutput: Array<{ level: string, message: string }> = []
 beforeEach(() => {
   mockLoggerOutput = []
   
-  Logger.info = jest.fn((msg: any) => {
-    mockLoggerOutput.push({ level: 'info', message: msg })
+  vi.spyOn(Logger, 'info').mockImplementation((msg: any) => {
+    mockConsoleOutput.push({ level: 'info', message: msg })
   })
-  Logger.success = jest.fn((msg: any) => {
-    mockLoggerOutput.push({ level: 'success', message: msg })
+  vi.spyOn(Logger, 'success').mockImplementation((msg: any) => {
+    mockConsoleOutput.push({ level: 'success', message: msg })
   })
-  Logger.error = jest.fn((msg: any) => {
-    mockLoggerOutput.push({ level: 'error', message: msg })
+  vi.spyOn(Logger, 'error').mockImplementation((msg: any) => {
+    mockConsoleOutput.push({ level: 'error', message: msg })
   })
-  Logger.warn = jest.fn((msg: any) => {
-    mockLoggerOutput.push({ level: 'warn', message: msg })
+  vi.spyOn(Logger, 'warn').mockImplementation((msg: any) => {
+    mockConsoleOutput.push({ level: 'warn', message: msg })
   })
-  Logger.debug = jest.fn((msg: any) => {
-    mockLoggerOutput.push({ level: 'debug', message: msg })
+  vi.spyOn(Logger, 'debug').mockImplementation((msg: any) => {
+    mockConsoleOutput.push({ level: 'debug', message: msg })
   })
 })
 
@@ -185,7 +185,7 @@ describe('Console Command CLI Options', () => {
     })
 
     test('should exit with error when ask() has no default', async () => {
-      const mockExit = jest.spyOn(process, 'exit').mockImplementation()
+      const mockExit = vi.spyOn(process, 'exit').mockImplementation()
       
       await command.ask('Test question?')
       
