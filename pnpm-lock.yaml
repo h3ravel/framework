@@ -221,9 +221,6 @@ importers:
 
   packages/console:
     dependencies:
-      '@h3ravel/arquebus':
-        specifier: ^0.5.0
-        version: 0.5.0(sqlite3@5.1.7)
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
@@ -450,6 +447,10 @@ importers:
         version: 10.14.0
 
   packages/support:
+    dependencies:
+      dayjs:
+        specifier: ^1.11.18
+        version: 1.11.18
     devDependencies:
       '@h3ravel/shared':
         specifier: workspace:^

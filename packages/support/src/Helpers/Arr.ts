@@ -114,7 +114,9 @@ export const range = (size: number, startAt: number = 0): number[] => {
 export const flatten = <T> (arr: T[]): T[] => {
     const result: T[] = []
     const recurse = (input: any[]): void => {
-        for (const item of input) Array.isArray(item) ? recurse(item) : result.push(item)
+        for (const item of input)
+            if (Array.isArray(item)) recurse(item)
+            else result.push(item)
     }
     recurse(arr as any[])
     return result

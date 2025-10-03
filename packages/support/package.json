@@ -45,7 +45,10 @@
     "version-patch": "pnpm version patch"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@h3ravel/shared": "workspace:^"
+    "@h3ravel/shared": "workspace:^",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.18"
   }
 }

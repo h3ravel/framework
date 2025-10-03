@@ -19,4 +19,16 @@ export type SnakeToTitleCase<S extends string> = S extends `${infer First}_${inf
     ? `${Capitalize<Lowercase<First>>}${SnakeToTitleCase<Rest>}`
     : Capitalize<Lowercase<S>>;
 
-export default {}
+export type HtmlStringType = HTMLElement | Node | string;
+
+export type ExcerptOptions = { radius?: number, omission?: string }
+
+export type Value<T> = boolean | ((instance: T) => boolean);
+
+export type Callback<T> = (instance: T, value: boolean) => T | void | undefined;
+
+export type Fallback<T> = Callback<T> | null;
+
+export interface Function {
+    (...args: any[]): any
+}
