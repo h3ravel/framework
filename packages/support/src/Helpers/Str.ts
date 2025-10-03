@@ -1,4 +1,4 @@
-import { Callback, ExcerptOptions, Fallback, Function, HtmlStringType, Value } from '../Contracts/StrContract'
+import type { Callback, ExcerptOptions, Fallback, Function, HtmlStringType, Value } from '../Contracts/StrContract'
 
 import { dot } from './Obj'
 
@@ -404,6 +404,26 @@ export class Str {
     }
 
     /**
+     * Returns all the characters except the last.
+     * 
+     * @param string 
+     * @returns 
+     */
+    static chop (string: string): string {
+        return string.slice(0, -1)
+    }
+
+    /**
+     * Escape string for JSON encoding (returns string without quotes). 
+     * 
+     * @param string 
+     * @returns 
+     */
+    static esc (string: string): string {
+        return JSON.stringify(string).slice(1, -1)
+    }
+
+    /**
      * Extracts an excerpt from text that matches the first instance of a phrase.
      *
      * @param { string } text
@@ -441,6 +461,27 @@ export class Str {
             .toString()
 
         return (start + ' ' + matches[2] + end).replace(/\s+/g, ' ').trim()
+    }
+
+    /**
+     * Explode the string into an array.
+     *
+     * @param { string } string
+     * @param { string } delimiter
+     * @param { number } limit
+     *
+     * @return { string[] }
+     */
+    static explode (string: string, delimiter: string, limit: number = 0): string[] {
+        let wordsArray: string[] = string.split(delimiter)
+
+        const position: number = limit - 1 >= wordsArray.length
+            ? wordsArray.length - 1
+            : limit - 1
+
+        wordsArray = [...wordsArray.slice(0, position), wordsArray.splice(position).join(' ')]
+
+        return wordsArray
     }
 
     /**
@@ -628,7 +669,14 @@ export class Str {
      *
      * @return { string }
      */
-    static limit (value: string, limit: number = 100, end: string = '...', preserveWords: boolean = false): string {
+    static limit (
+        value: string,
+        limit: number = 100,
+        end: string = '...',
+        preserveWords: boolean = false
+    ): string {
+        value = value.replace(/<[^>]+>/g, '')
+
         if (value.length <= limit) {
             return value
         }
@@ -674,6 +722,18 @@ export class Str {
      */
     static lower (value: string): string {
         return value.toLowerCase()
+    }
+
+    /**
+     * Get substring by start/stop indexes.
+     * 
+     * @param string 
+     * @param start 
+     * @param stop 
+     * @returns 
+     */
+    static sub (string: string, start: number, stop: number): string {
+        return string.substring(start, stop)
     }
 
     /**
@@ -2458,14 +2518,14 @@ export class Str {
 
         title = this.lower(title).replace(`![^${preg_quote(separator)}pLpNs]+!u`, '')
 
-        return title.replaceAll(/\s/g, separator).replace(new RegExp('\\' + separator + '+', 'g'), separator)
+        return title.replaceAll(/\s|!/g, separator).replace(new RegExp('\\' + separator + '+', 'g'), separator)
     }
 
     /**
      * Generate a URL friendly "slug" from a given string.
      *
-     * @param { string } title
      * @param { string } separator
+     * @param { string } title
      * @param { object } dictionary
      * 
      * @alias singular
@@ -2677,6 +2737,8 @@ export class Str {
      * @return { string }
      */
     static substr (string: string, start: number, length: number | null = null): string {
+        string = string.replace(/<[^>]+>/g, '')
+
         if (start < 0) {
             start = string.length + start
 
@@ -3586,6 +3648,25 @@ export class Stringable {
     }
 
     /**
+     * Returns all the characters except the last.
+     * 
+     * @returns 
+     */
+    chop () {
+        return new Stringable(Str.chop(this.#value))
+    }
+
+    /**
+     * Escape string for JSON encoding (returns string without quotes). 
+     * 
+     * @param string 
+     * @returns 
+     */
+    esc (): Stringable {
+        return new Stringable(Str.esc(this.#value))
+    }
+
+    /**
      * Determine if the string is an exact match with the given value.
      *
      * @param { Stringable | string } value
@@ -3621,15 +3702,7 @@ export class Stringable {
      * @return { string[] }
      */
     explode (delimiter: string, limit: number = 0): string[] {
-        let wordsArray: string[] = this.#value.split(delimiter)
-
-        const position: number = limit - 1 >= wordsArray.length
-            ? wordsArray.length - 1
-            : limit - 1
-
-        wordsArray = [...wordsArray.slice(0, position), wordsArray.splice(position).join(' ')]
-
-        return wordsArray
+        return Str.explode(this.#value, delimiter, limit)
     }
 
     /**
@@ -3773,6 +3846,17 @@ export class Stringable {
      */
     limit (limit: number = 100, end: string = '...', preserveWords: boolean = false): Stringable {
         return new Stringable(Str.limit(this.#value, limit, end, preserveWords))
+    }
+
+    /**
+     * Get substring by start/stop indexes.
+     * 
+     * @param start 
+     * @param stop 
+     * @returns 
+     */
+    sub (start: number, stop: number): Stringable {
+        return new Stringable(Str.sub(this.#value, start, stop))
     }
 
     /**

@@ -1,4 +1,4 @@
-import { randomUUID, randomBytes, createHash, createHmac } from 'crypto'
+import { createHash, createHmac, randomBytes, randomUUID } from 'crypto'
 
 /**
  * Generate a random UUID string.
@@ -87,13 +87,13 @@ export const base64Decode = (data: string): string => {
 export const xor = (data: string, key: string): string => {
     let result = ''
     const keyLength = key.length
-    
+
     for (let i = 0; i < data.length; i++) {
         const dataCharCode = data.charCodeAt(i)
         const keyCharCode = key.charCodeAt(i % keyLength)
         result += String.fromCharCode(dataCharCode ^ keyCharCode)
     }
-    
+
     return result
 }
 
@@ -114,7 +114,7 @@ export const randomColor = (): string => {
  * @param options - Character options
  * @returns A secure password string
  */
-export interface PasswordOptions {
+interface PasswordOptions {
     useUppercase?: boolean
     useLowercase?: boolean
     useNumbers?: boolean
@@ -128,19 +128,19 @@ export const randomPassword = (length: number = 16, options: PasswordOptions = {
         useNumbers: true,
         useSymbols: true
     }
-    
+
     const opts = { ...defaults, ...options }
     let charset = ''
-    
+
     if (opts.useUppercase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     if (opts.useLowercase) charset += 'abcdefghijklmnopqrstuvwxyz'
     if (opts.useNumbers) charset += '0123456789'
     if (opts.useSymbols) charset += '!@#$%^&*()_+-=[]{}|;:,.<>?'
-    
+
     if (charset.length === 0) {
         throw new Error('At least one character type must be enabled')
     }
-    
+
     return random(length, charset)
 }
 

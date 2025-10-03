@@ -21,8 +21,7 @@ type Omitables =
     | typeof Symbol.unscopables | typeof Symbol.iterator
 
 type TakeTime = Pick<typeof Time,
-    | 'now' | 'unix' | 'format' | 'fromTimestamp' | 'diff' | 'subtract' | 'add' | 'fromNow' | 'randomTime'
-    | 'isBetween' | 'dayOfYear' | 'firstDayOfMonth' | 'lastDayOfMonth' | 'isLeapYear'
+    | 'now' | 'format' | 'fromTimestamp' | 'randomTime' | 'firstDayOfMonth' | 'lastDayOfMonth' | 'parse'
 >
 
 type TakeString = Pick<typeof Str,
@@ -145,19 +144,12 @@ export function loadHelpers (target: any = globalThis): void {
 
         // Time helpers
         now: Time.now,
-        unix: Time.unix,
         format: Time.format,
         fromTimestamp: Time.fromTimestamp,
-        diff: Time.diff,
-        subtract: Time.subtract,
-        add: Time.add,
-        fromNow: Time.fromNow,
+        parse: Time.parse,
         randomTime: Time.randomTime,
-        isBetween: Time.isBetween,
-        dayOfYear: Time.dayOfYear,
         firstDayOfMonth: Time.firstDayOfMonth,
         lastDayOfMonth: Time.lastDayOfMonth,
-        isLeapYear: Time.isLeapYear,
 
         // Number helpers
         abbreviate: Number.abbreviate,
@@ -200,8 +192,8 @@ export function cleanHelpers (target: any = globalThis): void {
         'checksum', 'verifyChecksum', 'caesarCipher',
 
         // Time helpers
-        'Time', 'now', 'unix', 'format', 'fromTimestamp', 'diff', 'subtract', 'add', 'fromNow', 'randomTime', 'isBetween',
-        'dayOfYear', 'firstDayOfMonth', 'lastDayOfMonth', 'isLeapYear',
+        'Time', 'now', 'format', 'fromTimestamp', 'add', 'randomTime', 'firstDayOfMonth',
+        'lastDayOfMonth', 'isLeapYear',
 
         // Number helpers
         'Number', 'abbreviate', 'humanize', 'toBytes', 'toHumanTime',

@@ -1,18 +1,60 @@
-import dayjs, { ConfigType, Dayjs, ManipulateType, OpUnitType, QUnitType } from 'dayjs'
+import dayjs, { ConfigType, Dayjs, OpUnitType } from 'dayjs'
 
+import advancedFormat from 'dayjs/plugin/advancedFormat'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import dayOfYear from 'dayjs/plugin/dayOfYear'
 import isBetween from 'dayjs/plugin/isBetween'
 import isLeapYear from 'dayjs/plugin/isLeapYear'
+import relativeTime from 'dayjs/plugin/relativeTime'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 
-export type TimeFormat = string
-export type TimeUnit = 'milliseconds' | 'seconds' | 'minutes' | 'hours' | 'days'
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.extend(dayOfYear)
+dayjs.extend(isBetween)
+dayjs.extend(isLeapYear)
+dayjs.extend(relativeTime)
+dayjs.extend(advancedFormat)
+dayjs.extend(customParseFormat)
 
-export class Time extends Dayjs {
+const phpToDayjsTokens = (format: string): string => format
+    .replace(/Y/g, 'YYYY')
+    .replace(/m/g, 'MM')
+    .replace(/d/g, 'DD')
+    .replace(/H/g, 'HH')
+    .replace(/i/g, 'mm')
+    .replace(/s/g, 'ss')
+
+export function format (date: ConfigType, fmt: string) {
+    return dayjs(date).format(phpToDayjsTokens(fmt))
+}
+
+// export interface Time extends Dayjs { }
+const TimeClass = class { } as { new(date?: dayjs.ConfigType): Dayjs } & typeof Dayjs
+
+export class Time extends TimeClass {
+    private instance: Dayjs
+
     constructor(config?: ConfigType) {
-        dayjs.extend(isBetween)
-        dayjs.extend(isLeapYear)
-        dayjs.extend(dayOfYear)
-        super(dayjs(config))
+        super(config)
+
+        this.instance = dayjs(config)
+        return new Proxy(this, {
+            get: (target, prop, receiver) => {
+                if (prop in target) return Reflect.get(target, prop, receiver)
+
+                const value = Reflect.get(this.instance, prop, receiver)
+                if (typeof value === 'function') {
+                    return (...args: any[]) => {
+                        const result = value.apply(this.instance, args)
+                        // If result is Dayjs, wrap in Time
+                        return dayjs.isDayjs(result) ? new Time(result) : result
+                    }
+                }
+                return value
+            }
+        })
     }
 
     /**
@@ -34,30 +76,16 @@ export class Time extends Dayjs {
     }
 
     /**
-     * Get current timestamp in milliseconds.
-     *
-     * @returns Current timestamp as number
-     */
-    now (): number {
-        return Date.now()
-    }
-
-    /**
-     * Get the difference in days from today.
-     * 
-     * @returns 
-     */
-    fromNow (): number {
-        return this.diff(new Date()) / (24 * 60 * 60)
-    }
-
-    /**
      * Get the first day of the month of the given date
      * 
      * @returns 
      */
     firstDayOfMonth (): Time {
         return new Time(new Date(Date.UTC(this.year(), this.month(), 1)))
+    }
+
+    carbonFormat (template?: string | undefined) {
+        return template ? this.format(phpToDayjsTokens(template)) : this.format()
     }
 
     /**
@@ -100,28 +128,29 @@ export class Time extends Dayjs {
      *
      * @param timestamp - Unix timestamp
      * 
-     * @return {Time} object
+     * @return {Date} object
      */
-    static fromTimestamp (timestamp: number): Time {
-        return new Time(new Date(timestamp * 1000))
+    static fromTimestamp (timestamp: number): Date {
+        return new Date(timestamp * 1000)
     }
 
     /**
-     * Get current timestamp in milliseconds.
+     * Get current time instance.
      *
-     * @returns Current timestamp as number
+     * @returns Current time
      */
-    static now (): number {
-        return Date.now()
+    static now (): Time {
+        return new Time()
     }
 
     /**
-     * This returns the Unix timestamp (the number of seconds since the Unix Epoch) of the Time object.
-     *
-     * @param time - current time
+     * Parse the time
+     * 
+     * @param date 
+     * @returns 
      */
-    static unix (time?: ConfigType): number {
-        return new Time(time).unix()
+    static parse (date: dayjs.ConfigType): Time {
+        return new Time(date)
     }
 
     /**
@@ -136,55 +165,6 @@ export class Time extends Dayjs {
         return new Time(time).format(template)
     }
 
-    /**
-     * This indicates the difference between two date-time in the specified unit.
-     * 
-     * To get the difference in milliseconds, use dayjs#diff
-     *
-     * @param time 
-     * @param date 
-     * @param unit 
-     * @param float 
-     */
-    static diff (time?: ConfigType, date?: ConfigType, unit?: QUnitType | OpUnitType, float?: boolean): number {
-        return new Time(time).diff(date, unit, float)
-    }
-
-    /**
-     * Returns a cloned Time object with a specified amount of time added
-     *
-     * @param time 
-     * @param value 
-     * @param unit 
-     * @returns 
-     */
-    static add (time: ConfigType, value: number, unit?: ManipulateType | undefined): Time {
-        return new Time((dayjs(time).add(value, unit)))
-    }
-
-    /**
-     * Returns a cloned Time object with a specified amount of time subtracted.
-     *
-     * @param time 
-     * @param value 
-     * @param unit 
-     * @returns 
-     */
-    static subtract (time: ConfigType, value: number, unit?: ManipulateType | undefined): Time {
-        return new Time((dayjs(time).subtract(value, unit)))
-    }
-
-    /**
-     * Get the difference in days from today.
-     *
-     * @param time 
-     * @param date 
-     * @param unit 
-     * @param float 
-     */
-    static fromNow (time?: ConfigType): number {
-        return new Time(time).fromNow()
-    }
 
     /**
      * Get the difference in days from today.
@@ -196,41 +176,14 @@ export class Time extends Dayjs {
      * @param endMinute 
      * @returns 
      */
-    static randomTime (time?: ConfigType, startHour?: number, startMinute?: number, endHour?: number, endMinute?: number): Time {
+    static randomTime (
+        time?: ConfigType,
+        startHour?: number,
+        startMinute?: number,
+        endHour?: number,
+        endMinute?: number
+    ): Time {
         return new Time(time).randomTime(startHour, startMinute, endHour, endMinute)
-    }
-
-    /**
-     * @param time 
-     * @param a 
-     * @param b 
-     * @param c 
-     * @param d 
-     * @returns 
-     */
-    static isBetween (
-        time: ConfigType,
-        a: string | number | dayjs.Dayjs | Date | null | undefined,
-        b: ConfigType,
-        c?: OpUnitType | null,
-        d?: '()' | '[]' | '[)' | '(]'
-    ): boolean {
-        return new Time(time).isBetween(a, b, c, d)
-    }
-
-    /**
-     * @param time 
-     * @param a 
-     * @param b 
-     * @param c 
-     * @param d 
-     * @returns 
-     */
-    static dayOfYear (time: ConfigType): number
-    static dayOfYear (time: ConfigType, value: number): Time
-    static dayOfYear (time: ConfigType, value?: number): Time | number {
-        const output = new Time(time).dayOfYear(value!)
-        return value ? new Time(output) : Number(output)
     }
 
     /**
@@ -253,16 +206,5 @@ export class Time extends Dayjs {
      */
     static lastDayOfMonth (time: ConfigType): Time {
         return new Time(time).lastDayOfMonth()
-    }
-
-    /**
-     * Checks if the given date is in a leap year
-     * 
-     * @param time 
-     * 
-     * @returns 
-     */
-    static isLeapYear (time: ConfigType): boolean {
-        return new Time(time).isLeapYear()
     }
 }
