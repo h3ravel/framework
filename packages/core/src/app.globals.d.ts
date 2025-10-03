@@ -75,8 +75,8 @@ declare global {
 
     /**
      * Get the database path
-     * 
-     * @param path 
+     *
+     * @param path
      */
     function database_path (path?: string): string
 }
