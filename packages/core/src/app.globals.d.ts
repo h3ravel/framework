@@ -79,12 +79,4 @@ declare global {
      * @param path
      */
     function database_path (path?: string): string
-
-    /**
-     * Generate URLs or get the Url instance
-     *
-     * @param path
-     */
-    function url (): import('../../../http/src/Url').Url
-    function url (path: string): string
 }
