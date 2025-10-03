@@ -13,6 +13,7 @@ packages:
   - packages/router
   - packages/console
   - packages/view
+  - packages/url
   - examples/*
   - docs
 
