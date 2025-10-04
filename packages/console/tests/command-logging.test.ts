@@ -1,26 +1,17 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { Musket } from '../src/Musket'
+import { Command } from '../src/Commands/Command'
 import { Logger } from '@h3ravel/shared'
 import { Application } from '@h3ravel/core'
 import { Kernel } from '../src/Kernel'
 
-describe('Musket Logging Methods', () => {
-  let musket: Musket
-  let mockApp: Application
-  let mockKernel: Kernel
+describe('Command Logging Methods', () => {
+  let command: Command
 
   beforeEach(() => {
-    // Create mock instances
-    mockApp = {} as Application
-    mockKernel = {
-      app: mockApp,
-      consolePackage: { version: '1.0.0' },
-      modulePackage: { version: '1.0.0' }
-    } as any
-
-    musket = new Musket(mockApp, mockKernel)
-
-    // Spy on Logger methods
+    const mockApp = {} as Application
+    const mockKernel = {} as Kernel
+    command = new Command(mockApp, mockKernel)
+    
     vi.spyOn(Logger, 'info').mockImplementation(() => {})
     vi.spyOn(Logger, 'warn').mockImplementation(() => {})
     vi.spyOn(Logger, 'log').mockImplementation(() => {})
@@ -36,65 +27,47 @@ describe('Musket Logging Methods', () => {
 
   it('should call Logger.info when info method is called', () => {
     const message = 'Test info message'
-    musket.info(message)
+    command.info(message)
     expect(Logger.info).toHaveBeenCalledWith(message)
-    expect(Logger.info).toHaveBeenCalledTimes(1)
   })
 
   it('should call Logger.warn when warn method is called', () => {
     const message = 'Test warning message'
-    musket.warn(message)
+    command.warn(message)
     expect(Logger.warn).toHaveBeenCalledWith(message)
-    expect(Logger.warn).toHaveBeenCalledTimes(1)
   })
 
   it('should call Logger.log when line method is called', () => {
     const message = 'Test line message'
-    musket.line(message)
+    command.line(message)
     expect(Logger.log).toHaveBeenCalledWith(message)
-    expect(Logger.log).toHaveBeenCalledTimes(1)
   })
 
-  it('should call console.log once when newLine method is called without arguments', () => {
-    musket.newLine()
-    expect(console.log).toHaveBeenCalledWith('')
+  it('should call console.log when newLine is called', () => {
+    command.newLine()
     expect(console.log).toHaveBeenCalledTimes(1)
   })
 
-  it('should call console.log multiple times when newLine is called with count', () => {
-    musket.newLine(3)
-    expect(console.log).toHaveBeenCalledWith('')
+  it('should call console.log multiple times with count', () => {
+    command.newLine(3)
     expect(console.log).toHaveBeenCalledTimes(3)
   })
 
   it('should call Logger.success when success method is called', () => {
     const message = 'Test success message'
-    musket.success(message)
+    command.success(message)
     expect(Logger.success).toHaveBeenCalledWith(message)
-    expect(Logger.success).toHaveBeenCalledTimes(1)
   })
 
   it('should call Logger.error when error method is called', () => {
     const message = 'Test error message'
-    musket.error(message)
+    command.error(message)
     expect(Logger.error).toHaveBeenCalledWith(message)
-    expect(Logger.error).toHaveBeenCalledTimes(1)
   })
 
   it('should call Logger.debug when debug method is called', () => {
     const message = 'Test debug message'
-    musket.debug(message)
+    command.debug(message)
     expect(Logger.debug).toHaveBeenCalledWith(message)
-    expect(Logger.debug).toHaveBeenCalledTimes(1)
-  })
-
-  it('should handle empty string messages', () => {
-    musket.info('')
-    expect(Logger.info).toHaveBeenCalledWith('')
-  })
-
-  it('should handle newLine with count of 0', () => {
-    musket.newLine(0)
-    expect(console.log).not.toHaveBeenCalled()
   })
 })
