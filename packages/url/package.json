@@ -53,8 +53,7 @@
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
-    "@h3ravel/http": "workspace:^",
-    "@h3ravel/router": "workspace:^"
+    "@h3ravel/http": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

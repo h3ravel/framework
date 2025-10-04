@@ -2,12 +2,12 @@ import 'reflect-metadata'
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Application, Container, Kernel } from '@h3ravel/core'
 import { Request, Response } from '@h3ravel/http'
-import { singularize } from '@h3ravel/support'
+import { Str } from '@h3ravel/support'
 import { HttpContext, RouteEventHandler } from '@h3ravel/shared'
-import type { EventHandler, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
+import type { EventHandler, ExtractControllerMethods, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
 import { Helpers } from './Helpers'
 import { Model } from '@h3ravel/database'
-import { RouteDefinition, RouteMethod } from './Contracts/Router'
+import { RouteDefinition, RouteMethod } from '@h3ravel/shared'
 
 export class Router implements IRouter {
     private routes: RouteDefinition[] = []
@@ -88,8 +88,8 @@ export class Router implements IRouter {
      * @param handler     Event handler function OR controller class
      * @param methodName  Method to invoke on the controller (defaults to 'index')
      */
-    private resolveControllerOrHandler (
-        handler: EventHandler | (new (...args: any[]) => Record<string, any>),
+    private resolveControllerOrHandler<C extends new (...args: any) => any> (
+        handler: EventHandler | C,
         methodName?: string,
         path?: string,
     ): EventHandler {
@@ -109,7 +109,7 @@ export class Router implements IRouter {
                      * Otherwise instantiate manually so that we can at least
                      * pass the app instance
                      */
-                    controller = new (handler as new (...args: any[]) => IController)(this.app)
+                    controller = new (handler as C)(this.app)
                 }
 
                 /**
@@ -182,16 +182,26 @@ export class Router implements IRouter {
      * @param name        Optional route name (for URL generation or referencing).
      * @param middleware  Optional array of middleware functions to execute before the handler.
      */
-    get (
+    get<C extends new (...args: any) => any> (
         path: string,
-        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
-        const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? definition[1] : undefined
 
-        this.addRoute('get', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
+        const handler = Array.isArray(definition) ? definition[0] : definition
+        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
+
+        // Add the route to the route stack
+        this.addRoute(
+            'get',
+            path,
+            this.resolveControllerOrHandler(handler, methodName, path),
+            name,
+            middleware,
+            [handler.name, methodName]
+        )
+
         return this
     }
 
@@ -205,16 +215,26 @@ export class Router implements IRouter {
      * @param name        Optional route name (for URL generation or referencing).
      * @param middleware  Optional array of middleware functions to execute before the handler.
      */
-    post (
+    post<C extends new (...args: any) => any> (
         path: string,
-        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
-        const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? definition[1] : undefined
 
-        this.addRoute('post', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
+        const handler = Array.isArray(definition) ? definition[0] : definition
+        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
+
+        // Add the route to the route stack
+        this.addRoute(
+            'post',
+            path,
+            this.resolveControllerOrHandler(handler, methodName, path),
+            name,
+            middleware,
+            [handler.name, methodName]
+        )
+
         return this
     }
 
@@ -228,15 +248,25 @@ export class Router implements IRouter {
      * @param name        Optional route name (for URL generation or referencing).
      * @param middleware  Optional array of middleware functions to execute before the handler.
      */
-    put (
+    put<C extends new (...args: any) => any> (
         path: string,
-        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
+
         const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('put', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
+        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
+
+        // Add the route to the route stack
+        this.addRoute(
+            'put',
+            path,
+            this.resolveControllerOrHandler(handler, methodName, path),
+            name,
+            middleware,
+            [handler.name, methodName]
+        )
         return this
     }
 
@@ -250,15 +280,26 @@ export class Router implements IRouter {
      * @param name        Optional route name (for URL generation or referencing).
      * @param middleware  Optional array of middleware functions to execute before the handler.
      */
-    patch (
+    patch<C extends new (...args: any) => any> (
         path: string,
-        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
+
         const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('patch', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
+        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
+
+        // Add the route to the route stack
+        this.addRoute(
+            'patch',
+            path,
+            this.resolveControllerOrHandler(handler, methodName, path),
+            name,
+            middleware,
+            [handler.name, methodName]
+        )
+
         return this
     }
 
@@ -272,15 +313,26 @@ export class Router implements IRouter {
      * @param name        Optional route name (for URL generation or referencing).
      * @param middleware  Optional array of middleware functions to execute before the handler.
      */
-    delete (
+    delete<C extends new (...args: any) => any> (
         path: string,
-        definition: RouteEventHandler | [(new (...args: any[]) => Record<string, any>), methodName: string],
+        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd> {
+
         const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? definition[1] : undefined
-        this.addRoute('delete', path, this.resolveControllerOrHandler(handler, methodName, path), name, middleware, [handler.name, methodName])
+        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
+
+        // Add the route to the route stack
+        this.addRoute(
+            'delete',
+            path,
+            this.resolveControllerOrHandler(handler, methodName, path),
+            name,
+            middleware,
+            [handler.name, methodName]
+        )
+
         return this
     }
 
@@ -290,23 +342,23 @@ export class Router implements IRouter {
      * @param path 
      * @param controller 
      */
-    apiResource (
+    apiResource<C extends new (...args: any) => any> (
         path: string,
-        Controller: new (app: Application) => IController,
+        Controller: C,
         middleware: IMiddleware[] = []
     ): Omit<this, RouterEnd | 'name'> {
         path = path.replace(/\//g, '/')
 
         const basePath = `/${path}`.replace(/\/+$/, '').replace(/(\/)+/g, '$1')
         const name = basePath.substring(basePath.lastIndexOf('/') + 1).replaceAll(/\/|:/g, '') || ''
-        const param = singularize(name)
+        const param = Str.singular(name)
 
-        this.get(basePath, [Controller, 'index'], `${name}.index`, middleware)
-        this.post(basePath, [Controller, 'store'], `${name}.store`, middleware)
-        this.get(`${basePath}/:${param}`, [Controller, 'show'], `${name}.show`, middleware)
-        this.put(`${basePath}/:${param}`, [Controller, 'update'], `${name}.update`, middleware)
-        this.patch(`${basePath}/:${param}`, [Controller, 'update'], `${name}.update`, middleware)
-        this.delete(`${basePath}/:${param}`, [Controller, 'destroy'], `${name}.destroy`, middleware)
+        this.get(basePath, [Controller, <never>'index'], `${name}.index`, middleware)
+        this.post(basePath, [Controller, <never>'store'], `${name}.store`, middleware)
+        this.get(`${basePath}/:${param}`, [Controller, <never>'show'], `${name}.show`, middleware)
+        this.put(`${basePath}/:${param}`, [Controller, <never>'update'], `${name}.update`, middleware)
+        this.patch(`${basePath}/:${param}`, [Controller, <never>'update'], `${name}.update`, middleware)
+        this.delete(`${basePath}/:${param}`, [Controller, <never>'destroy'], `${name}.destroy`, middleware)
 
         return this
     }

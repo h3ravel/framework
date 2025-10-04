@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 
-import { Time } from '../src/Helpers/Time'
+import { DateTime as Time } from '../src/Helpers/Time'
 
 describe('Time helpers', () => {
   test('now/unix monotonicity', () => {

@@ -1,3 +1,4 @@
+/// <reference path="../app.globals.d.ts" />
 import { ServiceProvider } from '@h3ravel/core'
 import { Url } from '../Url'
 import { createUrlHelper } from '../RequestAwareHelpers'
@@ -10,32 +11,31 @@ export class UrlServiceProvider extends ServiceProvider {
     /**
      * Register URL services in the container
      */
-    register(): void {
+    register (): void {
         // Register the Url class
-        this.app.singleton(<never>'url.class', () => Url)
-        
+        this.app.singleton('app.url', () => Url)
         // Register the url() helper function
-        this.app.singleton(<never>'url.helper', () => createUrlHelper(this.app))
-        
+        this.app.singleton('app.url.helper', () => createUrlHelper(this.app))
+
         // Register bound URL helpers
-        this.app.singleton(<never>'url.helpers', () => createUrlHelpers(this.app))
-        
+        this.app.singleton('app.url.helpers', () => createUrlHelpers(this.app))
+
         // Make url() globally available
         if (typeof globalThis !== 'undefined') {
-            const helpers = createUrlHelpers(this.app);
-            (globalThis as any).url = helpers.url;
-            (globalThis as any).route = helpers.route;
-            (globalThis as any).action = helpers.action;
-            (globalThis as any).to = helpers.to;
-            (globalThis as any).signedRoute = helpers.signedRoute;
-            (globalThis as any).temporarySignedRoute = helpers.temporarySignedRoute;
+            const helpers = createUrlHelpers(this.app)
+
+            Object.assign(globalThis, {
+                url: helpers.url,
+                route: helpers.route,
+                action: helpers.action,
+            })
         }
     }
 
     /**
      * Boot URL services
      */
-    boot(): void {
+    boot (): void {
         // Any additional setup can be done here
     }
 }

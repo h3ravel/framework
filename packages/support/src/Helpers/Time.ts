@@ -1,13 +1,13 @@
 import dayjs, { ConfigType, Dayjs, OpUnitType } from 'dayjs'
 
-import advancedFormat from 'dayjs/plugin/advancedFormat'
-import customParseFormat from 'dayjs/plugin/customParseFormat'
-import dayOfYear from 'dayjs/plugin/dayOfYear'
-import isBetween from 'dayjs/plugin/isBetween'
-import isLeapYear from 'dayjs/plugin/isLeapYear'
-import relativeTime from 'dayjs/plugin/relativeTime'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
+import advancedFormat from 'dayjs/plugin/advancedFormat.js'
+import customParseFormat from 'dayjs/plugin/customParseFormat.js'
+import dayOfYear from 'dayjs/plugin/dayOfYear.js'
+import isBetween from 'dayjs/plugin/isBetween.js'
+import isLeapYear from 'dayjs/plugin/isLeapYear.js'
+import relativeTime from 'dayjs/plugin/relativeTime.js'
+import timezone from 'dayjs/plugin/timezone.js'
+import utc from 'dayjs/plugin/utc.js'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -33,7 +33,7 @@ export function format (date: ConfigType, fmt: string) {
 // export interface Time extends Dayjs { }
 const TimeClass = class { } as { new(date?: dayjs.ConfigType): Dayjs } & typeof Dayjs
 
-export class Time extends TimeClass {
+export class DateTime extends TimeClass {
     private instance: Dayjs
 
     constructor(config?: ConfigType) {
@@ -49,7 +49,7 @@ export class Time extends TimeClass {
                     return (...args: any[]) => {
                         const result = value.apply(this.instance, args)
                         // If result is Dayjs, wrap in Time
-                        return dayjs.isDayjs(result) ? new Time(result) : result
+                        return dayjs.isDayjs(result) ? new DateTime(result) : result
                     }
                 }
                 return value
@@ -80,8 +80,8 @@ export class Time extends TimeClass {
      * 
      * @returns 
      */
-    firstDayOfMonth (): Time {
-        return new Time(new Date(Date.UTC(this.year(), this.month(), 1)))
+    firstDayOfMonth (): DateTime {
+        return new DateTime(new Date(Date.UTC(this.year(), this.month(), 1)))
     }
 
     carbonFormat (template?: string | undefined) {
@@ -93,8 +93,8 @@ export class Time extends TimeClass {
      * 
      * @returns 
      */
-    lastDayOfMonth (): Time {
-        return new Time(new Date(Date.UTC(this.year(), this.month() + 1, 0)))
+    lastDayOfMonth (): DateTime {
+        return new DateTime(new Date(Date.UTC(this.year(), this.month() + 1, 0)))
     }
 
     /**
@@ -111,7 +111,7 @@ export class Time extends TimeClass {
         startMinute: number = 0,
         endHour: number = 17,
         endMinute: number = 0
-    ): Time {
+    ): DateTime {
         const today = new Date()
         const startMinutes = startHour * 60 + startMinute
         const endMinutes = endHour * 60 + endMinute
@@ -120,7 +120,7 @@ export class Time extends TimeClass {
         const minute = randomMinutes % 60
         const date = new Date(today)
         date.setHours(hour, minute, 0, 0)
-        return new Time(date)
+        return new DateTime(date)
     }
 
     /**
@@ -139,8 +139,8 @@ export class Time extends TimeClass {
      *
      * @returns Current time
      */
-    static now (): Time {
-        return new Time()
+    static now (): DateTime {
+        return new DateTime()
     }
 
     /**
@@ -149,8 +149,8 @@ export class Time extends TimeClass {
      * @param date 
      * @returns 
      */
-    static parse (date: dayjs.ConfigType): Time {
-        return new Time(date)
+    static parse (date: dayjs.ConfigType): DateTime {
+        return new DateTime(date)
     }
 
     /**
@@ -162,7 +162,7 @@ export class Time extends TimeClass {
      * @param template - time format
      */
     static format (time?: ConfigType, template?: string | undefined): string {
-        return new Time(time).format(template)
+        return new DateTime(time).format(template)
     }
 
 
@@ -182,8 +182,8 @@ export class Time extends TimeClass {
         startMinute?: number,
         endHour?: number,
         endMinute?: number
-    ): Time {
-        return new Time(time).randomTime(startHour, startMinute, endHour, endMinute)
+    ): DateTime {
+        return new DateTime(time).randomTime(startHour, startMinute, endHour, endMinute)
     }
 
     /**
@@ -193,8 +193,8 @@ export class Time extends TimeClass {
      * 
      * @returns 
      */
-    static firstDayOfMonth (time: ConfigType): Time {
-        return new Time(time).firstDayOfMonth()
+    static firstDayOfMonth (time: ConfigType): DateTime {
+        return new DateTime(time).firstDayOfMonth()
     }
 
     /**
@@ -204,7 +204,7 @@ export class Time extends TimeClass {
      * 
      * @returns 
      */
-    static lastDayOfMonth (time: ConfigType): Time {
-        return new Time(time).lastDayOfMonth()
+    static lastDayOfMonth (time: ConfigType): DateTime {
+        return new DateTime(time).lastDayOfMonth()
     }
 }

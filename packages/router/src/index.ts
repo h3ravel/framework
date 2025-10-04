@@ -1,5 +1,4 @@
 export * from './Commands/RouteListCommand'
-export * from './Contracts/Router'
 export * from './Controller'
 export * from './Helpers'
 export * from './Providers/AssetsServiceProvider'

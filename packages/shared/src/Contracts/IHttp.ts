@@ -6,6 +6,10 @@ import { IResponse } from './IResponse'
 
 export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'patch' | 'apiResource' | 'group' | 'route';
 
+export type ExtractControllerMethods<T> = {
+    [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never
+}[keyof T];
+
 /**
  * Interface for the Router contract, defining methods for HTTP routing.
  */
@@ -17,9 +21,9 @@ export interface IRouter {
      * @param name - Optional route name.
      * @param middleware - Optional middleware array.
      */
-    get (
+    get<C extends new (...args: any) => any> (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        definition: EventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware?: IMiddleware[]
     ): Omit<this, RouterEnd>;
@@ -31,9 +35,9 @@ export interface IRouter {
      * @param name - Optional route name.
      * @param middleware - Optional middleware array.
      */
-    post (
+    post<C extends new (...args: any) => any> (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        definition: EventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware?: IMiddleware[]
     ): Omit<this, RouterEnd>;
@@ -45,9 +49,26 @@ export interface IRouter {
      * @param name - Optional route name.
      * @param middleware - Optional middleware array.
      */
-    put (
+    put<C extends new (...args: any) => any> (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        definition: EventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
+        name?: string,
+        middleware?: IMiddleware[]
+    ): Omit<this, RouterEnd>;
+
+    /**
+     * Registers a route that responds to HTTP PATCH requests.
+     *
+     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
+     * @param definition  Either:
+     *                      - An EventHandler function
+     *                      - A tuple: [ControllerClass, methodName]
+     * @param name        Optional route name (for URL generation or referencing).
+     * @param middleware  Optional array of middleware functions to execute before the handler.
+     */
+    patch<C extends new (...args: any) => any> (
+        path: string,
+        definition: EventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware?: IMiddleware[]
     ): Omit<this, RouterEnd>;
@@ -59,9 +80,9 @@ export interface IRouter {
      * @param name - Optional route name.
      * @param middleware - Optional middleware array.
      */
-    delete (
+    delete<C extends new (...args: any) => any> (
         path: string,
-        definition: EventHandler | [(new (...args: any[]) => IController), methodName: string],
+        definition: EventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
         name?: string,
         middleware?: IMiddleware[]
     ): Omit<this, RouterEnd>;
@@ -147,11 +168,11 @@ export type RouteEventHandler = (...args: any[]) => any
  * Any controller implementing this must define these methods.
  */
 export interface IController {
-    show (...ctx: any[]): any
-    index (...ctx: any[]): any
-    store (...ctx: any[]): any
-    update (...ctx: any[]): any
-    destroy (...ctx: any[]): any
+    show?(...ctx: any[]): any
+    index?(...ctx: any[]): any
+    store?(...ctx: any[]): any
+    update?(...ctx: any[]): any
+    destroy?(...ctx: any[]): any
 }
 
 /**

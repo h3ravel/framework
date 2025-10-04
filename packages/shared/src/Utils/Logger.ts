@@ -157,18 +157,25 @@ export class Logger {
      * @param config 
      * @param joiner 
      * @param log If set to false, string output will be returned and not logged 
+     * @param sc color to use ue on split text if : is found 
      */
-    static parse (config: LoggerParseSignature, joiner?: string, log?: true): void
-    static parse (config: LoggerParseSignature, joiner?: string, log?: false): string
-    static parse (config: LoggerParseSignature, joiner = ' ', log = true): string | void {
+    static parse (config: LoggerParseSignature, joiner?: string, log?: true, sc?: LoggerChalk): void
+    static parse (config: LoggerParseSignature, joiner?: string, log?: false, sc?: LoggerChalk): string
+    static parse (config: LoggerParseSignature, joiner = ' ', log = true, sc?: LoggerChalk): string | void {
         const string = config.map(([str, opt]) => {
             if (Array.isArray(opt)) {
                 opt = Logger.chalker(opt) as ChalkInstance
             }
 
-            return typeof opt === 'string' && typeof chalk[opt] === 'function'
+            const output = typeof opt === 'string' && typeof chalk[opt] === 'function'
                 ? (chalk as any)[opt](str)
                 : typeof opt === 'function' ? opt(str) : str
+
+            if (!sc) {
+                return output
+            }
+
+            return this.textFormat(output, Logger.chalker(Array.isArray(sc) ? sc : [sc]))
         }).join(joiner)
 
         if (log) console.log(string)
@@ -180,12 +187,12 @@ export class Logger {
      * 
      * @returns 
      */
-    public static log: LoggerLog = ((config, joiner, log: boolean = true) => {
+    public static log: LoggerLog = ((config, joiner, log: boolean = true, sc) => {
         if (typeof config === 'string') {
             const conf = [[config, joiner]] as [string, keyof ChalkInstance][]
-            return this.parse(conf, '', log as false)
+            return this.parse(conf, '', log as false, sc)
         } else if (config) {
-            return this.parse(config, String(joiner), log as false)
+            return this.parse(config, String(joiner), log as false, sc)
         }
 
         return this

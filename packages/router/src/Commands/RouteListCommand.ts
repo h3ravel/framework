@@ -1,8 +1,6 @@
-import { RouteDefinition, RouteMethod } from '../Contracts/Router'
+import { Logger, LoggerChalk, RouteDefinition, RouteMethod } from '@h3ravel/shared'
 
 import { ConsoleCommand } from '@h3ravel/core'
-import { Logger } from '@h3ravel/shared'
-import { LoggerChalk } from '@/packages/shared/dist'
 
 export class RouteListCommand extends ConsoleCommand {
 

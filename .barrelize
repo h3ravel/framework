@@ -125,8 +125,8 @@
           "Str",
           "/^(?!default$)(.+)/ as $1"
         ],
-        "**/Time.ts": [
-          "Time",
+        "**/DateTime.ts": [
+          "DateTime",
           "/^(?!default$)(.+)/ as $1"
         ]
       }

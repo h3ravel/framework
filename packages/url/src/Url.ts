@@ -1,6 +1,8 @@
+import { ConfigException, type Application } from '@h3ravel/core'
+import { RouteParams } from './Contracts/UrlContract'
 import { hmac } from '@h3ravel/support'
-import type { Application } from '@h3ravel/core'
-import type { IRouter } from '@h3ravel/shared'
+import { RouteDefinition, ExtractControllerMethods } from '@h3ravel/shared'
+import path from 'node:path'
 
 /**
  * URL builder class with fluent API and request-aware helpers
@@ -35,11 +37,11 @@ export class Url {
     /**
      * Create a URL from a full URL string
      */
-    static of(url: string, app?: Application): Url {
+    static of (url: string, app?: Application): Url {
         try {
             const parsed = new URL(url)
             const query: Record<string, unknown> = {}
-            
+
             // Parse query parameters
             parsed.searchParams.forEach((value, key) => {
                 query[key] = value
@@ -54,7 +56,7 @@ export class Url {
                 query,
                 parsed.hash ? parsed.hash.substring(1) : undefined
             )
-        } catch (error) {
+        } catch {
             throw new Error(`Invalid URL: ${url}`)
         }
     }
@@ -62,15 +64,14 @@ export class Url {
     /**
      * Create a URL from a path relative to the app URL
      */
-    static to(path: string, app?: Application): Url {
-        // Use (app as any)?.config to avoid TS error if config is not typed on Application
-        const baseUrl =
-            (app && (app as any).config && typeof (app as any).config.get === 'function'
-                ? (app as any).config.get('app.url')
-                : undefined) ||
-            process.env.APP_URL ||
-            'http://localhost:3000'
+    static to (path: string, app?: Application): Url {
+        let baseUrl = ''
+        try {
+            baseUrl = config('app.url', 'http://localhost:3000')
+        } catch {/** */ }
+
         const fullUrl = new URL(path, baseUrl).toString()
+
         return Url.of(fullUrl, app)
     }
 
@@ -78,22 +79,26 @@ export class Url {
      * Create a URL from a named route
      */
     // Route parameter map (declaration-mergeable by consumers)
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    static route<TName extends string = string, TParams extends Record<string, string | number> = Record<string, string | number>>(name: TName, params: TParams = {} as TParams, app?: Application): Url {
+    static route<TName extends string = string, TParams extends RouteParams = RouteParams> (
+        name: TName,
+        params: TParams = {} as TParams,
+        app?: Application
+    ): Url {
         if (!app) {
             throw new Error('Application instance required for route generation')
         }
 
         // Use (app as any).make to avoid TS error if make is not typed on Application
-        const router = (app as any).make?.('router')
+        const router = app.make('router')
         if (!router || typeof router.route !== 'function') {
             throw new Error('Router not available or does not support route generation')
         }
-        if (typeof (router as any).route !== 'function') {
+
+        if (typeof router.route !== 'function') {
             throw new Error('Router does not support route generation')
         }
 
-        const routeUrl = (router as any).route(name, params)
+        const routeUrl = router.route(name, params)
         if (!routeUrl) {
             throw new Error(`Route "${name}" not found`)
         }
@@ -104,7 +109,11 @@ export class Url {
     /**
      * Create a signed URL from a named route
      */
-    static signedRoute<TName extends string = string, TParams extends Record<string, string | number> = Record<string, string | number>>(name: TName, params: TParams = {} as TParams, app?: Application): Url {
+    static signedRoute<TName extends string = string, TParams extends RouteParams = RouteParams> (
+        name: TName,
+        params: TParams = {} as TParams,
+        app?: Application
+    ): Url {
         const url = Url.route<TName, TParams>(name, params, app)
         return url.withSignature(app)
     }
@@ -112,9 +121,9 @@ export class Url {
     /**
      * Create a temporary signed URL from a named route
      */
-    static temporarySignedRoute<TName extends string = string, TParams extends Record<string, string | number> = Record<string, string | number>>(
-        name: TName, 
-        params: TParams = {} as TParams, 
+    static temporarySignedRoute<TName extends string = string, TParams extends RouteParams = RouteParams> (
+        name: TName,
+        params: TParams = {} as TParams,
         expiration: number,
         app?: Application
     ): Url {
@@ -125,25 +134,49 @@ export class Url {
     /**
      * Create a URL from a controller action
      */
-    static action<TParams extends Record<string, string | number> = Record<string, string | number>>(controller: string, app?: Application): Url {
+    static action<C extends new (...args: any) => any> (
+        controller: string | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
+        params?: Record<string, any>,
+        app?: Application
+    ): Url {
         if (!app) throw new Error('Application instance required for action URL generation')
-        const [controllerName, methodName = 'index'] = controller.split('@')
-        const routesRaw = (app as any).make?.('app.routes') as unknown
-        if (!Array.isArray(routesRaw)) {
+
+        const [controllerName, methodName = 'index'] = typeof controller === 'string'
+            ? controller.split('@')
+            : controller
+
+        const cname = typeof controllerName === 'string' ? controllerName : controllerName.name
+
+        const routes: RouteDefinition[] = app.make('app.routes')
+
+        if (!Array.isArray(routes)) {
             // Backward-compatible message expected by existing tests
             throw new Error('Action URL generation requires router integration - not yet implemented')
         }
-        const routes = routesRaw as Array<{ path: string; signature?: [string, string?] }>
+
         if (routes.length < 1) throw new Error(`No routes available to resolve action: ${controller}`)
-        const found = routes.find(r => (r.signature?.[0] === controllerName) && ((r.signature?.[1] || 'index') === methodName))
-        if (!found) throw new Error(`No route found for ${controller}`)
+
+        // Search for for the 
+        const found = routes.find(route => {
+            return route.signature?.[0] === cname && (route.signature?.[1] || 'index') === methodName
+        })
+
+        if (!found) throw new Error(`No route found for ${cname}`)
+
+        // Build the route parameters
+        const _params = Object.values(params ?? {}).join('/')
+
+        if (_params) {
+            return Url.to(path.join(found.path, _params))
+        }
+
         return Url.to(found.path, app)
     }
 
     /**
      * Set the scheme (protocol) of the URL
      */
-    withScheme(scheme: string): Url {
+    withScheme (scheme: string): Url {
         return new Url(
             this.app,
             scheme,
@@ -158,7 +191,7 @@ export class Url {
     /**
      * Set the host of the URL
      */
-    withHost(host: string): Url {
+    withHost (host: string): Url {
         return new Url(
             this.app,
             this._scheme,
@@ -173,7 +206,7 @@ export class Url {
     /**
      * Set the port of the URL
      */
-    withPort(port: number): Url {
+    withPort (port: number): Url {
         return new Url(
             this.app,
             this._scheme,
@@ -188,7 +221,7 @@ export class Url {
     /**
      * Set the path of the URL
      */
-    withPath(path: string): Url {
+    withPath (path: string): Url {
         return new Url(
             this.app,
             this._scheme,
@@ -203,7 +236,7 @@ export class Url {
     /**
      * Set the query parameters of the URL
      */
-    withQuery(query: Record<string, unknown>): Url {
+    withQuery (query: Record<string, unknown>): Url {
         return new Url(
             this.app,
             this._scheme,
@@ -218,7 +251,7 @@ export class Url {
     /**
      * Merge additional query parameters
      */
-    withQueryParams(params: Record<string, unknown>): Url {
+    withQueryParams (params: Record<string, unknown>): Url {
         return new Url(
             this.app,
             this._scheme,
@@ -233,7 +266,7 @@ export class Url {
     /**
      * Set the fragment (hash) of the URL
      */
-    withFragment(fragment: string): Url {
+    withFragment (fragment: string): Url {
         return new Url(
             this.app,
             this._scheme,
@@ -248,31 +281,29 @@ export class Url {
     /**
      * Add a signature to the URL for security
      */
-    withSignature(app?: Application, expiration?: number): Url {
+    withSignature (app?: Application, expiration?: number): Url {
         const appInstance = app || this.app
         if (!appInstance) {
             throw new Error('Application instance required for URL signing')
         }
 
-        // Attempt to get the key from the app instance config, fallback to env
-        const key =
-            (typeof (appInstance as any).config?.get === 'function'
-                ? (appInstance as any).config.get('app.key')
-                : undefined) ||
-            process.env.APP_KEY
+        let key = ''
+        try {
+            key = config('app.key')
+        } catch {/** */ }
 
         if (!key) {
-            throw new Error('APP_KEY or app.key not configured')
+            throw new ConfigException('APP_KEY and app.key', 'any', this)
         }
         const url = this.toString()
-        let queryParams: Record<string, unknown> = { ...this._query }
-        
+        const queryParams: Record<string, unknown> = { ...this._query }
+
         if (expiration) {
             queryParams.expires = Math.floor(expiration / 1000)
         }
 
         // Create signature payload
-        const payload = expiration 
+        const payload = expiration
             ? `${url}?expires=${queryParams.expires}`
             : url
 
@@ -285,7 +316,7 @@ export class Url {
     /**
      * Verify if a URL signature is valid
      */
-    hasValidSignature(app?: Application): boolean {
+    hasValidSignature (app?: Application): boolean {
         const appInstance = app || this.app
         if (!appInstance) {
             return false
@@ -319,12 +350,14 @@ export class Url {
             this._fragment
         ).toString()
 
-        const payload = this._query.expires 
+        const payload = this._query.expires
             ? `${urlWithoutSignature}?expires=${this._query.expires}`
             : urlWithoutSignature
 
-        // config may not be typed on Application, so use type assertion
-        const key = (appInstance as { config?: { get: (key: string) => string } })?.config?.get('app.key') || 'default-key'
+        let key = ''
+        try {
+            key = config('app.key', 'default-key')
+        } catch {/** */ }
         const expectedSignature = hmac(payload, key)
 
         return signature === expectedSignature
@@ -333,17 +366,17 @@ export class Url {
     /**
      * Convert the URL to its string representation
      */
-    toString(): string {
+    toString (): string {
         let url = ''
 
         // Add scheme and host
         if (this._scheme && this._host) {
             url += `${this._scheme}://${this._host}`
-            
+
             // Add port if specified and not default
-            if (this._port && 
-                !((this._scheme === 'http' && this._port === 80) || 
-                  (this._scheme === 'https' && this._port === 443))) {
+            if (this._port &&
+                !((this._scheme === 'http' && this._port === 80) ||
+                    (this._scheme === 'https' && this._port === 443))) {
                 url += `:${this._port}`
             }
         }
@@ -381,42 +414,42 @@ export class Url {
     /**
      * Get the scheme
      */
-    getScheme(): string | undefined {
+    getScheme (): string | undefined {
         return this._scheme
     }
 
     /**
      * Get the host
      */
-    getHost(): string | undefined {
+    getHost (): string | undefined {
         return this._host
     }
 
     /**
      * Get the port
      */
-    getPort(): number | undefined {
+    getPort (): number | undefined {
         return this._port
     }
 
     /**
      * Get the path
      */
-    getPath(): string {
+    getPath (): string {
         return this._path
     }
 
     /**
      * Get the query parameters
      */
-    getQuery(): Record<string, unknown> {
+    getQuery (): Record<string, unknown> {
         return { ...this._query }
     }
 
     /**
      * Get the fragment
      */
-    getFragment(): string | undefined {
+    getFragment (): string | undefined {
         return this._fragment
     }
 }

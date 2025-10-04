@@ -476,9 +476,6 @@ importers:
       '@h3ravel/http':
         specifier: workspace:^
         version: link:../http
-      '@h3ravel/router':
-        specifier: workspace:^
-        version: link:../router
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared

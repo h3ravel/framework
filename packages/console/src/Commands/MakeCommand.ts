@@ -2,8 +2,8 @@ import { FileSystem, Logger } from '@h3ravel/shared'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 
 import { Command } from './Command'
+import { Str } from '@h3ravel/support'
 import { TableGuesser } from '../Utils'
-import { beforeLast } from '@h3ravel/support'
 import dayjs from 'dayjs'
 import nodepath from 'node:path'
 
@@ -94,7 +94,7 @@ export class MakeCommand extends Command {
 
         /** The Controller is scoped to a path make sure to create the associated directories */
         if (name.includes('/')) {
-            await mkdir(beforeLast(path, '/'), { recursive: true })
+            await mkdir(Str.beforeLast(path, '/'), { recursive: true })
         }
 
         /** Check if the controller already exists */
@@ -184,7 +184,7 @@ export class MakeCommand extends Command {
 
         /** The model is scoped to a path make sure to create the associated directories */
         if (name.includes('/')) {
-            await mkdir(beforeLast(path, '/'), { recursive: true })
+            await mkdir(Str.beforeLast(path, '/'), { recursive: true })
         }
 
         /** Check if the model already exists */
@@ -213,7 +213,7 @@ export class MakeCommand extends Command {
 
         /** The view is scoped to a path make sure to create the associated directories */
         if (name.includes('/')) {
-            await mkdir(beforeLast(path, '/'), { recursive: true })
+            await mkdir(Str.beforeLast(path, '/'), { recursive: true })
         }
 
         /** Check if the view already exists */

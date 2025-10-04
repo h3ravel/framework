@@ -4,8 +4,8 @@ import * as DumpDie from './Helpers/DumpDie'
 import * as Number from './Helpers/Number'
 import * as Obj from './Helpers/Obj'
 
+import { DateTime } from './Helpers/Time'
 import { Str } from './Helpers/Str'
-import { Time } from './Helpers/Time'
 
 type CollapseStatics<T extends Record<string, any>> = {
     [K in keyof T]: T[K]
@@ -20,7 +20,7 @@ type Omitables =
 
     | typeof Symbol.unscopables | typeof Symbol.iterator
 
-type TakeTime = Pick<typeof Time,
+type TakeTime = Pick<typeof DateTime,
     | 'now' | 'format' | 'fromTimestamp' | 'randomTime' | 'firstDayOfMonth' | 'lastDayOfMonth' | 'parse'
 >
 
@@ -49,12 +49,12 @@ export interface GlobalHelpers extends
     Obj: typeof Obj
     // Crypto helpers
     Crypto: typeof Crypto
-    // Time helpers
-    Time: typeof Time
     // Number helpers
     Number: typeof Number
     // Debug helpers
     DumpDie: typeof DumpDie
+    // Date Time helpers
+    DateTime: typeof DateTime
 }
 
 /**
@@ -87,7 +87,7 @@ export function loadHelpers (target: any = globalThis): void {
         Number,
         Obj,
         Str,
-        Time,
+        DateTime,
         DumpDie: DumpDie,
 
         // String helpers
@@ -143,13 +143,13 @@ export function loadHelpers (target: any = globalThis): void {
         caesarCipher: Crypto.caesarCipher,
 
         // Time helpers
-        now: Time.now,
-        format: Time.format,
-        fromTimestamp: Time.fromTimestamp,
-        parse: Time.parse,
-        randomTime: Time.randomTime,
-        firstDayOfMonth: Time.firstDayOfMonth,
-        lastDayOfMonth: Time.lastDayOfMonth,
+        now: DateTime.now,
+        format: DateTime.format,
+        fromTimestamp: DateTime.fromTimestamp,
+        parse: DateTime.parse,
+        randomTime: DateTime.randomTime,
+        firstDayOfMonth: DateTime.firstDayOfMonth,
+        lastDayOfMonth: DateTime.lastDayOfMonth,
 
         // Number helpers
         abbreviate: Number.abbreviate,

@@ -1,3 +1,4 @@
+import { Logger } from '@h3ravel/shared'
 import { RouteListCommand } from '../Commands/RouteListCommand'
 import { Router } from '../Route'
 import { ServiceProvider } from '@h3ravel/core'
@@ -18,9 +19,21 @@ export class RouteServiceProvider extends ServiceProvider {
 
     register () {
         this.app.singleton('router', () => {
-            const h3App = this.app.make('http.app')
-            return new Router(h3App, this.app)
+            try {
+                const h3App = this.app.make('http.app')
+                return new Router(h3App, this.app)
+            } catch (error: any) {
+                if (String(error.message).includes('http.app'))
+                    Logger.log([
+                        ['The', 'white'],
+                        ['@h3ravel/http', ['italic', 'gray']],
+                        ['package is required to use the routing system.', 'white']
+                    ], ' ')
+                else Logger.log(error, 'white')
+            }
+            return {} as Router
         })
+
         this.commands([RouteListCommand])
     }
 
@@ -43,8 +56,8 @@ export class RouteServiceProvider extends ServiceProvider {
                     routesModule.default(router)
                 }
             }
-        } catch (e) {
-            console.warn('No web routes found or failed to load:', e)
+        } catch (e: any) {
+            Logger.log([['No auto discorvered routes.', 'white'], [e.message, ['grey', 'italic']]], '\n')
         }
     }
 }

@@ -1,6 +1,6 @@
 import { Controller } from '@h3ravel/core'
-import { Url, createUrlHelpers } from '@h3ravel/url'
 import type { HttpContext } from '@h3ravel/shared'
+import { Url } from '@h3ravel/url'
 
 /**
  * Example controller demonstrating URL class usage
@@ -9,17 +9,14 @@ export class UrlExampleController extends Controller {
     /**
      * Demonstrate various URL creation methods
      */
-    async index(ctx: HttpContext) {
-        // Get URL helpers bound to the current app
-        const urlHelpers = createUrlHelpers(this.app)
-        
+    async index (ctx: HttpContext) {
         const examples = {
             // Static URL creation
             fromString: Url.of('https://example.com/path?param=value#section').toString(),
-            
+
             // Path-based URL creation
             fromPath: Url.to('/users', this.app).toString(),
-            
+
             // Fluent builder API
             builderChain: Url.of('https://example.com')
                 .withScheme('http')
@@ -29,18 +26,15 @@ export class UrlExampleController extends Controller {
                 .withQuery({ page: 2, limit: 10 })
                 .withFragment('section-1')
                 .toString(),
-            
+
             // Request-aware helpers
-            currentUrl: urlHelpers.url().current(),
-            fullUrl: urlHelpers.url().full(),
-            previousUrl: urlHelpers.url().previous(),
-            queryParams: urlHelpers.url().query(),
-            
+            currentUrl: url().current(),
+            fullUrl: url().full(),
+            previousUrl: url().previous(),
+            queryParams: url().query(),
+
             // Route-based URLs (demonstrating with existing routes)
-            routeUrl: urlHelpers.route('url.examples').toString(),
-            
-            // Helper functions
-            toHelper: urlHelpers.to('/dashboard').toString(),
+            routeUrl: route('url.examples'),
         }
 
         return ctx.response.json({
@@ -48,22 +42,19 @@ export class UrlExampleController extends Controller {
             examples
         })
     }
-    app(arg0: string, app: any) {
-        throw new Error('Method not implemented.')
-    }
 
     /**
      * Demonstrate URL signing
      */
-    async signing(ctx: HttpContext) {
+    async signing (ctx: HttpContext) {
         // Create a URL and sign it
         const url = Url.to('/protected-resource')
         const signedUrl = url.withSignature(this.app)
-        
+
         // Create a temporary signed URL (expires in 5 minutes)
         const tempUrl = Url.to('/temporary-resource')
         const tempSignedUrl = tempUrl.withSignature(this.app, Date.now() + 300000)
-        
+
         return ctx.response.json({
             message: 'URL Signing Examples',
             urls: {
@@ -78,9 +69,9 @@ export class UrlExampleController extends Controller {
     /**
      * Demonstrate URL manipulation
      */
-    async manipulation(ctx: HttpContext) {
+    async manipulation (ctx: HttpContext) {
         const baseUrl = Url.of('https://api.example.com/v1/users')
-        
+
         // Add query parameters
         const withQuery = baseUrl.withQuery({
             page: 1,
@@ -88,14 +79,14 @@ export class UrlExampleController extends Controller {
             sort: 'name',
             filters: ['active', 'verified']
         })
-        
+
         // Modify different parts
         const modified = withQuery
             .withHost('api-v2.example.com')
             .withPath('/v2/users')
             .withQueryParams({ include: 'profile' })
             .withFragment('results')
-        
+
         return ctx.response.json({
             message: 'URL Manipulation Examples',
             urls: {

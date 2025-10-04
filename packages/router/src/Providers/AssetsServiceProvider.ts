@@ -1,7 +1,7 @@
 import { readFile, stat } from 'node:fs/promises'
 
 import { ServiceProvider } from '@h3ravel/core'
-import { before } from '@h3ravel/support'
+import { Str } from '@h3ravel/support'
 import { join } from 'node:path'
 import { serveStatic } from 'h3'
 import { statSync } from 'node:fs'
@@ -37,10 +37,10 @@ export class AssetsServiceProvider extends ServiceProvider {
             return serveStatic(event, {
                 indexNames: ['/index.html'],
                 getContents: (id) => {
-                    return <never>readFile(join(before(publicPath, id), id))
+                    return <never>readFile(join(Str.before(publicPath, id), id))
                 },
                 getMeta: async (id) => {
-                    const stats = await stat(join(before(publicPath, id), id)).catch(() => { })
+                    const stats = await stat(join(Str.before(publicPath, id), id)).catch(() => { })
                     if (stats?.isFile()) {
                         return {
                             size: stats.size,
@@ -55,7 +55,7 @@ export class AssetsServiceProvider extends ServiceProvider {
             return (key: string, def?: string) => {
                 if (def) {
                     try {
-                        statSync(join(before(publicPath, key), key))
+                        statSync(join(Str.before(publicPath, key), key))
                     } catch {
                         key = def
                     }
