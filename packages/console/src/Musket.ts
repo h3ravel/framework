@@ -16,9 +16,7 @@ import path from 'node:path'
 import { PostinstallCommand } from './Commands/PostinstallCommand'
 import { BuildCommand } from './Commands/BuildCommand'
 
-/**
- * Musket is H3ravel's CLI tool
- */
+
 export class Musket {
     private commands: ParsedCommand[] = []
 
