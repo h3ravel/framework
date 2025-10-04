@@ -192,7 +192,11 @@ export class Application extends Container implements IApplication {
         /**
          * If debug is enabled, let's show the loaded service provider info
          */
-        if (process.env.APP_DEBUG === 'true' && process.env.EXTENDED_DEBUG !== 'false' && !this.providers.some(e => e.console)) {
+        if (
+            process.env.APP_DEBUG === 'true' &&
+            process.env.EXTENDED_DEBUG !== 'false' &&
+            !this.providers.some(e => e.runsInConsole)
+        ) {
             ProviderRegistry.log(this.providers)
         }
 

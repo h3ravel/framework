@@ -117,8 +117,8 @@ importers:
   examples/basic-app:
     dependencies:
       '@h3ravel/arquebus':
-        specifier: ^0.5.0
-        version: 0.5.0(sqlite3@5.1.7)
+        specifier: ^0.6.0
+        version: 0.6.0
       '@h3ravel/cache':
         specifier: workspace:^
         version: link:../../packages/cache
@@ -1252,8 +1252,19 @@ packages:
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
+  '@h3ravel/arquebus@0.6.0':
+    resolution: {integrity: sha512-159cw2jp5LpwMMbNnvC5xbY1gnjzwxWWIcGwi/BR55Py0hIhKswqUUTN2/eEd18dwqQrDSAA/SXzg2JjK7+Ykg==}
+    engines: {node: '>=14', pnpm: '>=4'}
+    hasBin: true
+
   '@h3ravel/shared@0.20.1':
     resolution: {integrity: sha512-ba77+rq8Om3yN2+whIbrKTdwJ2pIYu4dBuOV2N12xxvcG2Llo/so0I+G7ENv9ZKp3viEI+rahLvdsftIjzPHNA==}
+
+  '@h3ravel/shared@0.20.12':
+    resolution: {integrity: sha512-DRmavh7iegRvwGzTnpyIiJBUw33vLsyEQwVJwS5cnib389OVAjQYyPRhaV7nOCgTbfMWI48o1avJpMOgO3TsAA==}
+
+  '@h3ravel/support@0.12.0':
+    resolution: {integrity: sha512-RJ/TkLtaUl5Zu4I/Vwwp5MtTEhlDHTTBexXJAV1kcpJTeDIKHnpNzhF+sRIkHlQFmyobqy7YRsWuOdYZGidwhA==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -5858,6 +5869,34 @@ snapshots:
       - sqlite3
       - supports-color
 
+  '@h3ravel/arquebus@0.6.0':
+    dependencies:
+      '@h3ravel/shared': 0.20.12
+      '@h3ravel/support': 0.12.0
+      chalk: 5.6.2
+      collect.js: 4.36.1
+      commander: 14.0.1
+      cross-env: 10.0.0
+      dayjs: 1.11.18
+      dotenv: 17.2.2
+      escalade: 3.2.0
+      husky: 9.1.7
+      knex: 3.1.0(mysql2@3.15.0)(pg@8.16.3)(sqlite3@5.1.7)(tedious@19.0.0)
+      lint-staged: 16.2.0
+      mysql2: 3.15.0
+      pg: 8.16.3
+      pluralize: 8.0.0
+      radashi: 12.6.2
+      resolve-from: 5.0.0
+      tedious: 19.0.0
+    transitivePeerDependencies:
+      - better-sqlite3
+      - crossws
+      - mysql
+      - pg-native
+      - sqlite3
+      - supports-color
+
   '@h3ravel/shared@0.20.1':
     dependencies:
       chalk: 5.6.2
@@ -5867,6 +5906,21 @@ snapshots:
       preferred-pm: 4.1.1
     transitivePeerDependencies:
       - crossws
+
+  '@h3ravel/shared@0.20.12':
+    dependencies:
+      chalk: 5.6.2
+      edge.js: 6.3.0
+      escalade: 3.2.0
+      h3: 2.0.0-beta.4
+      preferred-pm: 4.1.1
+    transitivePeerDependencies:
+      - crossws
+
+  '@h3ravel/support@0.12.0':
+    dependencies:
+      dayjs: 1.11.18
+      luxon: 3.7.2
 
   '@humanfs/core@0.19.1': {}
 
