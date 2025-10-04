@@ -1,201 +1,127 @@
 import { EventHandlerRequest, H3Event } from 'h3'
+import { Resource } from './Resource'
+import { Collection } from './Collection'
 
-export interface Resource {
-    [key: string]: any;
+export interface BaseResource {
     pagination?: {
-        from?: number | undefined;
-        to?: number | undefined;
-        perPage?: number | undefined;
-        total?: number | undefined;
-    } | undefined;
-}
-
-type BodyResource = Resource & {
-    data: Omit<Resource, 'pagination'>,
-    meta?: {
-        pagination?: Resource['pagination']
-    } | undefined;
-}
-
-/**
- * Class to render API resource
- */
-export class JsonResource<R extends Resource = any> {
-    /**
-     * The request instance
-     */
-    request: H3Event<EventHandlerRequest>['req']
-    /**
-     * The response instance
-     */
-    response: H3Event['res']
-    /**
-     * The data to send to the client
-     */
-    resource: R
-    /**
-     * The final response data object
-     */
-    body: BodyResource = {
-        data: {},
+        from?: number
+        to?: number
+        perPage?: number
+        total?: number
     }
-    /**
-     * Flag to track if response should be sent automatically
-     */
-    private shouldSend: boolean = false
-    /**
-     * Flag to track if response has been sent
-     */
+    [key: string]: any
+}
 
-    private responseSent: boolean = false;
+type BodyResource = {
+    data: any
+    meta?: any
+    links?: any
+}
 
-    /**
-     * Declare that this includes R's properties
-     */
-    [key: string]: any;
+export class JsonResource<R extends BaseResource | Resource | Collection = any> {
+    request: H3Event<EventHandlerRequest>['req']
+    response: H3Event['res']
+    resource: R
+    body: BodyResource = { data: {} }
 
-    /**
-     * @param req The request instance
-     * @param res The response instance
-     * @param rsc The data to send to the client
-     */
+    private shouldSend = false
+    private responseSent = false
+
     constructor(protected event: H3Event, rsc: R) {
         this.request = event.req
         this.response = event.res
         this.resource = rsc
 
-        // Copy all properties from rsc to this, avoiding conflicts
-        for (const key of Object.keys(rsc)) {
-            if (!(key in this)) {
-                Object.defineProperty(this, key, {
-                    enumerable: true,
-                    configurable: true,
-                    get: () => this.resource[key],
-                    set: (value) => {
-                        (<any>this.resource)[key] = value
-                    },
-                })
-            }
+        // Dynamically copy properties from Resource instances
+        if (rsc instanceof Resource) {
+            Object.keys(rsc.toArray()).forEach((key) => {
+                if (!(key in this)) {
+                    Object.defineProperty(this, key, {
+                        enumerable: true,
+                        configurable: true,
+                        get: () => (rsc as any)[key],
+                        set: (value) => ((rsc as any)[key] = value),
+                    })
+                }
+            })
         }
     }
 
     /**
-     * Return the data in the expected format
-     * 
-     * @returns 
+     * Return plain resource data
      */
-    data (): Resource {
+    data(): any {
+        if (this.resource instanceof Resource) return this.resource.toArray()
+        if (this.resource instanceof Collection) return this.resource.toArray()
         return this.resource
     }
 
     /**
-     * Build the response object
-     * @returns this
+     * Build JSON response body
      */
-    json () {
-        // Indicate response should be sent automatically
+    json(): this {
         this.shouldSend = true
-
-        // Set default status code
         this.response.status = 200
 
-        // Prepare body
-        const resource = this.data()
-        let data: Resource = Array.isArray(resource) ? [...resource] : { ...resource }
+        if (this.resource instanceof Resource) {
+            this.body = { data: this.resource.toArray() }
+            if (this.resource.pagination) {
+                this.body.meta = { pagination: this.resource.pagination }
+            }
+        } else if (this.resource instanceof Collection) {
+            this.body = this.resource.json()
+        } else {
+            // Plain object or array
+            let data: any = Array.isArray(this.resource)
+                ? [...this.resource]
+                : { ...this.resource }
 
-        if (typeof data.data !== 'undefined') {
-            data = data.data
-        }
+            if (typeof data.data !== 'undefined') data = data.data
+            if (!Array.isArray(this.resource)) delete data.pagination
 
-        if (!Array.isArray(resource)) {
-            delete data.pagination
-        }
+            this.body = { data }
 
-        this.body = {
-            data,
-        }
-
-        // Set the pagination from the data() resource, if available
-        if (!Array.isArray(resource) && resource.pagination) {
-            const meta: BodyResource['meta'] = this.body.meta ?? {}
-            meta.pagination = resource.pagination
-            this.body.meta = meta
-        }
-
-        // If pagination is not available on the resource, then check and set it
-        // if it's available on the base resource.
-        if (this.resource.pagination && !this.body.meta?.pagination) {
-            const meta: BodyResource['meta'] = this.body.meta ?? {}
-            meta.pagination = this.resource.pagination
-            this.body.meta = meta
+            if (!Array.isArray(this.resource) && (this.resource as BaseResource).pagination) {
+                this.body.meta = { pagination: (this.resource as BaseResource).pagination }
+            }
         }
 
         return this
     }
 
     /**
-     * Add context data to the response object
-     * @param data Context data
-     * @returns this
+     * Merge additional top-level data into JSON body
      */
-    additional<X extends { [key: string]: any }> (data: X) {
-
-        // Allow automatic send after additional
-        this.shouldSend = true
-
-        // Merge data with body
+    additional(data: Record<string, any>): this {
         delete data.data
         delete data.pagination
-
-        this.body = {
-            ...this.body,
-            ...data,
-        }
-
+        this.body = { ...this.body, ...data }
         return this
     }
 
     /**
-     * Send the output to the client
-     * @returns this
+     * Send the response (stub for H3 integration)
      */
-    send () {
-        this.shouldSend = false // Prevent automatic send
-        if (!this.responseSent) {
-            this.#send()
-        }
+    send(): this {
+        this.shouldSend = false
+        if (!this.responseSent) this.#send()
         return this
     }
 
-    /**
-     * Set the status code for this response
-     * @param code Status code
-     * @returns this
-     */
-    status (code: number) {
+    status(code: number): this {
         this.response.status = code
         return this
     }
 
-    /**
-     * Private method to send the response
-     */
-    #send () {
+    #send() {
         if (!this.responseSent) {
-            // this.event.context.
-            //     this.response.json(this.body)
-
-            // Mark response as sent
+            // Replace this with H3 response send if needed:
+            // e.g., this.response.end(JSON.stringify(this.body))
             this.responseSent = true
         }
     }
 
-    /**
-     * Check if send should be triggered automatically
-     */
-    private checkSend () {
-        if (this.shouldSend && !this.responseSent) {
-            this.#send()
-        }
+    private checkSend() {
+        if (this.shouldSend && !this.responseSent) this.#send()
     }
 }
