@@ -1,0 +1,61 @@
+{
+  "name": "@h3ravel/url",
+  "version": "1.0.0",
+  "description": "Request-aware URI builder and URL manipulation utilities for H3ravel.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://h3ravel.toneflix.net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/h3ravel/framework.git",
+    "directory": "packages/url"
+  },
+  "keywords": [
+    "h3ravel",
+    "modern",
+    "web",
+    "H3",
+    "framework",
+    "nodejs",
+    "typescript",
+    "laravel",
+    "url",
+    "uri",
+    "builder"
+  ],
+  "scripts": {
+    "barrel": "barrelsby --directory src --delete --singleQuotes",
+    "build": "tsdown --config-loader unconfig",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .ts",
+    "test": "jest --passWithNoTests",
+    "version-patch": "pnpm version patch"
+  },
+  "dependencies": {
+    "@h3ravel/support": "workspace:^",
+    "@h3ravel/shared": "workspace:^"
+  },
+  "peerDependencies": {
+    "@h3ravel/core": "workspace:^",
+    "@h3ravel/http": "workspace:^"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}

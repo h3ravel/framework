@@ -7,6 +7,8 @@ import { QueueServiceProvider } from '@h3ravel/queue'
 import { MailServiceProvider } from '@h3ravel/mail'
 import { ConfigServiceProvider } from '@h3ravel/config'
 import { FilesystemProvider } from '@h3ravel/filesystem'
+import { ViewServiceProvider } from '@h3ravel/view'
+import { UrlServiceProvider } from '@h3ravel/url'
 import { AppServiceProvider } from 'src/app/Providers/AppServiceProvider'
 
 /**
@@ -18,12 +20,14 @@ import { AppServiceProvider } from 'src/app/Providers/AppServiceProvider'
 export default <Array<new (_app: Application) => ServiceProvider>>[
     HttpServiceProvider,
     ConfigServiceProvider,
+    ViewServiceProvider,
     RouteServiceProvider,
     AssetsServiceProvider,
     DatabaseServiceProvider,
     CacheServiceProvider,
     QueueServiceProvider,
     MailServiceProvider,
+    UrlServiceProvider,
     AppServiceProvider,
     FilesystemProvider,
 ] 

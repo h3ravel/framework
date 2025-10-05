@@ -31,30 +31,22 @@ export class Kernel {
      * Convert the raw event into a standardized HttpContext
      */
     const ctx = this.context(event)
+
     const { app } = ctx.request
 
-    /**
-     * Initialize the view handler method
-     * 
-     * @param template 
-     * @param params 
-     * @returns 
+    /** 
+     * Bind HTTP Response instance to the service container
      */
-    const view = async (template: string, params?: Record<string, any>) => {
-      const edge = app.make('edge')
-      return ctx.response.html(await edge.render(template, params))
-    }
+    app.bind('http.response', () => {
+      return ctx.response
+    })
 
-    /**
-     * Bind the view method to the global variable space
+    /** 
+     * Bind HTTP Request instance to the service container
      */
-    globalThis.view = view
-
-    /**
-     * Dynamically bind the view renderer to the service container.
-     * This allows any part of the request lifecycle to render templates using Edge.
-     */
-    app.bind('view', () => view)
+    app.bind('http.request', () => {
+      return ctx.request
+    })
 
     /**
      * Run middleware stack and obtain result

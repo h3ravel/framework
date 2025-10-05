@@ -12,6 +12,8 @@ packages:
   - packages/mail
   - packages/router
   - packages/console
+  - packages/view
+  - packages/url
   - examples/*
   - docs
 

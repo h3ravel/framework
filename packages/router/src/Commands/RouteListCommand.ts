@@ -1,8 +1,6 @@
-import { RouteDefinition, RouteMethod } from '../Contracts/Router'
+import { Logger, LoggerChalk, RouteDefinition, RouteMethod } from '@h3ravel/shared'
 
 import { ConsoleCommand } from '@h3ravel/core'
-import { Logger } from '@h3ravel/shared'
-import { LoggerChalk } from '@/packages/shared/dist'
 
 export class RouteListCommand extends ConsoleCommand {
 
@@ -66,7 +64,7 @@ export class RouteListCommand extends ConsoleCommand {
             const desc = Logger.describe(
                 Logger.log(Logger.log(method + this.pair(method), this.color(method), false), 'green', false), path, 15, false
             )
-            return Logger.twoColumnLog(desc.join(''), name)
+            return Logger.twoColumnDetail(desc.join(''), name)
         })
     }
 

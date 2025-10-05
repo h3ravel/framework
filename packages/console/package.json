@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/console",
-  "version": "11.6.2",
+  "version": "11.7.1",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
   "exports": {
@@ -63,7 +63,6 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/arquebus": "^0.5.0",
     "@h3ravel/core": "workspace:^",
     "@h3ravel/support": "workspace:^"
   },

@@ -1,5 +1,3 @@
-import { slugify } from '@h3ravel/support'
-
 export default () => {
     return {
         /*
@@ -135,7 +133,7 @@ export default () => {
 
             options: {
                 cluster: env('REDIS_CLUSTER', 'redis'),
-                prefix: env('REDIS_PREFIX', slugify(env('APP_NAME', 'h3ravel'), '_') + '_database_'),
+                prefix: env('REDIS_PREFIX', str(env('APP_NAME', 'h3ravel')).slug('_') + '_database_'),
             },
 
             default: {

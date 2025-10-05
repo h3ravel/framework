@@ -19,7 +19,7 @@ export interface IServiceProvider {
     /**
      * Indicate that this service provider only runs in console
      */
-    console?: boolean;
+    runsInConsole?: boolean;
 
     /**
      * List of registered console commands

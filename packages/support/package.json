@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/support",
-  "version": "0.10.4",
+  "version": "0.13.0",
   "description": "Shared helpers, facades and utilities for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -45,7 +45,12 @@
     "version-patch": "pnpm version patch"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "@h3ravel/shared": "workspace:^"
+    "@h3ravel/shared": "workspace:^",
+    "@types/luxon": "^3.7.1",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.18",
+    "luxon": "^3.7.2"
   }
 }

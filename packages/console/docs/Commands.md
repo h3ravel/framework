@@ -1,4 +1,3 @@
-
 # Console Commands
 
 This document explains how to create, register, and use console commands in your H3ravel application using the Musket CLI system.
@@ -19,23 +18,23 @@ A new command looks like this:
 import { Command } from '@h3ravel/console';
 
 export class MyCommand extends Command {
-    /**
-     * The name and signature of the console command.
-     */
-    protected signature: string = 'my:command';
+  /**
+   * The name and signature of the console command.
+   */
+  protected signature: string = 'my:command';
 
-    /**
-     * The console command description.
-     */
-    protected description: string = 'Command description';
+  /**
+   * The console command description.
+   */
+  protected description: string = 'Command description';
 
-    /**
-     * Execute the console command.
-     */
-    public async handle(): Promise<void> {
-        // Your command logic here
-        this.info('Command executed successfully!');
-    }
+  /**
+   * Execute the console command.
+   */
+  public async handle(): Promise<void> {
+    // Your command logic here
+    this.info('Command executed successfully!');
+  }
 }
 ```
 
@@ -44,41 +43,49 @@ export class MyCommand extends Command {
 The `signature` property defines the command's name, arguments, and options using H3ravel's expressive syntax.
 
 **Basic Command:**
+
 ```typescript
 protected signature = 'my:command';
 ```
 
 **Arguments:**
+
 ```typescript
 protected signature = 'user:create {name}';
 ```
 
 **Optional Arguments:**
+
 ```typescript
 protected signature = 'user:create {name} {email?}';
 ```
 
 **Arguments with Descriptions:**
+
 ```typescript
 protected signature = 'user:create {name : The user name} {email? : User email address}';
 ```
 
 **Boolean Options (Flags):**
+
 ```typescript
 protected signature = 'user:create {name} {--admin : Make user an admin}';
 ```
 
 **Options with Values:**
+
 ```typescript
 protected signature = 'backup:create {--format=zip : Backup format}';
 ```
 
 **Options with Shortcuts:**
+
 ```typescript
 protected signature = 'serve:start {--p|port=3000 : Server port}';
 ```
 
 **Complex Example:**
+
 ```typescript
 protected signature = `user:create
     {name : The user name}
@@ -89,6 +96,7 @@ protected signature = `user:create
 ```
 
 **Namespace Commands:**
+
 ```typescript
 protected signature = `cache:
     {clear : Clear all cached data}
@@ -110,7 +118,7 @@ public async handle(): Promise<void> {
     // Get arguments and options
     const name = this.argument('name');
     const isAdmin = this.option('admin');
-    
+
     // Output methods
     this.info('Processing...');
     this.success('Operation completed!');
@@ -127,17 +135,17 @@ public async handle(): Promise<void> {
 public async handle(): Promise<void> {
     // Required arguments
     const name = this.argument('name');
-    
+
     // Optional arguments with defaults
     const email = this.argument('email', 'default@example.com');
-    
+
     // Boolean options
     const force = this.option('force'); // true/false
-    
+
     // Options with values
     const role = this.option('role'); // string or undefined
     const port = this.option('port', '3000'); // with default
-    
+
     // Check if option exists
     if (this.hasOption('admin')) {
         this.info('Admin mode enabled');
@@ -208,11 +216,11 @@ public async handle(): Promise<void> {
     // Colored output
     Logger.info('Processing data...');
     Logger.success('Operation completed');
-    
+
     // Two-column layout
-    Logger.twoColumnLog('Operation', 'Status');
-    Logger.twoColumnLog('Database migration', 'COMPLETE');
-    
+    Logger.twoColumnDetail('Operation', 'Status');
+    Logger.twoColumnDetail('Database migration', 'COMPLETE');
+
     // Custom colored text
     const message = Logger.parse([
         ['Processed', 'white'],
@@ -245,9 +253,9 @@ import { ServiceProvider } from '@h3ravel/core';
 import { MyCommand } from '../Console/Commands/MyCommand';
 
 export class CommandServiceProvider extends ServiceProvider {
-    public async register(): Promise<void> {
-        this.app.registeredCommands.push(MyCommand);
-    }
+  public async register(): Promise<void> {
+    this.app.registeredCommands.push(MyCommand);
+  }
 }
 ```
 
@@ -258,7 +266,7 @@ The H3ravel command system follows this execution flow:
 1. **Application Bootstrap**: `fire.ts` entry point starts the console application
 2. **Service Loading**: `IO/app.ts` bootstraps the application and loads service providers including `ConsoleServiceProvider`
 3. **Kernel Initialization**: The `Kernel.ts` `init` method is called to set up the command environment
-4. **Musket CLI Setup**: 
+4. **Musket CLI Setup**:
    - `Musket.ts` `parse` method calls the `build` method
    - Base commands are loaded (make, list, postinstall)
    - Commands are discovered from `app/Console/Commands` directory
@@ -272,7 +280,7 @@ The H3ravel command system follows this execution flow:
 H3ravel includes several built-in commands:
 
 - `make:*` - Code generation commands
-- `migrate:*` - Database migration commands  
+- `migrate:*` - Database migration commands
 - `fire` - Development server
 - `storage:link` - Storage symbolic links
 - `list` - Show all available commands
@@ -376,14 +384,14 @@ npx musket cache:clear
 ```typescript
 // ✅ Good: Clear, focused command
 export class CreateUserCommand extends Command {
-    protected signature = 'user:create {name} {--admin}';
-    protected description = 'Create a new user account';
+  protected signature = 'user:create {name} {--admin}';
+  protected description = 'Create a new user account';
 }
 
-// ❌ Avoid: Generic, unclear commands  
+// ❌ Avoid: Generic, unclear commands
 export class DoStuffCommand extends Command {
-    protected signature = 'stuff';
-    protected description = 'Does stuff';
+  protected signature = 'stuff';
+  protected description = 'Does stuff';
 }
 ```
 
@@ -401,7 +409,7 @@ public async handle(): Promise<void> {
             this.error('Configuration file not found. Run `npx musket init` first.');
             return;
         }
-        
+
         this.debug(`Detailed error: ${error.message}`);
         this.error('Operation failed. Use --verbose for more details.');
     }
@@ -415,22 +423,22 @@ Provide clear feedback and progress indicators:
 ```typescript
 public async handle(): Promise<void> {
     const items = await this.getItems();
-    
+
     if (items.length === 0) {
         this.info('No items to process.');
         return;
     }
 
     this.info(`Processing ${items.length} items...`);
-    
+
     for (let i = 0; i < items.length; i++) {
         await this.processItem(items[i]);
-        
+
         if ((i + 1) % 10 === 0) {
             this.info(`Progress: ${i + 1}/${items.length} completed`);
         }
     }
-    
+
     this.success(`Successfully processed ${items.length} items!`);
 }
 ```
@@ -442,18 +450,18 @@ Validate user input and provide clear error messages:
 ```typescript
 public async handle(): Promise<void> {
     const name = this.argument('name');
-    
+
     if (!name || name.trim().length === 0) {
         this.error('Name is required and cannot be empty');
         return;
     }
-    
+
     const email = this.option('email');
     if (email && !this.isValidEmail(email)) {
         this.error('Please provide a valid email address');
         return;
     }
-    
+
     // Continue with validated input
     await this.createUser(name, email);
 }
@@ -511,31 +519,31 @@ Create commands with multiple sub-actions:
 
 ```typescript
 export class CacheCommand extends Command {
-    protected signature = `cache:
+  protected signature = `cache:
         {clear : Clear all cached data}
         {flush : Flush entire cache store}
         {warm : Warm up the cache}
         {--store=default : Cache store to use}`;
-    
-    protected description = 'Manage application cache';
 
-    public async handle(): Promise<void> {
-        const action = this.dictionary.name || this.dictionary.baseCommand;
-        
-        switch (action) {
-            case 'clear':
-                await this.clearCache();
-                break;
-            case 'flush':
-                await this.flushCache();
-                break;
-            case 'warm':
-                await this.warmCache();
-                break;
-            default:
-                this.error(`Unknown action: ${action}`);
-        }
+  protected description = 'Manage application cache';
+
+  public async handle(): Promise<void> {
+    const action = this.dictionary.name || this.dictionary.baseCommand;
+
+    switch (action) {
+      case 'clear':
+        await this.clearCache();
+        break;
+      case 'flush':
+        await this.flushCache();
+        break;
+      case 'warm':
+        await this.warmCache();
+        break;
+      default:
+        this.error(`Unknown action: ${action}`);
     }
+  }
 }
 ```
 
@@ -545,27 +553,30 @@ Handle large datasets efficiently:
 
 ```typescript
 export class ProcessDataCommand extends Command {
-    protected signature = `data:process
+  protected signature = `data:process
         {--batch=100 : Batch size}
         {--dry-run : Preview without executing}`;
 
-    public async handle(): Promise<void> {
-        const batchSize = parseInt(this.option('batch', '100'));
-        const isDryRun = this.option('dry-run');
-        
-        const records = await this.getRecords();
-        const batches = this.chunkArray(records, batchSize);
-        
-        if (isDryRun) {
-            this.info(`Would process ${records.length} records in ${batches.length} batches`);
-            return;
-        }
-        
-        for (const [index, batch] of batches.entries()) {
-            await this.processBatch(batch);
-            this.info(`Completed batch ${index + 1}/${batches.length}`);
-        }
-        
-        this.success(`Processed ${records.length} records`);
+  public async handle(): Promise<void> {
+    const batchSize = parseInt(this.option('batch', '100'));
+    const isDryRun = this.option('dry-run');
+
+    const records = await this.getRecords();
+    const batches = this.chunkArray(records, batchSize);
+
+    if (isDryRun) {
+      this.info(
+        `Would process ${records.length} records in ${batches.length} batches`
+      );
+      return;
     }
+
+    for (const [index, batch] of batches.entries()) {
+      await this.processBatch(batch);
+      this.info(`Completed batch ${index + 1}/${batches.length}`);
+    }
+
+    this.success(`Processed ${records.length} records`);
+  }
 }
+```

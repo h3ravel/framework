@@ -15,7 +15,8 @@
       "@h3ravel/console": ["packages/console/src/index.ts"],
       "@h3ravel/support": ["packages/support/src/index.ts"],
       "@h3ravel/shared": ["packages/shared/src/index.ts"],
-      "@h3ravel/filesystem": ["packages/filesystem/src/index.ts"]
+      "@h3ravel/filesystem": ["packages/filesystem/src/index.ts"],
+      "@h3ravel/view": ["packages/view/src/index.ts"]
     }
   },
   "exclude": [
@@ -25,15 +26,12 @@
     "./**/node_modules",
     "/.node_modules",
     "./**/node_modules/*",
-    "./**/public",
-    "./public",
-    "./**/storage",
-    "./storage",
-    "./storage",
-    "**coverage**",
+    "**/public/**",
+    "**/storage/**",
     "eslint.config.js",
     "jest.config.ts",
-    "arquebus.config.js"
+    "arquebus.config.js",
+    "**/coverage/**"
   ],
   "ts-node": {
     "require": ["tsconfig-paths/register"]

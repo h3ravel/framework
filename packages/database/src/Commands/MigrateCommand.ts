@@ -153,13 +153,13 @@ export class MigrateCommand extends ConsoleCommand {
 
         try {
             if (migrations.length > 0) {
-                Logger.twoColumnLog('Migration name', 'Batch / Status')
+                Logger.twoColumnDetail('Migration name', 'Batch / Status')
 
                 migrations.forEach(migration => {
                     const status = migration.ran
                         ? Logger.parse([[`[${migration.batch}]`, 'white'], ['Ran', 'green']], ' ', false)
                         : Logger.parse([['Pending', 'yellow']], '', false)
-                    Logger.twoColumnLog(migration.name, status)
+                    Logger.twoColumnDetail(migration.name, status)
                 })
             }
             else {
@@ -197,7 +197,7 @@ export class MigrateCommand extends ConsoleCommand {
             try {
                 /** Publish any existing migrations */
                 await creator.publish(this.databasePath, (fileName) => {
-                    Logger.twoColumnLog(fileName, Logger.parse([['PUBLISHED', 'green']], '', false))
+                    Logger.twoColumnDetail(fileName, Logger.parse([['PUBLISHED', 'green']], '', false))
                 })
             } catch {
                 Logger.error([`ERROR: ${name} has no publishable migrations.`])

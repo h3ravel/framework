@@ -1,4 +1,6 @@
+import { MakeCommand } from '../Commands/MakeCommand'
 import { MigrateCommand } from '../Commands/MigrateCommand'
+import { SeedCommand } from '../Commands/SeedCommand'
 import { ServiceProvider } from '@h3ravel/core'
 import { arquebus } from '@h3ravel/arquebus'
 import { arquebusConfig } from '../Configuration'
@@ -26,6 +28,6 @@ export class DatabaseServiceProvider extends ServiceProvider {
         }
 
         /** Register Musket Commands */
-        this.commands([MigrateCommand])
+        this.commands([MigrateCommand, MakeCommand, SeedCommand])
     }
 }

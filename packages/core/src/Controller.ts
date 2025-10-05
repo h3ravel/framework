@@ -11,9 +11,9 @@ export abstract class Controller implements IController {
         this.app = app
     }
 
-    public show (..._ctx: any[]): any { return }
-    public index (..._ctx: any[]): any { return }
-    public store (..._ctx: any[]): any { return }
-    public update (..._ctx: any[]): any { return }
-    public destroy (..._ctx: any[]): any { return }
+    public show?(..._ctx: any[]): any
+    public index?(..._ctx: any[]): any
+    public store?(..._ctx: any[]): any
+    public update?(..._ctx: any[]): any
+    public destroy?(..._ctx: any[]): any
 }

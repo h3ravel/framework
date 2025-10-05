@@ -12,7 +12,9 @@ export class Container implements IContainer {
      * @param target 
      * @returns 
      */
-    static hasAnyDecorator (target: (...prm: any[]) => any): boolean {
+    static hasAnyDecorator<C extends abstract new (...args: any[]) => any> (target: C): boolean
+    static hasAnyDecorator<F extends (...args: any[]) => any> (target: F): boolean
+    static hasAnyDecorator (target: (...args: any[]) => any): boolean {
         if (Reflect.getMetadataKeys(target).length > 0) return true
 
         const paramLength = target.length
@@ -56,14 +58,15 @@ export class Container implements IContainer {
     /**
      * Resolve a service from the container
      */
-    make<T extends UseKey, X = undefined> (
-        key: T | (new (..._args: any[]) => Bindings[T])
-    ): X extends undefined ? Bindings[T] : X {
+    make<T extends UseKey> (key: T): Bindings[T]
+    make<C extends abstract new (...args: any[]) => any> (key: C): InstanceType<C>
+    make<F extends (...args: any[]) => any> (key: F): ReturnType<F>
+    make (key: any): any {
         /**
          * Direct factory binding
          */
         if (this.bindings.has(key)) {
-            return this.bindings.get(key)!() as Bindings[T]
+            return this.bindings.get(key)!()
         }
 
         /**

@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 
 import { ServiceProvider } from '../ServiceProvider'
+import { str } from '@h3ravel/support'
 
 /**
  * Bootstraps core services and bindings.
@@ -15,9 +16,16 @@ export class CoreServiceProvider extends ServiceProvider {
     public static priority = 999
 
     register () {
+        Object.assign(globalThis, {
+            str,
+        })
     }
 
     boot (): void | Promise<void> {
-        globalThis.asset = this.app.make('asset')
+        try {
+            Object.assign(globalThis, {
+                asset: this.app.make('asset'),
+            })
+        } catch {/** */ }
     }
 }

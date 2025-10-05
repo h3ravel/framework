@@ -29,4 +29,7 @@ export class HttpServiceProvider extends ServiceProvider {
         /** Register Musket Commands */
         this.commands([FireCommand])
     }
+
+    boot () {
+    }
 }

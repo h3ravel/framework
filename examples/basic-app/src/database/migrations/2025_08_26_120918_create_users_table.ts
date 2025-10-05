@@ -6,8 +6,11 @@ export default class extends Migration {
     * Run the migrations.
     */
   async up (schema: SchemaBuilder) {
-    await schema.createTable('john_table_john', (table) => {
+    await schema.createTable('users', (table) => {
       table.increments('id')
+      table.string('email')
+      table.string('name')
+      table.string('password').nullable()
       table.timestamps()
     })
   }
@@ -16,6 +19,6 @@ export default class extends Migration {
     * Reverse the migrations.
     */
   async down (schema: SchemaBuilder) {
-    await schema.dropTableIfExists('john_table_john')
+    await schema.dropTableIfExists('users')
   }
 };

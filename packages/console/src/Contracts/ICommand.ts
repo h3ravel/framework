@@ -2,11 +2,12 @@ import { Command } from '../Commands/Command'
 
 export type CommandOption = {
     name: string;
+    shared?: boolean;
     required?: boolean;
     multiple?: boolean;
-    defaultValue?: string | number | boolean | undefined | string[]
-    shared?: boolean;
+    placeholder?: string;
     description?: string;
+    defaultValue?: string | number | boolean | undefined | string[]
     /**
      * for options like --Q|queue
      */

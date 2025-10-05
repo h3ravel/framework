@@ -14,7 +14,7 @@
     "postinstall": "node node_modules/@h3ravel/console/bin/spawn"
   },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.5.0",
+    "@h3ravel/arquebus": "^0.6.6",
     "@h3ravel/cache": "workspace:^",
     "@h3ravel/config": "workspace:^",
     "@h3ravel/console": "workspace:^",
@@ -27,6 +27,8 @@
     "@h3ravel/router": "workspace:^",
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
+    "@h3ravel/url": "workspace:^",
+    "@h3ravel/view": "workspace:^",
     "cross-env": "^10.0.0",
     "h3": "2.0.0-beta.4",
     "reflect-metadata": "^0.2.2",

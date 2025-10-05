@@ -9,7 +9,7 @@ import { PathLoader } from '@h3ravel/shared'
 import { ProviderRegistry } from './ProviderRegistry'
 import { Registerer } from './Registerer'
 import { ServiceProvider } from './ServiceProvider'
-import { afterLast } from '@h3ravel/support'
+import { Str } from '@h3ravel/support'
 import { detect } from 'detect-port'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
@@ -75,7 +75,7 @@ export class Application extends Container implements IApplication {
                 const versions = Object.fromEntries(Object.entries(app.dependencies)
                     .filter(([e]) => e.includes('@h3ravel'))
                     .map(([name, ver]: [string, any]) => [
-                        afterLast(name, '/'),
+                        Str.afterLast(name, '/'),
                         semver.minVersion(ver.includes('work') ? this.versions.app : ver)?.version
                     ]))
 
@@ -103,7 +103,6 @@ export class Application extends Container implements IApplication {
     protected async getConfiguredProviders (): Promise<Array<AServiceProvider>> {
         return [
             (await import('@h3ravel/core')).CoreServiceProvider,
-            (await import('@h3ravel/core')).ViewServiceProvider,
         ]
     }
 
@@ -193,7 +192,11 @@ export class Application extends Container implements IApplication {
         /**
          * If debug is enabled, let's show the loaded service provider info
          */
-        if (process.env.APP_DEBUG === 'true' && process.env.EXTENDED_DEBUG !== 'false' && !this.providers.some(e => e.console)) {
+        if (
+            process.env.APP_DEBUG === 'true' &&
+            process.env.EXTENDED_DEBUG !== 'false' &&
+            !this.providers.some(e => e.runsInConsole)
+        ) {
             ProviderRegistry.log(this.providers)
         }
 

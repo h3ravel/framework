@@ -4,7 +4,7 @@
   </a>
   <h1 align="center"><a href="https://h3ravel.toneflix.net/arquebus">H3ravel Framework</a></h1>
 
-[![Downloads][d1]][d1]
+[![Downloads][d1]][lx]
 [![Framework][ix]][lx]
 [![Core Package Version][i1]][l1]
 [![Arquebus ORM][i12]][l12]

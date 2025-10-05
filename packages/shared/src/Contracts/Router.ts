@@ -1,4 +1,4 @@
-import type { EventHandler } from '@h3ravel/shared'
+import { EventHandler } from './IHttp'
 
 export type RouteMethod = 'get' | 'head' | 'put' | 'patch' | 'post' | 'delete'
 
