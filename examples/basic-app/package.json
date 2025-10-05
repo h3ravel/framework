@@ -14,7 +14,7 @@
     "postinstall": "node node_modules/@h3ravel/console/bin/spawn"
   },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.6.0",
+    "@h3ravel/arquebus": "^0.6.5",
     "@h3ravel/cache": "workspace:^",
     "@h3ravel/config": "workspace:^",
     "@h3ravel/console": "workspace:^",

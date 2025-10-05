@@ -50,24 +50,24 @@ export class FileSystem {
      */
     static resolveFileUp (
         name: string,
-        extensions: string[] | ((dir: string, names: string[]) => string | false),
+        extensions: string[] | ((dir: string, filesNames: string[]) => string | false),
         cwd?: string
     ) {
         cwd ??= process.cwd()
 
-        return escalade(cwd, (dir, names) => {
+        return escalade(cwd, (dir, filesNames) => {
             if (typeof extensions === 'function') {
-                return extensions(dir, names)
+                return extensions(dir, filesNames)
             }
 
             const candidates = new Set(extensions.map(ext => `${name}.${ext}`))
-            for (const filename of names) {
+            for (const filename of filesNames) {
                 if (candidates.has(filename)) {
                     return filename
                 }
             }
 
             return false
-        })
+        }) ?? undefined
     }
 } 

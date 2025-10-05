@@ -103,7 +103,7 @@ export class Router implements IRouter {
                     /**
                      * If the controller is decorated use the IoC container
                      */
-                    controller = this.app.make<any, IController>(handler as any)
+                    controller = this.app.make(handler as C)
                 } else {
                     /**
                      * Otherwise instantiate manually so that we can at least

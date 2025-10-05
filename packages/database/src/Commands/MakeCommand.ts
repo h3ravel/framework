@@ -136,7 +136,7 @@ export class MakeCommand extends ConsoleCommand {
         await writeFile(path, stub)
 
         Logger.info(
-            `INFO: Seeder ${Logger.log(`[${npath.relative(database_path(), path)}]`, 'bold', false)} created successfully.`
+            `INFO: Seeder ${Logger.log(`[${npath.relative(process.cwd(), path)}]`, 'bold', false)} created successfully.`
         )
     }
 
@@ -167,7 +167,10 @@ export class MakeCommand extends ConsoleCommand {
         stub = stub.replace(/{{ name }}/g, name)
 
         await writeFile(path, stub)
-        Logger.split(`INFO: ${name} Model Created`, Logger.log(npath.basename(path), 'gray', false))
+
+        Logger.info(
+            `INFO: Model ${Logger.log(`[${npath.relative(process.cwd(), path)}]`, 'bold', false)} created successfully.`
+        )
     }
 
     /**

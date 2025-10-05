@@ -64,7 +64,7 @@ export class RouteListCommand extends ConsoleCommand {
             const desc = Logger.describe(
                 Logger.log(Logger.log(method + this.pair(method), this.color(method), false), 'green', false), path, 15, false
             )
-            return Logger.twoColumnLog(desc.join(''), name)
+            return Logger.twoColumnDetail(desc.join(''), name)
         })
     }
 

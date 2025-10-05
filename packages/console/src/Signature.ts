@@ -15,7 +15,7 @@ export class Signature {
          * Match { ... } blocks at top level 
          */
         const regex = /\{([^{}]+(?:\{[^{}]*\}[^{}]*)*)\}/g
-        let match
+        let match: RegExpExecArray | null
 
         while ((match = regex.exec(block)) !== null) {
             const shared = '^' === match[1][0]! || /:[#^]/.test(match[1])
@@ -69,6 +69,7 @@ export class Signature {
             let name = namePart
             let required = /[^a-zA-Z0-9_|-]/.test(name)
             let multiple = false
+            let placeholder: string | undefined
 
             if (name.endsWith('?*')) {
                 required = false
@@ -80,6 +81,8 @@ export class Signature {
             } else if (name.endsWith('?')) {
                 required = false
                 name = name.slice(0, -1)
+                const cname = name.split('--').at(1)?.split('|').at(1) ?? name
+                placeholder = `[${cname}]`
             }
 
             /**
@@ -134,6 +137,7 @@ export class Signature {
                 shared,
                 isFlag,
                 isHidden,
+                placeholder,
                 defaultValue,
                 nestedOptions,
             })

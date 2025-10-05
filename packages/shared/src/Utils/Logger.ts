@@ -10,9 +10,9 @@ export class Logger {
      * @param log If set to false, array of [name, dots, value] output will be returned and not logged 
      * @returns 
      */
-    static twoColumnLog (name: string, value: string, log?: true, spacer?: string): void
-    static twoColumnLog (name: string, value: string, log?: false, spacer?: string): [string, string, string]
-    static twoColumnLog (name: string, value: string, log = true, spacer = '.'): [string, string, string] | void {
+    static twoColumnDetail (name: string, value: string, log?: true, spacer?: string): void
+    static twoColumnDetail (name: string, value: string, log?: false, spacer?: string): [string, string, string]
+    static twoColumnDetail (name: string, value: string, log = true, spacer = '.'): [string, string, string] | void {
         // eslint-disable-next-line no-control-regex
         const regex = /\x1b\[\d+m/g
         const width = Math.max(process.stdout.columns, 100)
@@ -56,7 +56,7 @@ export class Logger {
         status ??= 'info'
         const color = { success: chalk.bgGreen, info: chalk.bgBlue, error: chalk.bgRed }
 
-        const [_name, dots, val] = this.twoColumnLog(name, value, false)
+        const [_name, dots, val] = this.twoColumnDetail(name, value, false)
 
         console.log(this.textFormat(_name, color[status], preserveCol), dots, val)
 

@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/database",
-  "version": "11.2.8",
+  "version": "11.3.0",
   "description": "Modeling data and migration system for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -45,11 +45,12 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.5.0",
+    "@h3ravel/arquebus": "^0.6.5",
     "sqlite3": "^5.1.7"
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
+    "@h3ravel/shared": "workspace:^",
     "@h3ravel/filesystem": "workspace:^",
     "@h3ravel/support": "workspace:^"
   },

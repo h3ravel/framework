@@ -121,3 +121,17 @@ export const flatten = <T> (arr: T[]): T[] => {
     recurse(arr as any[])
     return result
 }
+
+/**
+ * If the given value is not an array and not null, wrap it in one.
+ *
+ * @param  {Array}  value
+ * @return array
+ */
+export const wrap = <A> (value: A | A[]) => {
+    if (value === null) {
+        return []
+    }
+
+    return Array.isArray(value) ? value : [value]
+}

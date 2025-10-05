@@ -231,17 +231,30 @@ export class Musket {
 
         if (opt.isFlag) {
             if (parse) {
-                const flags = opt.flags
-                    ?.map(f => (f.length === 1 ? `-${f}` : `--${f}`)).join(', ')!
-                    .replaceAll('----', '--')
-                    .replaceAll('---', '-')
+                let flags = opt.flags
+                    ?.map(f => (f.length === 1 ? `-${f}` : `--${f.replace(/^-+/, '')}`))
+                    .join(', ') ?? undefined
 
-                cmd.option(flags || '', description!, String(opt.defaultValue) || undefined)
+                if (opt.required && !opt.placeholder) {
+                    flags += ` <${type}>`
+                } else if (opt.placeholder) {
+                    flags += ' ' + opt.placeholder
+                }
+
+                cmd.option(flags || '', description!, <never>opt.defaultValue)
             } else {
+                let flags = opt.flags?.join(', ') ?? ''
+
+                if (opt.required && !opt.placeholder) {
+                    flags += ` <${type}>`
+                } else if (opt.placeholder) {
+                    flags += ' ' + opt.placeholder
+                }
+
                 cmd.option(
-                    opt.flags?.join(', ') + (opt.required ? ` <${type}>` : ''),
+                    flags,
                     description!,
-                    opt.defaultValue as any
+                    <never>opt.defaultValue
                 )
             }
         } else {
