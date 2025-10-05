@@ -15,7 +15,7 @@ export class FileSystem {
 
         const packageJson = path.join(cwd ?? process.cwd(), 'node_modules', packageName)
 
-        const resolved = this.findUpConfig(packageJson, 'package', ['json'])
+        const resolved = this.resolveFileUp('package', ['json'], packageJson)
 
         if (!resolved) {
             return
@@ -40,21 +40,33 @@ export class FileSystem {
     }
 
     /**
-     * Recursively find files
+     * Recursively find files starting from given cwd
      * 
-     * @param cwd 
      * @param name 
      * @param extensions 
+     * @param cwd 
+     * 
      * @returns 
      */
-    static findUpConfig (cwd: string, name: string, extensions: string[]) {
-        return escalade(cwd, (_dir, names) => {
-            for (const ext of extensions) {
-                const filename = `${name}.${ext}`
-                if (names.includes(filename)) {
+    static resolveFileUp (
+        name: string,
+        extensions: string[] | ((dir: string, names: string[]) => string | false),
+        cwd?: string
+    ) {
+        cwd ??= process.cwd()
+
+        return escalade(cwd, (dir, names) => {
+            if (typeof extensions === 'function') {
+                return extensions(dir, names)
+            }
+
+            const candidates = new Set(extensions.map(ext => `${name}.${ext}`))
+            for (const filename of names) {
+                if (candidates.has(filename)) {
                     return filename
                 }
             }
+
             return false
         })
     }
