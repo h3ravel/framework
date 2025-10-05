@@ -117,8 +117,8 @@ importers:
   examples/basic-app:
     dependencies:
       '@h3ravel/arquebus':
-        specifier: ^0.6.5
-        version: 0.6.5(sqlite3@5.1.7)
+        specifier: ^0.6.6
+        version: 0.6.6(sqlite3@5.1.7)
       '@h3ravel/cache':
         specifier: workspace:^
         version: link:../../packages/cache
@@ -311,8 +311,8 @@ importers:
   packages/database:
     dependencies:
       '@h3ravel/arquebus':
-        specifier: ^0.6.5
-        version: 0.6.5(sqlite3@5.1.7)
+        specifier: ^0.6.6
+        version: 0.6.6(sqlite3@5.1.7)
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
@@ -1250,13 +1250,13 @@ packages:
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
 
-  '@h3ravel/arquebus@0.6.5':
-    resolution: {integrity: sha512-3bs5G1/XY6ruPjLtQZ7dZRpL095Pd/eauZcNuZqqL5JzueCeACVC5IKBKNJkomIOphij8w/NpE6JJcJJRB+Xig==}
+  '@h3ravel/arquebus@0.6.6':
+    resolution: {integrity: sha512-kOaeF53yE1SETATVsLducy7v/cL0DQD/wIcRs4O8h1DoctHGHAyRzW6klWN93A9A8MFDP2Qm+SUCGf3Dk+PlaQ==}
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
-  '@h3ravel/shared@0.20.13':
-    resolution: {integrity: sha512-xlG0c1EZ5fLw4kJQb1Uaz8EojrK1ANNeFDrm6D+D0A5+SE7qMad1bF73uZYIkR9Me5TSUVGP1KdlPPPfhYInlg==}
+  '@h3ravel/shared@0.21.0':
+    resolution: {integrity: sha512-mjHPEXnXU1UXSz/jGvHT41UKkO8Cxbv7FWx8VVhYqSRPXdd0FXNJ58nQStiA//HlcffY7NVXJ/vpQ0VJNJEGbQ==}
 
   '@h3ravel/support@0.12.0':
     resolution: {integrity: sha512-RJ/TkLtaUl5Zu4I/Vwwp5MtTEhlDHTTBexXJAV1kcpJTeDIKHnpNzhF+sRIkHlQFmyobqy7YRsWuOdYZGidwhA==}
@@ -5831,9 +5831,9 @@ snapshots:
   '@gar/promisify@1.1.3':
     optional: true
 
-  '@h3ravel/arquebus@0.6.5(sqlite3@5.1.7)':
+  '@h3ravel/arquebus@0.6.6(sqlite3@5.1.7)':
     dependencies:
-      '@h3ravel/shared': 0.20.13
+      '@h3ravel/shared': 0.21.0
       '@h3ravel/support': 0.12.0
       barrelize: 1.6.4
       chalk: 5.6.2
@@ -5860,7 +5860,7 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/shared@0.20.13':
+  '@h3ravel/shared@0.21.0':
     dependencies:
       chalk: 5.6.2
       edge.js: 6.3.0
