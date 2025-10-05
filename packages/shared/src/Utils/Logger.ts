@@ -12,7 +12,7 @@ export class Logger {
     /**
      * Configure global verbosity levels
      */
-    static configure(options: { verbosity?: number, quiet?: boolean, silent?: boolean } = {}) {
+    static configure (options: { verbosity?: number, quiet?: boolean, silent?: boolean } = {}) {
         this.verbosity = options.verbosity ?? 0
         this.isQuiet = options.quiet ?? false
         this.isSilent = options.silent ?? false
@@ -21,7 +21,7 @@ export class Logger {
     /**
      * Check if output should be suppressed
      */
-    private static shouldSuppressOutput(level: 'debug' | 'info' | 'warn' | 'error' | 'success'): boolean {
+    private static shouldSuppressOutput (level: 'debug' | 'info' | 'warn' | 'error' | 'success'): boolean {
         if (this.isSilent) return true
         if (this.isQuiet && (level === 'info' || level === 'success')) return true
         if (level === 'debug' && this.verbosity < 3) return true
@@ -112,24 +112,6 @@ export class Logger {
     }
 
     /**
-     * Logs a debug message
-     * 
-     * @param msg 
-     * @param exit 
-     * @param preserveCol 
-     */
-    static debug<M = any> (msg: M | M[], exit = false, preserveCol = false) {
-        if (Array.isArray(msg)) {
-            for (let i = 0; i < msg.length; i++) {
-                console.log(chalk.bgGray(i + 1), chalk.gray('ℹ'), this.textFormat(msg[i], chalk.bgGray, preserveCol), '\n')
-            }
-        } else {
-            console.log(chalk.gray('ℹ'), this.textFormat(msg, chalk.bgGray, preserveCol))
-        }
-        if (exit) process.exit(0)
-    }
-
-    /**
      * Logs a success message
      * 
      * @param msg 
@@ -158,20 +140,6 @@ export class Logger {
     }
 
     /**
-     * Logs a warning message
-     * 
-     * @param msg 
-     * @param exit 
-     * @param preserveCol 
-     */
-    static warn (msg: any, exit = false, preserveCol = false) {
-        if (!this.shouldSuppressOutput('warn')) {
-            console.log(chalk.yellow('ℹ'), this.textFormat(msg, chalk.bgYellow, preserveCol))
-        }
-        if (exit) process.exit(0)
-    }
-
-    /**
      * Logs an error message
      * 
      * @param msg 
@@ -180,15 +148,15 @@ export class Logger {
      */
     static error (msg: string | string[] | Error & { detail?: string }, exit = true, preserveCol = false) {
         if (!this.shouldSuppressOutput('error')) {
-          if (msg instanceof Error) {
-              if (msg.message) {
-                  console.error(chalk.red('✖'), this.textFormat('ERROR:' + msg.message, chalk.bgRed, preserveCol))
-              }
-              console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`))
-          }
-          else {
-              console.error(chalk.red('✖'), this.textFormat(msg, chalk.bgRed, preserveCol))
-          }
+            if (msg instanceof Error) {
+                if (msg.message) {
+                    console.error(chalk.red('✖'), this.textFormat('ERROR:' + msg.message, chalk.bgRed, preserveCol))
+                }
+                console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`))
+            }
+            else {
+                console.error(chalk.red('✖'), this.textFormat(msg, chalk.bgRed, preserveCol))
+            }
         }
         if (exit) process.exit(1)
     }
@@ -202,7 +170,7 @@ export class Logger {
      */
     static warn (msg: any, exit = false, preserveCol = false) {
         if (!this.shouldSuppressOutput('warn')) {
-            console.warn(chalk.yellow('⚠'), this.textFormat(msg, chalk.bgYellow, preserveCol), '\n')
+            console.warn(chalk.yellow('⚠'), this.textFormat(msg, chalk.bgYellow, preserveCol))
         }
         if (exit) process.exit(0)
     }
@@ -214,9 +182,15 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static debug (msg: any, exit = false, preserveCol = false) {
+    static debug<M = any> (msg: M | M[], exit = false, preserveCol = false) {
         if (!this.shouldSuppressOutput('debug')) {
-            console.log(chalk.gray('🐛'), this.textFormat(msg, chalk.bgGray, preserveCol), '\n')
+            if (Array.isArray(msg)) {
+                for (let i = 0; i < msg.length; i++) {
+                    console.log(chalk.bgGray(i + 1), chalk.gray('🐛'), this.textFormat(msg[i], chalk.bgGray, preserveCol), '\n')
+                }
+            } else {
+                console.log(chalk.gray('🐛'), this.textFormat(msg, chalk.bgGray, preserveCol))
+            }
         }
         if (exit) process.exit(0)
     }

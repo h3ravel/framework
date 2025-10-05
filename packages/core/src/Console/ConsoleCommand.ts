@@ -107,6 +107,42 @@ export class ConsoleCommand {
     }
 
     /**
+     * Check if the command is quiet
+     * 
+     * @returns 
+     */
+    isQuiet () {
+        return this.option('quiet')
+    }
+
+    /**
+     * Check if the command is silent
+     * 
+     * @returns 
+     */
+    isSilent () {
+        return this.option('silent')
+    }
+
+    /**
+     * Check if the command is non interactive
+     * 
+     * @returns 
+     */
+    isNonInteractive () {
+        return this.option('no-interaction') || this.option('noInteraction')
+    }
+
+    /**
+     * Get the verbosity of the command
+     * 
+     * @returns 
+     */
+    getVerbosity () {
+        return this.option('verbose')
+    }
+
+    /**
      * Log an info message
      */
     info (message: string): void {
