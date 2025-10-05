@@ -155,18 +155,53 @@ public async handle(): Promise<void> {
 
 ### Output Methods
 
+Commands have access to several output methods that automatically respect the global verbosity flags:
+
 ```typescript
 public async handle(): Promise<void> {
-    // Basic output
-    this.info('Information message');
-    this.success('Success message');
-    this.error('Error message');
-    this.warn('Warning message');
-    this.line('Plain text');
-    this.newLine(); // Empty line
-
-    // Debug output (shown with --verbose)
+    // Basic output (respects --quiet and --silent flags)
+    this.info('Information message');        // Suppressed by --quiet
+    this.success('Success message');         // Suppressed by --quiet
+    this.error('Error message');             // Always shown (except --silent)
+    this.warn('Warning message');            // Always shown (except --silent)
+    this.line('Plain text');                 // Suppressed by --silent
+    this.newLine(); // Empty line            // Suppressed by --silent
+    
+    // Debug output (only shown with --verbose 3)
     this.debug('Debug information');
+}
+```
+
+#### Output Level Behavior
+
+| Method | Default | --quiet | --silent | --verbose 3 |
+|--------|---------|---------|----------|-------------|
+| `info()` | ✓ | ✗ | ✗ | ✓ |
+| `success()` | ✓ | ✗ | ✗ | ✓ |
+| `warn()` | ✓ | ✓ | ✗ | ✓ |
+| `error()` | ✓ | ✓ | ✗ | ✓ |
+| `debug()` | ✗ | ✗ | ✗ | ✓ |
+| `line()` | ✓ | ✓ | ✗ | ✓ |
+
+#### Verbosity Helpers
+
+```typescript
+public async handle(): Promise<void> {
+    // Check current verbosity level
+    const verbosity = this.getVerbosity(); // 0-3
+    
+    // Check specific flags
+    if (this.isQuiet()) {
+        // Running in quiet mode
+    }
+    
+    if (this.isSilent()) {
+        // Running in silent mode
+    }
+    
+    if (this.isNonInteractive()) {
+        // Running in non-interactive mode
+    }
 }
 ```
 
@@ -269,6 +304,64 @@ npx musket serve:start --p=8080
 
 # Show help for a command
 npx musket help user:create
+```
+
+### Global CLI Options
+
+All Musket commands support the following global options that control output and interaction behavior:
+
+#### Verbosity Control
+
+```bash
+# Quiet mode - suppress info and success messages
+npx musket my:command --quiet
+npx musket my:command -q
+
+# Silent mode - suppress all output except critical errors
+npx musket my:command --silent
+
+# Verbose mode - show additional debug information
+npx musket my:command --verbose 1    # Normal verbose output
+npx musket my:command --verbose 2    # More verbose output  
+npx musket my:command --verbose 3    # Debug level output
+npx musket my:command -v 3           # Short form
+```
+
+#### Non-Interactive Mode
+
+```bash
+# Disable all interactive prompts (useful for CI/automation)
+npx musket my:command --no-interaction
+```
+
+#### Combining Options
+
+```bash
+# Run quietly in non-interactive mode
+npx musket migrate:run --quiet --no-interaction
+
+# Silent mode for automation scripts
+npx musket cache:clear --silent
+
+# Debug mode for troubleshooting
+npx musket my:command --verbose 3
+```
+
+### Option Precedence
+
+When multiple verbosity options are specified, they follow this precedence:
+
+1. `--silent` - Overrides all other verbosity settings
+2. `--quiet` - Suppresses info/success but allows warnings/errors  
+3. `--verbose` - Shows additional output levels based on the number
+
+Examples:
+```bash
+# Silent takes precedence - no output
+npx musket my:command --quiet --silent
+
+# Quiet overrides verbose for info/success messages
+npx musket my:command --quiet --verbose 3
 ```
 
 ### Production
@@ -376,6 +469,46 @@ public async handle(): Promise<void> {
 private isValidEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
+```
+
+### User Interaction
+
+Commands can interact with users through prompts that automatically respect the `--no-interaction` flag:
+
+```typescript
+public async handle(): Promise<void> {
+    // Ask for input with default
+    const name = await this.ask('Enter your name:', 'John Doe');
+    
+    // Confirm action
+    const confirmed = await this.confirm('Are you sure?', false);
+    
+    // Choose from options
+    const environment = await this.choice(
+        'Select environment:', 
+        ['development', 'staging', 'production'],
+        'development'
+    );
+    
+    if (confirmed) {
+        this.info(`Hello ${name}, deploying to ${environment}`);
+    }
+}
+```
+
+#### Non-Interactive Behavior
+
+When `--no-interaction` is used:
+
+- `ask()` returns the default value immediately, or exits with error if no default
+- `confirm()` returns the default boolean value immediately
+- `choice()` returns the default choice, or first option if no default specified
+
+```typescript
+// Safe for CI/automation - always provides defaults
+const name = await this.ask('Enter name:', 'default-user');
+const confirmed = await this.confirm('Continue?', true);
+const env = await this.choice('Environment:', ['dev', 'prod'], 'dev');
 ```
 
 ## Advanced Patterns
