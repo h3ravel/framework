@@ -22,13 +22,13 @@ export class Musket {
 
     constructor(private app: Application, private kernel: Kernel) { }
 
-    async build() {
+    async build () {
         this.loadBaseCommands()
         await this.loadDiscoveredCommands()
         return this.initialize()
     }
 
-    private loadBaseCommands() {
+    private loadBaseCommands () {
         const commands: Command[] = [
             new MakeCommand(this.app, this.kernel),
             new ListCommand(this.app, this.kernel),
@@ -39,7 +39,7 @@ export class Musket {
         commands.forEach(e => this.addCommand(e))
     }
 
-    private async loadDiscoveredCommands() {
+    private async loadDiscoveredCommands () {
         const DIST_DIR = `/${env('DIST_DIR', '.h3ravel/serve')}/`.replaceAll('//', '')
         const commands: Command[] = [
             ...this.app.registeredCommands.map(cmd => new cmd(this.app, this.kernel))
@@ -62,11 +62,11 @@ export class Musket {
         commands.forEach(e => this.addCommand(e))
     }
 
-    addCommand(command: Command) {
+    addCommand (command: Command) {
         this.commands.push(Signature.parseSignature(command.getSignature(), command))
     }
 
-    private initialize() {
+    private initialize () {
         /** Init the Musket Version */
         const cliVersion = Logger.parse([
             ['Musket CLI:', 'white'],
@@ -223,7 +223,7 @@ export class Musket {
         return program
     }
 
-    makeOption(opt: CommandOption, cmd: Commander, parse?: boolean, parent?: any) {
+    makeOption (opt: CommandOption, cmd: Commander, parse?: boolean, parent?: any) {
         const description = opt.description?.replace(/\[(\w+)\]/g, (_, k) => parent?.[k] ?? `[${k}]`) ?? ''
         const type = opt.name.replaceAll('-', '')
 
@@ -264,9 +264,7 @@ export class Musket {
         }
     }
 
-    }
-
-    static async parse(kernel: Kernel) {
+    static async parse (kernel: Kernel) {
         return (await new Musket(kernel.app, kernel).build()).parseAsync()
     }
 

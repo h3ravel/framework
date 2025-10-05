@@ -1,8 +1,9 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { Command } from '../src/Commands/Command'
-import { Logger } from '@h3ravel/shared'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { Application } from '@h3ravel/core'
+import { Command } from '../src/Commands/Command'
 import { Kernel } from '../src/Kernel'
+import { Logger } from '@h3ravel/shared'
 
 describe('Command Logging Methods', () => {
   let command: Command
@@ -11,14 +12,14 @@ describe('Command Logging Methods', () => {
     const mockApp = {} as Application
     const mockKernel = {} as Kernel
     command = new Command(mockApp, mockKernel)
-    
-    vi.spyOn(Logger, 'info').mockImplementation(() => {})
-    vi.spyOn(Logger, 'warn').mockImplementation(() => {})
-    vi.spyOn(Logger, 'log').mockImplementation(() => {})
-    vi.spyOn(Logger, 'success').mockImplementation(() => {})
-    vi.spyOn(Logger, 'error').mockImplementation(() => {})
-    vi.spyOn(Logger, 'debug').mockImplementation(() => {})
-    vi.spyOn(console, 'log').mockImplementation(() => {})
+
+    vi.spyOn(Logger, 'info').mockImplementation(() => { })
+    vi.spyOn(Logger, 'warn').mockImplementation(() => { })
+    vi.spyOn(Logger, 'log').mockImplementation(() => { })
+    vi.spyOn(Logger, 'success').mockImplementation(() => { })
+    vi.spyOn(Logger, 'error').mockImplementation(() => { })
+    vi.spyOn(Logger, 'debug').mockImplementation(() => { })
+    vi.spyOn(console, 'log').mockImplementation(() => { })
   })
 
   afterEach(() => {
@@ -40,7 +41,7 @@ describe('Command Logging Methods', () => {
   it('should call Logger.log when line method is called', () => {
     const message = 'Test line message'
     command.line(message)
-    expect(Logger.log).toHaveBeenCalledWith(message)
+    expect(Logger.log).toHaveBeenCalledWith(message, 'white')
   })
 
   it('should call console.log when newLine is called', () => {

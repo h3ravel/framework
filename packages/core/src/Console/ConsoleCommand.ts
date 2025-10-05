@@ -2,6 +2,7 @@ import type { Argument, Command } from 'commander'
 
 import { Application } from '../Application'
 import { ConsoleKernel } from './ConsoleKernel'
+import { Logger } from '@h3ravel/shared'
 import { XGeneric } from '@h3ravel/support'
 
 export class ConsoleCommand {
@@ -103,5 +104,56 @@ export class ConsoleCommand {
         this.input.options.quiet = this.program.getOptionValue('quiet') ?? false
         this.input.options.silent = this.program.getOptionValue('silent') ?? false
         this.input.options.verbose = this.program.getOptionValue('verbose') ?? 0
+    }
+
+    /**
+     * Log an info message
+     */
+    info (message: string): void {
+        Logger.info(message)
+    }
+
+    /**
+     * Log a warning message
+     */
+    warn (message: string): void {
+        Logger.warn(message)
+    }
+
+    /**
+     * Log a line message
+     */
+    line (message: string): void {
+        Logger.log(message, 'white')
+    }
+
+    /**
+     * Log a new line
+     */
+    newLine (count: number = 1): void {
+        for (let i = 0; i < count; i++) {
+            console.log('')
+        }
+    }
+
+    /**
+     * Log a success message
+     */
+    success (message: string): void {
+        Logger.success(message)
+    }
+
+    /**
+     * Log an error message
+     */
+    error (message: string): void {
+        Logger.error(message)
+    }
+
+    /**
+     * Log a debug message
+     */
+    debug (message: string | string[]): void {
+        Logger.debug(message)
     }
 }

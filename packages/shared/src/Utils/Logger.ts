@@ -86,6 +86,23 @@ export class Logger {
         return color(` ${first} `) + rest.join(':')
     }
 
+    /**
+     * Logs a debug message
+     * 
+     * @param msg 
+     * @param exit 
+     * @param preserveCol 
+     */
+    static debug<M = any> (msg: M | M[], exit = false, preserveCol = false) {
+        if (Array.isArray(msg)) {
+            for (let i = 0; i < msg.length; i++) {
+                console.log(chalk.bgGray(i + 1), chalk.gray('ℹ'), this.textFormat(msg[i], chalk.bgGray, preserveCol), '\n')
+            }
+        } else {
+            console.log(chalk.gray('ℹ'), this.textFormat(msg, chalk.bgGray, preserveCol))
+        }
+        if (exit) process.exit(0)
+    }
 
     /**
      * Logs a success message
@@ -95,7 +112,7 @@ export class Logger {
      * @param preserveCol 
      */
     static success (msg: any, exit = false, preserveCol = false) {
-        console.log(chalk.green('✓'), this.textFormat(msg, chalk.bgGreen, preserveCol), '\n')
+        console.log(chalk.green('✓'), this.textFormat(msg, chalk.bgGreen, preserveCol))
         if (exit) process.exit(0)
     }
 
@@ -107,7 +124,19 @@ export class Logger {
      * @param preserveCol 
      */
     static info (msg: any, exit = false, preserveCol = false) {
-        console.log(chalk.blue('ℹ'), this.textFormat(msg, chalk.bgBlue, preserveCol), '\n')
+        console.log(chalk.blue('ℹ'), this.textFormat(msg, chalk.bgBlue, preserveCol))
+        if (exit) process.exit(0)
+    }
+
+    /**
+     * Logs a warning message
+     * 
+     * @param msg 
+     * @param exit 
+     * @param preserveCol 
+     */
+    static warn (msg: any, exit = false, preserveCol = false) {
+        console.log(chalk.yellow('ℹ'), this.textFormat(msg, chalk.bgYellow, preserveCol))
         if (exit) process.exit(0)
     }
 
@@ -123,10 +152,10 @@ export class Logger {
             if (msg.message) {
                 console.error(chalk.red('✖'), this.textFormat('ERROR:' + msg.message, chalk.bgRed, preserveCol))
             }
-            console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`), '\n')
+            console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`))
         }
         else {
-            console.error(chalk.red('✖'), this.textFormat(msg, chalk.bgRed, preserveCol), '\n')
+            console.error(chalk.red('✖'), this.textFormat(msg, chalk.bgRed, preserveCol))
         }
         if (exit) process.exit(1)
     }

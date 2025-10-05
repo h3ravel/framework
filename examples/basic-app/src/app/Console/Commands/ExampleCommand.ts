@@ -1,18 +1,38 @@
 import { Command } from '@h3ravel/console'
 
-export default class ExampleCommand extends Command {
-  signature = 'example:run'
-  description = 'An example command demonstrating logging methods'
+export class ExampleCommand extends Command {
 
-  async handle() {
+  /**
+   * The name and signature of the console command.
+   *
+   * @var string
+   */
+  protected signature: string = `example
+        {name : Name of the example.}
+        {--d|debug : Show debug info}
+    `
+
+  /**
+   * The console command description.
+   *
+   * @var string
+   */
+  protected description: string = 'An example command'
+
+  public async handle () {
+    const name = this.argument('name')
+    const debug = this.option('debug')
+
     this.info('Starting example command...')
     this.newLine()
-    
+
     this.line('This is a plain line')
     this.warn('This is a warning message')
     this.debug('Debug information here')
-    
+
     this.newLine(2)
     this.success('Example command completed successfully!')
+
+    dd('name: ' + name, 'debug: ' + (debug !== 'undefined'))
   }
 }
