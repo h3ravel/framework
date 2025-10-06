@@ -59,7 +59,7 @@ export class Logger {
     static describe (name: string, desc: string, width?: number, log?: true): void
     static describe (name: string, desc: string, width?: number, log?: false): [string, string, string]
     static describe (name: string, desc: string, width = 50, log = true): [string, string, string] | void {
-        width = Math.min(width, 30)
+        width = Math.max(width, 30)
         // eslint-disable-next-line no-control-regex
         const regex = /\x1b\[\d+m/g
         const dots = Math.max(width - name.replace(regex, '').length, 0)

@@ -42,20 +42,7 @@ export class ListCommand extends Command {
             return desc.join('')
         })
 
-        const grouped = commands.reduce<Record<string, string[]>>((acc, cmd) => {
-            /** strip colors before checking prefix */
-            const clean = cmd.replace(/\x1b\[\d+m/g, '')
-            const prefix = clean.includes(':') ? clean.split(':')[0].trim() : '__root__'
-            acc[prefix] ??= []
-            /** keep original with colors */
-            acc[prefix].push(cmd)
-            return acc
-        }, {})
-
-        const list = Object.entries(grouped).map(([group, cmds]) => {
-            const label = group === '__root__' ? '' : group
-            return [Logger.log(label, 'yellow', false), cmds.join('\n')].join('\n')
-        })
+        const list = ListCommand.groupItems(commands)
 
         /** Ootput the app version */
         Logger.log([['H3ravel Framework', 'white'], [this.kernel.modulePackage.version, 'green']], ' ')
@@ -80,5 +67,32 @@ export class ListCommand extends Command {
         /** Ootput the commands */
         Logger.log('Available Commands:', 'yellow')
         console.log(list.join('\n\n').trim())
+    }
+
+    /**
+     * Group Commands based on thier names
+     * 
+     * @param commands 
+     * @returns 
+     */
+    public static groupItems (commands: string[], fmtd = false) {
+        const grouped = commands.reduce<Record<string, string[]>>((acc, cmd) => {
+            /** strip colors before checking prefix */
+            const clean = cmd.replace(/\x1b\[\d+m/g, '')
+            const prefix = clean.includes(':') ? clean.split(':')[0].trim() : '__root__'
+            acc[prefix] ??= []
+            /** keep original with colors */
+            acc[prefix].push(cmd)
+            return acc
+        }, {})
+
+        return Object.entries(grouped).map(([group, cmds]) => {
+            const label = group === '__root__' ? '' : group
+            let out = [Logger.log(label, 'yellow', false), cmds.join('\n')].join('\n')
+            if (fmtd) {
+                out += '\n'
+            }
+            return out
+        })
     }
 }

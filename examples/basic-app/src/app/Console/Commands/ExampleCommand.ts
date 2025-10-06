@@ -22,6 +22,7 @@ export class ExampleCommand extends Command {
   public async handle () {
     const name = this.argument('name')
     const debug = this.option('debug')
+    const interactive = !this.isNonInteractive()
 
     this.info('Starting example command...')
     this.newLine()
@@ -33,6 +34,6 @@ export class ExampleCommand extends Command {
     this.newLine(2)
     this.success('Example command completed successfully!')
 
-    this.debug(['name: ' + name, 'debug: ' + (debug !== 'undefined')])
+    this.debug(['name: ' + name, 'debug: ' + (debug !== 'undefined'), 'interactive: ' + interactive])
   }
 }

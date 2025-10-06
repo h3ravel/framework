@@ -106,10 +106,10 @@ export class ConsoleCommand {
     }
 
     private loadBaseFlags () {
-        this.input.options.lock = this.program.getOptionValue('lock') ?? false
         this.input.options.quiet = this.program.getOptionValue('quiet') ?? false
         this.input.options.silent = this.program.getOptionValue('silent') ?? false
-        this.input.options.verbose = this.program.getOptionValue('verbose') ?? 0
+        this.input.options.verbose = Number(this.program.getOptionValue('verbose') ?? 0)
+        this.input.options.interaction = this.program.getOptionValue('interaction') ?? false
     }
 
     /**
@@ -136,7 +136,7 @@ export class ConsoleCommand {
      * @returns 
      */
     isNonInteractive () {
-        return this.option('no-interaction') || this.option('noInteraction')
+        return this.option('interaction') === false
     }
 
     /**
@@ -144,8 +144,8 @@ export class ConsoleCommand {
      * 
      * @returns 
      */
-    getVerbosity (): string {
-        return this.option('verbose')
+    getVerbosity () {
+        return Number(this.option('verbose'))
     }
 
     /**

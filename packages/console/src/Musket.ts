@@ -1,3 +1,4 @@
+
 import { CommandOption, ParsedCommand } from './Contracts/ICommand'
 import { Option, program, type Command as Commander } from 'commander'
 
@@ -25,7 +26,7 @@ export class Musket {
     async build () {
         this.loadBaseCommands()
         await this.loadDiscoveredCommands()
-        return this.initialize()
+        return await this.initialize()
     }
 
     private loadBaseCommands () {
@@ -66,7 +67,13 @@ export class Musket {
         this.commands.push(Signature.parseSignature(command.getSignature(), command))
     }
 
-    private initialize () {
+    private async initialize () {
+        // Build the app if the user is calling for help to ensure we get the latest data
+        if (process.argv.includes('--help') || process.argv.includes('-h')) {
+            await this.rebuild('help')
+            Object.keys(require.cache).forEach(key => delete require.cache[key])
+        }
+
         /** Init the Musket Version */
         const cliVersion = Logger.parse([
             ['Musket CLI:', 'white'],
@@ -80,18 +87,21 @@ export class Musket {
         ], ' ', false)
 
         const additional = {
-            quiet: ['-q, --quiet', 'Do not output any message'],
+            quiet: ['-q, --quiet', 'Do not output any message except errors and warnings'],
             silent: ['--silent', 'Do not output any message'],
             verbose: ['-v, --verbose <number>', 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'],
-            noInteraction: ['--no-interaction', 'Do not ask any interactive question'],
+            noInteraction: ['-n, --no-interaction', 'Do not ask any interactive question'],
         }
 
-        /** Init Commander */
+        /** 
+         * Init Commander
+         */
         program
             .name('musket')
             .version(`${cliVersion}\n${localVersion}`)
             .description(altLogo)
-            .addOption(new Option(additional.quiet[0], additional.quiet[1]).implies({ silent: true }))
+            .configureHelp({ showGlobalOptions: true })
+            .addOption(new Option(additional.quiet[0], additional.quiet[1]))
             .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
             .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
             .addOption(new Option(additional.noInteraction[0], additional.noInteraction[1]))
@@ -101,7 +111,41 @@ export class Musket {
                 instance.handle()
             })
 
-        /** Create the init Command */
+        /**
+         * Format the help command display
+         */
+        program.configureHelp({
+            styleTitle: (str) => Logger.log(str, 'yellow', false),
+            styleOptionTerm: (str) => Logger.log(str, 'green', false),
+            styleArgumentTerm: (str) => Logger.log(str, 'green', false),
+            styleSubcommandTerm: (str) => Logger.log(str, 'green', false),
+            formatItemList (heading, items) {
+                if (items.length < 1) {
+                    return []
+                }
+                const c = (str: string) => str.replace(/[^A-Za-z0-9-,]/g, '').replace('32m', '')
+
+                let flags = items.filter(e => c(e).startsWith('--') || c(e).includes(',--'))
+
+                if (flags.length > 0) {
+                    flags = [Logger.log('\n' + heading + '\n', 'yellow', false)].concat(flags)
+                }
+
+                const list = items.filter(e => !c(e).startsWith('--') && !c(e).includes(',--'))
+
+                if (list.length < 1) {
+                    return flags
+                }
+
+                return flags.concat(Logger.log('\nAvailable Commands:', 'yellow', false), ListCommand.groupItems(list, true))
+            },
+            showGlobalOptions: true
+        })
+
+
+        /** 
+         * Create the init Command
+         */
         program
             .command('init')
             .description('Initialize H3ravel.')
@@ -109,7 +153,9 @@ export class Musket {
                 Logger.success('Initialized: H3ravel has been initialized!')
             })
 
-        /** Loop through all the available commands */
+        /** 
+         * Loop through all the available commands
+         */
         for (let i = 0; i < this.commands.length; i++) {
             const command = this.commands[i]
             const instance = command.commandClass
@@ -123,10 +169,6 @@ export class Musket {
                     : program
                         .command(command.baseCommand)
                         .description(command.description ?? '')
-                        .addOption(new Option(additional.quiet[0], additional.quiet[1]).implies({ silent: true }))
-                        .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
-                        .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
-                        .addOption(new Option(additional.noInteraction[0], additional.noInteraction[1]))
                         .action(async () => {
                             instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command, program)
                             await instance.handle()
@@ -153,10 +195,6 @@ export class Musket {
                         const cmd = program
                             .command(`${command.baseCommand}:${sub.name}`)
                             .description(sub.description || '')
-                            .addOption(new Option(additional.quiet[0], additional.quiet[1]).implies({ silent: true }))
-                            .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
-                            .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
-                            .addOption(new Option(additional.noInteraction[0], additional.noInteraction[1]))
                             .action(async () => {
                                 instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, sub, program)
                                 await instance.handle()
@@ -194,10 +232,6 @@ export class Musket {
                 const cmd = program
                     .command(command.baseCommand)
                     .description(command.description ?? '')
-                    .addOption(new Option(additional.quiet[0], additional.quiet[1]).implies({ silent: true }))
-                    .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
-                    .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
-                    .addOption(new Option(additional.noInteraction[0], additional.noInteraction[1]))
 
                 command
                     ?.options
@@ -215,16 +249,20 @@ export class Musket {
 
         /** Rebuild the app on every command except fire so we wont need TS */
         program.hook('preAction', async (_, cmd) => {
-            if (cmd.name() !== 'fire') {
-                await build({
-                    ...TsDownConfig,
-                    watch: false,
-                    plugins: []
-                })
-            }
+            this.rebuild(cmd.name())
         })
 
         return program
+    }
+
+    async rebuild (name: string) {
+        if (name !== 'fire' && name !== 'build') {
+            await build({
+                ...TsDownConfig,
+                watch: false,
+                plugins: []
+            })
+        }
     }
 
     makeOption (opt: CommandOption, cmd: Commander, parse?: boolean, parent?: any) {
