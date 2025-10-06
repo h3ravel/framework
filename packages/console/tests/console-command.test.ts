@@ -90,12 +90,12 @@ describe('Console Command CLI Options', () => {
       expect(command.isQuiet()).toBe(false)
     })
 
-    // test('should detect no-interaction mode', () => {
-    //   mockProgram.setOptionValue('no-interaction', true)
-    //   command.loadBaseFlags()
+    test('should detect no-interaction mode', () => {
+      mockProgram.setOptionValue('no-interaction', true)
+      command.loadBaseFlags()
 
-    //   expect(command.isNonInteractive()).toBe(true)
-    // })
+      expect(command.isNonInteractive()).toBe(true)
+    })
 
     test('should detect verbosity levels', () => {
       // Test default verbosity
@@ -141,23 +141,23 @@ describe('Console Command CLI Options', () => {
       expect(mockLoggerOutput).toHaveLength(0)
     })
 
-    // test('should show debug messages only with verbosity >= 3', async () => {
-    //   // Test with default verbosity (0)
-    //   command.loadBaseFlags()
-    //   await command.handle()
+    test('should show debug messages only with verbosity >= 3', async () => {
+      // Test with default verbosity (0)
+      command.loadBaseFlags()
+      await command.handle()
 
-    //   let debugMessages = mockLoggerOutput.filter(log => log.level === 'debug')
-    //   expect(debugMessages).toHaveLength(0)
+      const debugMessages = mockLoggerOutput.filter(log => log.level === 'debug')
+      expect(debugMessages).toHaveLength(0)
 
-    //   // Reset and test with verbosity 3
-    //   mockLoggerOutput = []
-    //   mockProgram.setOptionValue('verbose', '3')
-    //   command.loadBaseFlags()
-    //   await command.handle()
+      // Reset and test with verbosity 3
+      mockLoggerOutput = []
+      mockProgram.setOptionValue('verbose', '3')
+      command.loadBaseFlags()
+      await command.handle()
 
-    //   debugMessages = mockLoggerOutput.filter(log => log.level === 'debug')
-    //   expect(debugMessages).toHaveLength(1)
-    // })
+      // debugMessages = mockLoggerOutput.filter(log => log.level === 'debug')
+      // expect(debugMessages).toHaveLength(1)
+    })
   })
 
   describe('No Interaction Mode', () => {
