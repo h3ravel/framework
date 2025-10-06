@@ -105,7 +105,7 @@ export class ConsoleCommand {
         return this.input.arguments
     }
 
-    private loadBaseFlags () {
+    public loadBaseFlags () {
         this.input.options.quiet = this.program.getOptionValue('quiet') ?? false
         this.input.options.silent = this.program.getOptionValue('silent') ?? false
         this.input.options.verbose = Number(this.program.getOptionValue('verbose') ?? 0)

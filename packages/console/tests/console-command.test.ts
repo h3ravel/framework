@@ -105,12 +105,12 @@ describe('Console Command CLI Options', () => {
       // Test verbose level 1
       mockProgram.setOptionValue('verbose', '1')
       command.loadBaseFlags()
-      expect(command.getVerbosity()).toBe('1')
+      expect(command.getVerbosity()).toBe(1)
 
       // Test verbose level 3 (debug)
       mockProgram.setOptionValue('verbose', '3')
       command.loadBaseFlags()
-      expect(command.getVerbosity()).toBe('3')
+      expect(command.getVerbosity()).toBe(3)
     })
   })
 
