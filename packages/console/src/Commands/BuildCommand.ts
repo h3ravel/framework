@@ -54,16 +54,19 @@ export class BuildCommand extends ConsoleCommand {
 
         const silent = ENV_VARS.LOG_LEVEL === 'silent' ? '--silent' : null
 
-        Logger.log([['\n INFO ', 'bgBlue'], [' Creating Production Bundle', 'white']], '')
-        console.log('')
+        this.newLine()
 
-        await TaskManager.taskRunner(Logger.log([[' SUCCESS ', 'bgGreen'], [' Production Bundle Created', 'white']], '', false), async () => {
-            await execa(
-                pm,
-                ['tsdown', silent, '--config-loader', 'unconfig', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
-                { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
-            )
-            console.log('')
-        })
+        await TaskManager.advancedTaskRunner(
+            [['Creating Production Bundle', 'STARTED'], ['Production Bundle Created', 'COMPLETED']],
+            async () => {
+                await execa(
+                    pm,
+                    ['tsdown', silent, '--config-loader', 'unconfig', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
+                    { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
+                )
+            }
+        )
+
+        this.newLine()
     }
 }

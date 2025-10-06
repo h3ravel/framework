@@ -33,6 +33,6 @@ export class ExampleCommand extends Command {
     this.newLine(2)
     this.success('Example command completed successfully!')
 
-    dd('name: ' + name, 'debug: ' + (debug !== 'undefined'))
+    this.debug(['name: ' + name, 'debug: ' + (debug !== 'undefined')])
   }
 }

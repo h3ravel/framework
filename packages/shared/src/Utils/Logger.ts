@@ -21,7 +21,7 @@ export class Logger {
     /**
      * Check if output should be suppressed
      */
-    private static shouldSuppressOutput (level: 'debug' | 'info' | 'warn' | 'error' | 'success'): boolean {
+    private static shouldSuppressOutput (level: 'line' | 'debug' | 'info' | 'warn' | 'error' | 'success'): boolean {
         if (this.isSilent) return true
         if (this.isQuiet && (level === 'info' || level === 'success')) return true
         if (level === 'debug' && this.verbosity < 3) return true
@@ -186,7 +186,7 @@ export class Logger {
         if (!this.shouldSuppressOutput('debug')) {
             if (Array.isArray(msg)) {
                 for (let i = 0; i < msg.length; i++) {
-                    console.log(chalk.bgGray(i + 1), chalk.gray('🐛'), this.textFormat(msg[i], chalk.bgGray, preserveCol), '\n')
+                    console.log(chalk.gray('🐛'), chalk.bgGray(i + 1), this.textFormat(msg[i], chalk.bgGray, preserveCol))
                 }
             } else {
                 console.log(chalk.gray('🐛'), this.textFormat(msg, chalk.bgGray, preserveCol))
@@ -242,7 +242,7 @@ export class Logger {
             return this.textFormat(output, Logger.chalker(Array.isArray(sc) ? sc : [sc]))
         }).join(joiner)
 
-        if (log) console.log(string)
+        if (log && !this.shouldSuppressOutput('line')) console.log(string)
         else return string
     }
 

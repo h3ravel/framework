@@ -69,6 +69,12 @@ export class ConsoleCommand {
             .map((e, i) => ({ [e.name()]: args[i] }))
             .reduce((e, x) => Object.assign(e, x), {})
         this.loadBaseFlags()
+
+        Logger.configure({
+            verbosity: this.option('verbose'),
+            silent: this.option('silent'),
+            quiet: this.option('quiet'),
+        })
     }
 
     getSignature () {
@@ -99,7 +105,7 @@ export class ConsoleCommand {
         return this.input.arguments
     }
 
-    loadBaseFlags () {
+    private loadBaseFlags () {
         this.input.options.lock = this.program.getOptionValue('lock') ?? false
         this.input.options.quiet = this.program.getOptionValue('quiet') ?? false
         this.input.options.silent = this.program.getOptionValue('silent') ?? false
@@ -138,58 +144,65 @@ export class ConsoleCommand {
      * 
      * @returns 
      */
-    getVerbosity () {
+    getVerbosity (): string {
         return this.option('verbose')
     }
 
     /**
      * Log an info message
      */
-    info (message: string): void {
+    info (message: string) {
         Logger.info(message)
+        return this
     }
 
     /**
      * Log a warning message
      */
-    warn (message: string): void {
+    warn (message: string) {
         Logger.warn(message)
+        return this
     }
 
     /**
      * Log a line message
      */
-    line (message: string): void {
+    line (message: string) {
         Logger.log(message, 'white')
+        return this
     }
 
     /**
      * Log a new line
      */
-    newLine (count: number = 1): void {
-        for (let i = 0; i < count; i++) {
-            console.log('')
-        }
+    newLine (count: number = 1) {
+        if (Number(this.getVerbosity()) >= 3 || (!this.isSilent() && !this.isQuiet()))
+            for (let i = 0; i < count; i++)
+                console.log('')
+        return this
     }
 
     /**
      * Log a success message
      */
-    success (message: string): void {
+    success (message: string) {
         Logger.success(message)
+        return this
     }
 
     /**
      * Log an error message
      */
-    error (message: string): void {
+    error (message: string) {
         Logger.error(message)
+        return this
     }
 
     /**
      * Log a debug message
      */
-    debug (message: string | string[]): void {
+    debug (message: string | string[]) {
         Logger.debug(message)
+        return this
     }
 }
