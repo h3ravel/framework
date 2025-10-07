@@ -209,7 +209,11 @@ export class ProviderRegistry {
     }
 
     public static async discoverProviders (autoRegister = true) {
-        const manifests = await fg('node_modules/@h3ravel/*/package.json')
+        const manifests = await fg([
+            'node_modules/@h3ravel/*/package.json',
+            'node_modules/@h3ravel-community/*/package.json',
+            'node_modules/h3ravel-*/package.json',
+        ])
 
         const providers: ProviderCtor[] = []
 
