@@ -1,5 +1,7 @@
 export * from './Contracts/ObjContract'
 export * from './Contracts/StrContract'
+export * from './Contracts/TypeCast'
+export * from './Exceptions/InvalidArgumentException'
 export * from './GlobalBootstrap'
 export { Arr } from './Helpers/Arr'
 export * as Crypto from './Helpers/Crypto'

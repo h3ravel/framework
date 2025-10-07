@@ -8,6 +8,8 @@ import { createUrlHelpers } from '../Helpers'
  * Service provider for URL utilities
  */
 export class UrlServiceProvider extends ServiceProvider {
+    public static priority = 897
+
     /**
      * Register URL services in the container
      */

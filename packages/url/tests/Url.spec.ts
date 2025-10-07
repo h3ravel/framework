@@ -41,7 +41,7 @@ describe('Url', () => {
 
     beforeAll(async () => {
         app = new Application(process.cwd())
-        await app.quickStartup([UrlServiceProvider, RouteServiceProvider, HttpServiceProvider])
+        await app.quickStartup([UrlServiceProvider, RouteServiceProvider, HttpServiceProvider], [], false)
         Object.assign(mockApp, app)
         Object.assign(globalThis, globalThat)
         app.make('router').get('path', () => ({ success: true }), 'path')

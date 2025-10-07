@@ -116,23 +116,33 @@ export class Application extends Container implements IApplication {
      * 
      * @param providers All regitererable service providers
      * @param filtered A list of service provider name strings we do not want to register at all cost
+     * @param autoRegisterProviders If set to false, service providers will not be auto discovered and registered.
+     * 
      * @returns 
      */
-    public async quickStartup (providers: Array<AServiceProvider>, filtered: string[] = []) {
+    public async quickStartup (providers: Array<AServiceProvider>, filtered: string[] = [], autoRegisterProviders = true) {
         this.registerProviders(providers, filtered)
-        await this.registerConfiguredProviders()
+        await this.registerConfiguredProviders(autoRegisterProviders)
         return this.boot()
     }
 
     /**
      * Dynamically register all configured providers
+     * 
+     * @param autoRegister If set to false, service providers will not be auto discovered and registered.
      */
-    public async registerConfiguredProviders () {
+    public async registerConfiguredProviders (autoRegister = true) {
         const providers = await this.getAllProviders()
 
+        ProviderRegistry.setSortable(false)
         ProviderRegistry.setFiltered(this.filteredProviders)
         ProviderRegistry.registerMany(providers)
-        ProviderRegistry.discoverProviders()
+
+        if (autoRegister) {
+            await ProviderRegistry.discoverProviders()
+        }
+
+        ProviderRegistry.doSort()
 
         for (const ProviderClass of ProviderRegistry.all()) {
             if (!ProviderClass) continue

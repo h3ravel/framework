@@ -10,6 +10,16 @@ export class ProviderRegistry {
     private static providers = new Map<string, ProviderCtor>()
     private static priorityMap = new Map<string, number>()
     private static filteredProviders: string[] = []
+    private static sortable = true
+
+    /**
+     * Set wether providers should be sorted or not.
+     * 
+     * @returns 
+     */
+    static setSortable (sort: boolean = true): void {
+        this.sortable = sort
+    }
 
     /**
      * Get a unique identifier for the Provider.
@@ -40,7 +50,11 @@ export class ProviderRegistry {
      * @returns 
      */
     static register (...providers: ProviderCtor[]): void {
-        for (const provider of this.sort(providers.concat(...this.providers.values()))) {
+        const list = this.sortable
+            ? this.sort(providers.concat(...this.providers.values()))
+            : providers.concat(...this.providers.values())
+
+        for (const provider of list) {
             const key = this.getKey(provider)
             this.providers.set(key, provider)
         }
@@ -53,7 +67,11 @@ export class ProviderRegistry {
      * @returns 
      */
     static registerMany (providers: ProviderCtor[]): void {
-        for (const provider of this.sort(providers.concat(...this.providers.values()))) {
+        const list = this.sortable
+            ? this.sort(providers.concat(...this.providers.values()))
+            : providers.concat(...this.providers.values())
+
+        for (const provider of list) {
             const key = this.getKey(provider)
             this.providers.set(key, provider)
         }
@@ -138,6 +156,21 @@ export class ProviderRegistry {
     }
 
     /**
+     * Sort service providers
+     */
+    static doSort () {
+        const raw = this.sort(Array.from(this.providers.values()))
+        const providers = new Map<string, ProviderCtor>()
+
+        for (const provider of raw) {
+            const key = this.getKey(provider)
+            providers.set(key, provider)
+        }
+
+        this.providers = providers
+    }
+
+    /**
      * Log the service providers in a table
      * 
      * @param priorityMap 
@@ -175,17 +208,25 @@ export class ProviderRegistry {
         return this.providers.has(this.getKey(provider))
     }
 
-    public static async discoverProviders () {
+    public static async discoverProviders (autoRegister = true) {
         const manifests = await fg('node_modules/@h3ravel/*/package.json')
 
-        const providers: ServiceProvider[] = []
+        const providers: ProviderCtor[] = []
+
         for (const manifestPath of manifests) {
             const pkg = await this.getManifest(path.resolve(manifestPath))
             if (pkg.h3ravel?.providers) {
-                console.log(await Promise.all(pkg.h3ravel.providers.map((prov: string) => import(path.resolve(path.dirname(manifestPath), 'dist/index.js')))))
-                // const module = await import(path.resolve(path.dirname(manifestPath), pkg.h3ravel.provider))
-                //     const provider = Object.values(module).find(v => v?.prototype instanceof ServiceProvider)
-                //     if (provider) providers.push(provider)
+                providers.push(...await Promise.all(
+                    pkg.h3ravel.providers.map(
+                        async (name: string) => (await import(path.resolve(path.dirname(manifestPath), 'dist/index.js')))[name]
+                    )))
+            }
+        }
+
+        if (autoRegister) {
+            for (const provider of providers) {
+                const key = this.getKey(provider)
+                this.providers.set(key, provider)
             }
         }
 
