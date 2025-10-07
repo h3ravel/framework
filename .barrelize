@@ -95,6 +95,32 @@
     },
     {
       "name": "index.ts",
+      "root": "packages/hashing/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/view/src",
+      "exclude": [
+        "**/*copy.ts",
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ],
+      "exports": {
+        "**/EdgeViewEngine.ts": [
+          "*",
+          "EdgeViewEngine as ViewManager"
+        ],
+        "**/Contracts/ViewContract.ts": [
+          "type ViewContract"
+        ]
+      }
+    },
+    {
+      "name": "index.ts",
       "root": "packages/support/src",
       "exclude": [
         "**/*.test.ts",

@@ -27,6 +27,7 @@
     "@h3ravel/router": "workspace:^",
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
+    "@h3ravel/hashing": "workspace:^",
     "@h3ravel/url": "workspace:^",
     "@h3ravel/view": "workspace:^",
     "cross-env": "^10.0.0",

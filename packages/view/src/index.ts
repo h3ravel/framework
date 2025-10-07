@@ -1,10 +1,5 @@
-// Main exports
-export { EdgeViewEngine } from './EdgeViewEngine'
-export { ViewServiceProvider } from './Providers/ViewServiceProvider'
-export { MakeViewCommand } from './Commands/MakeViewCommand'
-
-// Contracts
-export type { ViewContract } from './Contracts/ViewContract'
-
-// Default export for convenience
+export * from './Commands/MakeViewCommand'
+export { type ViewContract } from './Contracts/ViewContract'
+export * from './EdgeViewEngine'
 export { EdgeViewEngine as ViewManager } from './EdgeViewEngine'
+export * from './Providers/ViewServiceProvider'

@@ -1,9 +1,9 @@
-import * as Arr from './Helpers/Arr'
 import * as Crypto from './Helpers/Crypto'
 import * as DumpDie from './Helpers/DumpDie'
 import * as Number from './Helpers/Number'
 import * as Obj from './Helpers/Obj'
 
+import { Arr } from './Helpers/Arr'
 import { DateTime } from './Helpers/Time'
 import { Str } from './Helpers/Str'
 
@@ -16,8 +16,9 @@ type Omitables =
     | 'start' | 'take' | 'reverse' | 'chunk' | 'find' | 'pop' | 'end' | 'shift' | 'push' | 'at' | 'prototype'
     | 'concat' | 'join' | 'slice' | 'sort' | 'splice' | 'includes' | 'indexOf' | 'lastIndexOf' | 'findIndex'
     | 'every' | 'some' | 'forEach' | 'map' | 'filter' | 'reduce' | 'unshift' | 'flat' | 'flatMap' | 'keys'
-    | 'fill' | 'copyWithin' | 'entries' | 'values' | 'reduceRight' | 'length' | 'of'
-
+    | 'fill' | 'copyWithin' | 'entries' | 'values' | 'reduceRight' | 'length' | 'of' | '_isObject' | '_clone'
+    | 'crossJoin' | 'divide' | 'wrap' | 'except' | 'hasAny' | 'isList' | 'keyBy' | 'mapWithKeys' | 'only' | 'pluck'
+    | 'pull' | 'shuffle' | 'sortDesc' | 'sortRecursive' | 'sortRecursiveDesc' | 'where' | 'whereNotNull' | 'head'
     | typeof Symbol.unscopables | typeof Symbol.iterator
 
 type TakeTime = Pick<typeof DateTime,
@@ -34,7 +35,7 @@ type TakeString = Pick<typeof Str,
  * and provides convenient access to all utility functions
  */
 export interface GlobalHelpers extends
-    Omit<CollapseStatics<typeof Arr>, Omitables>,
+    Omit<CollapseStatics<typeof Arr>, Omitables | 'random' | 'dot'>,
     Omit<CollapseStatics<TakeString>, Omitables | 'random' | 'uuid'>,
     Omit<CollapseStatics<TakeTime>, Omitables>,
     Omit<CollapseStatics<typeof Obj>, Omitables>,
@@ -106,15 +107,10 @@ export function loadHelpers (target: any = globalThis): void {
 
         // Array helpers
         collapse: Arr.collapse,
-        alternate: Arr.alternate,
-        combine: Arr.combine,
         forget: Arr.forget,
         first: Arr.first,
         last: Arr.last,
-        isEmpty: Arr.isEmpty,
-        isNotEmpty: Arr.isNotEmpty,
         prepend: Arr.prepend,
-        range: Arr.range,
         flatten: Arr.flatten,
 
         // Object helpers

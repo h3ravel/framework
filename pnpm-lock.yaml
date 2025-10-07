@@ -137,6 +137,9 @@ importers:
       '@h3ravel/filesystem':
         specifier: workspace:^
         version: link:../../packages/filesystem
+      '@h3ravel/hashing':
+        specifier: workspace:^
+        version: link:../../packages/hashing
       '@h3ravel/http':
         specifier: workspace:^
         version: link:../../packages/http
@@ -285,6 +288,9 @@ importers:
       dotenv-expand:
         specifier: ^12.0.3
         version: 12.0.3
+      fast-glob:
+        specifier: ^3.3.3
+        version: 3.3.3
       h3:
         specifier: 2.0.0-beta.4
         version: 2.0.0-beta.4
@@ -345,6 +351,19 @@ importers:
         specifier: workspace:^
         version: link:../support
     devDependencies:
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.2
+
+  packages/hashing:
+    dependencies:
+      '@h3ravel/core':
+        specifier: workspace:^
+        version: link:../core
+    devDependencies:
+      bcryptjs:
+        specifier: ^3.0.2
+        version: 3.0.2
       typescript:
         specifier: ^5.4.0
         version: 5.9.2
@@ -2326,6 +2345,10 @@ packages:
 
   base64-js@1.5.1:
     resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
+
+  bcryptjs@3.0.2:
+    resolution: {integrity: sha512-k38b3XOZKv60C4E2hVsXTolJWfkGRMbILBIe2IBITXciy5bOsTKot5kDrf3ZfufQtQOUN5mXceUEpU1rTl9Uog==}
+    hasBin: true
 
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
@@ -7098,6 +7121,8 @@ snapshots:
       yargs: 17.7.2
 
   base64-js@1.5.1: {}
+
+  bcryptjs@3.0.2: {}
 
   better-path-resolve@1.0.0:
     dependencies:

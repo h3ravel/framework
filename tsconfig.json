@@ -8,6 +8,7 @@
       "@h3ravel/router": ["packages/router/src/index.ts"],
       "@h3ravel/http": ["packages/http/src/index.ts"],
       "@h3ravel/config": ["packages/config/src/index.ts"],
+      "@h3ravel/hashing": ["packages/hashing/src/index.ts"],
       "@h3ravel/database": ["packages/database/src/index.ts"],
       "@h3ravel/cache": ["packages/cache/src/index.ts"],
       "@h3ravel/mail": ["packages/mail/src/index.ts"],

@@ -1,7 +1,12 @@
 {
-  "name": "@h3ravel/support",
-  "version": "0.13.0",
-  "description": "Shared helpers, facades and utilities for H3ravel.",
+  "name": "@h3ravel/hashing",
+  "version": "0.1.0",
+  "description": "Secure Bcrypt and Argon2 hashing for storing user passwords in H3ravel.",
+  "h3ravel": {
+    "providers": [
+      "HashingServiceProvider"
+    ]
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -23,17 +28,20 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/h3ravel/framework.git",
-    "directory": "packages/support"
+    "directory": "packages/hashing"
   },
   "keywords": [
     "h3ravel",
     "modern",
     "web",
+    "hashing",
     "H3",
     "framework",
     "nodejs",
     "typescript",
-    "laravel"
+    "laravel",
+    "Bcrypt",
+    "Argon2"
   ],
   "scripts": {
     "barrel": "barrelsby --directory src --delete --singleQuotes",
@@ -44,13 +52,11 @@
     "test": "jest --passWithNoTests",
     "version-patch": "pnpm version patch"
   },
-  "devDependencies": {
-    "@h3ravel/shared": "workspace:^",
-    "@types/luxon": "^3.7.1",
-    "typescript": "^5.4.0"
+  "peerDependencies": {
+    "@h3ravel/core": "workspace:^"
   },
-  "dependencies": {
-    "dayjs": "^1.11.18",
-    "luxon": "^3.7.2"
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "bcryptjs": "^3.0.2"
   }
 }

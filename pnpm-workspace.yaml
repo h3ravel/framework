@@ -8,6 +8,7 @@ packages:
   - packages/http
   - packages/cache
   - packages/config
+  - packages/hashing
   - packages/queue
   - packages/mail
   - packages/router

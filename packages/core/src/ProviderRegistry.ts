@@ -1,6 +1,8 @@
 import type { Application } from './Application'
 import { ContainerResolver } from '../src/Di/ContainerResolver'
 import { ServiceProvider } from './ServiceProvider'
+import fg from 'fast-glob'
+import path from 'node:path'
 
 type ProviderCtor = (new (_app: Application) => ServiceProvider) & Partial<ServiceProvider>
 
@@ -171,5 +173,34 @@ export class ProviderRegistry {
      */
     static has (provider: ProviderCtor): boolean {
         return this.providers.has(this.getKey(provider))
+    }
+
+    public static async discoverProviders () {
+        const manifests = await fg('node_modules/@h3ravel/*/package.json')
+
+        const providers: ServiceProvider[] = []
+        for (const manifestPath of manifests) {
+            const pkg = await this.getManifest(path.resolve(manifestPath))
+            if (pkg.h3ravel?.providers) {
+                console.log(await Promise.all(pkg.h3ravel.providers.map((prov: string) => import(path.resolve(path.dirname(manifestPath), 'dist/index.js')))))
+                // const module = await import(path.resolve(path.dirname(manifestPath), pkg.h3ravel.provider))
+                //     const provider = Object.values(module).find(v => v?.prototype instanceof ServiceProvider)
+                //     if (provider) providers.push(provider)
+            }
+        }
+
+        return providers
+    }
+
+    private static async getManifest (manifestPath: string) {
+        let pkg: any
+        try {
+            pkg = (await import(manifestPath)).default
+        } catch {
+            const { createRequire } = await import('module')
+            const require = createRequire(import.meta.url)
+            pkg = require(manifestPath)
+        }
+        return pkg
     }
 }

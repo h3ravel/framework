@@ -132,6 +132,7 @@ export class Application extends Container implements IApplication {
 
         ProviderRegistry.setFiltered(this.filteredProviders)
         ProviderRegistry.registerMany(providers)
+        ProviderRegistry.discoverProviders()
 
         for (const ProviderClass of ProviderRegistry.all()) {
             if (!ProviderClass) continue
