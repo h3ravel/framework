@@ -13,4 +13,13 @@ export type XGeneric<V = TGeneric, T = any> = {
     [key: string]: T
 } & V
 
+export type DotPath<T> = T extends object
+    ? {
+        [K in keyof T & (string | number)]:
+        T[K] extends object
+        ? `${K}` | `${K}.${DotPath<T[K]>}`
+        : `${K}`
+    }[keyof T & (string | number)]
+    : never;
+
 export default {}

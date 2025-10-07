@@ -1,10 +1,11 @@
+
+import { Arrayable, Jsonable, JsonSerializable } from '../Contracts/TypeCast'
+import { InvalidArgumentException } from '../Exceptions/InvalidArgumentException'
+import { data_get } from './Obj'
+
 /**
- * Arr — Laravel-like array helpers for JavaScript (first batch of 10).
+ * Arr — Laravel-like array helpers for JavaScript.
  *
- * Export style: ESM
- * Methods: static
- *
- * Notes:
  * - Methods aim for clear, predictable JS behavior.
  * - Inputs are validated where useful; functions try not to mutate arguments.
  */
@@ -30,8 +31,30 @@ export class Arr {
     }
 
     /**
-     * collapse
-     *
+     * Retrieve a value using dot notation
+     * Throws if value is not an array
+     */
+    static array (obj: any, path: string, defaultValue?: number): any[] {
+        const val = data_get(obj, path, defaultValue)
+        if (!Array.isArray(val)) {
+            throw new InvalidArgumentException(`Value at "${path}" is not an array.`)
+        }
+        return val
+    }
+
+    /**
+     * Retrieve a value using dot notation
+     * Throws if value is not a boolean
+     */
+    static boolean (obj: any, path: string, defaultValue?: boolean): boolean {
+        const val = data_get(obj, path, defaultValue)
+        if (typeof val !== 'boolean') {
+            throw new InvalidArgumentException(`Value at "${path}" is not a boolean.`)
+        }
+        return val
+    }
+
+    /**
      * Flatten an array of arrays by one level.
      *
      * Example:
@@ -51,8 +74,6 @@ export class Arr {
     }
 
     /**
-     * crossJoin
-     *
      * Cartesian product of arrays.
      *
      * Example:
@@ -84,8 +105,6 @@ export class Arr {
     }
 
     /**
-     * divide
-     *
      * Split an array (or object) into two arrays: [keys, values].
      *
      * For arrays, keys are numeric indices. For objects, keys are property names.
@@ -94,7 +113,7 @@ export class Arr {
      * Arr.divide(['a','b']) -> [[0,1], ['a','b']]
      * Arr.divide({x:1,y:2}) -> [['x','y'], [1,2]]
      */
-    static divide<A> (input: A[]) {
+    static divide<A> (input: A[] | Record<string, A>) {
         if (Array.isArray(input)) {
             const keys = input.map((_, i) => i)
             const values = input.slice()
@@ -109,8 +128,6 @@ export class Arr {
     }
 
     /**
-     * dot
-     *
      * Flatten a nested array/object structure into a single-level object
      * with dot-notated keys.
      *
@@ -144,8 +161,13 @@ export class Arr {
     }
 
     /**
-     * except
-     *
+     * Checks if all elements satisfy the predicate
+     */
+    static every<T> (array: T[], predicate: (item: T) => boolean): boolean {
+        return array.every(predicate)
+    }
+
+    /**
      * Remove items by keys/indices from an array or properties from an object.
      *
      * For arrays: keys are numeric indices (single number or array of numbers).
@@ -172,38 +194,34 @@ export class Arr {
     }
 
     /**
-     * first
-     *
      * Return the first element of an array that satisfies the predicate,
      * or the first element if no predicate is provided, otherwise the defaultValue.
      *
      * Predicate can be a function or a value to match (strict equality).
      */
-    static first<A, X> (
+    static first<A> (
         array: A[],
         predicate: ((arg: A) => true) | undefined = undefined,
-        defaultValue: X | undefined = undefined
+        defaultValue: A | undefined = undefined
     ): A | undefined {
-        if (!Array.isArray(array) || array.length === 0) return defaultValue as A
+        if (!Array.isArray(array) || array.length === 0) return defaultValue
         if (predicate === undefined) return array[0]
 
         if (typeof predicate === 'function') {
             for (const item of array) {
                 if (predicate(item)) return item
             }
-            return defaultValue as A
+            return defaultValue
         }
 
         // value match
         for (const item of array) {
             if (item === predicate) return item
         }
-        return defaultValue as A
+        return defaultValue
     }
 
     /**
-     * flatten
-     *
      * Recursively flatten an array up to `depth` levels (default: Infinity).
      *
      * Example:
@@ -225,8 +243,18 @@ export class Arr {
     }
 
     /**
-     * forget
-     *
+     * Retrieve a value from an array/object using dot notation
+     * Throws if value is not a float
+     */
+    static float (obj: any, path: string, defaultValue?: number): number {
+        const val = data_get(obj, path, defaultValue)
+        if (typeof val !== 'number' || Number.isNaN(val)) {
+            throw new InvalidArgumentException(`Value at "${path}" is not a float.`)
+        }
+        return val
+    }
+
+    /**
      * Remove element(s) by index or dot-notated path from an array/object.
      *
      * For arrays: accepts numeric index or array of indices. Returns a new array.
@@ -271,8 +299,46 @@ export class Arr {
     }
 
     /**
-     * hasAny
-     *
+     * Converts various input types into a plain array
+     * Supports Arrays, Objects, Iterables, Map, WeakMap, and custom toArray/toJSON/jsonSerialize methods
+     */
+    static from<T> (
+        value: T | Iterable<T> | Arrayable | Jsonable | JsonSerializable | null | undefined
+    ): any[] {
+        if (value == null) return []
+
+        // Array
+        if (Array.isArray(value)) return value
+
+        // Iterable (generators, sets, maps)
+        if (Symbol.iterator in Object(value)) return [...(value as Iterable<any>)]
+
+        // Arrayable
+        if ((value as Arrayable).toArray) return (value as Arrayable).toArray()
+
+        // Jsonable
+        if ((value as Jsonable).toJSON) return (value as Jsonable).toJSON()
+
+        // JsonSerializable
+        if ((value as JsonSerializable).jsonSerialize) return (value as JsonSerializable).jsonSerialize()
+
+        // WeakMap / Map / Object fallback
+        if (value instanceof Map) return Array.from(value.entries())
+        if (value instanceof WeakMap) return [] // can't enumerate WeakMap keys
+        if (typeof value === 'object') return Object.values(value)
+
+        // Fallback for primitives
+        return [value]
+    }
+
+    /**
+     * Checks if an object has all the specified keys
+     */
+    static hasAll<T extends object> (obj: T, keys: (keyof T)[]): boolean {
+        return keys.every(k => k in obj)
+    }
+
+    /**
      * For arrays: check if the array contains any of the provided values.
      *
      * values can be single value or array of values.
@@ -291,8 +357,18 @@ export class Arr {
     }
 
     /**
-     * isList
-     *
+     * Retrieve a value using dot notation
+     * Throws if value is not an integer
+     */
+    static integer (obj: any, path: string, defaultValue?: number): number {
+        const val = data_get(obj, path, defaultValue)
+        if (!Number.isInteger(val)) {
+            throw new InvalidArgumentException(`Value at "${path}" is not an integer.`)
+        }
+        return val
+    }
+
+    /**
      * Determine if the input is a "list-like" array: an Array with
      * contiguous numeric indices starting at 0 (no gaps).
      *
@@ -309,8 +385,6 @@ export class Arr {
     }
 
     /**
-     * join
-     *
      * Join array elements into a string using the given separator.
      *
      * Example:
@@ -321,8 +395,6 @@ export class Arr {
     }
 
     /**
-     * keyBy
-     *
      * Create an object indexed by a key or callback function.
      *
      * Example:
@@ -348,8 +420,6 @@ export class Arr {
     }
 
     /**
-     * last
-     *
      * Get the last element of an array, optionally matching a predicate.
      */
     static last<T> (
@@ -373,8 +443,6 @@ export class Arr {
     }
 
     /**
-     * map
-     *
      * Transform each element in an array using a callback.
      */
     static map<T, U> (array: T[], callback: (item: T, index: number) => U): U[] {
@@ -382,8 +450,13 @@ export class Arr {
     }
 
     /**
-     * mapWithKeys
-     *
+     * Maps a multi-dimensional array with a spread callback
+     */
+    static mapSpread<T extends any[], U> (array: T[], callback: (...items: T) => U): U[] {
+        return array.map(item => callback(...(Array.isArray(item) ? item : [item]) as any))
+    }
+
+    /**
      * Map each element to a key-value pair.
      *
      * Example:
@@ -405,8 +478,6 @@ export class Arr {
     }
 
     /**
-     * only
-     *
      * Return only elements at the given indices.
      *
      * Example:
@@ -419,8 +490,16 @@ export class Arr {
     }
 
     /**
-     * pluck
-     *
+     * Split an array into two arrays based on a predicate
+     */
+    static partition<T> (array: T[], predicate: (item: T) => boolean): [T[], T[]] {
+        const truthy: T[] = []
+        const falsy: T[] = []
+        array.forEach(item => (predicate(item) ? truthy : falsy).push(item))
+        return [truthy, falsy]
+    }
+
+    /**
      * Extract a property from each element in an array of objects.
      *
      * Example:
@@ -432,8 +511,6 @@ export class Arr {
     }
 
     /**
-     * prepend
-     *
      * Add a value to the beginning of an array and return a new array.
      */
     static prepend<T> (array: T[], value: T): T[] {
@@ -441,8 +518,6 @@ export class Arr {
     }
 
     /**
-     * pull
-     *
      * Remove a value from an array by index and return it.
      * Returns a tuple: [newArray, removedValue]
      */
@@ -454,8 +529,14 @@ export class Arr {
     }
 
     /**
-     * random
-     *
+     * Append values to an array (mutable)
+     */
+    static push<T> (array: T[], ...values: T[]): T[] {
+        array.push(...values)
+        return array
+    }
+
+    /**
      * Pick one or more random elements from an array.
      */
     static random<T> (array: T[], count: number = 1): T | T[] | undefined {
@@ -465,10 +546,43 @@ export class Arr {
         return shuffled.slice(0, count)
     }
 
+    /**
+     * Returns array elements that do NOT satisfy the predicate
+     */
+    static reject<T> (array: T[], predicate: (item: T) => boolean): T[] {
+        return array.filter(item => !predicate(item))
+    }
 
     /**
-     * shuffle
-     *
+     * Pick keys from an array of objects or an object
+     */
+    static select<T extends object, K extends keyof T> (obj: T, keys: K[]): Pick<T, K> {
+        const result = {} as Pick<T, K>
+        keys.forEach(k => {
+            if (k in obj) result[k] = obj[k]
+        })
+        return result
+    }
+
+
+    /**
+     * Returns the only element that passes a callback, throws if none or multiple
+     */
+    static sole<T> (array: T[], predicate: (item: T) => boolean): T {
+        const filtered = array.filter(predicate)
+        if (filtered.length === 0) throw new InvalidArgumentException('No element satisfies the condition.')
+        if (filtered.length > 1) throw new InvalidArgumentException('Multiple elements satisfy the condition.')
+        return filtered[0]
+    }
+
+    /**
+     * Checks if at least one element satisfies the predicate
+     */
+    static some<T> (array: T[], predicate: (item: T) => boolean): boolean {
+        return array.some(predicate)
+    }
+
+    /**
      * Randomly shuffle an array and return a new array.
      */
     static shuffle<T> (array: T[]): T[] {
@@ -483,8 +597,6 @@ export class Arr {
 
 
     /**
-     * sort
-     *
      * Sort an array ascending using optional comparator.
      */
     static sort<T> (array: T[], comparator?: (a: T, b: T) => number): T[] {
@@ -493,8 +605,6 @@ export class Arr {
     }
 
     /**
-     * sortDesc
-     *
      * Sort an array descending using optional comparator.
      */
     static sortDesc<T> (array: T[], comparator?: (a: T, b: T) => number): T[] {
@@ -502,8 +612,6 @@ export class Arr {
     }
 
     /**
-     * sortRecursive
-     *
      * Recursively sort arrays inside an array.
      */
     static sortRecursive<T> (array: T[]): T[] {
@@ -514,8 +622,6 @@ export class Arr {
     }
 
     /**
-     * sortRecursiveDesc
-     *
      * Recursively sort arrays inside an array descending.
      */
     static sortRecursiveDesc<T> (array: T[]): T[] {
@@ -526,8 +632,18 @@ export class Arr {
     }
 
     /**
-     * take
-     *
+     * Retrieve a value using dot notation
+     * Throws if value is not a string
+     */
+    static string (obj: any, path: string, defaultValue?: string): string {
+        const val = data_get(obj, path, defaultValue)
+        if (typeof val !== 'string') {
+            throw new InvalidArgumentException(`Value at "${path}" is not a string.`)
+        }
+        return val
+    }
+
+    /**
      * Return the first `count` elements of an array.
      */
     static take<T> (array: T[], count: number): T[] {
@@ -536,8 +652,6 @@ export class Arr {
     }
 
     /**
-     * where
-     *
      * Filter an array based on a predicate function or key-value match.
      */
     static where<T> (
@@ -554,8 +668,6 @@ export class Arr {
     }
 
     /**
-     * whereNotNull
-     *
      * Filter an array of objects, keeping elements where the given key is not null/undefined.
      */
     static whereNotNull<T> (
@@ -567,8 +679,6 @@ export class Arr {
     }
 
     /**
-     * wrap
-     *
      * Ensure the input is wrapped in an array. 
      * Non-array values become [value]; null/undefined becomes [].
      */
@@ -578,8 +688,6 @@ export class Arr {
     }
 
     /**
-     * head
-     *
      * Return the first element of an array, undefined if empty.
      */
     static head<T> (array: T[]): T | undefined {

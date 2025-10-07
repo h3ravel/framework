@@ -128,7 +128,7 @@
       ],
       "exports": {
         "**/Arr.ts": [
-          "* as Arr",
+          "Arr",
           "/^(?!default$)(.+)/ as $1"
         ],
         "**/Crypto.ts": [

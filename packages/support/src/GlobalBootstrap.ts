@@ -1,10 +1,11 @@
 import * as Crypto from './Helpers/Crypto'
 import * as DumpDie from './Helpers/DumpDie'
 import * as Number from './Helpers/Number'
-import * as Obj from './Helpers/Obj'
+import * as SimpleObj from './Helpers/Obj'
 
 import { Arr } from './Helpers/Arr'
 import { DateTime } from './Helpers/Time'
+import { Obj } from './Helpers/Obj'
 import { Str } from './Helpers/Str'
 
 type CollapseStatics<T extends Record<string, any>> = {
@@ -38,7 +39,7 @@ export interface GlobalHelpers extends
     Omit<CollapseStatics<typeof Arr>, Omitables | 'random' | 'dot'>,
     Omit<CollapseStatics<TakeString>, Omitables | 'random' | 'uuid'>,
     Omit<CollapseStatics<TakeTime>, Omitables>,
-    Omit<CollapseStatics<typeof Obj>, Omitables>,
+    Omit<CollapseStatics<typeof SimpleObj>, Omitables | 'Obj'>,
     Omit<CollapseStatics<typeof Crypto>, Omitables>,
     Omit<CollapseStatics<typeof Number>, Omitables>,
     Omit<CollapseStatics<typeof DumpDie>, Omitables> {
@@ -114,13 +115,20 @@ export function loadHelpers (target: any = globalThis): void {
         flatten: Arr.flatten,
 
         // Object helpers
-        dot: Obj.dot,
-        extractProperties: Obj.extractProperties,
-        getValue: Obj.getValue,
-        modObj: Obj.modObj,
-        safeDot: Obj.safeDot as any,
-        setNested: Obj.setNested,
-        slugifyKeys: Obj.slugifyKeys,
+        dot: SimpleObj.dot,
+        undot: SimpleObj.undot,
+        extractProperties: SimpleObj.extractProperties,
+        getValue: SimpleObj.getValue,
+        modObj: SimpleObj.modObj,
+        safeDot: SimpleObj.safeDot,
+        setNested: SimpleObj.setNested,
+        toCssClasses: SimpleObj.toCssClasses,
+        slugifyKeys: SimpleObj.slugifyKeys,
+        toCssStyles: SimpleObj.toCssStyles,
+        data_get: SimpleObj.data_get,
+        data_set: SimpleObj.data_set,
+        data_fill: SimpleObj.data_fill,
+        data_forget: SimpleObj.data_forget,
 
         // Crypto helpers
         uuid: Crypto.uuid,
@@ -181,6 +189,7 @@ export function cleanHelpers (target: any = globalThis): void {
 
         // Object helpers
         'Obj', 'dot', 'extractProperties', 'getValue', 'modObj', 'safeDot', 'setNested', 'slugifyKeys',
+        'toCssClasses', 'undot', 'toCssStyles', 'data_get', 'data_set', 'data_fill', 'data_forget',
 
         // Crypto helpers
         'Crypto', 'uuid', 'random', 'randomSecure', 'hash', 'hmac', 'base64Encode',
