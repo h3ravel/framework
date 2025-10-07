@@ -197,28 +197,41 @@ export class Arr {
      * Return the first element of an array that satisfies the predicate,
      * or the first element if no predicate is provided, otherwise the defaultValue.
      *
-     * Predicate can be a function or a value to match (strict equality).
+     * Predicate can be true (boolean), a function or a value to match (strict equality).
+     * 
+     * When predicate is true (boolean), the first element will be removed and a tuple will be returned [el, rest].
+     * 
+     * @param array 
+     * @param predicate 
+     * @param defaultValue 
+     * 
+     * @returns 
      */
-    static first<A> (
+    static first<A, P extends (((arg: A) => true) | true)> (
         array: A[],
-        predicate: ((arg: A) => true) | undefined = undefined,
-        defaultValue: A | undefined = undefined
-    ): A | undefined {
-        if (!Array.isArray(array) || array.length === 0) return defaultValue
-        if (predicate === undefined) return array[0]
+        predicate?: P | undefined,
+        defaultValue?: A | undefined
+    ): P extends true ? [A, A[]] : A | undefined {
+        if (predicate === true) {
+            if (!array.length) throw new Error('Cannot shift from empty array')
+            return [array[0], array.slice(1)] as never
+        }
+
+        if (!Array.isArray(array) || array.length === 0) return defaultValue as never
+        if (predicate === undefined) return array[0] as never
 
         if (typeof predicate === 'function') {
             for (const item of array) {
-                if (predicate(item)) return item
+                if (predicate(item)) return item as never
             }
-            return defaultValue
+            return defaultValue as never
         }
 
         // value match
         for (const item of array) {
-            if (item === predicate) return item
+            if (typeof predicate !== 'boolean' && item === <never>predicate) return item
         }
-        return defaultValue
+        return defaultValue as never
     }
 
     /**
@@ -420,26 +433,45 @@ export class Arr {
     }
 
     /**
-     * Get the last element of an array, optionally matching a predicate.
+     * Get the last element of an array, optionally matching a predicate,
+     * or the last element if no predicate is provided, otherwise the defaultValue.
+     *
+     * Predicate can be a true (boolean), a function or a value to match (strict equality).
+     * 
+     * When predicate is true (boolean), the last element will be removed and a tuple will be returned [el, rest].
+     * 
+     * @param array 
+     * @param predicate 
+     * @param defaultValue 
+     * 
+     * @returns 
      */
-    static last<T> (
+    static last<T, P extends ((item: T) => boolean) | true> (
         array: T[],
-        predicate?: ((item: T) => boolean) | T,
+        predicate?: P | T,
         defaultValue?: T
-    ): T | undefined {
-        if (!Array.isArray(array) || array.length === 0) return defaultValue
-        if (!predicate) return array[array.length - 1]
+    ): P extends true ? [T, T[]] : T | undefined {
+
+        if (predicate === true) {
+            if (!array.length) throw new Error('Cannot pop from empty array')
+            const lastItem = array[array.length - 1]
+            return [lastItem, array.slice(0, -1)] as never
+        }
+
+        if (!Array.isArray(array) || array.length === 0) return defaultValue as never
+        if (!predicate) return array[array.length - 1] as never
 
         if (typeof predicate === 'function') {
             for (let i = array.length - 1; i >= 0; i--) {
-                if ((predicate as (item: T) => boolean)(array[i])) return array[i]
+                if ((predicate as (item: T) => boolean)(array[i])) return array[i] as never
             }
         } else {
             for (let i = array.length - 1; i >= 0; i--) {
-                if (array[i] === predicate) return array[i]
+                if (array[i] === predicate) return array[i] as never
             }
         }
-        return defaultValue
+
+        return defaultValue as never
     }
 
     /**
@@ -511,10 +543,14 @@ export class Arr {
     }
 
     /**
-     * Add a value to the beginning of an array and return a new array.
+     * Add elements to the beginning of an array and return a new array.
+     * 
+     * @param array 
+     * @param value 
+     * @returns 
      */
-    static prepend<T> (array: T[], value: T): T[] {
-        return [value, ...(Array.isArray(array) ? array : [])]
+    static prepend<T> (array: T[], ...value: T[]): T[] {
+        return [...value, ...(Array.isArray(array) ? array : [])]
     }
 
     /**
@@ -644,7 +680,11 @@ export class Arr {
     }
 
     /**
-     * Return the first `count` elements of an array.
+     * Return the first N elements of an array.
+     * 
+     * @param array 
+     * @param count 
+     * @returns 
      */
     static take<T> (array: T[], count: number): T[] {
         if (!Array.isArray(array)) return []
@@ -679,8 +719,12 @@ export class Arr {
     }
 
     /**
-     * Ensure the input is wrapped in an array. 
+     * If the given value is not an array and not null, wrap it in one.
+     * 
      * Non-array values become [value]; null/undefined becomes [].
+     * 
+     * @param value 
+     * @returns 
      */
     static wrap<T> (value: T | T[] | null | undefined): T[] {
         if (value === null || value === undefined) return []
@@ -692,5 +736,146 @@ export class Arr {
      */
     static head<T> (array: T[]): T | undefined {
         return Array.isArray(array) && array.length ? array[0] : undefined
+    }
+
+    // ============= Additional Non Cannon Arr methods
+
+    /**
+     * Splits an array into chunks of a specified size.
+     *
+     * @template T - Type of elements in the array
+     * @param arr - The input array
+     * @param size - Size of each chunk (default: 2)
+     * @returns An array of chunks (arrays)
+     */
+    static chunk = <T> (arr: T[], size: number = 2): T[][] => {
+        if (size <= 0) throw new Error('Chunk size must be greater than 0')
+
+        const chunks: T[][] = []
+
+        for (let i = 0; i < arr.length; i += size) {
+            chunks.push(arr.slice(i, i + size))
+        }
+
+        return chunks
+    }
+
+    /**
+     * Alternates between two arrays, creating a zipped result.
+     * 
+     * @param a 
+     * @param b 
+     * @returns 
+     */
+    static alternate<T> (a: T[], b: T[]): T[] {
+        const result: T[] = []
+        const max = Math.max(a.length, b.length)
+        for (let i = 0; i < max; i++) {
+            if (i < a.length) result.push(a[i])
+            if (i < b.length) result.push(b[i])
+        }
+        return result
+    }
+
+    /**
+     * Combine arrays and sum their values element by element.
+     * 
+     * @param arr 
+     * @returns 
+     */
+    static combine (...arr: number[][]): number[] {
+        const maxLength = Math.max(...arr.map(a => a.length))
+        const result: number[] = new Array(maxLength).fill(0)
+        for (let i = 0; i < maxLength; i++) {
+            for (const array of arr) result[i] += (array[i] || 0)
+        }
+        return result
+    }
+
+    /** 
+     * Find the value associated with a given key. 
+     * 
+     * @param key 
+     * @param arr 
+     * @returns 
+     */
+    static find<T> (key: T, arr: T[]): T | null {
+        return arr.find(item => item === key) || null
+    }
+
+    /**
+     * Check if array is empty.
+     * 
+     * @param arr 
+     * @returns 
+     */
+    static isEmpty<T> (arr: T[]): boolean {
+        if (arr.length === 0) return true
+        else return false
+    }
+
+    /**
+     * Check if array is empty. 
+     * 
+     * @param arr 
+     * @returns 
+     */
+    static isNotEmpty<T> (arr: T[]): boolean {
+        return arr.length > 0
+    }
+
+    /**
+     * Pop the element off the end of array.
+     * 
+     * @param arr 
+     * @returns 
+     */
+    static pop<T> (arr: T[]): T[] {
+        return arr.slice(0, -1)
+    }
+
+    /**
+     * Create a new array in reverse order. 
+     * 
+     * @param arr 
+     * @returns 
+     */
+    static reverse<T> (arr: T[]): T[] {
+        return [...arr].reverse()
+    }
+
+    /**
+     * Return the first element of an array that satisfies the predicate,
+     * or the first element if no predicate is provided, otherwise the defaultValue.
+     *
+     * Predicate can be true (boolean), a function or a value to match (strict equality).
+     * 
+     * When predicate is true (boolean), the first element will be removed and a tuple will be returned [el, rest].
+     * 
+     * @param array 
+     * @param predicate 
+     * @param defaultValue 
+     * 
+     * @alias Arr.first()
+     * @returns 
+     */
+    static shift<A, P extends (((arg: A) => true) | true)> (
+        array: A[],
+        predicate?: P | undefined,
+        defaultValue?: A | undefined
+    ): P extends true ? [A, A[]] : A | undefined {
+        return Arr.first(array, predicate, defaultValue)
+    }
+
+    /**
+     * Generates an array of sequential numbers.
+     *
+     * @param size - Number of elements in the range
+     * @param startAt - Starting number (default: 0)
+     * @returns An array of numbers from startAt to startAt + size - 1
+     */
+    static range (size: number, startAt: number = 0): number[] {
+        if (size <= 0 || !Number.isFinite(size)) return []
+        return Array.from({ length: size }, (_, i) => startAt + i)
     }
 }
