@@ -7,7 +7,6 @@ import { Argon2idHasher } from '../Drivers/Argon2idHasher'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
 import { ConfigException } from 'packages/core/dist'
-import { FileSystem } from '@h3ravel/shared'
 
 type CreateMethodName = `create${SnakeToTitleCase<HashAlgorithm>}Driver`
 
@@ -25,7 +24,7 @@ export abstract class Manager {
      * @return string
      */
     public getDefaultDriver () {
-        return this.config.driver ?? 'bcrypt'
+        return this.config.driver ?? process.env.HASH_DRIVER ?? 'bcrypt'
     }
 
     protected createDriver (driver: HashAlgorithm) {

@@ -357,6 +357,9 @@ importers:
 
   packages/hashing:
     dependencies:
+      '@h3ravel/core':
+        specifier: workspace:^
+        version: link:../core
       '@h3ravel/support':
         specifier: workspace:^
         version: link:../support
