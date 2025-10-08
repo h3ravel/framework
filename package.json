@@ -36,7 +36,7 @@
     "cleanup": "find . \\( -name 'node_modules' -o -name 'dist' -o -name 'bin' \\) -type d -prune -exec rimraf '{}' +",
     "release": "pnpm build && pnpm changeset version && pnpm changeset publish",
     "publish": "pnpm patch-all && pnpm -r publish --access public",
-    "patch-all": "pnpm build && pnpm -r version patch"
+    "patch-all": "pnpm build && pnpm -r version-patch"
   },
   "publishConfig": {
     "access": "restricted"

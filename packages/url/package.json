@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/url",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Request-aware URI builder and URL manipulation utilities for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
