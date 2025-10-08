@@ -13,7 +13,7 @@ export class ArgonHasher extends AbstractHasher {
     constructor(options = {} as Configuration['argon']) {
         super()
         this.memory = options.memory ?? this.memory
-        this.verifyAlgorithm = options.verify ?? this.verifyAlgorithm
+        this.verifyAlgorithm = options.verify ?? process.env.HASH_VERIFY ?? this.verifyAlgorithm
         this.threads = options.threads ?? this.threads
         this.time = options.time ?? this.time
     }

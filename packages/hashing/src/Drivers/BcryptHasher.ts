@@ -12,7 +12,7 @@ export class BcryptHasher extends AbstractHasher {
     constructor(options = {} as Configuration['bcrypt']) {
         super()
         this.rounds = options.rounds ?? this.rounds
-        this.verifyAlgorithm = options.verify ?? this.verifyAlgorithm
+        this.verifyAlgorithm = options.verify ?? process.env.HASH_VERIFY ?? this.verifyAlgorithm
         this.limit = options.limit ?? this.limit
     }
 

@@ -14,7 +14,7 @@
 
 # Hashing
 
-The [H3ravel](https://h3ravel.toneflix.net) Hashing package provides secure Bcrypt and Argon2 hashing for storing user passwords. If you are using one of the H3ravel application starter kits, Bcrypt will be used for registration and authentication by default.
+The [H3ravel](https://h3ravel.toneflix.net) Hashing package provides framework-agnostic secure Bcrypt and Argon2 hashing for storing user passwords with first class support for H3ravel. If you are using one of the H3ravel application starter kits, Bcrypt will be used for registration and authentication by default.
 
 > Bcrypt is a great choice for hashing passwords because its "work factor" is adjustable, which means that the time it takes to generate a hash can be increased as hardware power increases. When hashing passwords, slow is good. The longer an algorithm takes to hash a password, the longer it takes malicious users to generate "rainbow tables" of all possible string hash values that may be used in brute force attacks against applications.
 
