@@ -208,6 +208,12 @@ export class ProviderRegistry {
         return this.providers.has(this.getKey(provider))
     }
 
+    /**
+     * Automatically search for and discover service providers in packages.
+     * 
+     * @param autoRegister 
+     * @returns 
+     */
     public static async discoverProviders (autoRegister = true) {
         const manifests = await fg([
             'node_modules/@h3ravel/*/package.json',
@@ -237,6 +243,12 @@ export class ProviderRegistry {
         return providers
     }
 
+    /**
+     * Get the content of the package.json file
+     * 
+     * @param manifestPath 
+     * @returns 
+     */
     private static async getManifest (manifestPath: string) {
         let pkg: any
         try {

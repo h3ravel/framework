@@ -1,3 +1,4 @@
+export * from './Commands/ConfigPublishCommand'
 export * from './ConfigRepository'
 export * from './EnvLoader'
 export * from './Helpers'

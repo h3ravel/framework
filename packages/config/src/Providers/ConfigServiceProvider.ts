@@ -3,6 +3,7 @@
 import { ConfigRepository, EnvLoader } from '..'
 
 import { Bindings } from '@h3ravel/shared'
+import { ConfigPublishCommand } from '../Commands/ConfigPublishCommand'
 import { ServiceProvider } from '@h3ravel/core'
 
 /**
@@ -58,5 +59,7 @@ export class ConfigServiceProvider extends ServiceProvider {
         this.app.make('http.app').use(e => {
             repo.set('app.url', e.url.origin)
         })
+
+        this.commands([ConfigPublishCommand])
     }
 }

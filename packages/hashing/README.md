@@ -2,7 +2,7 @@
   <a href="https://h3ravel.toneflix.net"  target="_blank">
     <img src="https://raw.githubusercontent.com/h3ravel/assets/refs/heads/main/logo-full.svg" width="200" alt="H3ravel Logo">
   </a>
-  <h1 align="center"><a href="https://h3ravel.toneflix.net">H3ravel Hashing</a></h1>
+  <h1 align="center"><a href="https://h3ravel.toneflix.net/guide/hashing">H3ravel Hashing</a></h1>
 
 [![Framework][ix]][lx]
 [![Hashing Package Version][i1]][l1]

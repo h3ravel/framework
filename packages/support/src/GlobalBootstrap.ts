@@ -20,6 +20,8 @@ type Omitables =
     | 'fill' | 'copyWithin' | 'entries' | 'values' | 'reduceRight' | 'length' | 'of' | '_isObject' | '_clone'
     | 'crossJoin' | 'divide' | 'wrap' | 'except' | 'hasAny' | 'isList' | 'keyBy' | 'mapWithKeys' | 'only' | 'pluck'
     | 'pull' | 'shuffle' | 'sortDesc' | 'sortRecursive' | 'sortRecursiveDesc' | 'where' | 'whereNotNull' | 'head'
+    | 'string' | 'boolean' | 'array' | 'float' | 'from' | 'hasAll' | 'integer' | 'mapSpread' | 'partition'
+    | 'reject' | 'select' | 'sole' | 'alternate' | 'combine' | 'isEmpty' | 'isNotEmpty' | 'range'
     | typeof Symbol.unscopables | typeof Symbol.iterator
 
 type TakeTime = Pick<typeof DateTime,

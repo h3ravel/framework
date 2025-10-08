@@ -1,12 +1,24 @@
-import { ServiceProvider } from '@h3ravel/core'
+import { HashManager } from '../HashManager'
 
 /**
  * Register HashManager. 
  */
-export class HashingServiceProvider extends ServiceProvider {
+export class HashingServiceProvider {
     public static priority = 991
 
+    constructor(private app: any) { }
+
     register () {
-        // Core bindings
+        const manager = new HashManager(this.app.make('config').get('hashing'))
+
+        globalThis.Hash = manager
+
+        this.app.singleton('hash', () => {
+            return manager
+        })
+
+        this.app.singleton('hash.driver', () => {
+            return manager.driver()
+        })
     }
 }

@@ -45,11 +45,11 @@ export class Container implements IContainer {
      */
     singleton<T extends UseKey> (
         key: T | (new (..._args: any[]) => Bindings[T]),
-        factory: () => Bindings[T]
+        factory: (app: this) => Bindings[T]
     ) {
         this.bindings.set(key, () => {
             if (!this.singletons.has(key)) {
-                this.singletons.set(key, factory())
+                this.singletons.set(key, factory(this))
             }
             return this.singletons.get(key)!
         })
