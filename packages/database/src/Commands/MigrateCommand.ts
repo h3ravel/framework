@@ -30,7 +30,7 @@ export class MigrateCommand extends ConsoleCommand {
         {status : Show the status of each migration.}
         {publish : Publish any migration files from installed packages. | {package : The package to publish migrations from}}
         {^--s|seed : Seed the database}
-        {^--c|connection=mysql : The database connection to use}
+        {^--c|connection=mysql : The database connection to use : [mysql, sqlite, mariadb, pgsql]}
     `
     /**
      * The console command description.

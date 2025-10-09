@@ -8,6 +8,8 @@ export type CommandOption = {
     placeholder?: string;
     description?: string;
     defaultValue?: string | number | boolean | undefined | string[]
+    choices?: string[]
+    argParser?: (...args: []) => any
     /**
      * for options like --Q|queue
      */

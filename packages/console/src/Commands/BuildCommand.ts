@@ -11,7 +11,7 @@ export class BuildCommand extends ConsoleCommand {
      *
      * @var string
      */
-    protected signature: string = `build:
+    protected signature: string = `build
         {--m|minify : Minify your bundle output}
         {--d|dev : Build for dev but don't watch for changes}
     `

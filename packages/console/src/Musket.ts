@@ -1,6 +1,6 @@
 
 import { CommandOption, ParsedCommand } from './Contracts/ICommand'
-import { Option, program, type Command as Commander } from 'commander'
+import { Argument, Option, program, type Command as Commander } from 'commander'
 
 import { Application } from '@h3ravel/core'
 import { Command } from './Commands/Command'
@@ -16,6 +16,7 @@ import { glob } from 'node:fs/promises'
 import path from 'node:path'
 import { PostinstallCommand } from './Commands/PostinstallCommand'
 import { BuildCommand } from './Commands/BuildCommand'
+import { HelpCommand } from './Commands/HelpCommand'
 
 
 export class Musket {
@@ -31,6 +32,7 @@ export class Musket {
 
     private loadBaseCommands () {
         const commands: Command[] = [
+            new HelpCommand(this.app, this.kernel),
             new MakeCommand(this.app, this.kernel),
             new ListCommand(this.app, this.kernel),
             new PostinstallCommand(this.app, this.kernel),
@@ -123,6 +125,11 @@ export class Musket {
                 if (items.length < 1) {
                     return []
                 }
+
+                if (!heading.includes('Commands:')) {
+                    return items
+                }
+
                 const c = (str: string) => str.replace(/[^A-Za-z0-9-,]/g, '').replace('32m', '')
 
                 let flags = items.filter(e => c(e).startsWith('--') || c(e).includes(',--'))
@@ -137,7 +144,9 @@ export class Musket {
                     return flags
                 }
 
-                return flags.concat(Logger.log('\nAvailable Commands:', 'yellow', false), ListCommand.groupItems(list, true))
+                const _heading = c(heading).includes('Arguments') ? heading : 'Available Commands:'
+
+                return flags.concat(Logger.log(`\n${_heading}`, 'yellow', false), ListCommand.groupItems(list, true))
             },
             showGlobalOptions: true
         })
@@ -281,7 +290,11 @@ export class Musket {
                     flags += ' ' + opt.placeholder
                 }
 
-                cmd.option(flags || '', description!, <never>opt.defaultValue)
+                let optn = new Option(flags || '', description).default(opt.defaultValue)
+                if (opt.choices && opt.choices.length) {
+                    optn = optn.choices(opt.choices ?? [])
+                }
+                cmd.addOption(optn)
             } else {
                 let flags = opt.flags?.join(', ') ?? ''
 
@@ -291,18 +304,24 @@ export class Musket {
                     flags += ' ' + opt.placeholder
                 }
 
-                cmd.option(
-                    flags,
-                    description!,
-                    <never>opt.defaultValue
-                )
+                let optn = new Option(flags, description).default(opt.defaultValue)
+                if (opt.choices && opt.choices.length) {
+                    optn = optn.choices(opt.choices ?? [])
+                }
+                cmd.addOption(optn)
             }
         } else {
-            cmd.argument(
-                opt.required ? `<${opt.name}>` : `[${opt.name}]`,
-                description,
-                opt.defaultValue
-            )
+            let name = opt.placeholder
+            if (!name) {
+                name = opt.required ? `<${opt.name}>` : `[${opt.name}]`
+            }
+
+            let arg = new Argument(name, description)
+            if (opt.choices && opt.choices.length) {
+                arg = arg.choices(opt.choices ?? [])
+            }
+            if (opt.defaultValue) arg.default(opt.defaultValue)
+            cmd.addArgument(arg)
         }
     }
 

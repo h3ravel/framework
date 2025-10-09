@@ -39,7 +39,7 @@ export class Signature {
             /**
              * Check for nested options after '|'
              */
-            let description = rest
+            let description: string = rest
             let nestedOptions: CommandOption[] | undefined
 
             const pipeIndex = rest.indexOf('|')
@@ -63,14 +63,32 @@ export class Signature {
                 description = description.trim()
             }
 
-            /**
-             * Parse name modifiers (?, *, ?*)
-             */
+            // Initialize all variables
             let name = namePart
+            let flags: string[] | undefined
+            let choices: string[] = []
             let required = /[^a-zA-Z0-9_|-]/.test(name)
             let multiple = false
             let placeholder: string | undefined
+            let defaultValue: string | number | boolean | undefined | string[]
 
+            /**
+             * Parse the command name
+             */
+            if (name.includes('=')) {
+                const [rawName, rawDefault] = name.split('=')
+
+                name = rawName.trim()
+                const hold = rawName.trim().split('|')
+                const holder = (hold.at(1) ?? hold.at(0)!).replace('--', '')
+                defaultValue = rawDefault.trim()
+                placeholder = defaultValue ? `[${holder}]` : `<${holder}>`
+                required = false
+            }
+
+            /**
+             * Parse name modifiers (?, *, ?*)
+             */
             if (name.endsWith('?*')) {
                 required = false
                 multiple = true
@@ -89,8 +107,6 @@ export class Signature {
              * Check if it's a flag option (starts with --)
              */
             const isFlag = name.startsWith('--')
-            let flags: string[] | undefined
-            let defaultValue: string | number | boolean | undefined | string[]
 
             if (isFlag) {
                 /**
@@ -128,8 +144,16 @@ export class Signature {
                 }
             }
 
+            // Extract choices from the descriptions
+            const desc = description.match(/^([^:]+?)\s*:\s*\[?([\w\s,]+)\]?$/)
+            if (match) {
+                description = desc?.[1].trim() ?? description
+                choices = desc?.[2].split(',').map(s => s.trim()).filter(Boolean) ?? choices
+            }
+
             options.push({
                 name: isFlag ? flags![flags!.length - 1] : name,
+                choices,
                 required,
                 multiple,
                 description,
@@ -156,10 +180,9 @@ export class Signature {
     static parseSignature (signature: string, commandClass: Command): ParsedCommand {
         const lines = signature.split('\n').map(l => l.trim()).filter(l => l.length > 0)
         const isHidden = ['#', '^'].includes(lines[0][0]!) || /:[#^]/.test(lines[0])
-        const baseCommand = lines[0].replace(/[^\w=:-]/g, '')
+        const baseCommand = lines[0].split('{')[0].trim().replace(/[^\w:-]/g, '')
         const description = commandClass.getDescription()
         const isNamespaceCommand = baseCommand.endsWith(':')
-
         /**
          * Join the rest lines to a single string for parsing
          */
