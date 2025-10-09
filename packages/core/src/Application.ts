@@ -174,6 +174,17 @@ export class Application extends Container implements IApplication {
     }
 
     /**
+     * Register the listed service providers.
+     * 
+     * @param commands An array of console commands to register.
+     */
+    public withCommands (commands: (new (app: any, kernel: any) => any)[]) {
+        this.registeredCommands = commands
+
+        return this
+    }
+
+    /**
      * checks if the application is running in CLI
      */
     public runningInConsole (): boolean {
@@ -198,7 +209,7 @@ export class Application extends Container implements IApplication {
      */
     public async boot () {
 
-        if (this.booted) return
+        if (this.booted) return this
 
         /**
          * If debug is enabled, let's show the loaded service provider info
@@ -229,6 +240,7 @@ export class Application extends Container implements IApplication {
         }
 
         this.booted = true
+        return this
     }
 
     /**

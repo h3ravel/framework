@@ -27,7 +27,7 @@ export interface IApplication extends IContainer {
     /**
      * Boots all registered providers.
      */
-    boot (): Promise<void>;
+    boot (): Promise<this>;
 
     /**
      * Gets the base path of the application.

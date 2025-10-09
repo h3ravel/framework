@@ -53,9 +53,22 @@ export abstract class ServiceProvider extends Inference {
     boot?(...app: unknown[]): void | Promise<void>;
 
     /**
-     * An array of console commands to register.
+     * Register the listed service providers.
+     * 
+     * @param commands An array of console commands to register.
+     * 
+     * @deprecated since version 1.16.0. Will be removed in future versions, use `registerCommands` instead
      */
     commands (commands: (new (app: any, kernel: any) => any)[]): void {
+        this.registerCommands(commands)
+    }
+
+    /**
+     * Register the listed service providers.
+     * 
+     * @param commands An array of console commands to register.
+     */
+    registerCommands (commands: (new (app: any, kernel: any) => any)[]) {
         this.registeredCommands = commands
     }
 }
