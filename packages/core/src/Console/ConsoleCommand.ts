@@ -194,8 +194,20 @@ export class ConsoleCommand {
      * Log an error message
      */
     error (message: string) {
-        Logger.error(message)
+        Logger.error(message, false)
         return this
+    }
+
+    /**
+     * Log an error message and terminate execution of the command
+     * return an exit code of 1
+     * 
+     * This method is not chainable
+     */
+    fail (message: string) {
+        this.error(message)
+
+        process.exit(1)
     }
 
     /**
