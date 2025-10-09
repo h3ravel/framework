@@ -1,5 +1,6 @@
 export * from './Commands/BuildCommand'
 export * from './Commands/Command'
+export * from './Commands/HelpCommand'
 export * from './Commands/ListCommand'
 export * from './Commands/MakeCommand'
 export * from './Commands/PostinstallCommand'

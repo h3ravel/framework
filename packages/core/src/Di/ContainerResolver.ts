@@ -5,7 +5,7 @@ import { Application } from '..'
 export class ContainerResolver {
     constructor(private app: Application) { }
 
-    async resolveMethodParams<I extends Record<string, any>> (instance: I, method: keyof I, _default?: any) {
+    async resolveMethodParams<I extends Record<string, any>> (instance: I, method: keyof I, ..._default: any[]) {
         /**
          * Get param types for instance method
          */
@@ -14,8 +14,8 @@ export class ContainerResolver {
         /**
          * Ensure that the Application class is always available
          */
-        if (params.length < 1 && _default) {
-            params = [_default]
+        if (params.length < 1 && _default.length > 0) {
+            params = _default
         }
 
         /**

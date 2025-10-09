@@ -1,4 +1,6 @@
 import { Command } from '@h3ravel/console'
+import { Injectable } from '@h3ravel/core'
+import { User } from 'src/app/Models/user'
 
 export class ExampleCommand extends Command {
 
@@ -19,7 +21,8 @@ export class ExampleCommand extends Command {
    */
   protected description: string = 'An example command'
 
-  public async handle () {
+  @Injectable()
+  public async handle (user: User) {
     const name = this.argument('name')
     const debug = this.option('debug')
     const interactive = !this.isNonInteractive()
@@ -35,5 +38,7 @@ export class ExampleCommand extends Command {
     this.success('Example command completed successfully!')
 
     this.debug(['name: ' + name, 'debug: ' + (debug !== 'undefined'), 'interactive: ' + interactive])
+
+    dump('user', user)
   }
 }

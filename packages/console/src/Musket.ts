@@ -2,7 +2,7 @@
 import { CommandOption, ParsedCommand } from './Contracts/ICommand'
 import { Argument, Option, program, type Command as Commander } from 'commander'
 
-import { Application } from '@h3ravel/core'
+import { Application, ContainerResolver } from '@h3ravel/core'
 import { Command } from './Commands/Command'
 import { Kernel } from './Kernel'
 import { ListCommand } from './Commands/ListCommand'
@@ -110,7 +110,7 @@ export class Musket {
             .action(async () => {
                 const instance = new ListCommand(this.app, this.kernel)
                 instance.setInput(program.opts(), program.args, program.registeredArguments, {}, program)
-                instance.handle()
+                await this.handle(instance)
             })
 
         /**
@@ -180,7 +180,7 @@ export class Musket {
                         .description(command.description ?? '')
                         .action(async () => {
                             instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command, program)
-                            await instance.handle()
+                            await this.handle(instance)
                         })
 
                 /**
@@ -206,7 +206,7 @@ export class Musket {
                             .description(sub.description || '')
                             .action(async () => {
                                 instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, sub, program)
-                                await instance.handle()
+                                await this.handle(instance)
                             })
 
                         /**
@@ -251,7 +251,7 @@ export class Musket {
 
                 cmd.action(async () => {
                     instance.setInput(cmd.opts(), cmd.args, cmd.registeredArguments, command, program)
-                    await instance.handle()
+                    await this.handle(instance)
                 })
             }
         }
@@ -274,7 +274,7 @@ export class Musket {
         }
     }
 
-    makeOption (opt: CommandOption, cmd: Commander, parse?: boolean, parent?: any) {
+    private makeOption (opt: CommandOption, cmd: Commander, parse?: boolean, parent?: any) {
         const description = opt.description?.replace(/\[(\w+)\]/g, (_, k) => parent?.[k] ?? `[${k}]`) ?? ''
         const type = opt.name.replaceAll('-', '')
 
@@ -323,6 +323,10 @@ export class Musket {
             if (opt.defaultValue) arg.default(opt.defaultValue)
             cmd.addArgument(arg)
         }
+    }
+
+    private async handle (cmd: Command) {
+        await new ContainerResolver(this.app).resolveMethodParams(cmd, 'handle')
     }
 
     static async parse (kernel: Kernel) {
