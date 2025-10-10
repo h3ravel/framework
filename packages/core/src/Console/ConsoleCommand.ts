@@ -75,6 +75,18 @@ export class ConsoleCommand {
             silent: this.option('silent'),
             quiet: this.option('quiet'),
         })
+
+        return this
+    }
+
+    setOption (key: string, value: unknown) {
+        this.program.setOptionValue(key, value)
+        return this
+    }
+
+    setProgram (program: Command) {
+        this.program = program
+        return this
     }
 
     getSignature () {

@@ -1,6 +1,6 @@
 import { FileSystem, Logger, Resolver } from '@h3ravel/shared'
 import { Migrate, MigrationCreator } from '@h3ravel/arquebus/migrations'
-import { TBaseConfig, arquebusConfig } from '..'
+import { SeedCommand, TBaseConfig, arquebusConfig } from '..'
 
 import { ConsoleCommand } from '@h3ravel/core'
 import path from 'node:path'
@@ -22,15 +22,16 @@ export class MigrateCommand extends ConsoleCommand {
      * @var string
      */
     protected signature: string = `migrate:
-        {fresh : Drop all tables and re-run all migrations.}
+        {fresh : Drop all tables and re-run all migrations. | {--seed : Indicates if the seed task should be re-run} | {--seeder : The file name of the root seeder}}
         {install : Create the migration repository.}
-        {refresh : Reset and re-run all migrations.}
+        {refresh : Reset and re-run all migrations. | {--seed : Indicates if the seed task should be re-run} | {--seeder : The file name of the root seeder}}
         {reset : Rollback all database migrations.}
         {rollback : Rollback the last database migration.}
         {status : Show the status of each migration.}
         {publish : Publish any migration files from installed packages. | {package : The package to publish migrations from}}
-        {^--s|seed : Seed the database}
         {^--c|connection=mysql : The database connection to use : [mysql, sqlite, mariadb, pgsql]}
+        {--seed : Seed the database}
+        {--seeder : The file name of the root seeder}
     `
     /**
      * The console command description.
@@ -74,6 +75,10 @@ export class MigrateCommand extends ConsoleCommand {
     protected async migrateRun () {
         try {
             await new Migrate(this.databasePath).run(this.connection, this.options(), true)
+
+            if (this.option('seed')) {
+                await this.runSeeders()
+            }
         } catch (e) {
             Logger.error('ERROR: ' + e)
         }
@@ -85,6 +90,25 @@ export class MigrateCommand extends ConsoleCommand {
     protected async migrateFresh () {
         try {
             await new Migrate(this.databasePath).fresh(this.connection, this.options(), true)
+
+            if (this.option('seed')) {
+                await this.runSeeders()
+            }
+        } catch (e) {
+            Logger.error('ERROR: ' + e)
+        }
+    }
+
+    /**
+     * Reset and re-run all migrations.
+     */
+    protected async migrateRefresh () {
+        try {
+            await new Migrate(this.databasePath).refresh(this.connection, this.options(), true)
+
+            if (this.option('seed')) {
+                await this.runSeeders()
+            }
         } catch (e) {
             Logger.error('ERROR: ' + e)
         }
@@ -100,17 +124,6 @@ export class MigrateCommand extends ConsoleCommand {
             await migrate.prepareDatabase(migrator)
 
             Logger.success('Migration repository installed.')
-        } catch (e) {
-            Logger.error('ERROR: ' + e)
-        }
-    }
-
-    /**
-     * Reset and re-run all migrations.
-     */
-    protected async migrateRefresh () {
-        try {
-            await new Migrate(this.databasePath).refresh(this.connection, this.options(), true)
         } catch (e) {
             Logger.error('ERROR: ' + e)
         }
@@ -216,5 +229,20 @@ export class MigrateCommand extends ConsoleCommand {
 
             Logger.error(['ERROR: ' + error, hint + '?', String(e)])
         }
+    }
+
+    /**
+     * Run database seeders
+     */
+    private async runSeeders () {
+        await new SeedCommand(this.app, this.kernel)
+            .setInput(
+                { class: this.option('seeder', 'DatabaseSeeder') },
+                [],
+                [],
+                {},
+                this.program
+            )
+            .handle()
     }
 }
