@@ -32,6 +32,7 @@ export class MigrateCommand extends ConsoleCommand {
         {^--c|connection=mysql : The database connection to use : [mysql, sqlite, mariadb, pgsql]}
         {--seed : Seed the database}
         {--seeder : The file name of the root seeder}
+        {^--force : Force the operation to run when in production}
     `
     /**
      * The console command description.
@@ -44,7 +45,12 @@ export class MigrateCommand extends ConsoleCommand {
      * Execute the console command.
      */
     public async handle (this: any) {
+        const force = this.option('force')
         const command = (this.dictionary.name ?? this.dictionary.baseCommand) as never
+
+        if (env('APP_ENV') === 'production' && !force) {
+            this.error('INFO: Unable to run migration, your app is currently in production.')
+        }
 
         this.connection = Object.entries(arquebusConfig(config('database')))
             .find(([client]) => client === config('database.default'))
@@ -237,7 +243,7 @@ export class MigrateCommand extends ConsoleCommand {
     private async runSeeders () {
         await new SeedCommand(this.app, this.kernel)
             .setInput(
-                { class: this.option('seeder', 'DatabaseSeeder') },
+                { class: this.option('seeder', 'DatabaseSeeder'), force: this.option('force') },
                 [],
                 [],
                 {},
