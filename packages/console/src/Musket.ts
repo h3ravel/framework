@@ -91,7 +91,7 @@ export class Musket {
         const additional = {
             quiet: ['-q, --quiet', 'Do not output any message except errors and warnings'],
             silent: ['--silent', 'Do not output any message'],
-            verbose: ['-v, --verbose <number>', 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'],
+            verbose: ['-v, --verbose [level]', 'Increase the verbosity of messages: 1 for normal output, 2 and v for more verbose output and 3 and vv for debug'],
             noInteraction: ['-n, --no-interaction', 'Do not ask any interactive question'],
         }
 
@@ -105,7 +105,7 @@ export class Musket {
             .configureHelp({ showGlobalOptions: true })
             .addOption(new Option(additional.quiet[0], additional.quiet[1]))
             .addOption(new Option(additional.silent[0], additional.silent[1]).implies({ quiet: true }))
-            .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3']))
+            .addOption(new Option(additional.verbose[0], additional.verbose[1]).choices(['1', '2', '3', 'v', 'vv']).default('1'))
             .addOption(new Option(additional.noInteraction[0], additional.noInteraction[1]))
             .action(async () => {
                 const instance = new ListCommand(this.app, this.kernel)

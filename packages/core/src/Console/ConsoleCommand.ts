@@ -118,9 +118,14 @@ export class ConsoleCommand {
     }
 
     public loadBaseFlags () {
+        let verbose = 0
+        if (this.program.getOptionValue('verbose') == 'v') verbose = 2
+        else if (this.program.getOptionValue('verbose') == 'vv') verbose = 3
+        else Number(this.program.getOptionValue('verbose') ?? 0)
+
         this.input.options.quiet = this.program.getOptionValue('quiet') ?? false
         this.input.options.silent = this.program.getOptionValue('silent') ?? false
-        this.input.options.verbose = Number(this.program.getOptionValue('verbose') ?? 0)
+        this.input.options.verbose = verbose
         this.input.options.interaction = this.program.getOptionValue('interaction') ?? false
     }
 
