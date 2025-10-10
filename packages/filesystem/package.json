@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/filesystem",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Filesystem manager for H3ravel.",
   "h3ravel": {
     "providers": [
