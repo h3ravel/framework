@@ -2,6 +2,12 @@
   "name": "@h3ravel/router",
   "version": "1.11.1",
   "description": "Route facade, decorators and controller system for H3ravel.",
+  "h3ravel": {
+    "providers": [
+      "RouteServiceProvider",
+      "AssetsServiceProvider"
+    ]
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

@@ -2,6 +2,11 @@
   "name": "@h3ravel/queue",
   "version": "11.0.5",
   "description": "Job queues, workers and broadcasting support system for H3ravel.",
+  "h3ravel": {
+    "providers": [
+      "QueueServiceProvider"
+    ]
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

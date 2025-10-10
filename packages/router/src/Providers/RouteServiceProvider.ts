@@ -34,7 +34,7 @@ export class RouteServiceProvider extends ServiceProvider {
             return {} as Router
         })
 
-        this.commands([RouteListCommand])
+        this.registerCommands([RouteListCommand])
     }
 
     /**

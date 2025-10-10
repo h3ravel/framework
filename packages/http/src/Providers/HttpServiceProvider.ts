@@ -27,7 +27,7 @@ export class HttpServiceProvider extends ServiceProvider {
         this.app.singleton('http.serve', () => serve)
 
         /** Register Musket Commands */
-        this.commands([FireCommand])
+        this.registerCommands([FireCommand])
     }
 
     boot () {

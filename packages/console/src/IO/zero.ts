@@ -1,5 +1,5 @@
 import { FileSystem, mainTsconfig } from '@h3ravel/shared'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir, readdir, writeFile } from 'node:fs/promises'
 import path, { join } from 'node:path'
 
 import { execa } from 'execa'
@@ -15,7 +15,7 @@ export default class {
         const pm = (await preferredPM(process.cwd()))?.name ?? 'npm'
         const outDir = join(process.env.DIST_DIR ?? DIST_DIR)
 
-        if (await FileSystem.fileExists(outDir)) return
+        if (await FileSystem.fileExists(outDir) && (await readdir(outDir)).length > 0) return
         if (!await FileSystem.fileExists(path.join(outDir, 'tsconfig.json'))) {
             await mkdir(path.join(outDir.replace('/serve', '')), { recursive: true })
             await writeFile(path.join(outDir.replace('/serve', ''), 'tsconfig.json'), JSON.stringify(mainTsconfig, null, 2))

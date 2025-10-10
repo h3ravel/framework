@@ -3,7 +3,7 @@ import { DB, Seeder } from '@h3ravel/database'
 import BigSeeder from './big_seeder'
 import BreadSeeder from './bread_seeder'
 import { Hash } from '@h3ravel/hashing'
-import type { QueryBuilder } from '@h3ravel/arquebus'
+import { QueryBuilder } from '@h3ravel/arquebus'
 
 export default class DatabaseSeeder extends Seeder {
   /**

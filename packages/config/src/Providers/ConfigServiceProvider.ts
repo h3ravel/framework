@@ -60,6 +60,6 @@ export class ConfigServiceProvider extends ServiceProvider {
             repo.set('app.url', e.url.origin)
         })
 
-        this.commands([ConfigPublishCommand])
+        this.registerCommands([ConfigPublishCommand])
     }
 }

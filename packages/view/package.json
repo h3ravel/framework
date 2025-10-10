@@ -2,6 +2,11 @@
   "name": "@h3ravel/view",
   "version": "0.1.2",
   "description": "View rendering system for H3ravel framework",
+  "h3ravel": {
+    "providers": [
+      "ViewServiceProvider"
+    ]
+  },
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -37,7 +42,7 @@
   },
   "homepage": "https://h3ravel.toneflix.net",
   "scripts": {
-    "dev": "tsdown --watch --config-loader unconfig",
+    "dev": "tsx watch src/index.ts",
     "typecheck": "tsc --noEmit",
     "barrel": "barrelsby --directory src --delete --singleQuotes",
     "build": "tsdown --config-loader unconfig",

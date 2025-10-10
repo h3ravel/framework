@@ -28,6 +28,6 @@ export class DatabaseServiceProvider extends ServiceProvider {
         }
 
         /** Register Musket Commands */
-        this.commands([MigrateCommand, MakeCommand, SeedCommand])
+        this.registerCommands([MigrateCommand, MakeCommand, SeedCommand])
     }
 }

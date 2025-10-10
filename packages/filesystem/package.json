@@ -2,6 +2,11 @@
   "name": "@h3ravel/filesystem",
   "version": "0.4.2",
   "description": "Filesystem manager for H3ravel.",
+  "h3ravel": {
+    "providers": [
+      "FilesystemProvider"
+    ]
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

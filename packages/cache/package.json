@@ -2,6 +2,11 @@
   "name": "@h3ravel/cache",
   "version": "11.0.6",
   "description": "Cache system with multiple drivers for H3ravel.",
+  "h3ravel": {
+    "providers": [
+      "CacheServiceProvider"
+    ]
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

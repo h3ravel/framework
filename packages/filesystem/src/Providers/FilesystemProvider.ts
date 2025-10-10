@@ -9,6 +9,6 @@ export class FilesystemProvider extends ServiceProvider {
     public static priority = 997
 
     register () {
-        this.commands([StorageLinkCommand])
+        this.registerCommands([StorageLinkCommand])
     }
 }

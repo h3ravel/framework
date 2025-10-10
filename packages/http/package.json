@@ -2,6 +2,11 @@
   "name": "@h3ravel/http",
   "version": "11.3.3",
   "description": "HTTP kernel, middleware pipeline, request/response classes for H3ravel.",
+  "h3ravel": {
+    "providers": [
+      "HttpServiceProvider"
+    ]
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

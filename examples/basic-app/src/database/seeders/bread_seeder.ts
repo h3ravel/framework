@@ -1,4 +1,4 @@
-import type { QueryBuilder } from '@h3ravel/arquebus'
+import { QueryBuilder } from '@h3ravel/arquebus'
 import { Seeder } from '@h3ravel/database'
 
 export default class BreadSeeder extends Seeder {

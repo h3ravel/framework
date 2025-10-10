@@ -42,17 +42,17 @@ export class SeedCommand extends ConsoleCommand {
         const force = this.option('force')
         const database = this.option('database')
 
-        console.log('')
+        this.newLine()
 
         if (env('APP_ENV') === 'production' && !force) {
-            Logger.error('INFO: Unable to run seeders, your app is currently in production.')
+            this.error('INFO: Unable to run seeders, your app is currently in production.')
         }
 
         this.connection = database ?? config('database.default')
         this.queryBuilder = DB.instance(this.connection)
 
         if (!this.connection) {
-            Logger.error('ERROR: Unknown database connection.')
+            this.error('ERROR: Unknown database connection.')
         }
 
         let path = npath.join(process.cwd(), file)
@@ -74,7 +74,7 @@ export class SeedCommand extends ConsoleCommand {
              * Now try to find the path knowing it's relative to database_path
              */
             if (!await FileSystem.fileExists(path)) {
-                Logger.error(`ERROR: Seeder ${Logger.log(`[${file}]`, 'bold', false)} not found.`)
+                this.error(`ERROR: Seeder ${Logger.log(`[${file}]`, 'bold', false)} not found.`)
             }
         } else {
             path = String(f1 ?? f2)
@@ -83,7 +83,8 @@ export class SeedCommand extends ConsoleCommand {
         const { default: seeder } = (await import(path))
 
         if (seeder) {
-            Logger.info('INFO: Seeding database.')
+            this.info('INFO: Seeding database.')
+            this.newLine()
 
             await new seeder(this.app, this).run(this.queryBuilder)
         }

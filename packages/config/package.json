@@ -2,6 +2,11 @@
   "name": "@h3ravel/config",
   "version": "1.4.4",
   "description": "Environment/config loading and management system for H3ravel.",
+  "h3ravel": {
+    "providers": [
+      "ConfigServiceProvider"
+    ]
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

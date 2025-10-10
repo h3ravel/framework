@@ -326,11 +326,22 @@ export class Musket {
     }
 
     private async handle (cmd: Command) {
+        //
         await new ContainerResolver(this.app).resolveMethodParams(cmd, 'handle')
     }
 
     static async parse (kernel: Kernel) {
-        return (await new Musket(kernel.app, kernel).build()).parseAsync()
+        return (await new Musket(kernel.app, kernel).build())
+            .exitOverride(() => {
+                Logger.log('Unknown command or argument.', 'white')
+                Logger.log([
+                    ['Run', 'white'],
+                    ['`musket --help`', ['grey', 'italic']],
+                    ['to see available commands.', 'white']
+                ], ' ')
+            })
+            .parseAsync(process.argv)
+            .catch(e => e)
     }
 
 }

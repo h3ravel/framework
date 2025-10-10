@@ -2,6 +2,11 @@
   "name": "@h3ravel/mail",
   "version": "11.0.6",
   "description": "Mail drivers and templates system for H3ravel.",
+  "h3ravel": {
+    "providers": [
+      "MailServiceProvider"
+    ]
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
