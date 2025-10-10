@@ -63,7 +63,7 @@ describe('Command Logging Methods', () => {
   it('should call Logger.error when error method is called', () => {
     const message = 'Test error message'
     command.error(message)
-    expect(Logger.error).toHaveBeenCalledWith(message)
+    expect(Logger.error).toHaveBeenCalledWith(message, false)
   })
 
   it('should call Logger.debug when debug method is called', () => {
