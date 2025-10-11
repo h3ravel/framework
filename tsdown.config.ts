@@ -10,7 +10,7 @@ export const baseConfig: Options = {
     shims: true,
     entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
-    sourcemap: true,
+    sourcemap: false,
     hooks (hooks) {
         hooks.hook('build:done', async (ctx) => {
             try {
