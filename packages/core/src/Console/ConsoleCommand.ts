@@ -121,7 +121,7 @@ export class ConsoleCommand {
         let verbose = 0
         if (this.program.getOptionValue('verbose') == 'v') verbose = 2
         else if (this.program.getOptionValue('verbose') == 'vv') verbose = 3
-        else Number(this.program.getOptionValue('verbose') ?? 0)
+        else verbose = Number(this.program.getOptionValue('verbose') ?? 0)
 
         this.input.options.quiet = this.program.getOptionValue('quiet') ?? false
         this.input.options.silent = this.program.getOptionValue('silent') ?? false
