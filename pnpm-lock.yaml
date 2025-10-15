@@ -211,6 +211,9 @@ importers:
 
   packages/config:
     dependencies:
+      '@h3ravel/musket':
+        specifier: ^0.1.7
+        version: 0.1.7(@h3ravel/support@packages+support)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared

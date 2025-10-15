@@ -24,7 +24,7 @@
     "@h3ravel/hashing": "workspace:^",
     "@h3ravel/http": "workspace:^",
     "@h3ravel/mail": "workspace:^",
-    "@h3ravel/musket": "^0.1.7",
+    "@h3ravel/musket": "^0.1.8",
     "@h3ravel/queue": "workspace:^",
     "@h3ravel/router": "workspace:^",
     "@h3ravel/shared": "workspace:^",

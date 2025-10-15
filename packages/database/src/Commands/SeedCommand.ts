@@ -1,12 +1,12 @@
 import { FileSystem, Logger } from '@h3ravel/shared'
 
-import { ConsoleCommand } from '@h3ravel/core'
+import { Command } from '@h3ravel/musket'
 import { DB } from '..'
 import type { QueryBuilder } from '@h3ravel/arquebus'
 import { Str } from '@h3ravel/support'
 import npath from 'node:path'
 
-export class SeedCommand extends ConsoleCommand {
+export class SeedCommand extends Command {
     /**
      * The current query builder instance
      */

@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/view",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "View rendering system for H3ravel framework",
   "h3ravel": {
     "providers": [
@@ -52,6 +52,7 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
+    "@h3ravel/musket": "^0.1.8",
     "@h3ravel/core": "workspace:*",
     "@h3ravel/http": "workspace:*",
     "edge.js": "^6.3.0"

@@ -1,11 +1,11 @@
 import { FileSystem, Logger } from '@h3ravel/shared'
 import { readFile, writeFile } from 'node:fs/promises'
 
-import { ConsoleCommand } from '@h3ravel/core'
+import { Command } from '@h3ravel/musket'
 import { Str } from '@h3ravel/support'
 import npath from 'node:path'
 
-export class ConfigPublishCommand extends ConsoleCommand {
+export class ConfigPublishCommand extends Command {
 
     /**
      * The name and signature of the console command.

@@ -1,9 +1,8 @@
+import { Command, Kernel } from '@h3ravel/musket'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { Application } from '@h3ravel/core'
-import { Command } from 'commander'
-import { ConsoleCommand } from '@h3ravel/core'
-import { ConsoleKernel } from '@h3ravel/core'
+import { Command as ICommand } from 'commander'
 import { Logger } from '@h3ravel/shared'
 
 // Mock the Logger to capture calls
@@ -44,8 +43,8 @@ afterEach(() => {
   Logger.debug = originalDebug
 })
 
-// Test class extending ConsoleCommand
-class TestCommand extends ConsoleCommand {
+// Test class extending base Command
+class TestCommand extends Command {
   protected signature = 'test:command'
 
   async handle () {
@@ -60,16 +59,16 @@ class TestCommand extends ConsoleCommand {
 describe('Console Command CLI Options', () => {
   let command: TestCommand
   let mockApp: Application
-  let mockKernel: ConsoleKernel
-  let mockProgram: Command
+  let mockKernel: Kernel
+  let mockProgram: ICommand
 
   beforeEach(() => {
     mockApp = {} as Application
-    mockKernel = {} as ConsoleKernel
+    mockKernel = {} as Kernel
     command = new TestCommand(mockApp, mockKernel)
 
     // Create a mock commander program
-    mockProgram = new Command()
+    mockProgram = new ICommand()
     command.program = mockProgram
   })
 
