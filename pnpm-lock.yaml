@@ -147,8 +147,8 @@ importers:
         specifier: workspace:^
         version: link:../../packages/mail
       '@h3ravel/musket':
-        specifier: ^0.1.7
-        version: 0.1.7(@h3ravel/support@packages+support)
+        specifier: ^0.1.8
+        version: 0.1.8(@h3ravel/support@packages+support)
       '@h3ravel/queue':
         specifier: workspace:^
         version: link:../../packages/queue
@@ -212,8 +212,8 @@ importers:
   packages/config:
     dependencies:
       '@h3ravel/musket':
-        specifier: ^0.1.7
-        version: 0.1.7(@h3ravel/support@packages+support)
+        specifier: ^0.1.8
+        version: 0.1.8(@h3ravel/support@packages+support)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -237,8 +237,8 @@ importers:
         specifier: workspace:^
         version: link:../core
       '@h3ravel/musket':
-        specifier: ^0.1.7
-        version: 0.1.7(@h3ravel/support@packages+support)
+        specifier: ^0.1.8
+        version: 0.1.8(@h3ravel/support@packages+support)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -334,6 +334,9 @@ importers:
       '@h3ravel/filesystem':
         specifier: workspace:^
         version: link:../filesystem
+      '@h3ravel/musket':
+        specifier: ^0.1.8
+        version: 0.1.8(@h3ravel/support@packages+support)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -353,6 +356,9 @@ importers:
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
+      '@h3ravel/musket':
+        specifier: ^0.1.8
+        version: 0.1.8(@h3ravel/support@packages+support)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -388,6 +394,9 @@ importers:
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
+      '@h3ravel/musket':
+        specifier: ^0.1.8
+        version: 0.1.8(@h3ravel/support@packages+support)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -445,6 +454,9 @@ importers:
       '@h3ravel/http':
         specifier: workspace:^
         version: link:../http
+      '@h3ravel/musket':
+        specifier: ^0.1.8
+        version: 0.1.8(@h3ravel/support@packages+support)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -532,6 +544,9 @@ importers:
       '@h3ravel/http':
         specifier: workspace:*
         version: link:../http
+      '@h3ravel/musket':
+        specifier: ^0.1.8
+        version: 0.1.8(@h3ravel/support@0.14.2)
       '@h3ravel/shared':
         specifier: workspace:*
         version: link:../shared
@@ -1289,8 +1304,8 @@ packages:
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
-  '@h3ravel/musket@0.1.7':
-    resolution: {integrity: sha512-fJLvDHvs1uVTQMTFLtF3GlE4d0PLeSiBLQ1Pf1N3ivLReqATNzujdfcnyef2QMxwsVzkAK1UaHP1JVydAMtpjw==}
+  '@h3ravel/musket@0.1.8':
+    resolution: {integrity: sha512-rdh4YJzV50AWsibKEOObK6SKvl/CCznMLgEHVY3f482f8Vs4eLXGqA3uzo9hH+SbmSgG8T7N0pj08/gzWBSt/w==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@h3ravel/support': ^0.14.1
@@ -1303,6 +1318,9 @@ packages:
 
   '@h3ravel/support@0.12.0':
     resolution: {integrity: sha512-RJ/TkLtaUl5Zu4I/Vwwp5MtTEhlDHTTBexXJAV1kcpJTeDIKHnpNzhF+sRIkHlQFmyobqy7YRsWuOdYZGidwhA==}
+
+  '@h3ravel/support@0.14.2':
+    resolution: {integrity: sha512-zNpSJ4upGT+6RTvNgJChxhBw7L01fZ0ddV2FkNXBYA3Mthl6MORPhtm2aguQ0tEaQzX+nRaq2p29vaXfZe8yMw==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -5923,7 +5941,23 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/musket@0.1.7(@h3ravel/support@packages+support)':
+  '@h3ravel/musket@0.1.8(@h3ravel/support@0.14.2)':
+    dependencies:
+      '@h3ravel/shared': 0.22.2
+      '@h3ravel/support': 0.14.2
+      chalk: 5.6.2
+      commander: 14.0.1
+      dayjs: 1.11.18
+      execa: 9.6.0
+      glob: 11.0.3
+      preferred-pm: 4.1.1
+      radashi: 12.6.2
+      resolve-from: 5.0.0
+      tsx: 4.20.5
+    transitivePeerDependencies:
+      - crossws
+
+  '@h3ravel/musket@0.1.8(@h3ravel/support@packages+support)':
     dependencies:
       '@h3ravel/shared': 0.22.2
       '@h3ravel/support': link:packages/support
@@ -5960,6 +5994,11 @@ snapshots:
       - crossws
 
   '@h3ravel/support@0.12.0':
+    dependencies:
+      dayjs: 1.11.18
+      luxon: 3.7.2
+
+  '@h3ravel/support@0.14.2':
     dependencies:
       dayjs: 1.11.18
       luxon: 3.7.2
