@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/filesystem",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Filesystem manager for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -51,6 +51,7 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
+    "@h3ravel/musket": "^0.1.8",
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^"
   },

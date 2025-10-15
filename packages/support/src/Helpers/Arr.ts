@@ -229,7 +229,7 @@ export class Arr {
 
         // value match
         for (const item of array) {
-            if (typeof predicate !== 'boolean' && item === <never>predicate) return item
+            if (typeof predicate !== 'boolean' && item === <never>predicate) return item as never
         }
         return defaultValue as never
     }

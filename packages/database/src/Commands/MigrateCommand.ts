@@ -2,10 +2,10 @@ import { FileSystem, Logger, Resolver } from '@h3ravel/shared'
 import { Migrate, MigrationCreator } from '@h3ravel/arquebus/migrations'
 import { SeedCommand, TBaseConfig, arquebusConfig } from '..'
 
-import { ConsoleCommand } from '@h3ravel/core'
+import { Command } from '@h3ravel/musket'
 import path from 'node:path'
 
-export class MigrateCommand extends ConsoleCommand {
+export class MigrateCommand extends Command {
     /**
      * The current database connection
      */

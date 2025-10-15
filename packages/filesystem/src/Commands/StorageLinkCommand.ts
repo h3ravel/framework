@@ -1,9 +1,9 @@
 import { FileSystem, Logger } from '@h3ravel/shared'
 import { rm, symlink, unlink } from 'fs/promises'
 
-import { ConsoleCommand } from '@h3ravel/core'
+import { Command } from '@h3ravel/musket'
 
-export class StorageLinkCommand extends ConsoleCommand {
+export class StorageLinkCommand extends Command {
 
     /**
      * The name and signature of the console command.

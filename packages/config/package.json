@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/config",
-  "version": "1.4.5",
+  "version": "1.4.6",
   "description": "Environment/config loading and management system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -51,7 +51,8 @@
   },
   "dependencies": {
     "@h3ravel/shared": "workspace:^",
-    "@h3ravel/support": "workspace:^"
+    "@h3ravel/support": "workspace:^",
+    "@h3ravel/musket": "^0.1.8"
   },
   "devDependencies": {
     "tsx": "^4.20.5",

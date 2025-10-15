@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/router",
-  "version": "1.11.2",
+  "version": "1.11.4",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -52,6 +52,7 @@
   },
   "dependencies": {
     "@h3ravel/core": "workspace:^",
+    "@h3ravel/musket": "^0.1.8",
     "@h3ravel/database": "workspace:^",
     "@h3ravel/http": "workspace:^",
     "@h3ravel/shared": "workspace:^",

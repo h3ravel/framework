@@ -1,8 +1,8 @@
 import { Logger, LoggerChalk, RouteDefinition, RouteMethod } from '@h3ravel/shared'
 
-import { ConsoleCommand } from '@h3ravel/core'
+import { Command } from '@h3ravel/musket'
 
-export class RouteListCommand extends ConsoleCommand {
+export class RouteListCommand extends Command {
 
     /**
      * The name and signature of the console command.

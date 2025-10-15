@@ -1,9 +1,9 @@
-import { ConsoleCommand } from '@h3ravel/core'
+import { Command } from '@h3ravel/musket'
 import { Logger } from '@h3ravel/shared'
 import { execa } from 'execa'
 import preferredPM from 'preferred-pm'
 
-export class FireCommand extends ConsoleCommand {
+export class FireCommand extends Command {
 
     /**
      * The name and signature of the console command.

@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 
-import { Command } from './Command'
+import { Command } from '@h3ravel/musket'
 import { FileSystem } from '@h3ravel/shared'
 
 export class PostinstallCommand extends Command {

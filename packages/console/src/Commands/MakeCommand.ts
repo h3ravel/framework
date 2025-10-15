@@ -1,7 +1,7 @@
 import { FileSystem, Logger } from '@h3ravel/shared'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 
-import { Command } from './Command'
+import { Command } from '@h3ravel/musket'
 import { Str } from '@h3ravel/support'
 import nodepath from 'node:path'
 

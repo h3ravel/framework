@@ -1,13 +1,13 @@
 import { FileSystem, Logger } from '@h3ravel/shared'
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 
-import { ConsoleCommand } from '@h3ravel/core'
+import { Command } from '@h3ravel/musket'
 import { Str } from '@h3ravel/support'
 import { TableGuesser } from '../Utils/TableGuesser'
 import dayjs from 'dayjs'
 import npath from 'node:path'
 
-export class MakeCommand extends ConsoleCommand {
+export class MakeCommand extends Command {
 
     /**
      * The name and signature of the console command.
