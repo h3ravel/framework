@@ -146,6 +146,9 @@ importers:
       '@h3ravel/mail':
         specifier: workspace:^
         version: link:../../packages/mail
+      '@h3ravel/musket':
+        specifier: ^0.1.7
+        version: 0.1.7(@h3ravel/support@packages+support)
       '@h3ravel/queue':
         specifier: workspace:^
         version: link:../../packages/queue
@@ -231,8 +234,8 @@ importers:
         specifier: workspace:^
         version: link:../core
       '@h3ravel/musket':
-        specifier: ^0.1.1
-        version: 0.1.1(@h3ravel/support@packages+support)
+        specifier: ^0.1.7
+        version: 0.1.7(@h3ravel/support@packages+support)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -1283,8 +1286,8 @@ packages:
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
-  '@h3ravel/musket@0.1.1':
-    resolution: {integrity: sha512-tXNkS1FwM7lzxnlzdAAXMszSzJwkg5HkPOO7FkDyNYMWi4oiNnY5VKE7S9I1xGND51vUz9CJ8/MVLpW8ipYkeQ==}
+  '@h3ravel/musket@0.1.7':
+    resolution: {integrity: sha512-fJLvDHvs1uVTQMTFLtF3GlE4d0PLeSiBLQ1Pf1N3ivLReqATNzujdfcnyef2QMxwsVzkAK1UaHP1JVydAMtpjw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@h3ravel/support': ^0.14.1
@@ -5917,7 +5920,7 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/musket@0.1.1(@h3ravel/support@packages+support)':
+  '@h3ravel/musket@0.1.7(@h3ravel/support@packages+support)':
     dependencies:
       '@h3ravel/shared': 0.22.2
       '@h3ravel/support': link:packages/support

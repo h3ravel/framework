@@ -25,6 +25,7 @@
       "exclude": [
         "**/spawn.ts",
         "**/fire.ts",
+        "**/logo.ts",
         "**/*.test.ts",
         "**/*.d.ts"
       ]

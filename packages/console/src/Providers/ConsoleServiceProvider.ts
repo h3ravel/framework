@@ -1,13 +1,13 @@
 /// <reference path="../../../core/src/app.globals.d.ts" />
 
+import { ContainerResolver, ServiceProvider } from '@h3ravel/core'
+
 import { Kernel } from '@h3ravel/musket'
-import { ServiceProvider } from '@h3ravel/core'
+import { altLogo } from '../logo'
+import tsDownConfig from '../TsdownConfig'
+
 /**
  * Handles CLI commands and tooling.
- * 
- * Register DatabaseManager and QueryBuilder.
- * Set up ORM models and relationships.
- * Register migration and seeder commands.
  * 
  * Auto-Registered when in CLI mode
  */
@@ -29,9 +29,16 @@ export class ConsoleServiceProvider extends ServiceProvider {
         Kernel.init(
             this.app,
             {
-                packages: ['@h3ravel/core'],
+                logo: altLogo,
+                resolver: new ContainerResolver(this.app).resolveMethodParams,
+                tsDownConfig,
+                packages: [
+                    { name: '@h3ravel/core', alias: 'H3ravel Framework' },
+                    { name: '@h3ravel/musket', alias: 'Musket CLI' }
+                ],
                 cliName: 'musket',
-                discoveryPaths: [app_path('Console/Commands/*.js').replace('/src/', DIST_DIR)]
+                hideMusketInfo: true,
+                discoveryPaths: [app_path('Console/Commands/*.js').replace('/src/', DIST_DIR)],
             }
         )
 
