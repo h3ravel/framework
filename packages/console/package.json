@@ -78,6 +78,7 @@
     "preferred-pm": "^4.1.1",
     "radashi": "^12.6.2",
     "resolve-from": "^5.0.0",
+    "@h3ravel/musket": "^0.1.1",
     "tsx": "^4.20.5"
   }
 }

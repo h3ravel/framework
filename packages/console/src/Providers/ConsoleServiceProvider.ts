@@ -1,6 +1,6 @@
 /// <reference path="../../../core/src/app.globals.d.ts" />
 
-import { Kernel } from '../Kernel'
+import { Kernel } from '@h3ravel/musket'
 import { ServiceProvider } from '@h3ravel/core'
 /**
  * Handles CLI commands and tooling.
@@ -24,7 +24,16 @@ export class ConsoleServiceProvider extends ServiceProvider {
     }
 
     boot () {
-        Kernel.init(this.app)
+        const DIST_DIR = `/${env('DIST_DIR', '.h3ravel/serve')}/`.replaceAll('//', '')
+
+        Kernel.init(
+            this.app,
+            {
+                packages: ['@h3ravel/core'],
+                cliName: 'musket',
+                discoveryPaths: [app_path('Console/Commands/*.js').replace('/src/', DIST_DIR)]
+            }
+        )
 
         process.on('SIGINT', () => {
             process.exit(0)
