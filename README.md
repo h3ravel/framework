@@ -8,6 +8,7 @@
 [![Framework][ix]][lx]
 [![Core Package Version][i1]][l1]
 [![Arquebus ORM][i12]][l12]
+[![Musket CLI][i13]][l13]
 [![Cache Package Version][i2]][l2]
 [![Config Package Version][i3]][l3]
 [![Console Package Version][i4]][l4]
@@ -92,6 +93,32 @@ This combination delivers the productivity of Laravel while leveraging the moder
 - [ ] Arquebus ORM with relationships (Eloquent-style)
 - [ ] First-class runtime adapters (Node, Bun, Deno)
 
+## Development
+
+### Install Dependencies
+
+```sh
+pnpm i
+```
+
+This might error out complaining about missing bin modules for `spawn` and `fire`, this is because the workspace setup depends on prebuilt (`dist`) workspace modules that wont be available on initial setup instead of using their `node_modules` counterpart, this is intentional for debugging purposes, we can fix this by ensuring all required modules are built and available by running:
+
+```sh
+pnpm build
+```
+
+### Example App
+
+We provide an example app for development purpose at `examples/basic-app`
+
+```sh
+cd examples/basic-app
+
+pnpm musket fire
+# OR
+pnpm musket build
+```
+
 ## Contributing
 
 Thank you for considering contributing to the H3ravel framework! The [Contribution Guide](https://h3ravel.toneflix.net/contributing) can be found in the H3ravel documentation and will provide you with all the information you need to get started.
@@ -135,6 +162,8 @@ The H3ravel framework is open-sourced software licensed under the [MIT license](
 [l11]: https://www.npmjs.com/package/@h3ravel/support
 [i12]: https://img.shields.io/npm/v/%40h3ravel%2Farquebus?style=flat-square&label=@h3ravel/arquebus&color=%230970ce
 [l12]: https://www.npmjs.com/package/@h3ravel/arquebus
+[i13]: https://img.shields.io/npm/v/%40h3ravel%2Fmusket?style=flat-square&label=@h3ravel/musket&color=%230970ce
+[l13]: https://www.npmjs.com/package/@h3ravel/musket
 [linl]: https://github.com/h3ravel/framework/blob/main/LICENSE
 [lini]: https://img.shields.io/github/license/h3ravel/framework
 [tel]: https://github.com/h3ravel/framework/actions/workflows/test.yml

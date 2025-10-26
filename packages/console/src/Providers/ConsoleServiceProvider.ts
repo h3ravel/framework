@@ -2,7 +2,10 @@
 
 import { ContainerResolver, ServiceProvider } from '@h3ravel/core'
 
+import { BuildCommand } from '../Commands/BuildCommand'
 import { Kernel } from '@h3ravel/musket'
+import { MakeCommand } from '../Commands/MakeCommand'
+import { PostinstallCommand } from '../Commands/PostinstallCommand'
 import { altLogo } from '../logo'
 import tsDownConfig from '../TsdownConfig'
 
@@ -38,6 +41,7 @@ export class ConsoleServiceProvider extends ServiceProvider {
                 ],
                 cliName: 'musket',
                 hideMusketInfo: true,
+                baseCommands: [BuildCommand, MakeCommand, PostinstallCommand],
                 discoveryPaths: [app_path('Console/Commands/*.js').replace('/src/', DIST_DIR)],
             }
         )

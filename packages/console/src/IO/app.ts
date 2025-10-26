@@ -16,7 +16,9 @@ export default class {
          * Load Service Providers already registered by the app
          */
         const app_providers = base_path(path.join(DIST_DIR, 'bootstrap/providers.js'))
-        providers.push(...(await import(app_providers)).default)
+        try {
+            providers.push(...(await import(app_providers)).default)
+        } catch { /** */ }
 
         /** Add the ConsoleServiceProvider */
         providers.push(ConsoleServiceProvider)
