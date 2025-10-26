@@ -23,8 +23,6 @@
       "name": "index.ts",
       "root": "packages/console/src",
       "exclude": [
-        "**/spawn.ts",
-        "**/fire.ts",
         "**/logo.ts",
         "**/*.test.ts",
         "**/*.d.ts"
