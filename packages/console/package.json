@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/console",
-  "version": "11.11.1",
+  "version": "11.11.2",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
   "exports": {
@@ -34,7 +34,7 @@
   "publishConfig": {
     "access": "public"
   },
-  "homepage": "https://h3ravel.toneflix.net",
+  "homepage": "https://h3ravel.toneflix.net/musket",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/h3ravel/framework.git",
