@@ -1,4 +1,11 @@
+import { H3 } from 'h3'
+
 export interface EntryConfig {
+    /**
+     * @param h3 You can provide your own `H3` app instance, this is usefull when `@h3ravel/http`
+     * is not installed.
+     */
+    h3?: H3
     /**
      * Determines if we should initialize the app on call.
      * 

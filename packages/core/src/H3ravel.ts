@@ -1,4 +1,4 @@
-import { Application, Kernel, OServiceProvider } from '.'
+import { Application, ConfigException, Kernel, OServiceProvider } from '.'
 import { LogRequests, Request, Response } from '@h3ravel/http'
 
 import { EntryConfig } from './Contracts/H3ravelContract'
@@ -30,6 +30,9 @@ export const h3ravel = async (
      */
     middleware: (ctx: HttpContext) => Promise<unknown> = async () => undefined,
 ): Promise<Application> => {
+    // Initialize the H3 app instance
+    let h3App: H3 | undefined
+
     // Initialize the Application class
     const app = new Application(basePath)
 
@@ -37,29 +40,39 @@ export const h3ravel = async (
     // @ts-expect-error Provider signature does not match since param is optional, but it should work
     await app.quickStartup(providers, config.filteredProviders, config.autoload)
 
-    // Get the http app container binding
-    const h3App = app.make('http.app')
+    try {
+        // Get the http app container binding
+        h3App = app.make('http.app')
 
-    // Initialize the Application Kernel
-    const kernel = new Kernel((event) => HttpContext.init({
-        app,
-        request: new Request(event, app),
-        response: new Response(event, app)
-    }), [new LogRequests()])
+        // Initialize the Application Kernel
+        const kernel = new Kernel((event) => HttpContext.init({
+            app,
+            request: new Request(event, app),
+            response: new Response(event, app)
+        }), [new LogRequests()])
 
-    // Register kernel with H3
-    h3App.use((event) => kernel.handle(event, middleware))
+        // Register kernel with H3
+        h3App.use((event) => kernel.handle(event, middleware))
+    } catch {
+        if (!h3App && config.h3) {
+            h3App = config.h3
+        }
+    }
 
     const originalFire = app.fire.bind(app)
 
-    if (config.initialize) {
+    if (config.initialize && h3App) {
         // Fire up the server
         return await originalFire(h3App)
     }
 
     // Lazy init: redefine `fire` to call the original one later
-    app.fire = () => originalFire(h3App)
-
+    app.fire = () => {
+        if (!h3App) {
+            throw new ConfigException('Provide a H3 app instance in the config or install @h3ravel/http')
+        }
+        return originalFire(h3App)
+    }
 
     return app
 }

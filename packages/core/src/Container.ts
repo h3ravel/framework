@@ -41,6 +41,21 @@ export class Container implements IContainer {
     }
 
     /**
+     * Remove one or more transient services from the container
+     */
+    unbind<T extends UseKey> (key: T | T[]) {
+        if (Array.isArray(key)) {
+            for (let i = 0; i < key.length; i++) {
+                this.bindings.delete(key[i])
+                this.singletons.delete(key[i])
+            }
+        } else {
+            this.bindings.delete(key)
+            this.singletons.delete(key)
+        }
+    }
+
+    /**
      * Bind a singleton service to the container
      */
     singleton<T extends UseKey> (
