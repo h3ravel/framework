@@ -1,9 +1,9 @@
 /// <reference path="../../../core/src/app.globals.d.ts" />
 
+import { Application, type ServiceProvider } from '@h3ravel/core'
 import { H3, serve } from 'h3'
 
 import { FireCommand } from '../Commands/FireCommand'
-import { ServiceProvider } from '@h3ravel/core'
 
 /**
  * Sets up HTTP kernel and request lifecycle.
@@ -14,10 +14,12 @@ import { ServiceProvider } from '@h3ravel/core'
  * 
  * Auto-Registered
  */
-export class HttpServiceProvider extends ServiceProvider {
+export class HttpServiceProvider {
     public static priority = 998
 
-    register () {
+    register (this: { app: Application, registeredCommands: ServiceProvider['registeredCommands'] }, app: Application) {
+        this.app = app
+
         /** Bind HTTP APP to the service container */
         this.app.singleton('http.app', () => {
             return new H3()
@@ -27,7 +29,7 @@ export class HttpServiceProvider extends ServiceProvider {
         this.app.singleton('http.serve', () => serve)
 
         /** Register Musket Commands */
-        this.registerCommands([FireCommand])
+        this.registeredCommands = [FireCommand]
     }
 
     boot () {

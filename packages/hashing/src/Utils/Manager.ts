@@ -6,7 +6,7 @@ import { ArgonHasher } from '../Drivers/ArgonHasher'
 import { Argon2idHasher } from '../Drivers/Argon2idHasher'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
-import { ConfigException } from 'packages/core/dist'
+import { ConfigException } from '@h3ravel/core'
 
 type CreateMethodName = `create${SnakeToTitleCase<HashAlgorithm>}Driver`
 
@@ -57,13 +57,13 @@ export abstract class Manager {
         const tsPath = path.resolve(basePath, 'hashing.config.ts')
 
         if (existsSync(jsPath)) {
-            this.config = (await import(jsPath)).default
+            this.config = (await import(jsPath)).default ?? {}
             return this
         }
 
         if (existsSync(tsPath)) {
             if (process.env.NODE_ENV !== 'production') {
-                this.config = (await import(tsPath)).default
+                this.config = (await import(tsPath)).default ?? {}
                 return this
             } else {
                 throw new ConfigException(

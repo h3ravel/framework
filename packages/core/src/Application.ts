@@ -1,7 +1,9 @@
 import 'reflect-metadata'
 
 import { FileSystem, IApplication, IPathName, Logger } from '@h3ravel/shared'
+import { InvalidArgumentException, Str } from '@h3ravel/support'
 
+import { AServiceProvider } from './Contracts/ServiceProviderConstructor'
 import { Container } from './Container'
 import { ContainerResolver } from './Di/ContainerResolver'
 import type { H3 } from 'h3'
@@ -9,15 +11,12 @@ import { PathLoader } from '@h3ravel/shared'
 import { ProviderRegistry } from './ProviderRegistry'
 import { Registerer } from './Registerer'
 import { ServiceProvider } from './ServiceProvider'
-import { Str } from '@h3ravel/support'
 import { detect } from 'detect-port'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
 import { readFile } from 'node:fs/promises'
 import semver from 'semver'
-
-type AServiceProvider = (new (_app: Application) => ServiceProvider) & Partial<ServiceProvider>
 
 export class Application extends Container implements IApplication {
     public paths = new PathLoader()
@@ -139,16 +138,20 @@ export class Application extends Container implements IApplication {
         ProviderRegistry.registerMany(providers)
 
         if (autoRegister) {
-            await ProviderRegistry.discoverProviders()
+            await ProviderRegistry.discoverProviders(autoRegister)
         }
 
         ProviderRegistry.doSort()
-
-        for (const ProviderClass of ProviderRegistry.all()) {
-            if (!ProviderClass) continue
+        ProviderRegistry.all().forEach(async (ProviderClass) => {
+            if (!ProviderClass) return
             const provider = new ProviderClass(this)
             await this.register(provider)
-        }
+        })
+        // for (const ProviderClass of ProviderRegistry.all()) {
+        //     if (!ProviderClass) continue
+        //     const provider = new ProviderClass(this)
+        //     await this.register(provider)
+        // }
     }
 
     /**
@@ -249,10 +252,17 @@ export class Application extends Container implements IApplication {
      * @param h3App The current H3 app instance
      * @param preferedPort If provided, this will overide the port set in the evironment
      */
-    public async fire (h3App: H3, preferedPort?: number) {
+    public async fire (): Promise<this>
+    public async fire (h3App: H3, preferredPort?: number): Promise<this>
+    public async fire (h3App?: H3, preferredPort?: number): Promise<this> {
+        if (!h3App) {
+            throw new InvalidArgumentException('No valid H3 app instance was provided.')
+
+        }
+
         const serve = this.make('http.serve')
 
-        const port: number = preferedPort ?? env('PORT', 3000)
+        const port: number = preferredPort ?? env('PORT', 3000)
         const tries: number = env('RETRIES', 1)
         const hostname: string = env('HOSTNAME', 'localhost')
 
@@ -286,6 +296,8 @@ export class Application extends Container implements IApplication {
                 [e.stack, 'red']
             ], '\n')
         }
+
+        return this
     }
 
     /**

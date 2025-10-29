@@ -3,8 +3,8 @@ import type { Bindings, IContainer, UseKey } from '@h3ravel/shared'
 type IBinding = UseKey | (new (..._args: any[]) => unknown)
 
 export class Container implements IContainer {
-    private bindings = new Map<IBinding, () => unknown>()
-    private singletons = new Map<IBinding, unknown>()
+    public bindings = new Map<IBinding, () => unknown>()
+    public singletons = new Map<IBinding, unknown>()
 
     /**
      * Check if the target has any decorators

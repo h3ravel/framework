@@ -1,5 +1,4 @@
 packages:
-  # - packages/*
   - packages/shared
   - packages/support
   - packages/core
@@ -17,6 +16,13 @@ packages:
   - packages/url
   - examples/*
   - docs
+
+ignoredBuiltDependencies:
+  - '@h3ravel/arquebus'
+  - '@h3ravel/musket'
+  - '@swc/core'
+  - argon2
+  - sqlite3
 
 onlyBuiltDependencies:
   - esbuild

@@ -223,17 +223,17 @@ export class ProviderRegistry {
 
         const providers: ProviderCtor[] = []
 
-        for (const manifestPath of manifests) {
-            const pkg = await this.getManifest(path.resolve(manifestPath))
-            if (pkg.h3ravel?.providers) {
-                providers.push(...await Promise.all(
-                    pkg.h3ravel.providers.map(
-                        async (name: string) => (await import(path.resolve(path.dirname(manifestPath), 'dist/index.js')))[name]
-                    )))
-            }
-        }
-
         if (autoRegister) {
+            for (const manifestPath of manifests) {
+                const pkg = await this.getManifest(path.resolve(manifestPath))
+                if (pkg.h3ravel?.providers) {
+                    providers.push(...await Promise.all(
+                        pkg.h3ravel.providers.map(
+                            async (name: string) => (await import(path.resolve(path.dirname(manifestPath), 'dist/index.js')))[name]
+                        )))
+                }
+            }
+
             for (const provider of providers) {
                 const key = this.getKey(provider)
                 this.providers.set(key, provider)

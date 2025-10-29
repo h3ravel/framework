@@ -5,6 +5,19 @@
   "barrels": [
     {
       "name": "index.ts",
+      "root": "packages/core/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ],
+      "exports": {
+        "**/H3ravel.ts": [
+          "h3ravel"
+        ]
+      }
+    },
+    {
+      "name": "index.ts",
       "root": "packages/cache/src",
       "exclude": [
         "**/*.test.ts",
@@ -26,14 +39,6 @@
         "**/spawn.ts",
         "**/fire.ts",
         "**/logo.ts",
-        "**/*.test.ts",
-        "**/*.d.ts"
-      ]
-    },
-    {
-      "name": "index.ts",
-      "root": "packages/core/src",
-      "exclude": [
         "**/*.test.ts",
         "**/*.d.ts"
       ]
