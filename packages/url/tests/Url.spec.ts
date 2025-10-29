@@ -1,7 +1,8 @@
-import { Application, Controller } from '@h3ravel/core'
+import { Application, h3ravel } from '@h3ravel/core'
 import { RequestAwareHelpers, UrlServiceProvider } from '../src'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { EnvLoader } from '@h3ravel/config'
 import { HttpServiceProvider } from '@h3ravel/http'
 import { RouteServiceProvider } from '@h3ravel/router'
 import { Url } from '../src/Url'
@@ -32,7 +33,7 @@ describe('Url', () => {
         make: vi.fn()
     }
 
-    class ExampleController extends Controller {
+    class ExampleController {
         public async index () {
             return { success: true }
         }
@@ -40,12 +41,14 @@ describe('Url', () => {
 
 
     beforeAll(async () => {
-        app = new Application(process.cwd())
-        await app.quickStartup([UrlServiceProvider, RouteServiceProvider, HttpServiceProvider], [], false)
+
+        globalThis.env = new EnvLoader().get
+        app = await h3ravel([HttpServiceProvider, RouteServiceProvider, UrlServiceProvider], process.cwd())
         Object.assign(mockApp, app)
         Object.assign(globalThis, globalThat)
         app.make('router').get('path', () => ({ success: true }), 'path')
         app.make('router').get('path/index', [ExampleController, 'index'], 'path.index')
+        app.fire()
     })
 
     beforeEach(() => {

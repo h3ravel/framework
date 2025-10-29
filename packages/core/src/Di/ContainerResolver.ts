@@ -21,7 +21,10 @@ export class ContainerResolver {
         /**
          * Resolve the bound dependencies
          */
-        const args: any[] = params.filter(e => ContainerResolver.isClass(e)).map((type: any) => {
+        const args: any[] = params.filter(e => ContainerResolver.isClass(e) || e instanceof Application).map((type: any) => {
+            if (type instanceof Application) {
+                return type
+            }
             return this.app.make(type)
         })
 

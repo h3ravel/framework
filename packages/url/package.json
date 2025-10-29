@@ -58,9 +58,15 @@
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
-    "@h3ravel/http": "workspace:^"
+    "@h3ravel/http": "workspace:^",
+    "@h3ravel/config": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
+  },
+  "peerDependenciesMeta": {
+    "@h3ravel/config": {
+      "optional": true
+    }
   }
 }

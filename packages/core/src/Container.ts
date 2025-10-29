@@ -3,8 +3,8 @@ import type { Bindings, IContainer, UseKey } from '@h3ravel/shared'
 type IBinding = UseKey | (new (..._args: any[]) => unknown)
 
 export class Container implements IContainer {
-    private bindings = new Map<IBinding, () => unknown>()
-    private singletons = new Map<IBinding, unknown>()
+    public bindings = new Map<IBinding, () => unknown>()
+    public singletons = new Map<IBinding, unknown>()
 
     /**
      * Check if the target has any decorators
@@ -38,6 +38,21 @@ export class Container implements IContainer {
         factory: () => Bindings[T] | T
     ) {
         this.bindings.set(key, factory)
+    }
+
+    /**
+     * Remove one or more transient services from the container
+     */
+    unbind<T extends UseKey> (key: T | T[]) {
+        if (Array.isArray(key)) {
+            for (let i = 0; i < key.length; i++) {
+                this.bindings.delete(key[i])
+                this.singletons.delete(key[i])
+            }
+        } else {
+            this.bindings.delete(key)
+            this.singletons.delete(key)
+        }
     }
 
     /**

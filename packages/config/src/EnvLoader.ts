@@ -5,7 +5,7 @@ import { EnvParser } from '@h3ravel/shared'
 import { safeDot } from '@h3ravel/support'
 
 export class EnvLoader {
-    constructor(protected _app: Application) { }
+    constructor(protected app?: Application) { }
 
     /**
      * Get the defined environment vars

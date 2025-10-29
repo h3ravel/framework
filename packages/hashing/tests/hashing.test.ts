@@ -2,7 +2,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { mkdtemp, rmdir, writeFile } from 'node:fs/promises'
 
 import { HashManager } from '../src'
-import { Str } from '@/packages/support/src'
+import { Str } from '@h3ravel/support'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { tmpdir } from 'node:os'

@@ -38,7 +38,7 @@ export class FireCommand extends Command {
         const port = this.option('port')
         const host = this.option('host')
         const tries = this.option('tries')
-        const debug = Number(this.option('verbose', 0)) > 0
+        const verbose = Number(this.option('verbose', 0))
         const LOG_LEVELS = [
             'silent',
             'silent',
@@ -48,14 +48,15 @@ export class FireCommand extends Command {
         ]
 
         const ENV_VARS = {
-            EXTENDED_DEBUG: debug ? 'true' : 'false',
+            EXTENDED_DEBUG: verbose > 0 ? 'true' : 'false',
             CLI_BUILD: 'false',
             NODE_ENV: 'development',
             DIST_DIR: outDir,
             HOSTNAME: host,
             RETRIES: tries,
             PORT: port,
-            LOG_LEVEL: LOG_LEVELS[Number(this.option('verbose', 0))],
+            VERBOSE: verbose,
+            LOG_LEVEL: LOG_LEVELS[verbose],
         }
 
         const silent = ENV_VARS.LOG_LEVEL === 'silent' ? '--silent' : null
