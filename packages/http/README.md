@@ -16,6 +16,89 @@
 
 This is the middleware pipeline and HTTP kernel system for the [H3ravel](https://h3ravel.toneflix.net) framework.
 
+## API Resources
+
+H3ravel provides `Resource` and `Collection` classes to standardize JSON API responses.
+
+### Single Resource
+
+```ts
+import { Resource } from '@h3ravel/http'
+
+const user = { id: 1, name: 'Alice' }
+const userResource = new Resource(user)
+
+console.log(userResource.toArray())
+// Output: { id: 1, name: 'Alice' }
+```
+
+### Resource with Relationships
+
+```ts
+const user = { id: 1, name: 'Alice', posts: [{ id: 10, title: 'Hello' }] }
+const userResource = new Resource(user).withRelation('posts', user.posts)
+
+console.log(userResource.toArray())
+// Output: { id: 1, name: 'Alice', posts: [{ id: 10, title: 'Hello' }] }
+```
+
+### Collection of Resources
+
+```ts
+import { Collection, Resource } from '@h3ravel/http'
+
+const users = [new Resource({ id: 1 }), new Resource({ id: 2 })]
+const collection = new Collection(users)
+    .withPagination({ from: 1, to: 2, total: 10, perPage: 2 })
+    .withLinks({ self: '/users', next: '/users?page=2' })
+
+console.log(collection.toArray())
+// Output: [{ id: 1 }, { id: 2 }]
+
+console.log(collection.json())
+/* Output:
+{
+  data: [{ id: 1 }, { id: 2 }],
+  meta: { pagination: { from: 1, to: 2, total: 10, perPage: 2 } },
+  links: { self: '/users', next: '/users?page=2' }
+}
+*/
+```
+
+### JsonResource (HTTP Response)
+
+```ts
+import { JsonResource } from '@h3ravel/http'
+
+const jsonRes = new JsonResource({ req: {}, res: { status: 200 } } as any, collection).json()
+
+console.log(jsonRes.body)
+/* Output:
+{
+  data: [{ id: 1 }, { id: 2 }],
+  meta: { pagination: { from: 1, to: 2, total: 10, perPage: 2 } },
+  links: { self: '/users', next: '/users?page=2' }
+}
+*/
+```
+
+### Additional Features
+
+You can add extra fields to the JSON response with additional():
+
+```ts
+jsonRes.additional({ message: 'Fetched successfully' })
+console.log(jsonRes.body)
+/* Output:
+{
+  data: [{ id: 1 }, { id: 2 }],
+  meta: { pagination: { from: 1, to: 2, total: 10, perPage: 2 } },
+  links: { self: '/users', next: '/users?page=2' },
+  message: 'Fetched successfully'
+}
+*/
+```
+
 ## Contributing
 
 Thank you for considering contributing to the H3ravel framework! The [Contribution Guide](https://h3ravel.toneflix.net/contributing) can be found in the H3ravel documentation and will provide you with all the information you need to get started.

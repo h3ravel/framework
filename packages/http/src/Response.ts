@@ -1,10 +1,12 @@
 import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
-import { html, redirect, } from 'h3'
+import { html, redirect } from 'h3'
 
 import { Application } from '@h3ravel/core'
 import type { H3Event } from 'h3'
 import { IResponse } from '@h3ravel/shared'
 import { safeDot } from '@h3ravel/support'
+import { Resource } from './Resource'
+import { Collection } from './Collection'
 
 export class Response implements IResponse {
     /**
@@ -28,7 +30,7 @@ export class Response implements IResponse {
     /**
      * Set HTTP status code.
      */
-    setStatusCode (code: number): this {
+    setStatusCode(code: number): this {
         this.statusCode = code
         this.event.res.status = code
         return this
@@ -37,38 +39,52 @@ export class Response implements IResponse {
     /**
      * Set a header.
      */
-    setHeader (name: string, value: string): this {
+    setHeader(name: string, value: string): this {
         this.headers[name] = value
         return this
     }
 
-    html (content: string): string {
+    /**
+     * Send HTML response
+     */
+    html(content: string): string {
         this.applyHeaders()
         return html(this.event, content)
     }
 
     /**
-     * Send a JSON response.
+     * Send JSON response.
+     * Detects Resource and Collection instances automatically.
      */
-    json<T = unknown> (data: T): T {
+    json<T = unknown>(data: T): any {
         this.setHeader('content-type', 'application/json; charset=utf-8')
         this.applyHeaders()
-        return data
+
+        // Auto-detect Resource/Collection
+        let payload: any = data
+
+        if (data instanceof Resource) {
+            payload = { data: data.toArray() }
+        } else if (data instanceof Collection) {
+            payload = data.json().body
+        }
+
+        return payload
     }
 
     /**
-     * Send plain text.
+     * Send plain text response
      */
-    text (data: string): string {
+    text(data: string): string {
         this.setHeader('content-type', 'text/plain; charset=utf-8')
         this.applyHeaders()
         return data
     }
 
     /**
-     * Redirect to another URL.
+     * Redirect to another URL
      */
-    redirect (url: string, status = 302): string {
+    redirect(url: string, status = 302): string {
         this.setStatusCode(status)
         return redirect(this.event, url, this.statusCode)
     }
@@ -76,7 +92,7 @@ export class Response implements IResponse {
     /**
      * Apply headers before sending response.
      */
-    private applyHeaders (): void {
+    private applyHeaders(): void {
         Object.entries(this.headers).forEach(([key, value]) => {
             this.event.res.headers.set(key, value)
         })
@@ -85,9 +101,9 @@ export class Response implements IResponse {
     /**
      * Get the base event
      */
-    getEvent (): H3Event
-    getEvent<K extends DotNestedKeys<H3Event>> (key: K): DotNestedValue<H3Event, K>
-    getEvent<K extends DotNestedKeys<H3Event>> (key?: K): any {
+    getEvent(): H3Event
+    getEvent<K extends DotNestedKeys<H3Event>>(key: K): DotNestedValue<H3Event, K>
+    getEvent<K extends DotNestedKeys<H3Event>>(key?: K): any {
         return safeDot(this.event, key)
     }
 }
