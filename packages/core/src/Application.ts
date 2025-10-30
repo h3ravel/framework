@@ -22,11 +22,11 @@ export class Application extends Container implements IApplication {
     public paths = new PathLoader()
     private tries: number = 0
     private booted = false
+    private basePath: string
     private versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
     private static versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
-    private basePath: string
 
-    private providers: ServiceProvider[] = []
+    private providers: Array<ServiceProvider> = []
     protected externalProviders: Array<AServiceProvider> = []
     protected filteredProviders: Array<string> = []
 
@@ -142,16 +142,11 @@ export class Application extends Container implements IApplication {
         }
 
         ProviderRegistry.doSort()
-        ProviderRegistry.all().forEach(async (ProviderClass) => {
-            if (!ProviderClass) return
+        for (const ProviderClass of ProviderRegistry.all()) {
+            if (!ProviderClass) continue
             const provider = new ProviderClass(this)
             await this.register(provider)
-        })
-        // for (const ProviderClass of ProviderRegistry.all()) {
-        //     if (!ProviderClass) continue
-        //     const provider = new ProviderClass(this)
-        //     await this.register(provider)
-        // }
+        }
     }
 
     /**

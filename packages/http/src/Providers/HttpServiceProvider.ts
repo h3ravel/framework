@@ -16,10 +16,11 @@ import { FireCommand } from '../Commands/FireCommand'
  */
 export class HttpServiceProvider {
     public static priority = 998
+    public registeredCommands?: (new (app: any, kernel: any) => any)[]
 
-    register (this: { app: Application, registeredCommands: ServiceProvider['registeredCommands'] }, app: Application) {
-        this.app = app
+    constructor(private app: any) { }
 
+    register () {
         /** Bind HTTP APP to the service container */
         this.app.singleton('http.app', () => {
             return new H3()

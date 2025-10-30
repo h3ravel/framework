@@ -19,13 +19,13 @@ packages:
 
 ignoredBuiltDependencies:
   - "@h3ravel/arquebus"
-  - "@h3ravel/musket"
   - "@swc/core"
   - argon2
   - sqlite3
 
 onlyBuiltDependencies:
   - esbuild
+  - "@h3ravel/musket"
 
 shamefullyHoist: true
 

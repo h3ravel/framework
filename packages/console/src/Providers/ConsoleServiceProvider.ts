@@ -24,9 +24,6 @@ export class ConsoleServiceProvider extends ServiceProvider {
     public runsInConsole = true
 
     register () {
-    }
-
-    boot () {
         const DIST_DIR = `/${env('DIST_DIR', '.h3ravel/serve')}/`.replaceAll('//', '')
 
         Kernel.init(

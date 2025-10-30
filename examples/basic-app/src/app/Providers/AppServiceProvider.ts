@@ -7,7 +7,7 @@ import { ServiceProvider } from '@h3ravel/core'
  * 
  */
 export class AppServiceProvider extends ServiceProvider {
-    public static priority = 899
+    public static priority = 800
 
     register () {
         // Register bindings to the container. Runs before boot().

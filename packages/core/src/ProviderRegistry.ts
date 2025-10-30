@@ -78,7 +78,7 @@ export class ProviderRegistry {
     }
 
     /**
-     * Get all registered providers as an array.
+     * Set the filtered providers.
      *  
      * @returns 
      */
@@ -226,6 +226,7 @@ export class ProviderRegistry {
         if (autoRegister) {
             for (const manifestPath of manifests) {
                 const pkg = await this.getManifest(path.resolve(manifestPath))
+
                 if (pkg.h3ravel?.providers) {
                     providers.push(...await Promise.all(
                         pkg.h3ravel.providers.map(
