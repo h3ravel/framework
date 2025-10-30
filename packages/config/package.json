@@ -52,10 +52,10 @@
   "dependencies": {
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
-    "@h3ravel/musket": "^0.1.8"
+    "@h3ravel/musket": "catalog:prod"
   },
   "devDependencies": {
-    "tsx": "^4.20.5",
+    "tsx": "catalog:",
     "@h3ravel/core": "workspace:^",
     "typescript": "^5.9.2"
   }

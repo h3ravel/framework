@@ -53,7 +53,7 @@
     "version-patch": "pnpm version patch"
   },
   "devDependencies": {
-    "bcryptjs": "^3.0.2",
+    "bcryptjs": "catalog:",
     "typescript": "^5.4.0"
   },
   "peerDependencies": {
@@ -66,6 +66,6 @@
     }
   },
   "dependencies": {
-    "argon2": "^0.44.0"
+    "argon2": "catalog:"
   }
 }

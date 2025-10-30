@@ -52,12 +52,12 @@
   },
   "dependencies": {
     "@h3ravel/core": "workspace:^",
-    "@h3ravel/musket": "^0.1.8",
+    "@h3ravel/musket": "catalog:prod",
     "@h3ravel/database": "workspace:^",
     "@h3ravel/http": "workspace:^",
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
     "h3": "2.0.0-beta.4",
-    "reflect-metadata": "^0.2.2"
+    "reflect-metadata": "catalog:"
   }
 }

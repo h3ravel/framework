@@ -46,11 +46,11 @@
   },
   "devDependencies": {
     "@h3ravel/shared": "workspace:^",
-    "@types/luxon": "^3.7.1",
+    "@types/luxon": "catalog:",
     "typescript": "^5.4.0"
   },
   "dependencies": {
-    "dayjs": "^1.11.18",
-    "luxon": "^3.7.2"
+    "dayjs": "catalog:",
+    "luxon": "catalog:"
   }
 }

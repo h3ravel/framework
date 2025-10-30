@@ -43,7 +43,7 @@
     "@h3ravel/core": "workspace:^"
   },
   "devDependencies": {
-    "@types/nodemailer": "^6.4.17",
+    "@types/nodemailer": "catalog:",
     "typescript": "^5.4.0"
   },
   "dependencies": {

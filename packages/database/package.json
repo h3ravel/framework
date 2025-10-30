@@ -50,9 +50,9 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
-    "@h3ravel/arquebus": "^0.6.6",
-    "@h3ravel/musket": "^0.1.8",
-    "sqlite3": "^5.1.7"
+    "@h3ravel/arquebus": "catalog:prod",
+    "@h3ravel/musket": "catalog:prod",
+    "sqlite3": "catalog:"
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
