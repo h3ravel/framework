@@ -87,10 +87,10 @@ This combination delivers the productivity of Laravel while leveraging the moder
 - [x] Routing system
 - [x] Config management and environment handling
 - [ ] Community Building
-- [ ] Musket CLI (artisan-like commands)
+- [x] Musket CLI (artisan-like commands)
 - [ ] Cache Management
 - [ ] Queues, Mail, Events, Broadcasting
-- [ ] Arquebus ORM with relationships (Eloquent-style)
+- [x] Arquebus ORM with relationships (Eloquent-style)
 - [ ] First-class runtime adapters (Node, Bun, Deno)
 
 ## Development
