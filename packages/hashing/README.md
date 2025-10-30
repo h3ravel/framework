@@ -6,7 +6,7 @@
 
 [![Framework][ix]][lx]
 [![Hashing Package Version][i1]][l1]
-[![Downloads][l1]][d1]
+[![Downloads][d1]][l1]
 [![Tests][tei]][tel]
 [![License][lini]][linl]
 
