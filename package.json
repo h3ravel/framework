@@ -61,7 +61,6 @@
     "eslint": "catalog:",
     "fetchdts": "^0.1.7",
     "husky": "catalog:",
-    "install": "catalog:",
     "knex": "catalog:",
     "nodemailer": "^7.0.10",
     "path": "catalog:",
