@@ -1,9 +1,11 @@
 import { Command, Kernel } from '@h3ravel/musket'
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest'
 
 import { Application } from '@h3ravel/core'
 import { Command as ICommand } from 'commander'
 import { Logger } from '@h3ravel/shared'
+
+console.log = vi.fn(() => 0)
 
 // Mock the Logger to capture calls
 const originalInfo = Logger.info
@@ -48,15 +50,10 @@ class TestCommand extends Command {
   protected signature = 'test:command'
 
   async handle () {
-    this.info('Test info message')
-    this.success('Test success message')
-    this.error('Test error message')
-    this.warn('Test warning message')
-    this.debug('Test debug message')
   }
 }
 
-describe('Console Command CLI Options', () => {
+describe('CLI Options', () => {
   let command: TestCommand
   let mockApp: Application
   let mockKernel: Kernel
@@ -164,35 +161,6 @@ describe('Console Command CLI Options', () => {
       mockProgram.setOptionValue('no-interaction', true)
       command.loadBaseFlags()
     })
-
-    // test('should return default answer for ask()', async () => {
-    //   const result = await command.ask('Test question?', 'default answer')
-    //   expect(result).toBe('default answer')
-    // })
-
-    // test('should return default value for confirm()', async () => {
-    //   const result = await command.confirm('Continue?', true)
-    //   expect(result).toBe(true)
-    // })
-
-    // test('should return default choice for choice()', async () => {
-    //   const result = await command.choice('Pick one:', ['option1', 'option2'], 'option2')
-    //   expect(result).toBe('option2')
-    // })
-
-    // test('should return first choice when no default provided', async () => {
-    //   const result = await command.choice('Pick one:', ['option1', 'option2'])
-    //   expect(result).toBe('option1')
-    // })
-
-    // test('should exit with error when ask() has no default', async () => {
-    //   const mockExit = vi.spyOn(process, 'exit').mockImplementation()
-
-    //   await command.ask('Test question?')
-
-    //   expect(mockExit).toHaveBeenCalledWith(1)
-    //   mockExit.mockRestore()
-    // })
   })
 
   describe('Flag Precedence', () => {
@@ -230,4 +198,4 @@ describe('Console Command CLI Options', () => {
       expect(successMessages).toHaveLength(0)
     })
   })
-})
+}) 

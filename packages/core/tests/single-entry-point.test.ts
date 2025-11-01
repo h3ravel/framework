@@ -1,5 +1,5 @@
 import { Application, ConfigException } from '@h3ravel/core'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { FileSystem } from '@h3ravel/shared'
 import { h3ravel } from '@h3ravel/core'
@@ -9,6 +9,8 @@ let HttpProvider: any
 let RouteProvider: any
 const httpPath = FileSystem.findModulePkg('@h3ravel/http', process.cwd()) ?? ''
 const routePath = FileSystem.findModulePkg('@h3ravel/router', process.cwd()) ?? ''
+
+console.log = vi.fn(() => 0)
 
 describe('Single Entry Point without @h3ravel/http installed', async () => {
     beforeEach(async () => {

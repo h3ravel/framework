@@ -31,7 +31,7 @@ shamefullyHoist: true
 
 catalogs:
   prod:
-    "@h3ravel/musket": ^0.2.4
+    "@h3ravel/musket": ^0.3.0
     "@h3ravel/arquebus": ^0.6.6 
 
 catalog:
