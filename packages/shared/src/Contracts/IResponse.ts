@@ -1,6 +1,6 @@
 import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
+import type { H3Event, HTTPResponse } from 'h3'
 
-import type { H3Event } from 'h3'
 import type { IApplication } from './IApplication'
 
 /**
@@ -32,7 +32,7 @@ export interface IResponse {
      * @param content - The HTML content to send.
      * @returns The HTML content.
      */
-    html (content: string): string;
+    html (content: string): HTTPResponse;
 
     /**
      * Sends a JSON response.
@@ -54,7 +54,7 @@ export interface IResponse {
      * @param status - The HTTP status code for the redirect (default: 302).
      * @returns The redirect URL.
      */
-    redirect (url: string, status?: number): string;
+    redirect (url: string, status?: number): HTTPResponse;
 
     /**
      * Gets the underlying event object or a specific property of it.

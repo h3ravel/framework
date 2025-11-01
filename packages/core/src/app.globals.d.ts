@@ -1,3 +1,5 @@
+import { HTTPResponse } from 'h3'
+
 export { }
 
 declare global {
@@ -35,7 +37,7 @@ declare global {
      * @param viewPath 
      * @param params 
      */
-    function view (viewPath: string, params?: Record<string, any> | undefined): Promise<string>
+    function view (viewPath: string, params?: Record<string, any> | undefined): Promise<HTTPResponse>
 
     /**
      * Get static asset

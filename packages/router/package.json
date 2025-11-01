@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/router",
-  "version": "1.11.5",
+  "version": "1.12.0",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -57,7 +57,7 @@
     "@h3ravel/http": "workspace:^",
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
-    "h3": "2.0.0-beta.4",
+    "h3": "catalog:prod",
     "reflect-metadata": "catalog:"
   }
 }

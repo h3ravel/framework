@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/core",
-  "version": "1.19.2",
+  "version": "1.20.0",
   "description": "Core application container, lifecycle management and service providers for H3ravel.",
   "type": "module",
   "main": "./dist/index.js",
@@ -61,7 +61,7 @@
     "dotenv": "catalog:",
     "dotenv-expand": "catalog:",
     "fast-glob": "catalog:",
-    "h3": "2.0.0-beta.4",
+    "h3": "catalog:prod",
     "reflect-metadata": "catalog:",
     "semver": "catalog:",
     "srvx": "^0.8.7",

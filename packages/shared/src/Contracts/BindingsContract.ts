@@ -1,4 +1,4 @@
-import type { H3, serve } from 'h3'
+import type { H3, HTTPResponse, serve } from 'h3'
 
 import type { Edge } from 'edge.js'
 import { IRequest } from './IRequest'
@@ -19,7 +19,7 @@ export type Bindings = {
     [key: `app.${string}`]: any;
     env (): NodeJS.ProcessEnv
     env<T extends string> (key: T, def?: any): any
-    view (viewPath: string, params?: Record<string, any>): Promise<string>
+    view (viewPath: string, params?: Record<string, any>): Promise<HTTPResponse>
     edge: Edge;
     asset (key: string, def?: string): string
     router: IRouter

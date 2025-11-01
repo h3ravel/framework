@@ -11,7 +11,6 @@ export class AppServiceProvider extends ServiceProvider {
 
     register () {
         // Register bindings to the container. Runs before boot().
-        // console.log(public_path())
     }
 
     boot () {

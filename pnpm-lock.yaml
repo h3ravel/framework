@@ -17,7 +17,7 @@ catalogs:
       version: 3.1.0
     '@swc/core':
       specifier: ^1.14.0
-      version: 1.13.5
+      version: 1.14.0
     '@types/luxon':
       specifier: ^3.7.1
       version: 3.7.1
@@ -139,6 +139,9 @@ catalogs:
     '@h3ravel/musket':
       specifier: ^0.3.1
       version: 0.3.1
+    h3:
+      specifier: 2.0.1-rc.5
+      version: 2.0.1-rc.5
 
 importers:
 
@@ -304,8 +307,8 @@ importers:
         specifier: 'catalog:'
         version: 10.1.0
       h3:
-        specifier: 2.0.0-beta.4
-        version: 2.0.0-beta.4
+        specifier: catalog:prod
+        version: 2.0.1-rc.5
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
@@ -437,8 +440,8 @@ importers:
         specifier: 'catalog:'
         version: 3.3.3
       h3:
-        specifier: 2.0.0-beta.4
-        version: 2.0.0-beta.4
+        specifier: catalog:prod
+        version: 2.0.1-rc.5
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
@@ -540,8 +543,8 @@ importers:
         specifier: workspace:^
         version: link:../support
       h3:
-        specifier: ^2.0.0-beta.4
-        version: 2.0.0-beta.4
+        specifier: catalog:prod
+        version: 2.0.1-rc.5
       srvx:
         specifier: ^0.8.2
         version: 0.8.2
@@ -600,8 +603,8 @@ importers:
         specifier: workspace:^
         version: link:../support
       h3:
-        specifier: 2.0.0-beta.4
-        version: 2.0.0-beta.4
+        specifier: catalog:prod
+        version: 2.0.1-rc.5
       reflect-metadata:
         specifier: 'catalog:'
         version: 0.2.2
@@ -621,8 +624,8 @@ importers:
         specifier: 'catalog:'
         version: 3.2.0
       h3:
-        specifier: ^2.0.0-beta.4
-        version: 2.0.0-beta.4
+        specifier: catalog:prod
+        version: 2.0.1-rc.5
       inquirer-autocomplete-standalone:
         specifier: ^0.8.1
         version: 0.8.1
@@ -3632,6 +3635,15 @@ packages:
       crossws:
         optional: true
 
+  h3@2.0.1-rc.5:
+    resolution: {integrity: sha512-qkohAzCab0nLzXNm78tBjZDvtKMTmtygS8BJLT3VPczAQofdqlFXDPkXdLMJN4r05+xqneG8snZJ0HgkERCZTg==}
+    engines: {node: '>=20.11.1'}
+    peerDependencies:
+      crossws: ^0.4.1
+    peerDependenciesMeta:
+      crossws:
+        optional: true
+
   has-flag@3.0.0:
     resolution: {integrity: sha512-sKJf1+ceQBr4SMkvQnBDNDtf4TXpVhVGateu0t918bl30FnbE2m4vNLX+VWe/dpjlb+HugGYzW7uQXH98HPEYw==}
     engines: {node: '>=4'}
@@ -4770,6 +4782,11 @@ packages:
 
   srvx@0.8.7:
     resolution: {integrity: sha512-g3+15LlwVOGL2QpoTPZlvRjg+9a5Tx/69CatXjFP6txvhIaW2FmGyzJfb8yft5wyfGddvJmP/Yx+e/uNDMRSLQ==}
+    engines: {node: '>=20.16.0'}
+    hasBin: true
+
+  srvx@0.9.4:
+    resolution: {integrity: sha512-yACjRbHWbI3ehhPCrEKBZvAooe/xgJIdA7QRYiYFI1VtsiGyDpSQS5r9Q6ZgTa+R0umaoJhs2umKuGlL3/nDbQ==}
     engines: {node: '>=20.16.0'}
     hasBin: true
 
@@ -9115,6 +9132,11 @@ snapshots:
       rou3: 0.7.9
       srvx: 0.8.16
 
+  h3@2.0.1-rc.5:
+    dependencies:
+      rou3: 0.7.9
+      srvx: 0.9.4
+
   has-flag@3.0.0: {}
 
   has-flag@4.0.0: {}
@@ -10276,6 +10298,8 @@ snapshots:
   srvx@0.8.7:
     dependencies:
       cookie-es: 2.0.0
+
+  srvx@0.9.4: {}
 
   ssri@8.0.1:
     dependencies:
