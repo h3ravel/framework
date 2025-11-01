@@ -2,5 +2,5 @@
 
 import zero from './IO/zero'
 
-new zero().spawn()
+new zero().prepare()
 

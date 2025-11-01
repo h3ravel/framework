@@ -11,7 +11,7 @@ export default class {
      * 
      * @returns 
      */
-    async spawn (DIST_DIR = '.h3ravel/serve') {
+    async prepare (DIST_DIR = '.h3ravel/serve') {
         const pm = (await preferredPM(process.cwd()))?.name ?? 'npm'
         const outDir = join(process.env.DIST_DIR ?? DIST_DIR)
 

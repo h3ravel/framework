@@ -36,7 +36,7 @@
       "name": "index.ts",
       "root": "packages/console/src",
       "exclude": [
-        "**/spawn.ts",
+        "**/prepare.ts",
         "**/fire.ts",
         "**/logo.ts",
         "**/*.test.ts",
