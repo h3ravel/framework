@@ -1,5 +1,5 @@
 import { Command, Kernel } from '@h3ravel/musket'
-import { afterEach, beforeEach, describe, expect, it, test, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 
 import { Application } from '@h3ravel/core'
 import { Command as ICommand } from 'commander'
