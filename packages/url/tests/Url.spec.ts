@@ -7,6 +7,8 @@ import { HttpServiceProvider } from '@h3ravel/http'
 import { RouteServiceProvider } from '@h3ravel/router'
 import { Url } from '../src/Url'
 
+console.log = vi.fn(() => 0)
+
 const globalThat = {
     config: vi.fn((key: string) => {
         if (key === 'app.url') return 'https://example.com'
