@@ -2,6 +2,7 @@ import { mkdir, writeFile } from 'node:fs/promises'
 
 import { Command } from '@h3ravel/musket'
 import { FileSystem } from '@h3ravel/shared'
+import { KeyGenerateCommand } from './KeyGenerateCommand'
 
 export class PostinstallCommand extends Command {
 
@@ -20,7 +21,23 @@ export class PostinstallCommand extends Command {
     protected description: string = 'Default post installation command'
 
     public async handle () {
+        this.genEncryptionKey()
         this.createSqliteDB()
+    }
+
+    /**
+     * Create sqlite database if none exist
+     * 
+     * @returns 
+     */
+    private async genEncryptionKey () {
+        new KeyGenerateCommand(this.app, this.kernel)
+            .setProgram(this.program)
+            .setOption('force', true)
+            .setOption('silent', true)
+            .setOption('quiet', true)
+            .setInput({ force: true, silent: true, quiet: true }, [], [], {}, this.program)
+            .handle()
     }
 
     /**

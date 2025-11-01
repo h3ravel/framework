@@ -78,6 +78,7 @@
     "preferred-pm": "catalog:",
     "radashi": "^12.6.2",
     "resolve-from": "catalog:",
+    "dotenv": "catalog:",
     "@h3ravel/musket": "catalog:prod",
     "tsx": "catalog:"
   }

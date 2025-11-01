@@ -4,6 +4,7 @@ import { ContainerResolver, ServiceProvider } from '@h3ravel/core'
 
 import { BuildCommand } from '../Commands/BuildCommand'
 import { Kernel } from '@h3ravel/musket'
+import { KeyGenerateCommand } from '../Commands/KeyGenerateCommand'
 import { MakeCommand } from '../Commands/MakeCommand'
 import { PostinstallCommand } from '../Commands/PostinstallCommand'
 import { altLogo } from '../logo'
@@ -25,6 +26,7 @@ export class ConsoleServiceProvider extends ServiceProvider {
 
     register () {
         const DIST_DIR = `/${env('DIST_DIR', '.h3ravel/serve')}/`.replaceAll('//', '')
+        const baseCommands = [BuildCommand, MakeCommand, PostinstallCommand, KeyGenerateCommand]
 
         Kernel.init(
             this.app,
@@ -32,13 +34,13 @@ export class ConsoleServiceProvider extends ServiceProvider {
                 logo: altLogo,
                 resolver: new ContainerResolver(this.app).resolveMethodParams,
                 tsDownConfig,
+                baseCommands,
                 packages: [
                     { name: '@h3ravel/core', alias: 'H3ravel Framework' },
                     { name: '@h3ravel/musket', alias: 'Musket CLI' }
                 ],
                 cliName: 'musket',
                 hideMusketInfo: true,
-                baseCommands: [BuildCommand, MakeCommand, PostinstallCommand],
                 discoveryPaths: [app_path('Console/Commands/*.js').replace('/src/', DIST_DIR)],
             }
         );
