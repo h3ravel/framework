@@ -17,39 +17,22 @@ packages:
   - examples/*
   - docs
 
-ignoredBuiltDependencies:
-  - "@h3ravel/arquebus"
-  - "@swc/core"
-  - argon2
-  - sqlite3
-
-onlyBuiltDependencies:
-  - esbuild
-  - "@h3ravel/musket"
-
-shamefullyHoist: true
-
-catalogs:
-  prod:
-    "@h3ravel/musket": ^0.3.0
-    "@h3ravel/arquebus": ^0.6.6 
-
 catalog:
-  "@changesets/cli": ^2.29.7
-  "@eslint/js": ^9.38.0
-  "@rollup/plugin-run": ^3.1.0
-  "@swc/core": ^1.13.5
-  "@types/luxon": ^3.7.1
-  "@types/nodemailer": ^6.4.17
-  "@types/semver": ^7.7.1
-  "@typescript-eslint/eslint-plugin": ^8.46.2
-  "@typescript-eslint/parser": ^8.46.2
-  "@vitest/coverage-v8": ^3.2.4
+  '@changesets/cli': ^2.29.7
+  '@eslint/js': ^9.38.0
+  '@rollup/plugin-run': ^3.1.0
+  '@swc/core': ^1.14.0
+  '@types/luxon': ^3.7.1
+  '@types/nodemailer': ^6.4.17
+  '@types/semver': ^7.7.1
+  '@typescript-eslint/eslint-plugin': ^8.46.2
+  '@typescript-eslint/parser': ^8.46.2
+  '@vitest/coverage-v8': ^3.2.4
   argon2: ^0.44.0
   barrelize: ^1.6.4
   barrelsby: ^2.8.1
   bcryptjs: ^3.0.2
-  cross-env: ^10.0.0
+  cross-env: ^10.1.0
   dayjs: ^1.11.18
   detect-port: ^2.1.0
   dotenv-expand: ^12.0.3
@@ -72,7 +55,24 @@ catalog:
   ts-node: ^10.9.2
   tsconfig-paths: ^4.2.0
   tslib: ^2.8.1
-  tsx: ^4.20.5
+  tsx: ^4.20.6
   typescript-eslint: ^8.46.2
   utility-types: ^3.11.0
   vite-tsconfig-paths: ^5.1.4
+
+catalogs:
+  prod:
+    '@h3ravel/arquebus': ^0.6.6
+    '@h3ravel/musket': ^0.3.0
+
+ignoredBuiltDependencies:
+  - '@h3ravel/arquebus'
+  - '@swc/core'
+  - argon2
+  - sqlite3
+
+onlyBuiltDependencies:
+  - esbuild
+  - '@h3ravel/musket'
+
+shamefullyHoist: true

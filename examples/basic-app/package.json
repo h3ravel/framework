@@ -39,9 +39,9 @@
   "devDependencies": {
     "@rollup/plugin-run": "catalog:",
     "@swc/core": "catalog:",
-    "@types/node": "^24.5.2",
-    "tsdown": "^0.15.4",
+    "@types/node": "^24.9.2",
+    "tsdown": "^0.15.12",
     "tsx": "catalog:",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   }
 }

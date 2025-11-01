@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/router",
-  "version": "1.11.4",
+  "version": "1.11.5",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "h3ravel": {
     "providers": [
