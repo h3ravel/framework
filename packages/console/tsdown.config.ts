@@ -12,7 +12,7 @@ export default defineConfig([
   },
   {
     format: ['esm', 'cjs'],
-    entry: ['src/fire.ts', 'src/spawn.ts'],
+    entry: ['src/fire.ts', 'src/prepare.ts'],
     treeshake: true,
     outDir: 'bin',
     minify: true,

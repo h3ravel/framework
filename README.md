@@ -104,7 +104,7 @@ This combination delivers the productivity of Laravel while leveraging the moder
 pnpm i
 ```
 
-This might error out complaining about missing bin modules for `spawn` and `fire`, this is because the workspace setup depends on prebuilt (`dist`) workspace modules that wont be available on initial setup instead of using their `node_modules` counterpart, this is intentional for debugging purposes, we can fix this by ensuring all required modules are built and available by running:
+This might error out complaining about missing bin modules for `prepare` and `fire`, this is because the workspace setup depends on prebuilt (`dist`) workspace modules that wont be available on initial setup instead of using their `node_modules` counterpart, this is intentional for debugging purposes, we can fix this by ensuring all required modules are built and available by running:
 
 ```sh
 pnpm build

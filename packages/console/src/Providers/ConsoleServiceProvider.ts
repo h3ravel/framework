@@ -41,13 +41,10 @@ export class ConsoleServiceProvider extends ServiceProvider {
                 baseCommands: [BuildCommand, MakeCommand, PostinstallCommand],
                 discoveryPaths: [app_path('Console/Commands/*.js').replace('/src/', DIST_DIR)],
             }
-        )
+        );
 
-        process.on('SIGINT', () => {
+        ['SIGINT', 'SIGTERM', 'SIGTSTP'].forEach(sig => process.on(sig, () => {
             process.exit(0)
-        })
-        process.on('SIGTERM', () => {
-            process.exit(0)
-        })
+        }))
     }
 }

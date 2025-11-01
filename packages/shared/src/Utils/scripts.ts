@@ -53,5 +53,5 @@ export const packageJsonScript = {
   start: 'DIST_DIR=dist node -r source-map-support/register dist/server.js',
   lint: 'eslint . --ext .ts',
   test: 'NODE_NO_WARNINGS=1 NODE_ENV=testing jest --passWithNoTests',
-  postinstall: 'pnpm spawn'
+  postinstall: 'pnpm prepare'
 }
