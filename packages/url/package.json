@@ -58,7 +58,6 @@
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
-    "@h3ravel/http": "workspace:^",
     "@h3ravel/config": "workspace:^"
   },
   "devDependencies": {

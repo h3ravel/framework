@@ -44,12 +44,25 @@ export const h3ravel = async (
         // Get the http app container binding
         h3App = app.make('http.app')
 
+        // Define app context factory
+        app.context = async (event) => {
+            // If we’ve already attached the context to this event, reuse it
+            if ((event as any)._h3ravelContext)
+                return (event as any)._h3ravelContext
+
+            Request.enableHttpMethodParameterOverride()
+            const ctx = HttpContext.init({
+                app,
+                request: await Request.create(event, app),
+                response: new Response(event, app),
+            });
+
+            (event as any)._h3ravelContext = ctx
+            return ctx
+        }
+
         // Initialize the Application Kernel
-        const kernel = new Kernel((event) => HttpContext.init({
-            app,
-            request: new Request(event, app),
-            response: new Response(event, app)
-        }), [new LogRequests()])
+        const kernel = new Kernel(async (event) => app.context!(event), [new LogRequests()])
 
         // Register kernel with H3
         h3App.use((event) => kernel.handle(event, middleware))

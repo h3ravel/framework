@@ -26,12 +26,6 @@ export interface IRequest {
     query: Record<string, any>;
 
     /**
-     * Gets the request headers.
-     * @returns An object containing request headers.
-     */
-    headers: TypedHeaders<Record<keyof ResponseHeaderMap, string>>;
-
-    /**
      * Gets all input data (query parameters, route parameters, and body).
      * @returns A promise resolving to an object containing all input data.
      */

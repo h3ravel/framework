@@ -3,9 +3,10 @@ import { RequestAwareHelpers, UrlServiceProvider } from '../src'
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { EnvLoader } from '@h3ravel/config'
-import { HttpServiceProvider } from '@h3ravel/http'
-import { RouteServiceProvider } from '@h3ravel/router'
 import { Url } from '../src/Url'
+
+const HttpServiceProvider = (await import(String('@h3ravel/http'))).HttpServiceProvider
+const RouteServiceProvider = (await import(String('@h3ravel/router'))).RouteServiceProvider
 
 console.log = vi.fn(() => 0)
 
@@ -45,6 +46,7 @@ describe('Url', () => {
     beforeAll(async () => {
 
         globalThis.env = new EnvLoader().get
+        console.info()
         app = await h3ravel([HttpServiceProvider, RouteServiceProvider, UrlServiceProvider], process.cwd())
         Object.assign(mockApp, app)
         Object.assign(globalThis, globalThat)

@@ -542,6 +542,9 @@ importers:
       '@h3ravel/support':
         specifier: workspace:^
         version: link:../support
+      '@h3ravel/url':
+        specifier: workspace:^
+        version: link:../url
       h3:
         specifier: catalog:prod
         version: 2.0.1-rc.5
@@ -667,9 +670,6 @@ importers:
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
-      '@h3ravel/http':
-        specifier: workspace:^
-        version: link:../http
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -691,7 +691,7 @@ importers:
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@0.14.3)(@types/node@24.9.2)
+        version: 0.3.1(@h3ravel/support@0.14.4)(@types/node@24.9.2)
       '@h3ravel/shared':
         specifier: workspace:*
         version: link:../shared
@@ -1464,8 +1464,8 @@ packages:
   '@h3ravel/support@0.12.0':
     resolution: {integrity: sha512-RJ/TkLtaUl5Zu4I/Vwwp5MtTEhlDHTTBexXJAV1kcpJTeDIKHnpNzhF+sRIkHlQFmyobqy7YRsWuOdYZGidwhA==}
 
-  '@h3ravel/support@0.14.3':
-    resolution: {integrity: sha512-+3Lv0aEP7kkVnAR7kerN+GB77bOjhjA+T6QTliZtfyiOGnppOYsNuF0pormKqEPCUNyDyHurYofvB3i3RzVB+A==}
+  '@h3ravel/support@0.14.4':
+    resolution: {integrity: sha512-L7TAtprK+pYqs8vXvNvKEcx/B3AFa4IT0h9m+dBkI4jxl94QtfwRPev6w6EThyz5c20NOTmqjDMWFxyH44X4Xw==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -6650,10 +6650,10 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/musket@0.3.1(@h3ravel/support@0.14.3)(@types/node@24.9.2)':
+  '@h3ravel/musket@0.3.1(@h3ravel/support@0.14.4)(@types/node@24.9.2)':
     dependencies:
       '@h3ravel/shared': 0.24.0(@types/node@24.9.2)
-      '@h3ravel/support': 0.14.3
+      '@h3ravel/support': 0.14.4
       chalk: 5.6.2
       commander: 14.0.2
       dayjs: 1.11.19
@@ -6742,7 +6742,7 @@ snapshots:
       dayjs: 1.11.18
       luxon: 3.7.2
 
-  '@h3ravel/support@0.14.3':
+  '@h3ravel/support@0.14.4':
     dependencies:
       dayjs: 1.11.19
       luxon: 3.7.2

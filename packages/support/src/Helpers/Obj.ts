@@ -384,6 +384,21 @@ export function data_forget (
     }
 }
 
+/**
+ * Checks if a value is a plain object (not array, function, etc.)
+ * 
+ * @param value 
+ * @returns 
+ */
+export function isPlainObject (value: any): value is Record<string, any> {
+    return (
+        value !== null &&
+        typeof value === 'object' &&
+        !Array.isArray(value) &&
+        Object.prototype.toString.call(value) === '[object Object]'
+    )
+}
+
 export class Obj {
     /**
      * Check if the value is a non-null object (associative/accessible).
@@ -406,6 +421,37 @@ export class Obj {
             return { ...obj, [key]: value }
         }
         return obj as T & Record<K, V>
+    }
+
+    /**
+     * Deeply merges two or more objects.
+     * - Arrays are replaced (not concatenated)
+     * - Objects are merged recursively
+     * - Non-object values overwrite previous ones
+     * 
+     * @param objects 
+     * @returns 
+     */
+    static deepMerge<T extends Record<string, any>> (
+        ...objects: (Partial<T> | undefined | null)[]
+    ): T {
+        const result: Record<string, any> = {}
+
+        for (const obj of objects) {
+            if (!obj || typeof obj !== 'object') continue
+
+            for (const [key, value] of Object.entries(obj)) {
+                const existing = result[key]
+
+                if (isPlainObject(existing) && isPlainObject(value)) {
+                    result[key] = Obj.deepMerge(existing, value)
+                } else {
+                    result[key] = value
+                }
+            }
+        }
+
+        return result as T
     }
 
     /**
