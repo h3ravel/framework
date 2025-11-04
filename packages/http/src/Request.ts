@@ -240,10 +240,15 @@ export class Request implements IRequest {
 
     /**
      * Retrieve a file from the request.
+     * 
+     * By default a single `UploadedFile` instance will always be returned by 
+     * the method (first file in property when there are multiple), unless 
+     * the `expectArray` parameter is set to true, in which case, the method 
+     * returns an `UploadedFile[]` array.
      *
      * @param key
      * @param defaultValue
-     * @param expectArray 
+     * @param expectArray set to true to return an `UploadedFile[]` array.
      * @returns
      */
     public file<K extends string | undefined = undefined, E extends boolean | undefined = undefined> (
