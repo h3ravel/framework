@@ -27,11 +27,24 @@ export class Router implements IRouter {
      */
     private resolveHandler (handler: EventHandler, middleware: IMiddleware[] = []) {
         return async (event: H3Event) => {
-            const kernel = new Kernel(() => HttpContext.init({
-                app: this.app,
-                request: new Request(event, this.app),
-                response: new Response(event, this.app)
-            }), middleware)
+            this.app.context ??= async (event) => {
+                // If we’ve already attached the context to this event, reuse it
+                if ((event as any)._h3ravelContext)
+                    return (event as any)._h3ravelContext
+
+                Request.enableHttpMethodParameterOverride()
+                const ctx = HttpContext.init({
+                    app: this.app,
+                    request: await Request.create(event, this.app),
+                    response: new Response(event, this.app),
+                });
+
+                (event as any)._h3ravelContext = ctx
+                return ctx
+            }
+
+            // Initialize the Application Kernel
+            const kernel = new Kernel(this.app.context, middleware)
 
             return kernel.handle(event, (ctx) => Promise.resolve(handler(ctx)))
         }
@@ -40,11 +53,11 @@ export class Router implements IRouter {
     /**
      * Add a route to the stack
      * 
-     * @param method 
-     * @param path 
-     * @param handler 
-     * @param name 
-     * @param middleware 
+     * @param method
+     * @param path
+     * @param handler
+     * @param name
+     * @param middleware
      */
     private addRoute (
         method: RouteMethod,

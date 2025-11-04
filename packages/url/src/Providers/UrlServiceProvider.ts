@@ -14,6 +14,12 @@ export class UrlServiceProvider extends ServiceProvider {
      * Register URL services in the container
      */
     register (): void {
+    }
+
+    /**
+     * Boot URL services
+     */
+    boot (): void {
         // Register the Url class
         this.app.singleton('app.url', () => Url)
         // Register the url() helper function
@@ -32,12 +38,5 @@ export class UrlServiceProvider extends ServiceProvider {
                 action: helpers.action,
             })
         }
-    }
-
-    /**
-     * Boot URL services
-     */
-    boot (): void {
-        // Any additional setup can be done here
     }
 }

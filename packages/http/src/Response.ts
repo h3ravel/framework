@@ -1,8 +1,8 @@
 import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
+import type { H3Event, HTTPResponse } from 'h3'
 import { html, redirect, } from 'h3'
 
 import { Application } from '@h3ravel/core'
-import type { H3Event } from 'h3'
 import { IResponse } from '@h3ravel/shared'
 import { safeDot } from '@h3ravel/support'
 
@@ -42,9 +42,9 @@ export class Response implements IResponse {
         return this
     }
 
-    html (content: string): string {
+    html (content: string): HTTPResponse {
         this.applyHeaders()
-        return html(this.event, content)
+        return html(content)
     }
 
     /**
@@ -68,9 +68,9 @@ export class Response implements IResponse {
     /**
      * Redirect to another URL.
      */
-    redirect (url: string, status = 302): string {
+    redirect (location: string, status: number = 302, statusText?: string | undefined): HTTPResponse {
         this.setStatusCode(status)
-        return redirect(this.event, url, this.statusCode)
+        return redirect(location, this.statusCode, statusText)
     }
 
     /**

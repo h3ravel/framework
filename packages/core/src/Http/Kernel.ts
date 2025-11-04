@@ -12,7 +12,7 @@ export class Kernel {
    * @param middleware - An array of middleware classes that will be executed in sequence.
    */
   constructor(
-    protected context: (event: H3Event) => HttpContext,
+    protected context: (event: H3Event) => HttpContext | Promise<HttpContext>,
     protected middleware: IMiddleware[] = [],
   ) { }
 
@@ -30,7 +30,7 @@ export class Kernel {
     /**
      * Convert the raw event into a standardized HttpContext
      */
-    const ctx = this.context(event)
+    const ctx = await this.context(event)
 
     const { app } = ctx.request
 

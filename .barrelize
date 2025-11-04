@@ -142,7 +142,6 @@
           "/^(?!default$)(.+)/ as $1"
         ],
         "**/DumpDie.ts": [
-          "* as DumpDie",
           "/^(?!default$)(.+)/ as $1"
         ],
         "**/Number.ts": [
@@ -150,7 +149,7 @@
           "/^(?!default$)(.+)/ as $1"
         ],
         "**/Obj.ts": [
-          "* as Obj",
+          "Obj",
           "/^(?!default$)(.+)/ as $1"
         ],
         "**/Str.ts": [

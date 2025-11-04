@@ -32,7 +32,7 @@
     "@h3ravel/url": "workspace:^",
     "@h3ravel/view": "workspace:^",
     "cross-env": "catalog:",
-    "h3": "2.0.0-beta.4",
+    "h3": "catalog:prod",
     "reflect-metadata": "catalog:",
     "source-map-support": "catalog:"
   },

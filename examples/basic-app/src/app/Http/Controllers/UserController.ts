@@ -1,6 +1,6 @@
 import { Controller, Injectable } from '@h3ravel/core'
+import { HttpContext, Request, Response } from '@h3ravel/http'
 
-import { HttpContext } from '@h3ravel/http'
 import { User } from 'App/Models/user'
 
 export class UserController extends Controller {
@@ -8,7 +8,8 @@ export class UserController extends Controller {
         return [{ id: 1, name: 'John Doe' }]
     }
 
-    async store ({ request, response }: HttpContext) {
+    @Injectable()
+    async store (request: Request, response: Response) {
         return response
             .setStatusCode(202)
             .json({ message: `User ${await request.input('name')} created` })

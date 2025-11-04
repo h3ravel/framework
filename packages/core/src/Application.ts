@@ -1,12 +1,12 @@
 import 'reflect-metadata'
 
-import { FileSystem, IApplication, IPathName, Logger } from '@h3ravel/shared'
+import { FileSystem, HttpContext, IApplication, IPathName, Logger } from '@h3ravel/shared'
+import type { H3, H3Event } from 'h3'
 import { InvalidArgumentException, Str } from '@h3ravel/support'
 
 import { AServiceProvider } from './Contracts/ServiceProviderConstructor'
 import { Container } from './Container'
 import { ContainerResolver } from './Di/ContainerResolver'
-import type { H3 } from 'h3'
 import { PathLoader } from '@h3ravel/shared'
 import { ProviderRegistry } from './ProviderRegistry'
 import { Registerer } from './Registerer'
@@ -20,6 +20,7 @@ import semver from 'semver'
 
 export class Application extends Container implements IApplication {
     public paths = new PathLoader()
+    public context?: (event: H3Event) => Promise<HttpContext>
     private tries: number = 0
     private booted = false
     private basePath: string

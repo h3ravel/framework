@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/http",
-  "version": "11.4.3",
+  "version": "11.5.0",
   "description": "HTTP kernel, middleware pipeline, request/response classes for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -53,7 +53,8 @@
     "@h3ravel/support": "workspace:^",
     "@h3ravel/musket": "catalog:prod",
     "@h3ravel/shared": "workspace:^",
-    "h3": "^2.0.0-beta.4",
+    "@h3ravel/url": "workspace:^",
+    "h3": "catalog:prod",
     "srvx": "^0.8.2"
   },
   "peerDependencies": {
