@@ -1,24 +1,9 @@
-/**
- * tests/Request.spec.ts
- *
- * Vitest tests for Request class.
- *
- * NOTE:
- * - Adjust the import paths at the top to match your repository layout.
- * - We mock FormRequest and UploadedFile.createFromBase to avoid
- *   depending on runtime FormData and File APIs in node test env.
- */
-
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 
 import { Application } from '@h3ravel/core' // if this exists
-import { FileBag } from '../src/Bags/FileBag'
-import { HeaderBag } from '../src/Bags/HeaderBag'
 import { InputBag } from '../src/Bags/InputBag'
 import { ParamBag } from '../src/Bags/ParamBag'
-// Adjust these import paths to your real project locations:
 import { Request } from '../src/Request'
-import { ServerBag } from '../src/Bags/ServerBag'
 import { UploadedFile } from '../src/UploadedFile'
 
 // ---- mocks: FormRequest and UploadedFile.createFromBase ----
