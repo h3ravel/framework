@@ -27,11 +27,6 @@ export class Request implements IRequest {
 
     #uri!: Url
 
-    /**
-     * Uploaded files (FILES).
-     */
-    #files!: FileBag
-
     #method?: RequestMethod = undefined
 
     /**
@@ -57,6 +52,11 @@ export class Request implements IRequest {
      * @see getPayload() for portability between content types
      */
     protected request!: InputBag
+
+    /**
+     * Uploaded files (FILES).
+     */
+    public files!: FileBag
 
     /**
      * Query string parameters (GET).
@@ -143,7 +143,7 @@ export class Request implements IRequest {
         this.query = new InputBag(getQuery(this.event), this.event)
         this.attributes = new ParamBag(getRouterParams(this.event), this.event)
         this.cookies = new InputBag(parseCookies(this.event), this.event)
-        this.#files = new FileBag(this.formData ? this.formData.files() : {}, this.event)
+        this.files = new FileBag(this.formData ? this.formData.files() : {}, this.event)
         this.server = new ServerBag(Object.fromEntries(this.event.req.headers.entries()), this.event)
         this.headers = new HeaderBag(this.server.getHeaders())
         this.acceptableContentTypes = []
@@ -299,7 +299,7 @@ export class Request implements IRequest {
         if (this.convertedFiles) return this.convertedFiles
 
         const entries = Object
-            .entries(this.#files.all())
+            .entries(this.files.all())
             .filter((e): e is [string, UploadedFile | UploadedFile[]] => e[1] != null)
 
         const files = Object.fromEntries(entries)
@@ -411,7 +411,7 @@ export class Request implements IRequest {
      * Get the keys for all of the input and files.
      */
     public keys (): string[] {
-        return [...Object.keys(this.input()), ...this.#files.keys()]
+        return [...Object.keys(this.input()), ...this.files.keys()]
     }
 
     /**
