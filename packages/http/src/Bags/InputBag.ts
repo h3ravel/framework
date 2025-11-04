@@ -1,5 +1,6 @@
 import { BadRequestException } from '../Exceptions/BadRequestException'
 import { H3Event } from 'h3'
+import { Obj } from '@h3ravel/support'
 import { ParamBag } from './ParamBag'
 import { RequestObject } from '../Contracts/HttpContract'
 
@@ -43,8 +44,7 @@ export class InputBag extends ParamBag {
             )
         }
 
-        const value =
-            Object.prototype.hasOwnProperty.call(this.parameters, key) ? this.parameters[key] : defaultValue
+        const value = Obj.get(this.parameters, key, defaultValue)
 
         if (
             value !== null &&
@@ -95,10 +95,11 @@ export class InputBag extends ParamBag {
             typeof value !== 'string' &&
             typeof value !== 'number' &&
             typeof value !== 'boolean' &&
-            !Array.isArray(value)
+            !Array.isArray(value) &&
+            typeof value !== 'object'
         ) {
             throw new TypeError(
-                `Expected scalar, array, or null as value for set(), got ${typeof value}`
+                `Expected scalar, array, object, or null as value for set(), got ${typeof value}`
             )
         }
 

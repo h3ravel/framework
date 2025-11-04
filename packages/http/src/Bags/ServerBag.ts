@@ -33,6 +33,7 @@ export class ServerBag extends ParamBag {
             if (value === undefined || value === '') continue
 
             switch (key) {
+                case 'accept':
                 case 'content-type':
                 case 'content-length':
                 case 'content-md5':

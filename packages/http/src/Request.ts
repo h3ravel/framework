@@ -190,7 +190,11 @@ export class Request implements IRequest {
                     if (value) chunks.push(value)
                     done = isDone
                 }
-                this.body = new TextDecoder().decode(Uint8Array.from(chunks.flat()))
+
+                this.body = new TextDecoder().decode(
+                    new Uint8Array(chunks.flatMap(chunk => Array.from(chunk)))
+                )
+
             } else {
                 this.body = content
             }
@@ -271,6 +275,9 @@ export class Request implements IRequest {
     public convertUploadedFiles (
         files: Record<string, UploadedFile | UploadedFile[]>
     ): Record<string, UploadedFile | UploadedFile[]> {
+        if (!this.formData)
+            return files
+
         for (const [key, value] of Object.entries(this.formData.files())) {
             // Skip non-file values
             if (!(value instanceof File)) continue
@@ -358,7 +365,7 @@ export class Request implements IRequest {
      */
     public mergeIfMissing (input: Record<string, any>) {
         return this.merge(
-            Object.entries(input).filter(([key]) => this.missing(key))
+            Object.fromEntries(Object.entries(input).filter(([key]) => this.missing(key)))
         )
     }
 
@@ -614,7 +621,7 @@ export class Request implements IRequest {
     ): K extends undefined ? InputBag : any {
         if (!this.#json) {
             let json = this.getContent() as string | object
-            if (typeof json === 'string') {
+            if (typeof json == 'string') {
                 json = JSON.parse(json || '{}') as object
             }
 
