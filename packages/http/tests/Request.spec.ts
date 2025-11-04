@@ -361,5 +361,17 @@ describe('Request', () => {
         expect(req.get('bodyKey')).toBe('b')
         expect(req.get('missing', 'def')).toBe('def')
     })
+
+    it('can return Request class instance from global request helper', async () => {
+        const event = makeEvent({
+            method: 'POST',
+            headers: {},
+        })
+
+        const req = await Request.create(event, app as any)
+
+        expect(request()).toBe(req)
+        expect(request()).toBeInstanceOf(Request)
+    })
 })
 

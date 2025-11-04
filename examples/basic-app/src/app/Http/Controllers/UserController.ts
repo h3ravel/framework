@@ -10,8 +10,6 @@ export class UserController extends Controller {
 
     @Injectable()
     async store (request: Request, response: Response) {
-        const d = request.ip()
-        console.log('!', d, '==!')
         return response
             .setStatusCode(202)
             .json({ message: `User ${await request.input('name')} created` })
@@ -24,8 +22,7 @@ export class UserController extends Controller {
             .json({ id: user.id, name: user.name, created_at: user.created_at })
     }
 
-    @Injectable()
-    async update (request: Request, response: Response) {
+    async update ({ request, response }: HttpContext) {
         return response
             .setStatusCode(201)
             .json({ message: `User ${await request.input('name')} updated` })

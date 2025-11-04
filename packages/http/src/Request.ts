@@ -122,6 +122,7 @@ export class Request implements IRequest {
         const instance = new Request(event, app)
         await instance.setBody()
         await instance.initialize()
+        globalThis.request = () => instance
         return instance
     }
 
