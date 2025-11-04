@@ -1,4 +1,4 @@
-import { HttpContext } from './Contracts/HttpContract'
+import { HttpContext } from './HttpContext'
 import { IMiddleware } from '@h3ravel/shared'
 
 export abstract class Middleware implements IMiddleware {

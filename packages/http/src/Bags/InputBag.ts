@@ -2,7 +2,7 @@ import { BadRequestException } from '../Exceptions/BadRequestException'
 import { H3Event } from 'h3'
 import { Obj } from '@h3ravel/support'
 import { ParamBag } from './ParamBag'
-import { RequestObject } from '../Contracts/HttpContract'
+import { RequestObject } from '@h3ravel/shared'
 
 /**
  * InputBag is a container for user input values

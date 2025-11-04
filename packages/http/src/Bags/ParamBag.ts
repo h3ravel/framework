@@ -1,13 +1,14 @@
+import { IParamBag, RequestObject } from '@h3ravel/shared'
+
 import { BadRequestException } from '../Exceptions/BadRequestException'
 import { H3Event } from 'h3'
-import { RequestObject } from '../Contracts/HttpContract'
 import { UnexpectedValueException } from '../Exceptions/UnexpectedValueException'
 
 /**
  * ParamBag is a container for key/value pairs
  * for Node/H3 environments.
  */
-export class ParamBag implements Iterable<[string, any]> {
+export class ParamBag implements IParamBag {
     constructor(
         protected parameters: RequestObject = {},
         /**

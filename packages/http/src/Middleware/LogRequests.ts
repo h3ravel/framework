@@ -1,4 +1,4 @@
-import { HttpContext } from '@h3ravel/shared'
+import { HttpContext } from '../HttpContext'
 import { Middleware } from '../Middleware'
 
 export class LogRequests extends Middleware {

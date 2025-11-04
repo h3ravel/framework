@@ -1,5 +1,5 @@
 import { Controller } from '@h3ravel/core'
-import type { HttpContext } from '@h3ravel/shared'
+import { HttpContext } from '@h3ravel/http'
 import { Url } from '@h3ravel/url'
 
 /**

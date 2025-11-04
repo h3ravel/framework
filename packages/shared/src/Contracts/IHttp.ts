@@ -5,6 +5,8 @@ import { IRequest } from './IRequest'
 import { IResponse } from './IResponse'
 
 export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'patch' | 'apiResource' | 'group' | 'route';
+export type RequestMethod = 'HEAD' | 'GET' | 'PUT' | 'DELETE' | 'TRACE' | 'OPTIONS' | 'PURGE' | 'POST' | 'CONNECT' | 'PATCH';
+export type RequestObject = Record<string, any>;
 
 export type ExtractControllerMethods<T> = {
     [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never
@@ -13,7 +15,7 @@ export type ExtractControllerMethods<T> = {
 /**
  * Interface for the Router contract, defining methods for HTTP routing.
  */
-export interface IRouter {
+export declare class IRouter {
     /**
      * Registers a GET route.
      * @param path - The route path.
@@ -136,47 +138,30 @@ export interface IRouter {
  * Represents the HTTP context for a single request lifecycle.
  * Encapsulates the application instance, request, and response objects.
  */
-export class HttpContext {
-    private static contexts = new WeakMap<any, HttpContext>()
-
-    constructor(
-        public app: IApplication,
-        public request: IRequest,
-        public response: IResponse
-    ) { }
-
+export declare class HttpContext {
+    app: IApplication
+    request: IRequest
+    response: IResponse
+    private static contexts: WeakMap<any, HttpContext>
+    constructor(app: IApplication, request: IRequest, response: IResponse);
     /**
      * Factory method to create a new HttpContext instance from a context object.
      * @param ctx - Object containing app, request, and response
      * @returns A new HttpContext instance
      */
-    static init (ctx: { app: IApplication; request: IRequest; response: IResponse }, event?: unknown): HttpContext {
-        if (event && HttpContext.contexts.has(event)) {
-            return HttpContext.contexts.get(event)!
-        }
-
-        const instance = new HttpContext(ctx.app, ctx.request, ctx.response)
-
-        if (event) {
-            HttpContext.contexts.set(event, instance)
-        }
-
-        return instance
-    }
-
+    static init (ctx: {
+        app: IApplication;
+        request: IRequest;
+        response: IResponse;
+    }, event?: unknown): HttpContext;
     /**
      * Retrieve an existing HttpContext instance for an event, if any.
      */
-    static get (event: unknown): HttpContext | undefined {
-        return HttpContext.contexts.get(event)
-    }
-
+    static get (event: unknown): HttpContext | undefined;
     /**
      * Delete the cached context for a given event (optional cleanup).
      */
-    static forget (event: unknown): void {
-        HttpContext.contexts.delete(event)
-    }
+    static forget (event: unknown): void;
 }
 
 /**
@@ -189,7 +174,7 @@ export type RouteEventHandler = (...args: any[]) => any
  * Defines the contract for all controllers.
  * Any controller implementing this must define these methods.
  */
-export interface IController {
+export declare class IController {
     show?(...ctx: any[]): any
     index?(...ctx: any[]): any
     store?(...ctx: any[]): any
@@ -201,6 +186,6 @@ export interface IController {
  * Defines the contract for all middlewares.
  * Any middleware implementing this must define these methods.
  */
-export interface IMiddleware {
+export declare class IMiddleware {
     handle (context: HttpContext, next: () => Promise<any>): Promise<any>
 } 
