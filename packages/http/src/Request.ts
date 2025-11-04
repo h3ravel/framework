@@ -27,6 +27,11 @@ export class Request implements IRequest {
 
     #uri!: Url
 
+    /**
+     * Uploaded files (FILES).
+     */
+    #files!: FileBag
+
     #method?: RequestMethod = undefined
 
     /**
@@ -57,11 +62,6 @@ export class Request implements IRequest {
      * Query string parameters (GET).
      */
     public query!: InputBag
-
-    /**
-     * Uploaded files (FILES).
-     */
-    public files!: FileBag
 
     /**
      * Server and execution environment parameters
@@ -143,7 +143,7 @@ export class Request implements IRequest {
         this.query = new InputBag(getQuery(this.event), this.event)
         this.attributes = new ParamBag(getRouterParams(this.event), this.event)
         this.cookies = new InputBag(parseCookies(this.event), this.event)
-        this.files = new FileBag(this.formData ? this.formData.files() : {}, this.event)
+        this.#files = new FileBag(this.formData ? this.formData.files() : {}, this.event)
         this.server = new ServerBag(Object.fromEntries(this.event.req.headers.entries()), this.event)
         this.headers = new HeaderBag(this.server.getHeaders())
         this.acceptableContentTypes = []
@@ -243,26 +243,63 @@ export class Request implements IRequest {
      *
      * @param key
      * @param defaultValue
+     * @param expectArray 
      * @returns
      */
-    public file<K extends string | undefined = undefined> (
+    public file<K extends string | undefined = undefined, E extends boolean | undefined = undefined> (
         key?: K,
-        defaultValue?: any
+        defaultValue?: any,
+        expectArray?: E
     ): K extends undefined
-        ? Record<string, UploadedFile | UploadedFile[]>
-        : UploadedFile | UploadedFile[] {
-        const source = this.allFiles()
-        return key ? data_get(source, key, defaultValue) : source as never
+        ? Record<string, E extends true ? UploadedFile[] : UploadedFile>
+        : E extends true ? UploadedFile[] : UploadedFile {
+        const files = data_get(this.allFiles(), key!, defaultValue)
+
+        if (!files) return defaultValue
+
+        if (Array.isArray(files)) {
+            // If user wants an array, return it directly
+            // otherwise, return only the first item
+            return (expectArray ? files : files[0]) as any
+        }
+
+        // Single file case
+        return files as any
     }
 
     /**
-     * Get an array of all of the files on the request.
+     * Determine if the uploaded data contains a file.
+     *
+     * @param  key
+     * @return boolean
+     */
+    public hasFile (key: string): boolean {
+        let files = this.file(key, undefined, true)
+
+        if (!Array.isArray(files)) {
+            files = [files]
+        }
+        return files.some(e => this.isValidFile(e))
+    }
+
+    /**
+     * Check that the given file is a valid file instance.
+     *
+     * @param file
+     * @return boolean
+     */
+    protected isValidFile (file: UploadedFile) {
+        return file.content instanceof File && file.size > 0
+    }
+
+    /**
+     * Get an object with all the files on the request.
      */
     public allFiles () {
         if (this.convertedFiles) return this.convertedFiles
 
         const entries = Object
-            .entries(this.files.all())
+            .entries(this.#files.all())
             .filter((e): e is [string, UploadedFile | UploadedFile[]] => e[1] != null)
 
         const files = Object.fromEntries(entries)
@@ -374,7 +411,7 @@ export class Request implements IRequest {
      * Get the keys for all of the input and files.
      */
     public keys (): string[] {
-        return [...Object.keys(this.input()), ...this.files.keys()]
+        return [...Object.keys(this.input()), ...this.#files.keys()]
     }
 
     /**
@@ -692,31 +729,6 @@ export class Request implements IRequest {
         content = this.content
         this.body = content
         return content as never
-    }
-
-    /**
-     * Determine if the uploaded data contains a file.
-     *
-     * @param  key
-     * @return boolean
-     */
-    public hasFile (key: string): boolean {
-        let files = this.file(key)
-
-        if (!Array.isArray(files)) {
-            files = [files]
-        }
-        return files.some(e => this.isValidFile(e))
-    }
-
-    /**
-     * Check that the given file is a valid file instance.
-     *
-     * @param file
-     * @return boolean
-     */
-    protected isValidFile (file: UploadedFile) {
-        return file.content instanceof File && file.size > 0
     }
 
     /**

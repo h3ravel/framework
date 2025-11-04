@@ -23,7 +23,7 @@ export class FormRequest {
         for (const [rawKey, value] of data.entries()) {
             const key = rawKey.endsWith('[]') ? rawKey.slice(0, -2) : rawKey
 
-            if (value instanceof File) {
+            if (value instanceof UploadedFile || value instanceof File) {
                 const uploaded = value instanceof UploadedFile
                     ? value
                     : UploadedFile.createFromBase(value)

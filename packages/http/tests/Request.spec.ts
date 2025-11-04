@@ -344,6 +344,27 @@ describe('Request', () => {
         expect(req.hasFile('avatar')).toBe(true)
     })
 
+    describe('file()', async () => {
+        const fakeFormData = { __input: {}, __files: { 'avatar': [TestFile] } }
+        const event = makeEvent({
+            method: 'POST',
+            headers: { 'content-type': 'multipart/form-data' },
+            formData: async () => fakeFormData,
+        })
+
+        it('returns single file instance by default', async () => {
+            const req = await Request.create(event, app as any)
+            expect(req.file('avatar')).toBeInstanceOf(UploadedFile)
+            expect(req.hasFile('avatar')).toBe(true)
+        })
+
+        it('can return multiple file instances on demand', async () => {
+            const req = await Request.create(event, app as any)
+            expect(req.file('avatar', undefined, true).at(0)).contain(UploadedFile)
+            expect(req.hasFile('avatar')).toBe(true)
+        })
+    })
+
     it('get() returns attribute, then query, then request then default', async () => {
         const event = makeEvent({
             method: 'POST',
