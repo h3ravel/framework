@@ -138,7 +138,7 @@ If you discover a security vulnerability within H3ravel, please send an e-mail t
 
 The H3ravel framework is open-sourced software licensed under the [MIT license](LICENSE).
 
-Made by [@3m1n3nc3](https://github.com/3m1n3nc3) and [community](https://github.com/h3ravel/framework/graphs/contributors) 💛
+Made with 💛 by [@3m1n3nc3](https://github.com/3m1n3nc3) and the [H3ravel Community](https://github.com/h3ravel/framework/graphs/contributors)
 <br><br>
 <a href="https://github.com/h3ravel/framework/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=h3ravel/framework" />
