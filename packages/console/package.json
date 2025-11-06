@@ -1,23 +1,20 @@
 {
   "name": "@h3ravel/console",
-  "version": "11.14.2",
+  "version": "11.14.8",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./Utils": {
-      "import": "./dist/Utils.js",
-      "require": "./dist/Utils.cjs"
-    }
+    "./package.json": "./package.json"
   },
   "typesVersions": {
     "*": {
-      "Utils": [
-        "dist/Utils.d.ts"
-      ],
       "*": [
         "dist/index.d.ts"
       ]
@@ -32,7 +29,14 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      },
+      "./*": "./*"
+    }
   },
   "homepage": "https://h3ravel.toneflix.net/musket",
   "repository": {

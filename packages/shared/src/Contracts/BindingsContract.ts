@@ -1,10 +1,10 @@
 import type { H3, HTTPResponse, serve } from 'h3'
 
 import type { Edge } from 'edge.js'
-import { IRequest } from './IRequest'
-import { IResponse } from './IResponse'
-import { IRouter } from './IHttp'
-import { PathLoader } from '../Utils/PathLoader'
+import type { IRequest } from './IRequest'
+import type { IResponse } from './IResponse'
+import type { IRouter } from './IHttp'
+import type { PathLoader } from '../Utils/PathLoader'
 
 type RemoveIndexSignature<T> = {
     [K in keyof T as string extends K

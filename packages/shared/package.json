@@ -1,9 +1,9 @@
 {
   "name": "@h3ravel/shared",
-  "version": "0.27.0",
+  "version": "0.27.5",
   "description": "Shared Utilities.",
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
   "module": "./dist/index.js",
   "exports": {
@@ -11,6 +11,7 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./package.json": "./package.json",
     "./tsconfig.json": "./tsconfig.json"
   },
   "typesVersions": {
@@ -25,7 +26,14 @@
     "tsconfig.json"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      },
+      "./*": "./*"
+    }
   },
   "homepage": "https://h3ravel.toneflix.net",
   "repository": {

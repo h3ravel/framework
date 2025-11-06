@@ -1,4 +1,4 @@
-import { Options } from 'tsdown'
+import { UserConfig } from 'tsdown'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { rm } from 'node:fs/promises'
@@ -10,7 +10,7 @@ if (process.env.DIST_DIR) {
     outDir = process.env.DIST_DIR
 }
 
-export const TsDownConfig: Options = {
+export const TsDownConfig: UserConfig = {
     outDir,
     entry: ['src/**/*.ts'],
     format: ['esm'],//, 'cjs'],
