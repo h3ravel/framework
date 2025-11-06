@@ -48,20 +48,16 @@ export class Router implements IRouter {
             const kernel = new Kernel(this.app.context, middleware)
 
             return kernel.handle(event, (ctx) => new Promise((resolve) => {
-                try {
-                    if (Resolver.isAsyncFunction(handler)) {
-                        handler(ctx).then((response: any) => {
-                            if (response instanceof Response) {
-                                resolve(response.prepare(ctx.request as Request).send())
-                            } else {
-                                resolve(response)
-                            }
-                        })
-                    } else {
-                        resolve(handler(ctx))
-                    }
-                } catch {
-                    console.log('====')
+                if (Resolver.isAsyncFunction(handler)) {
+                    handler(ctx).then((response: any) => {
+                        if (response instanceof Response) {
+                            resolve(response.prepare(ctx.request as Request).send())
+                        } else {
+                            resolve(response)
+                        }
+                    })
+                } else {
+                    resolve(handler(ctx))
                 }
             }))
         }
