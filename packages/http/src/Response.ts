@@ -19,6 +19,7 @@ export class Response extends HttpResponse implements IResponse {
         public app: Application
     ) {
         super(event)
+        globalThis.response = () => this
     }
 
     /**
