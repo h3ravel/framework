@@ -12,6 +12,12 @@ if (process.env.DIST_DIR) {
 
 export const TsDownConfig: UserConfig = {
     outDir,
+    outExtensions: (e) => {
+        return ({
+            js: e.format === 'es' ? '.js' : '.cjs',
+            dts: '.d.ts'
+        })
+    },
     entry: ['src/**/*.ts'],
     format: ['esm'],//, 'cjs'],
     target: 'node22',

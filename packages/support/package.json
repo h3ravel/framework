@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/support",
-  "version": "0.15.4",
+  "version": "0.15.5",
   "description": "Shared helpers, facades and utilities for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",

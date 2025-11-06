@@ -12,10 +12,6 @@ export const baseConfig: UserConfig = {
     format: ['esm', 'cjs'],
     sourcemap: false,
     exports: true,
-    // exports: {
-    //     devExports: true,
-    //     all: true,
-    // },
     outExtensions: (e) => {
         return ({
             js: e.format === 'es' ? '.js' : '.cjs',
