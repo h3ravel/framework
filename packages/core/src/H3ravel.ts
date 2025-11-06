@@ -71,19 +71,45 @@ export const h3ravel = async (
         }
     }
 
-    const originalFire = app.fire.bind(app)
+    const originalFire = app.fire
+
+    const proxyThis = (function makeProxy (appRef, orig) {
+        return new Proxy(appRef, {
+            get (target, prop, receiver) {
+                if (prop === 'fire') return orig
+                // preserve correct behavior for symbols / inspect / prototype lookups
+                return Reflect.get(target, prop, receiver)
+            },
+            has (target, prop) {
+                if (prop === 'fire') return true
+                return Reflect.has(target, prop)
+            },
+            getOwnPropertyDescriptor (target, prop) {
+                if (prop === 'fire') {
+                    return {
+                        configurable: true,
+                        enumerable: false,
+                        writable: true,
+                        value: orig,
+                    }
+                }
+                return Reflect.getOwnPropertyDescriptor(target, prop as PropertyKey)
+            }
+        })
+    })(app, originalFire)
 
     if (config.initialize && h3App) {
         // Fire up the server
-        return await originalFire(h3App)
+        return await Reflect.apply(originalFire, app, [h3App])
     }
 
-    // Lazy init: redefine `fire` to call the original one later
-    app.fire = () => {
+    app.fire = async function () {
         if (!h3App) {
             throw new ConfigException('Provide a H3 app instance in the config or install @h3ravel/http')
         }
-        return originalFire(h3App)
+
+        // call original with proxyThis as `this` so internal `this.fire()` resolves to originalFire
+        return await Reflect.apply(originalFire, proxyThis, [h3App])
     }
 
     return app
