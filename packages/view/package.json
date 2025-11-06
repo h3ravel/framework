@@ -1,12 +1,13 @@
 {
   "name": "@h3ravel/view",
-  "version": "0.1.7",
+  "version": "0.1.11",
   "description": "View rendering system for H3ravel framework",
   "h3ravel": {
     "providers": [
       "ViewServiceProvider"
     ]
   },
+  "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",

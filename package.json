@@ -62,6 +62,7 @@
     "fetchdts": "^0.1.7",
     "husky": "catalog:",
     "knex": "catalog:",
+    "madge": "^8.0.0",
     "nodemailer": "^7.0.10",
     "path": "catalog:",
     "pnpm": "^10.20.0",

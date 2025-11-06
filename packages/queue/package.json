@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/queue",
-  "version": "11.0.7",
+  "version": "11.0.11",
   "description": "Job queues, workers and broadcasting support system for H3ravel.",
   "h3ravel": {
     "providers": [

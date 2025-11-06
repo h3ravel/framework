@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/config",
-  "version": "1.4.12",
+  "version": "1.4.16",
   "description": "Environment/config loading and management system for H3ravel.",
   "h3ravel": {
     "providers": [
