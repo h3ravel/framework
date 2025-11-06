@@ -1,16 +1,27 @@
-import { type Options, defineConfig } from 'tsdown'
+import { type UserConfig, defineConfig } from 'tsdown'
 import { copyFile, glob, mkdir, readFile, writeFile } from 'node:fs/promises'
 
 import path from 'node:path'
 import { exists, findUpConfig } from './utils/fs'
 
-export const baseConfig: Options = {
+export const baseConfig: UserConfig = {
     dts: true,
     clean: true,
     shims: true,
     entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
     sourcemap: false,
+    exports: true,
+    // exports: {
+    //     devExports: true,
+    //     all: true,
+    // },
+    outExtensions: (e) => {
+        return ({
+            js: e.format === 'es' ? '.js' : '.cjs',
+            dts: '.d.ts'
+        })
+    },
     hooks (hooks) {
         hooks.hook('build:done', async (ctx) => {
             try {
