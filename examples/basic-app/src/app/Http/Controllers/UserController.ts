@@ -16,10 +16,12 @@ export class UserController extends Controller {
     }
 
     @Injectable()
-    async show ({ response }: HttpContext, user: User) {
-
+    async show (response: Response, user: User) {
         return response
-            .json({ id: user.id, name: user.name, created_at: user.created_at })
+            .setCache({ max_age: 50011, private: false })
+            .setStatusCode(202)
+            .setCharset('UTF-32')
+            .setContent(JSON.stringify({ id: user.id, name: user.name, created_at: user.created_at }))
     }
 
     async update ({ request, response }: HttpContext) {

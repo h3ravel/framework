@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 
 import { Application } from '@h3ravel/core' // if this exists
-import { InputBag } from '../src/Bags/InputBag'
-import { ParamBag } from '../src/Bags/ParamBag'
+import { InputBag } from '../src/Utilities/InputBag'
+import { ParamBag } from '../src/Utilities/ParamBag'
 import { Request } from '../src/Request'
 import { UploadedFile } from '../src/UploadedFile'
 
@@ -299,6 +299,7 @@ describe('Request', () => {
 
         Request.enableHttpMethodParameterOverride()
         const req3 = await Request.create(event3, app as any)
+
         // Directly call getMethod so that override is read
         expect(req3.getMethod()).toBe('PUT')
     })

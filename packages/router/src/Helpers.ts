@@ -1,4 +1,4 @@
-import { HttpContext } from '@h3ravel/shared'
+import { type HttpContext } from '@h3ravel/shared'
 import { Model } from '@h3ravel/database'
 
 export class Helpers {

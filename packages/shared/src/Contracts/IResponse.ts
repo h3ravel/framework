@@ -32,21 +32,32 @@ export interface IResponse {
      * @param content - The HTML content to send.
      * @returns The HTML content.
      */
-    html (content: string): HTTPResponse;
+    html (content: string): this
+    html (content: string, parse: boolean): HTTPResponse
 
     /**
      * Sends a JSON response.
      * @param data - The data to send as JSON.
      * @returns The input data.
      */
-    json<T = unknown> (data: T): T;
+    json<T = unknown> (data: T): this
+    json<T = unknown> (data: T, parse: boolean): HTTPResponse
 
     /**
      * Sends a plain text response.
-     * @param data - The text content to send.
+     * @param content - The text content to send.
      * @returns The text content.
      */
-    text (data: string): string;
+    text (content: string): this
+    text (content: string, parse: boolean): HTTPResponse
+
+    /**
+     * Sends a plain xml response.
+     * @param data - The xml content to send.
+     * @returns The xml content.
+     */
+    xml (data: string): this
+    xml (data: string, parse: boolean): HTTPResponse
 
     /**
      * Redirects to another URL.

@@ -3,7 +3,7 @@ import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Application, Container, Kernel } from '@h3ravel/core'
 import { Request, Response, HttpContext } from '@h3ravel/http'
 import { Str } from '@h3ravel/support'
-import { RouteEventHandler } from '@h3ravel/shared'
+import { Resolver, RouteEventHandler } from '@h3ravel/shared'
 import type { EventHandler, ExtractControllerMethods, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
 import { Helpers } from './Helpers'
 import { Model } from '@h3ravel/database'
@@ -33,10 +33,11 @@ export class Router implements IRouter {
                     return (event as any)._h3ravelContext
 
                 Request.enableHttpMethodParameterOverride()
+                const request = await Request.create(event, this.app)
                 const ctx = HttpContext.init({
                     app: this.app,
-                    request: await Request.create(event, this.app),
-                    response: new Response(event, this.app),
+                    request,
+                    response: new Response(event, this.app).prepare(request),
                 });
 
                 (event as any)._h3ravelContext = ctx
@@ -46,7 +47,19 @@ export class Router implements IRouter {
             // Initialize the Application Kernel
             const kernel = new Kernel(this.app.context, middleware)
 
-            return kernel.handle(event, (ctx) => Promise.resolve(handler(ctx)))
+            return kernel.handle(event, (ctx) => new Promise((resolve) => {
+                if (Resolver.isAsyncFunction(handler)) {
+                    handler(ctx).then((response: any) => {
+                        if (response instanceof Response) {
+                            resolve(response.prepare(ctx.request as Request).send())
+                        } else {
+                            resolve(response)
+                        }
+                    })
+                } else {
+                    resolve(handler(ctx))
+                }
+            }))
         }
     }
 

@@ -1,3 +1,5 @@
+import { DateTime, RuntimeException } from '@h3ravel/support'
+
 /**
  * HeaderBag — A container for HTTP headers
  * for Node/H3 environments.
@@ -7,6 +9,7 @@ export class HeaderBag implements Iterable<[string, (string | null)[]]> {
     protected static readonly LOWER = '-abcdefghijklmnopqrstuvwxyz'
 
     protected headers: Record<string, (string | null)[]> = {}
+    protected headerNames: Record<string, string> = {}
     protected cacheControl: Record<string, string | boolean> = {}
 
     constructor(headers: Record<string, string | string[] | null> = {}) {
@@ -47,11 +50,12 @@ export class HeaderBag implements Iterable<[string, (string | null)[]]> {
      * @param key 
      * @returns 
      */
-    public all (key?: string): Record<string, (string | null)[]> | (string | null)[] {
+    // public all (key?: string): Record<string, (string | null)[]> | (string | null)[] {
+    public all<K extends string | undefined> (key?: K): K extends string ? (string | null)[] : Record<string, (string | null)[]> {
         if (key !== undefined) {
-            return this.headers[this.normalizeKey(key)] ?? []
+            return (this.headers[this.normalizeKey(key)] ?? []) as never
         }
-        return this.headers
+        return this.headers as never
     }
 
     /**
@@ -170,15 +174,15 @@ export class HeaderBag implements Iterable<[string, (string | null)[]]> {
      * @param defaultValue 
      * @returns 
      */
-    public getDate (key: string, defaultValue: Date | null = null): Date | null {
+    public getDate (key: string, defaultValue: Date | null = null): DateTime | undefined {
         const value = this.get(key)
         if (!value) {
-            return defaultValue ? new Date(defaultValue) : null
+            return defaultValue ? DateTime.parse(defaultValue) : undefined
         }
 
-        const parsed = new Date(value)
-        if (isNaN(parsed.getTime())) {
-            throw new Error(`The "${key}" HTTP header is not parseable (${value}).`)
+        const parsed = DateTime.parse(value)
+        if (isNaN(parsed.unix())) {
+            throw new RuntimeException(`The "${key}" HTTP header is not parseable (${value}).`)
         }
 
         return parsed
