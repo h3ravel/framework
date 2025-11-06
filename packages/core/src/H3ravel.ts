@@ -50,11 +50,10 @@ export const h3ravel = async (
                 return (event as any)._h3ravelContext
 
             Request.enableHttpMethodParameterOverride()
-            const request = await Request.create(event, app)
             const ctx = HttpContext.init({
                 app,
-                request,
-                response: new Response(event, app).prepare(request),
+                request: await Request.create(event, app),
+                response: new Response(event, app),
             });
 
             (event as any)._h3ravelContext = ctx

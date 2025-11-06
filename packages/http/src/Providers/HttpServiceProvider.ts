@@ -1,6 +1,5 @@
 /// <reference path="../../../core/src/app.globals.d.ts" />
 
-import { Application, type ServiceProvider } from '@h3ravel/core'
 import { H3, serve } from 'h3'
 
 import { FireCommand } from '../Commands/FireCommand'

@@ -24,7 +24,7 @@ export class ResponseHeaderBag extends HeaderBag {
          */
         event: H3Event
     ) {
-        super(Object.fromEntries(event.req.headers.entries()))
+        super(Object.fromEntries(event.res.headers.entries()))
 
         if (!this.headers['cache-control']) {
             this.set('Cache-Control', '')

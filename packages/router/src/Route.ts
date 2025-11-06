@@ -33,11 +33,10 @@ export class Router implements IRouter {
                     return (event as any)._h3ravelContext
 
                 Request.enableHttpMethodParameterOverride()
-                const request = await Request.create(event, this.app)
                 const ctx = HttpContext.init({
                     app: this.app,
-                    request,
-                    response: new Response(event, this.app).prepare(request),
+                    request: await Request.create(event, this.app),
+                    response: new Response(event, this.app),
                 });
 
                 (event as any)._h3ravelContext = ctx

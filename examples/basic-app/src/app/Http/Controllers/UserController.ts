@@ -12,7 +12,7 @@ export class UserController extends Controller {
     async store (request: Request, response: Response) {
         return response
             .setStatusCode(202)
-            .json({ message: `User ${await request.input('name')} created` })
+            .json({ message: `User ${request.input('name')} created` })
     }
 
     @Injectable()
@@ -20,14 +20,14 @@ export class UserController extends Controller {
         return response
             .setCache({ max_age: 50011, private: false })
             .setStatusCode(202)
-            .setCharset('UTF-32')
             .setContent(JSON.stringify({ id: user.id, name: user.name, created_at: user.created_at }))
     }
 
     async update ({ request, response }: HttpContext) {
         return response
             .setStatusCode(201)
-            .json({ message: `User ${await request.input('name')} updated` })
+            .setCharset('UTF-32')
+            .json({ message: `User ${request.input('name')} updated` })
     }
 
     destroy ({ request }: HttpContext) {
