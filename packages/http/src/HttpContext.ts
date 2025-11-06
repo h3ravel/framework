@@ -1,4 +1,4 @@
-import { IApplication, HttpContext as IHttpContext, IRequest, IResponse } from '@h3ravel/shared'
+import { IApplication, type HttpContext as IHttpContext, IRequest, IResponse } from '@h3ravel/shared'
 
 /**
  * Represents the HTTP context for a single request lifecycle.

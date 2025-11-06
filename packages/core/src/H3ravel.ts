@@ -1,9 +1,8 @@
 import { Application, ConfigException, Kernel, OServiceProvider } from '.'
-import { LogRequests, Request, Response } from '@h3ravel/http'
+import { HttpContext, LogRequests, Request, Response } from '@h3ravel/http'
 
 import { EntryConfig } from './Contracts/H3ravelContract'
 import { H3 } from 'h3'
-import { HttpContext } from '@h3ravel/shared'
 
 /**
  * Simple global entry point for H3ravel applications
@@ -51,10 +50,11 @@ export const h3ravel = async (
                 return (event as any)._h3ravelContext
 
             Request.enableHttpMethodParameterOverride()
+            const request = await Request.create(event, app)
             const ctx = HttpContext.init({
                 app,
-                request: await Request.create(event, app),
-                response: new Response(event, app),
+                request,
+                response: new Response(event, app).prepare(request),
             });
 
             (event as any)._h3ravelContext = ctx

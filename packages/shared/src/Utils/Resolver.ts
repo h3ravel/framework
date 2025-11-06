@@ -43,4 +43,17 @@ export class Resolver {
             .update(provider.toString())
             .digest('hex')
     }
+
+    /**
+     * Checks if a function is asyncronous
+     * 
+     * @param func 
+     * @returns 
+     */
+    static isAsyncFunction (func: any): boolean {
+        if (typeof func !== 'function') {
+            return false
+        }
+        return Object.prototype.toString.call(func) === '[object AsyncFunction]'
+    }
 }

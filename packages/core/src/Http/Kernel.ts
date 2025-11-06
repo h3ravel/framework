@@ -1,4 +1,4 @@
-import { HttpContext, IMiddleware } from '@h3ravel/shared'
+import type { HttpContext, IMiddleware } from '@h3ravel/shared'
 
 import type { H3Event } from 'h3'
 

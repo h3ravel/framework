@@ -67,6 +67,16 @@ export class DateTime extends TimeClass {
     }
 
     /**
+     * Set the timezone for the instance
+     * 
+     * @param timezone 
+     * @returns 
+     */
+    setTimezone (timezone?: string | undefined, keepLocalTime?: boolean | undefined) {
+        return new DateTime(this.tz(timezone, keepLocalTime))
+    }
+
+    /**
      * End time of a specific unit.
      * 
      * @returns 
@@ -130,8 +140,8 @@ export class DateTime extends TimeClass {
      * 
      * @return {Date} object
      */
-    static fromTimestamp (timestamp: number): Date {
-        return new Date(timestamp * 1000)
+    static fromTimestamp (timestamp: number): DateTime {
+        return new DateTime(timestamp * 1000)
     }
 
     /**

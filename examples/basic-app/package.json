@@ -34,7 +34,8 @@
     "cross-env": "catalog:",
     "h3": "catalog:prod",
     "reflect-metadata": "catalog:",
-    "source-map-support": "catalog:"
+    "source-map-support": "catalog:",
+    "sqlite3": "catalog:"
   },
   "devDependencies": {
     "@rollup/plugin-run": "catalog:",

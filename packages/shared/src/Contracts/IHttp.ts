@@ -7,6 +7,7 @@ import { IResponse } from './IResponse'
 export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'patch' | 'apiResource' | 'group' | 'route';
 export type RequestMethod = 'HEAD' | 'GET' | 'PUT' | 'DELETE' | 'TRACE' | 'OPTIONS' | 'PURGE' | 'POST' | 'CONNECT' | 'PATCH';
 export type RequestObject = Record<string, any>;
+export type ResponseObject = Record<string, any>;
 
 export type ExtractControllerMethods<T> = {
     [K in keyof T]: T[K] extends (...args: any[]) => any ? K : never

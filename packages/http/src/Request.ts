@@ -1,110 +1,38 @@
-import { getQuery, getRequestIP, getRequestURL, getRouterParams, parseCookies, type H3Event } from 'h3'
+import { getRequestIP, type H3Event } from 'h3'
 import { Arr, data_get, data_set, Obj, safeDot, Str } from '@h3ravel/support'
 import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 import { IRequest } from '@h3ravel/shared'
 import { Application } from '@h3ravel/core'
 import { RequestMethod, RequestObject } from '@h3ravel/shared'
-import { SuspiciousOperationException } from './Exceptions/SuspiciousOperationException'
-import { InputBag } from './Bags/InputBag'
-import { HeaderBag } from './Bags/HeaderBag'
-import { ParamBag } from './Bags/ParamBag'
-import { FileBag } from './Bags/FileBag'
-import { ServerBag } from './Bags/ServerBag'
+import { InputBag } from './Utilities/InputBag'
 import { UploadedFile } from './UploadedFile'
 import { FormRequest } from './FormRequest'
 import { Url } from '@h3ravel/url'
+import { HttpRequest } from './Utilities/HttpRequest'
 
-export class Request implements IRequest {
-    /**
-     * Parsed request body
-     */
-    body: unknown
-
+export class Request extends HttpRequest implements IRequest {
     /**
      * The decoded JSON content for the request.
      */
     #json!: InputBag
-
-    #uri!: Url
-
-    #method?: RequestMethod = undefined
-
-    /**
-     * Gets route parameters.
-     * @returns An object containing route parameters.
-     */
-    public params!: NonNullable<H3Event['context']['params']>
 
     /**
      * All of the converted files for the request.
      */
     protected convertedFiles?: Record<string, UploadedFile | UploadedFile[]>
 
-    /**
-     * Form data from incoming request.
-     * @returns The FormRequest object.
-     */
-    protected formData!: FormRequest
-
-    /**
-     * Request body parameters (POST).
-     *
-     * @see getPayload() for portability between content types
-     */
-    protected request!: InputBag
-
-    /**
-     * Uploaded files (FILES).
-     */
-    public files!: FileBag
-
-    /**
-     * Query string parameters (GET).
-     */
-    public query!: InputBag
-
-    /**
-     * Server and execution environment parameters
-     */
-    public server!: ServerBag
-
-    /**
-     * Cookies
-     */
-    public cookies !: InputBag
-
-    /**
-     * The request attributes (parameters parsed from the PATH_INFO, ...).
-     */
-    public attributes!: ParamBag
-
-    /**
-     * Gets the request headers.
-     * @returns An object containing request headers.
-     */
-    public headers!: HeaderBag
-
-    protected content?: ReadableStream | string | false | null = undefined
-
-    protected static formats?: Record<string, string[]> | undefined | null = undefined
-
-    protected static httpMethodParameterOverride: boolean = false
-
-    /**
-     * List of Acceptable Content Types
-     */
-    private acceptableContentTypes: string[] = []
-
     constructor(
         /**
          * The current H3 H3Event instance
          */
-        private readonly event: H3Event,
+        event: H3Event,
         /**
          * The current app instance
          */
-        public app: Application
-    ) { }
+        app: Application
+    ) {
+        super(event, app)
+    }
 
     /**
      * Factory method to create a Request instance from an H3Event.
@@ -124,39 +52,6 @@ export class Request implements IRequest {
         await instance.initialize()
         globalThis.request = () => instance
         return instance
-    }
-
-    /**
-     * Sets the parameters for this request.
-     *
-     * This method also re-initializes all properties.
-     *
-     * @param attributes 
-     * @param cookies    The COOKIE parameters
-     * @param files      The FILES parameters
-     * @param server     The SERVER parameters
-     * @param content    The raw body data
-     */
-    public async initialize (): Promise<void> {
-        this.params = getRouterParams(this.event)
-        this.request = new InputBag(this.formData ? this.formData.input() : {}, this.event)
-        this.query = new InputBag(getQuery(this.event), this.event)
-        this.attributes = new ParamBag(getRouterParams(this.event), this.event)
-        this.cookies = new InputBag(parseCookies(this.event), this.event)
-        this.files = new FileBag(this.formData ? this.formData.files() : {}, this.event)
-        this.server = new ServerBag(Object.fromEntries(this.event.req.headers.entries()), this.event)
-        this.headers = new HeaderBag(this.server.getHeaders())
-        this.acceptableContentTypes = []
-        // this.languages = undefined
-        // this.charsets = undefined
-        // this.encodings = undefined
-        // this.pathInfo = undefined
-        // this.requestUri = undefined
-        // this.baseUrl = undefined
-        // this.basePath = undefined
-        this.#method = undefined
-        // this.format = undefined
-        this.#uri = (await import(String('@h3ravel/url'))).Url.of(getRequestURL(this.event).toString(), this.app)
     }
 
     private async setBody () {
@@ -450,28 +345,6 @@ export class Request implements IRequest {
     }
 
     /**
-     * Gets a list of content types acceptable by the client browser in preferable order.
-     * @returns {string[]}
-     */
-    public getAcceptableContentTypes (): string[] {
-        if (this.acceptableContentTypes.length > 0) {
-            return this.acceptableContentTypes
-        }
-
-        const accept = this.getHeader('accept')
-        if (!accept) return []
-
-        // Split and clean up Accept header values
-        const types = accept
-            .split(',')
-            .map(type => type.trim())
-            .map(type => type.split(';')[0]) // strip quality params (e.g. ;q=0.8)
-            .filter(Boolean)
-
-        return (this.acceptableContentTypes = types)
-    }
-
-    /**
      * Determine if the request is the result of a PJAX call.
      *
      * @return bool
@@ -491,132 +364,6 @@ export class Request implements IRequest {
     }
 
     /**
-     * Returns true if the request is an XMLHttpRequest (AJAX).
-     */
-    public isXmlHttpRequest (): boolean {
-        return 'XMLHttpRequest' === this.getHeader('X-Requested-With')
-    }
-
-    /**
-     * Returns the value of the requested header.
-     */
-    public getHeader (name: string): string | undefined | null {
-        return this.headers.get<string>(name)
-    }
-
-
-    /**
-     * Checks if the request method is of specified type.
-     *
-     * @param method Uppercase request method (GET, POST etc)
-     */
-    public isMethod (method: string): boolean {
-        return this.getMethod() === method.toUpperCase()
-    }
-
-    /**
-     * Checks whether or not the method is safe.
-     *
-     * @see https://tools.ietf.org/html/rfc7231#section-4.2.1
-     */
-    public isMethodSafe (): boolean {
-        return ['GET', 'HEAD', 'OPTIONS', 'TRACE'].includes(this.getMethod())
-    }
-
-    /**
-     * Checks whether or not the method is idempotent.
-     */
-    public isMethodIdempotent (): boolean {
-        return ['HEAD', 'GET', 'PUT', 'DELETE', 'TRACE', 'OPTIONS', 'PURGE'].includes(this.getMethod())
-    }
-
-    /**
-     * Checks whether the method is cacheable or not.
-     *
-     * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
-     */
-    public isMethodCacheable (): boolean {
-        return ['GET', 'HEAD'].includes(this.getMethod())
-    }
-
-    /**
-     * Initializes HTTP request formats.
-     */
-    protected static initializeFormats (): void {
-        this.formats = {
-            html: ['text/html', 'application/xhtml+xml'],
-            txt: ['text/plain'],
-            js: ['application/javascript', 'application/x-javascript', 'text/javascript'],
-            css: ['text/css'],
-            json: ['application/json', 'application/x-json'],
-            jsonld: ['application/ld+json'],
-            xml: ['text/xml', 'application/xml', 'application/x-xml'],
-            rdf: ['application/rdf+xml'],
-            atom: ['application/atom+xml'],
-            rss: ['application/rss+xml'],
-            form: ['application/x-www-form-urlencoded', 'multipart/form-data'],
-        }
-    }
-
-    /**
-     * Gets the request "intended" method.
-     *
-     * If the X-HTTP-Method-Override header is set, and if the method is a POST,
-     * then it is used to determine the "real" intended HTTP method.
-     *
-     * The _method request parameter can also be used to determine the HTTP method,
-     * but only if enableHttpMethodParameterOverride() has been called.
-     *
-     * The method is always an uppercased string.
-     *
-     * @see getRealMethod()
-     */
-    public getMethod (): RequestMethod {
-        if (this.#method) {
-            return this.#method
-        }
-
-        this.#method = this.getRealMethod()
-
-        if ('POST' !== this.#method) {
-            return this.#method
-        }
-
-        let method = this.event.req.headers.get('X-HTTP-METHOD-OVERRIDE') as RequestMethod
-
-        if (!method && Request.httpMethodParameterOverride) {
-            method = this.request.get('_method', this.query.get('_method', 'POST')) as RequestMethod
-        }
-
-        if (typeof method !== 'string') {
-            return this.#method
-        }
-
-        method = method.toUpperCase() as RequestMethod
-
-        if (['GET', 'HEAD', 'POST', 'PUT', 'DELETE', 'CONNECT', 'OPTIONS', 'PATCH', 'PURGE', 'TRACE'].includes(method)) {
-            this.#method = method
-            return this.#method
-        }
-
-        if (!/^[A-Z]+$/.test(method)) {
-            throw new SuspiciousOperationException('Invalid HTTP method override.')
-        }
-
-        this.#method = method
-        return this.#method
-    }
-
-    /**
-     * Gets the "real" request method.
-     *
-     * @see getMethod()
-     */
-    public getRealMethod (): RequestMethod {
-        return this.event.req.method.toUpperCase() as RequestMethod
-    }
-
-    /**
      * Get the client IP address.
      */
     public ip (): string | undefined {
@@ -627,7 +374,7 @@ export class Request implements IRequest {
      * Get a URI instance for the request.
      */
     public uri (): Url {
-        return this.#uri
+        return this.getUriInstance()
     }
 
     /**
@@ -692,106 +439,9 @@ export class Request implements IRequest {
     }
 
     /**
-     * Returns the request body content.
-     *
-     * @param asStream If true, returns a ReadableStream instead of the parsed string
-     * @return {string | ReadableStream | Promise<string | ReadableStream>}
-     */
-    public getContent (asStream = false): string | ReadableStream {
-        let content = this.body
-
-        // Handle cases where body was manually set (like in tests)
-        if (content !== undefined && content !== null) {
-            if (asStream) {
-                // If content is a ReadableStream, rewind-like behavior doesn’t apply directly.
-                // Recreate a new stream from string content if needed.
-                if (content instanceof ReadableStream) {
-                    return content
-                }
-
-                const encoder = new TextEncoder()
-                return new ReadableStream({
-                    start (controller) {
-                        controller.enqueue(encoder.encode(String(content)))
-                        controller.close()
-                    }
-                })
-            }
-
-            if (typeof content === 'string') {
-                return content
-            }
-
-        }
-
-        // When content was never read — use native H3 methods
-        if (asStream) {
-            // H3 provides the raw stream at this.event.req.body supplied to this.content
-            return this.content as ReadableStream
-        }
-
-        // Default: read as text
-        content = this.content
-        this.body = content
-        return content as never
-    }
-
-    /**
-     * Gets a "parameter" value from any bag.
-     *
-     * This method is mainly useful for libraries that want to provide some flexibility. If you don't need the
-     * flexibility in controllers, it is better to explicitly get request parameters from the appropriate
-     * public property instead (attributes, query, request).
-     *
-     * Order of precedence: PATH (routing placeholders or custom attributes), GET, POST
-     *
-     * @internal use explicit input sources instead
-     */
-    public get (key: string, defaultValue?: any): any {
-        const result = this.attributes.get(key, this)
-
-        if (this !== result) {
-            return result
-        }
-
-        if (this.query.has(key)) {
-            return this.query.all()[key]
-        }
-
-        if (this.request.has(key)) {
-            return this.request.all()[key]
-        }
-
-        return defaultValue
-    }
-
-    /**
-     * Enables support for the _method request parameter to determine the intended HTTP method.
-     *
-     * Be warned that enabling this feature might lead to CSRF issues in your code.
-     * Check that you are using CSRF tokens when required.
-     * If the HTTP method parameter override is enabled, an html-form with method "POST" can be altered
-     * and used to send a "PUT" or "DELETE" request via the _method request parameter.
-     * If these methods are not protected against CSRF, this presents a possible vulnerability.
-     *
-     * The HTTP method can only be overridden when the real HTTP method is POST.
-     */
-    public static enableHttpMethodParameterOverride (): void {
-        this.httpMethodParameterOverride = true
-    }
-
-    /**
-     * Checks whether support for the _method request parameter is enabled.
-     */
-    public static getHttpMethodParameterOverride (): boolean {
-        return this.httpMethodParameterOverride
-    }
-
-    /**
      * Dump the items.
      *
      * @param  keys
-     * @return this
      */
     public dump (...keys: any[]): this {
         if (keys.length > 0) this.only(keys).then(dump)
