@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/shared",
-  "version": "0.27.4",
+  "version": "0.27.5",
   "description": "Shared Utilities.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -11,7 +11,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./tsconfig.json": "./tsconfig.json"
   },
   "typesVersions": {
     "*": {

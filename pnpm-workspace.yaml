@@ -63,8 +63,8 @@ catalog:
 
 catalogs:
   prod:
-    '@h3ravel/arquebus': ^0.6.6
-    '@h3ravel/musket': ^0.3.1
+    '@h3ravel/arquebus': ^0.6.12
+    '@h3ravel/musket': ^0.3.7
     h3: 2.0.1-rc.5
 
 ignoredBuiltDependencies:

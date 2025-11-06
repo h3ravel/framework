@@ -134,11 +134,11 @@ catalogs:
       version: 5.1.4
   prod:
     '@h3ravel/arquebus':
-      specifier: ^0.6.6
-      version: 0.6.6
+      specifier: ^0.6.12
+      version: 0.6.12
     '@h3ravel/musket':
-      specifier: ^0.3.1
-      version: 0.3.1
+      specifier: ^0.3.7
+      version: 0.3.7
     h3:
       specifier: 2.0.1-rc.5
       version: 2.0.1-rc.5
@@ -254,7 +254,7 @@ importers:
     dependencies:
       '@h3ravel/arquebus':
         specifier: catalog:prod
-        version: 0.6.6(sqlite3@5.1.7)
+        version: 0.6.12(@types/node@24.9.2)(sqlite3@5.1.7)
       '@h3ravel/cache':
         specifier: workspace:^
         version: link:../../packages/cache
@@ -284,7 +284,7 @@ importers:
         version: link:../../packages/mail
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@packages+support)(@types/node@24.9.2)
+        version: 0.3.7(@h3ravel/support@packages+support)(@types/node@24.9.2)
       '@h3ravel/queue':
         specifier: workspace:^
         version: link:../../packages/queue
@@ -352,7 +352,7 @@ importers:
     dependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.7(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -377,7 +377,7 @@ importers:
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.7(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -469,7 +469,7 @@ importers:
     dependencies:
       '@h3ravel/arquebus':
         specifier: catalog:prod
-        version: 0.6.6(sqlite3@5.1.7)
+        version: 0.6.12(@types/node@24.10.0)(sqlite3@5.1.7)
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
@@ -478,7 +478,7 @@ importers:
         version: link:../filesystem
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.7(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -500,7 +500,7 @@ importers:
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.7(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -538,7 +538,7 @@ importers:
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.7(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -601,7 +601,7 @@ importers:
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.7(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -694,7 +694,7 @@ importers:
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.1(@h3ravel/support@0.14.4)(@types/node@24.10.0)
+        version: 0.3.7(@h3ravel/support@0.15.4)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:*
         version: link:../shared
@@ -1603,28 +1603,22 @@ packages:
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
 
-  '@h3ravel/arquebus@0.6.6':
-    resolution: {integrity: sha512-kOaeF53yE1SETATVsLducy7v/cL0DQD/wIcRs4O8h1DoctHGHAyRzW6klWN93A9A8MFDP2Qm+SUCGf3Dk+PlaQ==}
+  '@h3ravel/arquebus@0.6.12':
+    resolution: {integrity: sha512-Li0a+lF8GFwCEhsWQzOBCciDG0R87kjIIlkjrnIpESZzJdM8Vl4RHKVjRp22cnHWDyhUQpob7DhGjjpYfH15cQ==}
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
-  '@h3ravel/musket@0.3.1':
-    resolution: {integrity: sha512-p5FvUpbY9iIk/WoobNwcSRV9l7CXFMmNpJzwEC38Rk5w+DaTq86+qhxA6M+t1yMOBwVC48I1oOurAYZs6dDJpA==}
+  '@h3ravel/musket@0.3.7':
+    resolution: {integrity: sha512-rVY2kIUWzhJ157vdIU0Hr7bXCS4YKFPUxNbiKVvgJekj6b76brIY55TWTTFyfaGuQXiPXYT37PglpaEGkx84Fg==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
-      '@h3ravel/support': ^0.14.1
+      '@h3ravel/support': ^0.15.4
 
-  '@h3ravel/shared@0.21.0':
-    resolution: {integrity: sha512-mjHPEXnXU1UXSz/jGvHT41UKkO8Cxbv7FWx8VVhYqSRPXdd0FXNJ58nQStiA//HlcffY7NVXJ/vpQ0VJNJEGbQ==}
+  '@h3ravel/shared@0.27.4':
+    resolution: {integrity: sha512-ASd70Opj6Oj30Mzzl+pIw6Z0qUdNmJHbmEV11TUIgzSEppER04mDMdpkmMTpNpYeDuC05hqTmcUjEHA3OThHTA==}
 
-  '@h3ravel/shared@0.24.0':
-    resolution: {integrity: sha512-/JU1oVfzu83u66rDSszzxF5/p3VRFlrPGRoFh66WuikuY7QnfdlYIT7uCiyoh2ZiWCUuEetP1ZdXAJ+VKdzJrg==}
-
-  '@h3ravel/support@0.12.0':
-    resolution: {integrity: sha512-RJ/TkLtaUl5Zu4I/Vwwp5MtTEhlDHTTBexXJAV1kcpJTeDIKHnpNzhF+sRIkHlQFmyobqy7YRsWuOdYZGidwhA==}
-
-  '@h3ravel/support@0.14.4':
-    resolution: {integrity: sha512-L7TAtprK+pYqs8vXvNvKEcx/B3AFa4IT0h9m+dBkI4jxl94QtfwRPev6w6EThyz5c20NOTmqjDMWFxyH44X4Xw==}
+  '@h3ravel/support@0.15.4':
+    resolution: {integrity: sha512-xTnBtdwh+21QeBShaUiz8CWPkGUAHHJSM6qRSU9wlZsn4FOtXb8CQ4AnlkS40Yo9Xh1OASEZQGCD0CHS/Hfa0A==}
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -3793,15 +3787,6 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  h3@2.0.0-beta.4:
-    resolution: {integrity: sha512-/JdwHUGuHjbBXAVxQN7T7QeI9cVlhsqMKVNFHebZVs9RoEYH85Ogh9O1DEy/1ZiJkmMwa1gNg6bBcGhc1Itjdg==}
-    engines: {node: '>=20.11.1'}
-    peerDependencies:
-      crossws: ^0.4.1
-    peerDependenciesMeta:
-      crossws:
-        optional: true
-
   h3@2.0.1-rc.5:
     resolution: {integrity: sha512-qkohAzCab0nLzXNm78tBjZDvtKMTmtygS8BJLT3VPczAQofdqlFXDPkXdLMJN4r05+xqneG8snZJ0HgkERCZTg==}
     engines: {node: '>=20.11.1'}
@@ -4918,11 +4903,6 @@ packages:
   sqlstring@2.3.3:
     resolution: {integrity: sha512-qC9iz2FlN7DQl3+wjwn3802RTyjCx7sDvfQEXchwa6CWOx07/WVfh91gBmQ9fahw8snwGEWU3xGzOt4tFyHLxg==}
     engines: {node: '>= 0.6'}
-
-  srvx@0.8.16:
-    resolution: {integrity: sha512-hmcGW4CgroeSmzgF1Ihwgl+Ths0JqAJ7HwjP2X7e3JzY7u4IydLMcdnlqGQiQGUswz+PO9oh/KtCpOISIvs9QQ==}
-    engines: {node: '>=20.16.0'}
-    hasBin: true
 
   srvx@0.8.2:
     resolution: {integrity: sha512-anC1+7B6tryHQd4lFVSDZIfZ1QwJwqm5h1iveKwC1E40PA8nOD50hEt7+AlUoGc9jW3OdmztWBqf4yHCdCPdRQ==}
@@ -6855,16 +6835,17 @@ snapshots:
   '@gar/promisify@1.1.3':
     optional: true
 
-  '@h3ravel/arquebus@0.6.6(sqlite3@5.1.7)':
+  '@h3ravel/arquebus@0.6.12(@types/node@24.10.0)(sqlite3@5.1.7)':
     dependencies:
-      '@h3ravel/shared': 0.21.0
-      '@h3ravel/support': 0.12.0
+      '@h3ravel/shared': 0.27.4(@types/node@24.10.0)
+      '@h3ravel/support': 0.15.4
       barrelize: 1.6.6
       chalk: 5.6.2
+      chokidar: 4.0.3
       collect.js: 4.36.1
       commander: 14.0.2
       cross-env: 10.1.0
-      dayjs: 1.11.18
+      dayjs: 1.11.19
       dotenv: 17.2.3
       escalade: 3.2.0
       husky: 9.1.7
@@ -6877,6 +6858,7 @@ snapshots:
       resolve-from: 5.0.0
       tedious: 19.0.0
     transitivePeerDependencies:
+      - '@types/node'
       - better-sqlite3
       - crossws
       - mysql
@@ -6884,99 +6866,115 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/musket@0.3.1(@h3ravel/support@0.14.4)(@types/node@24.10.0)':
+  '@h3ravel/arquebus@0.6.12(@types/node@24.9.2)(sqlite3@5.1.7)':
     dependencies:
-      '@h3ravel/shared': 0.24.0(@types/node@24.10.0)
-      '@h3ravel/support': 0.14.4
+      '@h3ravel/shared': 0.27.4(@types/node@24.9.2)
+      '@h3ravel/support': 0.15.4
+      barrelize: 1.6.6
       chalk: 5.6.2
+      chokidar: 4.0.3
+      collect.js: 4.36.1
       commander: 14.0.2
+      cross-env: 10.1.0
       dayjs: 1.11.19
-      execa: 9.6.0
-      glob: 11.0.3
-      preferred-pm: 4.1.1
-      radashi: 12.7.0
-      resolve-from: 5.0.0
-      tsx: 4.20.6
-    transitivePeerDependencies:
-      - '@types/node'
-      - crossws
-
-  '@h3ravel/musket@0.3.1(@h3ravel/support@packages+support)(@types/node@24.10.0)':
-    dependencies:
-      '@h3ravel/shared': 0.24.0(@types/node@24.10.0)
-      '@h3ravel/support': link:packages/support
-      chalk: 5.6.2
-      commander: 14.0.2
-      dayjs: 1.11.19
-      execa: 9.6.0
-      glob: 11.0.3
-      preferred-pm: 4.1.1
-      radashi: 12.7.0
-      resolve-from: 5.0.0
-      tsx: 4.20.6
-    transitivePeerDependencies:
-      - '@types/node'
-      - crossws
-
-  '@h3ravel/musket@0.3.1(@h3ravel/support@packages+support)(@types/node@24.9.2)':
-    dependencies:
-      '@h3ravel/shared': 0.24.0(@types/node@24.9.2)
-      '@h3ravel/support': link:packages/support
-      chalk: 5.6.2
-      commander: 14.0.2
-      dayjs: 1.11.19
-      execa: 9.6.0
-      glob: 11.0.3
-      preferred-pm: 4.1.1
-      radashi: 12.7.0
-      resolve-from: 5.0.0
-      tsx: 4.20.6
-    transitivePeerDependencies:
-      - '@types/node'
-      - crossws
-
-  '@h3ravel/shared@0.21.0':
-    dependencies:
-      chalk: 5.6.2
-      edge.js: 6.3.0
+      dotenv: 17.2.3
       escalade: 3.2.0
-      h3: 2.0.0-beta.4
-      preferred-pm: 4.1.1
+      husky: 9.1.7
+      knex: 3.1.0(mysql2@3.15.0)(pg@8.16.3)(sqlite3@5.1.7)(tedious@19.0.0)
+      lint-staged: 16.2.0
+      mysql2: 3.15.0
+      pg: 8.16.3
+      pluralize: 8.0.0
+      radashi: 12.7.0
+      resolve-from: 5.0.0
+      tedious: 19.0.0
     transitivePeerDependencies:
+      - '@types/node'
+      - better-sqlite3
+      - crossws
+      - mysql
+      - pg-native
+      - sqlite3
+      - supports-color
+
+  '@h3ravel/musket@0.3.7(@h3ravel/support@0.15.4)(@types/node@24.10.0)':
+    dependencies:
+      '@h3ravel/shared': 0.27.4(@types/node@24.10.0)
+      '@h3ravel/support': 0.15.4
+      chalk: 5.6.2
+      commander: 14.0.2
+      dayjs: 1.11.19
+      execa: 9.6.0
+      glob: 11.0.3
+      preferred-pm: 4.1.1
+      radashi: 12.7.0
+      resolve-from: 5.0.0
+      tsx: 4.20.6
+    transitivePeerDependencies:
+      - '@types/node'
       - crossws
 
-  '@h3ravel/shared@0.24.0(@types/node@24.10.0)':
+  '@h3ravel/musket@0.3.7(@h3ravel/support@packages+support)(@types/node@24.10.0)':
+    dependencies:
+      '@h3ravel/shared': 0.27.4(@types/node@24.10.0)
+      '@h3ravel/support': link:packages/support
+      chalk: 5.6.2
+      commander: 14.0.2
+      dayjs: 1.11.19
+      execa: 9.6.0
+      glob: 11.0.3
+      preferred-pm: 4.1.1
+      radashi: 12.7.0
+      resolve-from: 5.0.0
+      tsx: 4.20.6
+    transitivePeerDependencies:
+      - '@types/node'
+      - crossws
+
+  '@h3ravel/musket@0.3.7(@h3ravel/support@packages+support)(@types/node@24.9.2)':
+    dependencies:
+      '@h3ravel/shared': 0.27.4(@types/node@24.9.2)
+      '@h3ravel/support': link:packages/support
+      chalk: 5.6.2
+      commander: 14.0.2
+      dayjs: 1.11.19
+      execa: 9.6.0
+      glob: 11.0.3
+      preferred-pm: 4.1.1
+      radashi: 12.7.0
+      resolve-from: 5.0.0
+      tsx: 4.20.6
+    transitivePeerDependencies:
+      - '@types/node'
+      - crossws
+
+  '@h3ravel/shared@0.27.4(@types/node@24.10.0)':
     dependencies:
       '@inquirer/prompts': 7.9.0(@types/node@24.10.0)
       chalk: 5.6.2
       edge.js: 6.3.0
       escalade: 3.2.0
-      h3: 2.0.0-beta.4
+      h3: 2.0.1-rc.5
       inquirer-autocomplete-standalone: 0.8.1
       preferred-pm: 4.1.1
     transitivePeerDependencies:
       - '@types/node'
       - crossws
 
-  '@h3ravel/shared@0.24.0(@types/node@24.9.2)':
+  '@h3ravel/shared@0.27.4(@types/node@24.9.2)':
     dependencies:
       '@inquirer/prompts': 7.9.0(@types/node@24.9.2)
       chalk: 5.6.2
       edge.js: 6.3.0
       escalade: 3.2.0
-      h3: 2.0.0-beta.4
+      h3: 2.0.1-rc.5
       inquirer-autocomplete-standalone: 0.8.1
       preferred-pm: 4.1.1
     transitivePeerDependencies:
       - '@types/node'
       - crossws
 
-  '@h3ravel/support@0.12.0':
-    dependencies:
-      dayjs: 1.11.18
-      luxon: 3.7.2
-
-  '@h3ravel/support@0.14.4':
+  '@h3ravel/support@0.15.4':
     dependencies:
       dayjs: 1.11.19
       luxon: 3.7.2
@@ -9390,13 +9388,6 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  h3@2.0.0-beta.4:
-    dependencies:
-      cookie-es: 2.0.0
-      fetchdts: 0.1.7
-      rou3: 0.7.9
-      srvx: 0.8.16
-
   h3@2.0.1-rc.5:
     dependencies:
       rou3: 0.7.9
@@ -10554,8 +10545,6 @@ snapshots:
 
   sqlstring@2.3.3: {}
 
-  srvx@0.8.16: {}
-
   srvx@0.8.2:
     dependencies:
       cookie-es: 2.0.0
@@ -10817,7 +10806,7 @@ snapshots:
 
   tsx@4.20.6:
     dependencies:
-      esbuild: 0.25.11
+      esbuild: 0.25.12
       get-tsconfig: 4.13.0
     optionalDependencies:
       fsevents: 2.3.3
