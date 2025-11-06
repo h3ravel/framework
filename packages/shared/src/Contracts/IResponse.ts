@@ -2,75 +2,57 @@ import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 import type { H3Event, HTTPResponse } from 'h3'
 
 import type { IApplication } from './IApplication'
+import { IHttpResponse } from './IHttpResponse'
 
 /**
  * Interface for the Response contract, defining methods for handling HTTP responses.
  */
-export interface IResponse {
+export interface IResponse extends IHttpResponse {
     /**
      * The current app instance
      */
-    app: IApplication
-
+    app: IApplication;
     /**
-     * Sets the HTTP status code for the response.
-     * @param code - The HTTP status code.
-     * @returns The instance for method chaining.
+     * Sends content for the current web response.
      */
-    setStatusCode (code: number): this;
-
+    sendContent (type?: 'html' | 'json' | 'text' | 'xml', parse?: boolean): unknown;
     /**
-     * Sets a response header.
-     * @param name - The header name.
-     * @param value - The header value.
-     * @returns The instance for method chaining.
+     * Sends content for the current web response.
      */
-    setHeader (name: string, value: string): this;
-
+    send (type?: 'html' | 'json' | 'text' | 'xml'): unknown;
     /**
-     * Sends an HTML response.
-     * @param content - The HTML content to send.
-     * @returns The HTML content.
+     *
+     * @param content The content to serve
+     * @param send if set to true, the content will be returned, instead of the Response instance
+     * @returns
      */
-    html (content: string): this
-    html (content: string, parse: boolean): HTTPResponse
-
+    html (content?: string): this;
+    html (content: string, parse: boolean): HTTPResponse;
     /**
-     * Sends a JSON response.
-     * @param data - The data to send as JSON.
-     * @returns The input data.
+     * Send a JSON response.
      */
-    json<T = unknown> (data: T): this
-    json<T = unknown> (data: T, parse: boolean): HTTPResponse
-
+    json<T = unknown> (data?: T): this;
+    json<T = unknown> (data: T, parse: boolean): T;
     /**
-     * Sends a plain text response.
-     * @param content - The text content to send.
-     * @returns The text content.
+     * Send plain text.
      */
-    text (content: string): this
-    text (content: string, parse: boolean): HTTPResponse
-
+    text (content?: string): this;
+    text (content: string, parse: boolean): HTTPResponse;
     /**
-     * Sends a plain xml response.
-     * @param data - The xml content to send.
-     * @returns The xml content.
+     * Send plain xml.
      */
-    xml (data: string): this
-    xml (data: string, parse: boolean): HTTPResponse
-
+    xml (data?: string): this;
+    xml (data: string, parse: boolean): HTTPResponse;
     /**
-     * Redirects to another URL.
-     * @param url - The URL to redirect to.
-     * @param status - The HTTP status code for the redirect (default: 302).
-     * @returns The redirect URL.
+     * Redirect to another URL.
      */
-    redirect (url: string, status?: number): HTTPResponse;
-
+    redirect (location: string, status?: number, statusText?: string | undefined): HTTPResponse;
     /**
-     * Gets the underlying event object or a specific property of it.
-     * @param key - Optional key to access a nested property of the event.
-     * @returns The entire event object or the value of the specified property.
+     * Dump the response.
+     */
+    dump (): this;
+    /**
+     * Get the base event
      */
     getEvent (): H3Event;
     getEvent<K extends DotNestedKeys<H3Event>> (key: K): DotNestedValue<H3Event, K>;
