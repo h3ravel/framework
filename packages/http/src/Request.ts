@@ -31,6 +31,9 @@ export class Request extends HttpRequest implements IRequest {
          */
         app: Application
     ) {
+        if (Request.httpMethodParameterOverride) {
+            HttpRequest.enableHttpMethodParameterOverride()
+        }
         super(event, app)
     }
 

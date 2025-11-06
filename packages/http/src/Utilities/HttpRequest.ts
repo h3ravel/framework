@@ -325,7 +325,6 @@ export class HttpRequest {
         }
 
         let method = this.event.req.headers.get('X-HTTP-METHOD-OVERRIDE') as RequestMethod
-
         if (!method && HttpRequest.httpMethodParameterOverride) {
             method = this.request.get('_method', this.query.get('_method', 'POST')) as RequestMethod
         }

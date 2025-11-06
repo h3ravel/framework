@@ -1,6 +1,5 @@
+import { DateTime, DateTime as Time } from '../src/Helpers/Time'
 import { describe, expect, test } from 'vitest'
-
-import { DateTime as Time } from '../src/Helpers/Time'
 
 describe('Time helpers', () => {
   test('now/unix monotonicity', () => {
@@ -15,7 +14,7 @@ describe('Time helpers', () => {
     expect(Time.parse(date).carbonFormat('Y-m-d')).toBe('2023-12-25')
     expect(Time.parse(date).carbonFormat('Y-m-d H:i:s')).toBe('2023-12-25 15:30:45')
     const d = Time.fromTimestamp(1700000000)
-    expect(d instanceof Date).toBe(true)
+    expect(d instanceof DateTime).toBe(true)
   })
 
   test('diff/add/subtract', () => {
