@@ -134,8 +134,8 @@ catalogs:
       version: 5.1.4
   prod:
     '@h3ravel/arquebus':
-      specifier: ^0.6.15
-      version: 0.6.15
+      specifier: ^0.6.16
+      version: 0.6.16
     '@h3ravel/musket':
       specifier: ^0.3.11
       version: 0.3.11
@@ -257,7 +257,7 @@ importers:
     dependencies:
       '@h3ravel/arquebus':
         specifier: catalog:prod
-        version: 0.6.15(@types/node@24.9.2)(sqlite3@5.1.7)
+        version: 0.6.16(@types/node@24.9.2)(sqlite3@5.1.7)
       '@h3ravel/cache':
         specifier: workspace:^
         version: link:../../packages/cache
@@ -472,7 +472,7 @@ importers:
     dependencies:
       '@h3ravel/arquebus':
         specifier: catalog:prod
-        version: 0.6.15(@types/node@24.10.0)(sqlite3@5.1.7)
+        version: 0.6.16(@types/node@24.10.0)(sqlite3@5.1.7)
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
@@ -1610,8 +1610,8 @@ packages:
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
 
-  '@h3ravel/arquebus@0.6.15':
-    resolution: {integrity: sha512-EHjm7/PJFDAeoIlRjIWVhS87d5NOGzdpNPD3vqXWJeozmXWsd/6Dd081UWVTPGvUNymyJE9CHmqH1jYdqxFdvQ==}
+  '@h3ravel/arquebus@0.6.16':
+    resolution: {integrity: sha512-sHan8yzUxG5e461ItA8oXOLdvxkEbrKGzBPx7RYRDmSZ8ZokBfidnPQCkulP0CU8TM1dAqH+9gL/yG7KTKWF3Q==}
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
@@ -7056,7 +7056,7 @@ snapshots:
   '@gar/promisify@1.1.3':
     optional: true
 
-  '@h3ravel/arquebus@0.6.15(@types/node@24.10.0)(sqlite3@5.1.7)':
+  '@h3ravel/arquebus@0.6.16(@types/node@24.10.0)(sqlite3@5.1.7)':
     dependencies:
       '@h3ravel/shared': 0.27.7(@types/node@24.10.0)
       '@h3ravel/support': 0.15.6
@@ -7087,7 +7087,7 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/arquebus@0.6.15(@types/node@24.9.2)(sqlite3@5.1.7)':
+  '@h3ravel/arquebus@0.6.16(@types/node@24.9.2)(sqlite3@5.1.7)':
     dependencies:
       '@h3ravel/shared': 0.27.7(@types/node@24.9.2)
       '@h3ravel/support': 0.15.6

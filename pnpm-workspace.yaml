@@ -63,7 +63,7 @@ catalog:
 
 catalogs:
   prod:
-    '@h3ravel/arquebus': ^0.6.15
+    '@h3ravel/arquebus': ^0.6.16
     '@h3ravel/musket': ^0.3.11
     h3: 2.0.1-rc.5
 
