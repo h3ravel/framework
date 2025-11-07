@@ -115,6 +115,7 @@ export function loadHelpers (target: any = globalThis): void {
         last: Arr.last,
         prepend: Arr.prepend,
         flatten: Arr.flatten,
+        unique: Arr.unique,
 
         // Object helpers
         dot: SimpleObj.dot,
@@ -131,6 +132,7 @@ export function loadHelpers (target: any = globalThis): void {
         data_set: SimpleObj.data_set,
         data_fill: SimpleObj.data_fill,
         data_forget: SimpleObj.data_forget,
+        isPlainObject: SimpleObj.isPlainObject,
 
         // Crypto helpers
         uuid: Crypto.uuid,

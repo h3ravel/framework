@@ -878,4 +878,14 @@ export class Arr {
         if (size <= 0 || !Number.isFinite(size)) return []
         return Array.from({ length: size }, (_, i) => startAt + i)
     }
+
+    /**
+     * Filters an array and returns only unique values
+     * 
+     * @param items 
+     * @returns 
+     */
+    static unique<T = any> (items: T[]) {
+        return items.filter((value, index, self) => self.indexOf(value) === index)
+    }
 }

@@ -4,145 +4,6 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-catalogs:
-  default:
-    '@changesets/cli':
-      specifier: ^2.29.7
-      version: 2.29.7
-    '@eslint/js':
-      specifier: ^9.39.1
-      version: 9.39.1
-    '@rollup/plugin-run':
-      specifier: ^3.1.0
-      version: 3.1.0
-    '@swc/core':
-      specifier: ^1.15.0
-      version: 1.14.0
-    '@types/luxon':
-      specifier: ^3.7.1
-      version: 3.7.1
-    '@types/nodemailer':
-      specifier: ^6.4.17
-      version: 6.4.17
-    '@types/semver':
-      specifier: ^7.7.1
-      version: 7.7.1
-    '@typescript-eslint/eslint-plugin':
-      specifier: ^8.46.3
-      version: 8.46.3
-    '@typescript-eslint/parser':
-      specifier: ^8.46.3
-      version: 8.46.3
-    '@vitest/coverage-v8':
-      specifier: ^3.2.4
-      version: 3.2.4
-    argon2:
-      specifier: ^0.44.0
-      version: 0.44.0
-    barrelize:
-      specifier: 1.6.6
-      version: 1.6.6
-    barrelsby:
-      specifier: ^2.8.1
-      version: 2.8.1
-    bcryptjs:
-      specifier: ^3.0.2
-      version: 3.0.2
-    cross-env:
-      specifier: ^10.1.0
-      version: 10.1.0
-    dayjs:
-      specifier: ^1.11.18
-      version: 1.11.18
-    detect-port:
-      specifier: ^2.1.0
-      version: 2.1.0
-    dotenv:
-      specifier: ^17.2.3
-      version: 17.2.3
-    dotenv-expand:
-      specifier: ^12.0.3
-      version: 12.0.3
-    edge.js:
-      specifier: ^6.3.0
-      version: 6.3.0
-    escalade:
-      specifier: ^3.2.0
-      version: 3.2.0
-    eslint:
-      specifier: ^9.39.1
-      version: 9.39.1
-    execa:
-      specifier: ^9.6.0
-      version: 9.6.0
-    fast-glob:
-      specifier: ^3.3.3
-      version: 3.3.3
-    husky:
-      specifier: ^9.1.7
-      version: 9.1.7
-    knex:
-      specifier: ^3.1.0
-      version: 3.1.0
-    luxon:
-      specifier: ^3.7.2
-      version: 3.7.2
-    path:
-      specifier: ^0.12.7
-      version: 0.12.7
-    preferred-pm:
-      specifier: ^4.1.1
-      version: 4.1.1
-    reflect-metadata:
-      specifier: ^0.2.2
-      version: 0.2.2
-    resolve-from:
-      specifier: ^5.0.0
-      version: 5.0.0
-    rimraf:
-      specifier: ^6.1.0
-      version: 6.1.0
-    semver:
-      specifier: ^7.7.2
-      version: 7.7.3
-    source-map-support:
-      specifier: ^0.5.21
-      version: 0.5.21
-    sqlite3:
-      specifier: 5.1.7
-      version: 5.1.7
-    ts-node:
-      specifier: ^10.9.2
-      version: 10.9.2
-    tsconfig-paths:
-      specifier: ^4.2.0
-      version: 4.2.0
-    tslib:
-      specifier: ^2.8.1
-      version: 2.8.1
-    tsx:
-      specifier: ^4.20.6
-      version: 4.20.5
-    typescript-eslint:
-      specifier: ^8.46.3
-      version: 8.46.3
-    utility-types:
-      specifier: ^3.11.0
-      version: 3.11.0
-    vite-tsconfig-paths:
-      specifier: ^5.1.4
-      version: 5.1.4
-  prod:
-    '@h3ravel/arquebus':
-      specifier: ^0.6.16
-      version: 0.6.16
-    '@h3ravel/musket':
-      specifier: ^0.3.11
-      version: 0.3.11
-    h3:
-      specifier: 2.0.1-rc.5
-      version: 2.0.1-rc.5
-
 importers:
 
   .:
@@ -686,6 +547,25 @@ importers:
       typescript:
         specifier: ^5.4.0
         version: 5.9.2
+
+  packages/validation:
+    dependencies:
+      '@h3ravel/shared':
+        specifier: workspace:^
+        version: link:../shared
+      '@h3ravel/support':
+        specifier: workspace:^
+        version: link:../support
+      robust-validator:
+        specifier: ^3.0.0
+        version: 3.0.0
+      simple-body-validator:
+        specifier: ^1.3.9
+        version: 1.3.9
+    devDependencies:
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
 
   packages/view:
     dependencies:
@@ -3305,6 +3185,9 @@ packages:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
 
+  date-fns@4.1.0:
+    resolution: {integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg==}
+
   dayjs@1.11.18:
     resolution: {integrity: sha512-zFBQ7WFRvVRhKcWoUh+ZA1g2HVgUbsZm9sbddh8EC5iv93sui8DVVz1Npvz+r6meo9VKfa8NyLWBsQK1VvIKPA==}
 
@@ -4928,6 +4811,10 @@ packages:
     engines: {node: 20 || >=22}
     hasBin: true
 
+  robust-validator@3.0.0:
+    resolution: {integrity: sha512-/HBCtMSuvCk+01wUNpnBq9BPOOOlMuCfPJnv4obuTS9hmD8M0FSX/z8ppkkYK3qoYcQPHJGPAoSOL2WtSxFf4A==}
+    engines: {node: '>=18.0.0'}
+
   rolldown-plugin-dts@0.17.3:
     resolution: {integrity: sha512-8mGnNUVNrqEdTnrlcaDxs4sAZg0No6njO+FuhQd4L56nUbJO1tHxOoKDH3mmMJg7f/BhEj/1KjU5W9kZ9zM/kQ==}
     engines: {node: '>=20.18.0'}
@@ -5031,6 +4918,9 @@ packages:
   signale@1.4.0:
     resolution: {integrity: sha512-iuh+gPf28RkltuJC7W5MRi6XAjTDCAPC/prJUpQoG4vIP3MJZ+GTydVnodXA7pwvTKb2cA0m9OFZW/cdWy/I/w==}
     engines: {node: '>=6'}
+
+  simple-body-validator@1.3.9:
+    resolution: {integrity: sha512-zruc+5Y+L16lHTX+z/aSp8payiGGk1GM7UC9rs8j+lKOwxikfm+/RACsrjh461FCyyOcwAbu7s0UnKRKy9nUyQ==}
 
   simple-concat@1.0.1:
     resolution: {integrity: sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==}
@@ -9088,6 +8978,8 @@ snapshots:
       shebang-command: 2.0.0
       which: 2.0.2
 
+  date-fns@4.1.0: {}
+
   dayjs@1.11.18: {}
 
   dayjs@1.11.19: {}
@@ -10766,6 +10658,10 @@ snapshots:
       glob: 11.0.3
       package-json-from-dist: 1.0.1
 
+  robust-validator@3.0.0:
+    dependencies:
+      date-fns: 4.1.0
+
   rolldown-plugin-dts@0.17.3(rolldown@1.0.0-beta.45)(typescript@5.9.3):
     dependencies:
       '@babel/generator': 7.28.5
@@ -10945,6 +10841,8 @@ snapshots:
       chalk: 2.4.2
       figures: 2.0.0
       pkg-conf: 2.1.0
+
+  simple-body-validator@1.3.9: {}
 
   simple-concat@1.0.1: {}
 
