@@ -26,7 +26,6 @@ export class UserController extends Controller {
     async update ({ request, response }: HttpContext) {
         return response
             .setStatusCode(201)
-            .setCharset('UTF-32')
             .json({ message: `User ${request.input('name')} updated` })
     }
 

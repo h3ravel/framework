@@ -3,8 +3,6 @@ import providers from 'src/bootstrap/providers'
 
 export default class {
     async bootstrap () {
-        console.log('Test1')
-
         const app = await h3ravel(providers, process.cwd(), { autoload: true }, async () => undefined)
 
         return await app.fire()

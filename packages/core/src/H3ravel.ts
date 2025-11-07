@@ -103,13 +103,13 @@ export const h3ravel = async (
         return await Reflect.apply(originalFire, app, [h3App])
     }
 
-    app.fire = async function () {
+    app.fire = function () {
         if (!h3App) {
             throw new ConfigException('Provide a H3 app instance in the config or install @h3ravel/http')
         }
 
         // call original with proxyThis as `this` so internal `this.fire()` resolves to originalFire
-        return await Reflect.apply(originalFire, proxyThis, [h3App])
+        return Reflect.apply(originalFire, proxyThis, [h3App])
     }
 
     return app
