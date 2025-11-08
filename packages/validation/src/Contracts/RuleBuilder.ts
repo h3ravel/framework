@@ -1,4 +1,4 @@
-import type { BaseRule } from '../BaseRule'
+import type { ValidationRule } from '../ValidationRule'
 
 export interface RuleCallable {
     name: string;
@@ -6,4 +6,6 @@ export interface RuleCallable {
     message?: string
 }
 
-export type CustomRules = BaseRule | RuleCallable
+export type CustomRules = ValidationRule | RuleCallable
+
+export declare class BaseClass { }

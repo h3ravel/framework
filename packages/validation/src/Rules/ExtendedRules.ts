@@ -1,8 +1,19 @@
-import { BaseRule } from '../BaseRule'
 import { DateTime } from '@h3ravel/support'
 import type { RuleCallable } from '../Contracts/RuleBuilder'
+import { ValidationRule } from '../ValidationRule'
+import { Validator } from '../Validator'
 
-export class ExtendedRules extends BaseRule {
+export class ExtendedRules extends ValidationRule {
+    /**
+     * The validator instance.
+     */
+    protected validator!: Validator<any, any>
+
+    public setValidator (validator: Validator<any, any>): this {
+        this.validator = validator
+        return this
+    }
+
     rules: RuleCallable[] = [
         {
 
@@ -105,4 +116,5 @@ export class ExtendedRules extends BaseRule {
             message: 'The :attribute does not exist.'
         },
     ]
+    validate () { }
 }

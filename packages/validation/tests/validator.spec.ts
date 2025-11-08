@@ -1,6 +1,8 @@
 import { beforeAll, describe, expect, it } from 'vitest'
 
+import RuleContract from 'simple-body-validator/lib/cjs/rules/ruleContract'
 import { ValidationException } from '../src/ValidationException'
+import { ValidationRule } from '../src'
 import { Validator } from '../src/Validator'
 
 describe('Validator', () => {
@@ -13,6 +15,21 @@ describe('Validator', () => {
             )
 
             await expect(v.validate()).rejects.toThrowError(ValidationException)
+        })
+
+        it('can run after callbacks', async () => {
+            const v = new Validator(
+                { email: 'valid@example.com', name: 'John' },
+                { email: 'required|email', name: 'required|min:2|max:10' }
+            )
+
+            v.after((inst) => {
+                expect(inst).toBeInstanceOf(Validator)
+            })
+
+            const result = await v.passes()
+            expect(result).toBe(true)
+            expect(v.errors().isEmpty()).toBe(true)
         })
 
         it('passes validation for valid data', async () => {
@@ -241,5 +258,59 @@ describe('Validator', () => {
         //     const result = await v.passes()
         //     expect(result).toBe(true)
         // })
+    })
+
+    describe('custom rules', () => {
+        it('should fail if the fail callback is called', async () => {
+            class CustomRule extends ValidationRule {
+                validate (attribute: string, value: any, fail: (msg: string) => any): void {
+                    if (value === 'H Legacy' && attribute === 'name') fail('custom message')
+                }
+            }
+
+            const v = new Validator(
+                { name: 'H Legacy' },
+                { name: ['string', new CustomRule()] }
+            )
+
+            const result = await v.fails()
+            expect(result).toBe(true)
+            expect(v.errors().get('name')).toEqual(['custom message'])
+        })
+
+        it('should fail if the fail callback has not been called', async () => {
+            class CustomRule extends ValidationRule {
+                validate (): void {
+                }
+            }
+
+            const v = new Validator(
+                { name: 'H Legacy' },
+                { name: ['string', new CustomRule()] }
+            )
+
+            const result = await v.passes()
+            expect(result).toBe(true)
+            expect(v.errors().get('name')).toEqual([])
+        })
+
+        it('should pass request data via the setData callback', async () => {
+            const data = { name: 'H Legacy' }
+            class CustomRule extends ValidationRule {
+                validate (): void {
+                    expect(this.data).toEqual(data)
+
+                }
+                setData (data: Record<string, any>): this {
+                    this.data = data
+                    return this
+                }
+            }
+
+            const v = new Validator(data, { name: ['string', new CustomRule()] })
+
+            const result = await v.passes()
+            expect(result).toBe(true)
+        })
     })
 })

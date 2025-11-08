@@ -1,4 +1,4 @@
-export * from './BaseRule'
+export * from './ValidationRule'
 export * from './Contracts/RuleBuilder'
 export * from './Contracts/ValidationRuleName'
 export * from './Contracts/ValidatorContracts'

@@ -42,10 +42,8 @@ npm install @h3ravel/validation
 - Fail-fast mode — Option to stop at the first failure or collect all errors.
 - Human-readable summaries — Helper for formatting readable validation reports.
 
-- Rule testing utilities — Built-in helpers for testing custom rules.
 - TypeScript-first design — Full type inference for rules, messages, and validated data.
 - Chainable API — Optional fluent syntax for building validators.
-- Rule presets — Common validation profiles for forms, authentication, or file uploads.
 
 ## Usage
 

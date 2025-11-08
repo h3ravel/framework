@@ -1,12 +1,12 @@
+import { BaseClass, CustomRules } from './Contracts/RuleBuilder'
 import { DotPaths, MessagesForRules, RulesForData } from './Contracts/ValidatorContracts'
 import { Validator as SimpleBodyValidator, make, register, setTranslationObject } from 'simple-body-validator'
 
-import { BaseRule } from './BaseRule'
-import { CustomRules } from './Contracts/RuleBuilder'
 import { ExtendedRules } from './Rules/ExtendedRules'
 import { MessageBag } from './utilities/MessageBag'
 import { RuleSet } from './Contracts/ValidationRuleName'
 import { ValidationException } from './ValidationException'
+import { ValidationRule } from './ValidationRule'
 
 register('telephone', function (value) {
     return /^\d{3}-\d{3}-\d{4}$/.test(value)
@@ -17,6 +17,7 @@ export class Validator<
     R extends RulesForData<D>
 > {
     #messages: Partial<Record<MessagesForRules<R>, string>>
+    #after: (() => void)[] = []
 
     private data: D
     private rules: R
@@ -39,7 +40,7 @@ export class Validator<
         this.rules = rules
         this.#messages = messages
         this._errors = new MessageBag()
-        this.registerCustomRules()
+        this.bindServices()
     }
 
     /**
@@ -62,7 +63,14 @@ export class Validator<
     public async passes (): Promise<boolean> {
         if (this.executed) return this._errors.isEmpty()
 
-        return (await this.execute()).passing
+        const exec = (await this.execute())
+
+        // Let's spin through all the "after" hooks on this validator and ire them off. 
+        for (const after of this.#after) {
+            after()
+        }
+
+        return exec.passing
     }
 
     /**
@@ -74,6 +82,8 @@ export class Validator<
 
     /**
      * Throw if validation fails, else return executed data
+     * 
+     * @throws ValidationException if validation fails
      */
     public async validate (): Promise<Record<string, any>> {
         const ok = await this.passes()
@@ -151,6 +161,24 @@ export class Validator<
         return this.#messages
     }
 
+    /**
+     * Add an after validation callback.
+     *
+     * @param  callback
+     */
+    public after<C extends ((validator: Validator<D, R>) => void) | BaseClass> (callback: C | C[]) {
+
+        if (Array.isArray(callback)) {
+            for (const rule of callback as any[]) {
+                this.#after.push(() => rule.toString().startsWith('class') ? new rule(this) : rule(this))
+            }
+        } else if (typeof callback === 'function') {
+            this.#after.push(() => callback(this))
+        }
+
+        return this
+    }
+
 
     /**
      * Get all errors.
@@ -212,11 +240,16 @@ export class Validator<
     }
 
     /**
-     * Stop validation on first failure.
+     * Bind all required services here.
      */
-    private registerCustomRules () {
+    private bindServices () {
+        /**
+         * Register all custom rules
+         */
         for (const reged of this.registeredCustomRules) {
-            if (reged instanceof BaseRule) {
+            if (reged instanceof ValidationRule) {
+                if (reged.setData) reged.setData(this.data)
+                if (reged.setValidator) reged.setValidator(this)
                 for (const rule of reged.rules) {
                     register(rule.name, rule.validator)
                     if (rule.message) {
