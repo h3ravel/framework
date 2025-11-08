@@ -24,4 +24,8 @@ export interface EntryConfig {
      * @default []
      */
     filteredProviders?: string[]
+    /**
+     * Overide the defined system path
+     */
+    customPaths?: Partial<Record<'base' | 'views' | 'assets' | 'routes' | 'config' | 'public' | 'storage' | 'database', string>>
 }

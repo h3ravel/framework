@@ -12,18 +12,22 @@ export type ParamableRuleName =
     | 'before_or_equal'
     | 'between'
     | 'date_equals'
+    | 'datetime'
     | 'declined_if'
     | 'digits_between'
     | 'different'
+    | 'exists'
     | 'ends_with'
     | 'gt'
     | 'gte'
     | 'in'
+    | 'includes'
     | 'lt'
     | 'lte'
     | 'max'
     | 'min'
     | 'not_in'
+    | 'not_includes'
     | 'required_if'
     | 'required_unless'
     | 'required_with'
@@ -33,6 +37,7 @@ export type ParamableRuleName =
     | 'same'
     | 'size'
     | 'starts_with'
+    | 'unique'
 
 export type PlainRuleName =
     | 'accepted'
@@ -60,6 +65,7 @@ export type PlainRuleName =
     | 'sometimes'
     | 'string'
     | 'url'
+    | 'hex'
     | 'uuid'
 
 export type ValidationRuleName = ParamableRuleName | PlainRuleName

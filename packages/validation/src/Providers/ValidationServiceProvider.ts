@@ -3,7 +3,7 @@ import { ServiceProvider } from '@h3ravel/core'
 /**
  * Service provider for Validation utilities
  */
-export class UrlServiceProvider extends ServiceProvider {
+export class ValidationServiceProvider extends ServiceProvider {
     public static priority = 895
 
     /**

@@ -35,6 +35,13 @@ export const h3ravel = async (
     // Initialize the Application class
     const app = new Application(basePath)
 
+    // Overide defined paths
+    if (config.customPaths) {
+        for (const [name, path] of Object.entries(config.customPaths)) {
+            app.setPath(name as never, path)
+        }
+    }
+
     // Start up the app
     // @ts-expect-error Provider signature does not match since param is optional, but it should work
     await app.quickStartup(providers, config.filteredProviders, config.autoload)

@@ -1,9 +1,16 @@
 import { DotPaths, MessagesForRules, RulesForData } from './Contracts/ValidatorContracts'
-import { Validator as SimpleBodyValidator, make } from 'simple-body-validator'
+import { Validator as SimpleBodyValidator, make, register, setTranslationObject } from 'simple-body-validator'
 
+import { BaseRule } from './BaseRule'
+import { CustomRules } from './Contracts/RuleBuilder'
+import { ExtendedRules } from './Rules/ExtendedRules'
 import { MessageBag } from './utilities/MessageBag'
 import { RuleSet } from './Contracts/ValidationRuleName'
 import { ValidationException } from './ValidationException'
+
+register('telephone', function (value) {
+    return /^\d{3}-\d{3}-\d{4}$/.test(value)
+})
 
 export class Validator<
     D extends Record<string, any>,
@@ -18,6 +25,9 @@ export class Validator<
     private executed: boolean = false
     private instance?: SimpleBodyValidator
     private errorBagName = 'default'
+    private registeredCustomRules: CustomRules[] = [
+        new ExtendedRules()
+    ]
     private shouldStopOnFirstFailure = false
 
     constructor(
@@ -29,6 +39,7 @@ export class Validator<
         this.rules = rules
         this.#messages = messages
         this._errors = new MessageBag()
+        this.registerCustomRules()
     }
 
     /**
@@ -198,6 +209,27 @@ export class Validator<
      */
     public getRules (): R {
         return this.rules
+    }
+
+    /**
+     * Stop validation on first failure.
+     */
+    private registerCustomRules () {
+        for (const reged of this.registeredCustomRules) {
+            if (reged instanceof BaseRule) {
+                for (const rule of reged.rules) {
+                    register(rule.name, rule.validator)
+                    if (rule.message) {
+                        setTranslationObject({
+                            en: {
+                                [rule.name]: rule.message,
+                            }
+                        })
+                    }
+                }
+            }
+        }
+        return this
     }
 
     private async execute () {

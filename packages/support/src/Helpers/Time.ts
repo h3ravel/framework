@@ -1,4 +1,4 @@
-import dayjs, { ConfigType, Dayjs, OpUnitType } from 'dayjs'
+import dayjs, { ConfigType, Dayjs, OpUnitType, OptionType } from 'dayjs'
 
 import advancedFormat from 'dayjs/plugin/advancedFormat.js'
 import customParseFormat from 'dayjs/plugin/customParseFormat.js'
@@ -36,10 +36,12 @@ const TimeClass = class { } as { new(date?: dayjs.ConfigType): Dayjs } & typeof 
 export class DateTime extends TimeClass {
     private instance: Dayjs
 
-    constructor(config?: ConfigType) {
+    constructor(config?: ConfigType)
+    constructor(config?: ConfigType, format?: OptionType, locale?: boolean)
+    constructor(config?: ConfigType, format?: OptionType, locale?: string | boolean, strict?: boolean) {
         super(config)
 
-        this.instance = dayjs(config)
+        this.instance = dayjs(config, format, locale as never, strict)
         return new Proxy(this, {
             get: (target, prop, receiver) => {
                 if (prop in target) return Reflect.get(target, prop, receiver)
