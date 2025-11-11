@@ -3,6 +3,7 @@
 import { FileSystem, HttpContext, IRequest, IResponse } from '@h3ravel/shared'
 import { LimitSpec, RateLimiterAdapter, Unlimited } from '../Contracts/RateLimiterAdapter'
 
+import { HTTPResponse } from 'h3'
 import { InMemoryRateLimiter } from '../Adapters/InMemoryRateLimiter'
 import { readFileSync } from 'node:fs'
 
@@ -391,6 +392,7 @@ export abstract class Handler {
         if (e && typeof e.toResponse === 'function') {
             try {
                 const resp = await Promise.resolve(e.toResponse(ctx.request))
+
                 if (resp instanceof Response) return this.finalizeRenderedResponse(ctx.request, resp, e)
                 else if (Object.entries(resp).length) return this.getResponse(ctx, resp, e)
             } catch {
@@ -428,6 +430,7 @@ export abstract class Handler {
     public getResponse ({ request }: HttpContext, payload: Record<string, any>, e: any): IResponse | Promise<IResponse> {
         if (this.shouldReturnJson(request, e)) {
             return response()
+                .setCharset('utf-8')
                 .setStatusCode(this.isHttpException(e) ? (e.status as number) : 500)
                 .json(payload)
         }
@@ -440,6 +443,7 @@ export abstract class Handler {
         const body = payload.message ?? (this.isHttpException(e) ? (e.message ?? 'Error') : 'Internal Server Error')
 
         return response()
+            .setCharset('utf-8')
             .setStatusCode(this.isHttpException(e) ? (e.status as number) : 500)
             .viewTemplate(readFileSync(view, { encoding: 'utf-8' }), {
                 statusCode: this.isHttpException(e) ? (e.status as number) : 500,
@@ -465,6 +469,7 @@ export abstract class Handler {
         ]) ?? ''
 
         return response()
+            .setCharset('utf-8')
             .setStatusCode(this.isHttpException(e) ? (e.status as number) : 500)
             .viewTemplate(readFileSync(view, { encoding: 'utf-8' }), {
                 statusCode: this.isHttpException(e) ? (e.status as number) : 500,
@@ -533,6 +538,7 @@ export abstract class Handler {
     protected prepareJsonResponse (_request: IRequest, e: any): IResponse {
         const payload = this.convertExceptionToArray(e)
         return response()
+            .setCharset('utf-8')
             .setStatusCode(this.isHttpException(e) ? (e.status as number) : 500)
             .json(payload)
     }

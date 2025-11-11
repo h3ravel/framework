@@ -1,4 +1,5 @@
 import { HomeController } from 'App/Http/Controllers/HomeController'
+import { HttpContext } from '@h3ravel/http'
 import { MailController } from 'src/app/Http/Controllers/MailController'
 import { Router } from '@h3ravel/router'
 import { UrlExampleController } from 'src/app/Http/Controllers/UrlExampleController'
@@ -23,8 +24,7 @@ export default (Route: Router) => {
         })
     })
 
-    Route.put('/validation', async ({ request, response }) => {
-        // console.log(request)
+    Route.put('/validation', async ({ request, response }: HttpContext) => {
         const data = await request.validate({
             name: ['required', 'string'],
             age: ['required', 'integer'],

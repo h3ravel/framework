@@ -1,6 +1,5 @@
 import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 import { type H3Event, HTTPResponse } from 'h3'
-import { redirect, } from 'h3'
 
 import { Application } from '@h3ravel/core'
 import { HttpResponse } from './Utilities/HttpResponse'
@@ -144,9 +143,13 @@ export class Response extends HttpResponse implements IResponse {
     /**
      * Redirect to another URL.
      */
-    redirect (location: string, status: number = 302, statusText?: string | undefined): HTTPResponse {
-        this.setStatusCode(status, statusText)
-        return redirect(location, this.statusCode, statusText)
+    redirect (location: string, status: number = 302, statusText?: string | undefined): this {
+        return this.setStatusCode(status, statusText || (status === 301 ? 'Moved Permanently' : 'Found'))
+            .setContent(`<html><head><meta http-equiv="refresh" content="0; url=${location.replace(/"/g, '%22')}" /></head></html>`)
+            .withHeaders({
+                'content-type': 'text/html; charset=utf-8',
+                location
+            })
     }
 
     /**

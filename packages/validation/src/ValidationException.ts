@@ -1,3 +1,4 @@
+import { IRequest } from '@h3ravel/shared'
 import { MessageBag } from './utilities/MessageBag'
 import { Str } from '@h3ravel/support'
 import { UnprocessableEntityHttpException } from '@h3ravel/foundation'
@@ -21,7 +22,19 @@ export class ValidationException extends UnprocessableEntityHttpException {
         Object.setPrototypeOf(this, ValidationException.prototype)
     }
 
-    public toResponse () {
+    /**
+     * Send a custom response body for this exception
+     * 
+     * @param request 
+     * @returns 
+     */
+    public toResponse (request: IRequest) {
+        if (!request.expectsJson()) {
+            return response()
+                .setCharset('utf-8')
+                .redirect(request.getHeader('referer') || '/', 302)
+        }
+
         return {
             message: this.message,
             errors: this.errors(),

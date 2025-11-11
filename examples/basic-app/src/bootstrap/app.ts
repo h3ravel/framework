@@ -1,7 +1,4 @@
-import { HttpException, UnprocessableEntityHttpException } from '@h3ravel/foundation'
-
-import { HttpContext } from '@h3ravel/shared'
-import { ValidationException } from '@h3ravel/validation'
+import { UnprocessableEntityHttpException } from '@h3ravel/foundation'
 import { h3ravel } from '@h3ravel/core'
 import providers from 'src/bootstrap/providers'
 
@@ -9,17 +6,14 @@ export default class {
     async bootstrap () {
         const app = await h3ravel(providers, process.cwd(), { autoload: true, initialize: false }, async () => undefined)
 
-        app
-            .configure()
+        app.configure()
             .withExceptions((exceptions) => {
                 return exceptions
-                    .render((error, { request, response }: HttpContext) => {
-                    })
                     /**
-                     * Register global reporters
+                     * Register global reporters here
                      */
                     .report((error) => {
-                        console.error('🔥 Unhandled Exception:')
+                        console.error('Unhandled Exception:', error)
                     })
                     /**
                      * Prevent some exceptions from being reported

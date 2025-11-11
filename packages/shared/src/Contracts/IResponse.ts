@@ -20,6 +20,27 @@ export interface IResponse extends IHttpResponse {
      * Sends content for the current web response.
      */
     send (type?: 'html' | 'json' | 'text' | 'xml'): unknown;
+
+    /**
+     * Use an edge view as content
+     * 
+     * @param viewPath The path to the view file
+     * @param send if set to true, the content will be returned, instead of the Response instance
+     * @returns 
+     */
+    view (viewPath: string, data?: Record<string, any> | undefined): Promise<this>
+    view (viewPath: string, data: Record<string, any> | undefined, parse: boolean): Promise<HTTPResponse>
+
+    /**
+     * 
+     * Parse content as edge view
+     * 
+     * @param content The content to serve
+     * @param send if set to true, the content will be returned, instead of the Response instance
+     * @returns 
+     */
+    viewTemplate (content: string, data?: Record<string, any> | undefined): Promise<this>
+    viewTemplate (content: string, data: Record<string, any> | undefined, parse: boolean): Promise<HTTPResponse>
     /**
      *
      * @param content The content to serve
@@ -46,7 +67,7 @@ export interface IResponse extends IHttpResponse {
     /**
      * Redirect to another URL.
      */
-    redirect (location: string, status?: number, statusText?: string | undefined): HTTPResponse;
+    redirect (location: string, status?: number, statusText?: string | undefined): this;
     /**
      * Dump the response.
      */
