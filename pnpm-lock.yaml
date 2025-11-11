@@ -140,8 +140,8 @@ catalogs:
       specifier: ^0.6.17
       version: 0.6.17
     '@h3ravel/musket':
-      specifier: ^0.3.11
-      version: 0.3.11
+      specifier: ^0.3.12
+      version: 0.3.12
     h3:
       specifier: 2.0.1-rc.5
       version: 2.0.1-rc.5
@@ -282,6 +282,9 @@ importers:
       '@h3ravel/filesystem':
         specifier: workspace:^
         version: link:../../packages/filesystem
+      '@h3ravel/foundation':
+        specifier: workspace:^
+        version: link:../../packages/foundation
       '@h3ravel/hashing':
         specifier: workspace:^
         version: link:../../packages/hashing
@@ -293,7 +296,7 @@ importers:
         version: link:../../packages/mail
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.11(@h3ravel/support@packages+support)(@types/node@24.9.2)
+        version: 0.3.12(@h3ravel/support@packages+support)(@types/node@24.9.2)
       '@h3ravel/queue':
         specifier: workspace:^
         version: link:../../packages/queue
@@ -309,6 +312,9 @@ importers:
       '@h3ravel/url':
         specifier: workspace:^
         version: link:../../packages/url
+      '@h3ravel/validation':
+        specifier: workspace:^
+        version: link:../../packages/validation
       '@h3ravel/view':
         specifier: workspace:^
         version: link:../../packages/view
@@ -361,7 +367,7 @@ importers:
     dependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.11(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.12(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -386,7 +392,7 @@ importers:
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.11(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.12(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -427,6 +433,9 @@ importers:
 
   packages/core:
     dependencies:
+      '@h3ravel/foundation':
+        specifier: workspace:^
+        version: link:../foundation
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -487,7 +496,7 @@ importers:
         version: link:../filesystem
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.11(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.12(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -509,7 +518,7 @@ importers:
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.11(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.12(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -520,6 +529,19 @@ importers:
       typescript:
         specifier: ^5.4.0
         version: 5.9.2
+
+  packages/foundation:
+    dependencies:
+      '@h3ravel/shared':
+        specifier: workspace:^
+        version: link:../shared
+      '@h3ravel/support':
+        specifier: workspace:^
+        version: link:../support
+    devDependencies:
+      h3:
+        specifier: catalog:prod
+        version: 2.0.1-rc.5
 
   packages/hashing:
     dependencies:
@@ -547,7 +569,7 @@ importers:
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.11(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.12(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -557,6 +579,9 @@ importers:
       '@h3ravel/url':
         specifier: workspace:^
         version: link:../url
+      '@h3ravel/validation':
+        specifier: workspace:^
+        version: link:../validation
       h3:
         specifier: catalog:prod
         version: 2.0.1-rc.5
@@ -605,12 +630,15 @@ importers:
       '@h3ravel/database':
         specifier: workspace:^
         version: link:../database
+      '@h3ravel/foundation':
+        specifier: workspace:^
+        version: link:../foundation
       '@h3ravel/http':
         specifier: workspace:^
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.11(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.3.12(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -693,6 +721,34 @@ importers:
         specifier: ^5.4.0
         version: 5.9.2
 
+  packages/validation:
+    dependencies:
+      '@h3ravel/config':
+        specifier: workspace:^
+        version: link:../config
+      '@h3ravel/core':
+        specifier: workspace:^
+        version: link:../core
+      '@h3ravel/database':
+        specifier: workspace:^
+        version: link:../database
+      '@h3ravel/foundation':
+        specifier: workspace:^
+        version: link:../foundation
+      '@h3ravel/shared':
+        specifier: workspace:^
+        version: link:../shared
+      '@h3ravel/support':
+        specifier: workspace:^
+        version: link:../support
+      simple-body-validator:
+        specifier: ^1.3.9
+        version: 1.3.9
+    devDependencies:
+      typescript:
+        specifier: ^5.4.0
+        version: 5.9.3
+
   packages/view:
     dependencies:
       '@h3ravel/core':
@@ -703,7 +759,7 @@ importers:
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.3.11(@h3ravel/support@0.15.6)(@types/node@24.10.0)
+        version: 0.3.12(@h3ravel/support@0.15.6)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:*
         version: link:../shared
@@ -1465,8 +1521,8 @@ packages:
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
-  '@h3ravel/musket@0.3.11':
-    resolution: {integrity: sha512-pm8L3iyuvjyDFipOVOWRFmqReMcZ7JjeZJKGYUqfxlY3oquvt9L4/5tagkb4rM9onchKWOE8KjnIC5daxDJICw==}
+  '@h3ravel/musket@0.3.12':
+    resolution: {integrity: sha512-vg6tnihXjchqnIcqyHE7htApl1Z0MACshlNP9Euw0P35aRGWMvNL9O6dtgLyqaDkIXeEQEBeGoxlmom5jfcoZw==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@h3ravel/support': ^0.15.6
@@ -4874,6 +4930,9 @@ packages:
     resolution: {integrity: sha512-iuh+gPf28RkltuJC7W5MRi6XAjTDCAPC/prJUpQoG4vIP3MJZ+GTydVnodXA7pwvTKb2cA0m9OFZW/cdWy/I/w==}
     engines: {node: '>=6'}
 
+  simple-body-validator@1.3.9:
+    resolution: {integrity: sha512-zruc+5Y+L16lHTX+z/aSp8payiGGk1GM7UC9rs8j+lKOwxikfm+/RACsrjh461FCyyOcwAbu7s0UnKRKy9nUyQ==}
+
   simple-concat@1.0.1:
     resolution: {integrity: sha512-cSFtAPtRhljv69IK0hTVZQ+OfE9nePi/rtJmw5UjHeVyVroEqJXP1sFztKUy1qU+xvz3u/sfYJLa947b7nAN2Q==}
 
@@ -6877,7 +6936,7 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/musket@0.3.11(@h3ravel/support@0.15.6)(@types/node@24.10.0)':
+  '@h3ravel/musket@0.3.12(@h3ravel/support@0.15.6)(@types/node@24.10.0)':
     dependencies:
       '@h3ravel/shared': 0.27.7(@types/node@24.10.0)
       '@h3ravel/support': 0.15.6
@@ -6894,7 +6953,7 @@ snapshots:
       - '@types/node'
       - crossws
 
-  '@h3ravel/musket@0.3.11(@h3ravel/support@packages+support)(@types/node@24.10.0)':
+  '@h3ravel/musket@0.3.12(@h3ravel/support@packages+support)(@types/node@24.10.0)':
     dependencies:
       '@h3ravel/shared': 0.27.7(@types/node@24.10.0)
       '@h3ravel/support': link:packages/support
@@ -6911,7 +6970,7 @@ snapshots:
       - '@types/node'
       - crossws
 
-  '@h3ravel/musket@0.3.11(@h3ravel/support@packages+support)(@types/node@24.9.2)':
+  '@h3ravel/musket@0.3.12(@h3ravel/support@packages+support)(@types/node@24.9.2)':
     dependencies:
       '@h3ravel/shared': 0.27.7(@types/node@24.9.2)
       '@h3ravel/support': link:packages/support
@@ -10673,6 +10732,8 @@ snapshots:
       chalk: 2.4.2
       figures: 2.0.0
       pkg-conf: 2.1.0
+
+  simple-body-validator@1.3.9: {}
 
   simple-concat@1.0.1: {}
 

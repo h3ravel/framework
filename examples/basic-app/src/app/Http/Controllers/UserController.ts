@@ -10,6 +10,12 @@ export class UserController extends Controller {
 
     @Injectable()
     async store (request: Request, response: Response) {
+        const validate = await request.validate({
+            name: ['required', 'string'],
+        })
+
+        console.log(validate)
+
         return response
             .setStatusCode(202)
             .json({ message: `User ${request.input('name')} created` })

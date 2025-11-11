@@ -64,6 +64,7 @@
     "@h3ravel/http": "workspace:^",
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
+    "@h3ravel/foundation": "workspace:^",
     "h3": "catalog:prod",
     "reflect-metadata": "catalog:"
   }

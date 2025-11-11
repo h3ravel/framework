@@ -21,6 +21,7 @@ export class RouteServiceProvider extends ServiceProvider {
         this.app.singleton('router', () => {
             try {
                 const h3App = this.app.make('http.app')
+
                 return new Router(h3App, this.app)
             } catch (error: any) {
                 if (String(error.message).includes('http.app'))

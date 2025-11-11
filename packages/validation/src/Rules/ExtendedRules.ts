@@ -61,7 +61,6 @@ export class ExtendedRules extends ValidationRule {
         {
             name: 'datetime',
             validator: (value: any, parameters: string[] = [], attr) => {
-                console.log(this.data, attr)
                 if (typeof value !== 'string') return false
                 const [format] = parameters
 

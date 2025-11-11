@@ -48,7 +48,6 @@
     "laravel"
   ],
   "scripts": {
-    "barrel": "barrelsby --directory src --delete --singleQuotes",
     "build": "tsdown --config-loader unconfig",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
@@ -60,6 +59,7 @@
     "@h3ravel/support": "workspace:^",
     "@h3ravel/musket": "catalog:prod",
     "@h3ravel/shared": "workspace:^",
+    "@h3ravel/validation": "workspace:^",
     "@h3ravel/url": "workspace:^",
     "h3": "catalog:prod",
     "srvx": "^0.8.2"

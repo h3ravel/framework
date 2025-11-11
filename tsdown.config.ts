@@ -8,6 +8,7 @@ export const baseConfig: UserConfig = {
     dts: true,
     clean: true,
     shims: true,
+    unbundle: false,
     entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
     sourcemap: false,

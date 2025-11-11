@@ -135,6 +135,17 @@
     },
     {
       "name": "index.ts",
+      "root": "packages/foundation/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ],
+      "order": [
+        "Exceptions/HttpException"
+      ]
+    },
+    {
+      "name": "index.ts",
       "root": "packages/support/src",
       "exclude": [
         "**/*.test.ts",

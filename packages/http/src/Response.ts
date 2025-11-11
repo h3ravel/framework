@@ -41,6 +41,33 @@ export class Response extends HttpResponse implements IResponse {
     }
 
     /**
+     * Use an edge view as content
+     * 
+     * @param viewPath The path to the view file
+     * @param send if set to true, the content will be returned, instead of the Response instance
+     * @returns 
+     */
+    async view (viewPath: string, data?: Record<string, any> | undefined): Promise<this>
+    async view (viewPath: string, data: Record<string, any> | undefined, parse: boolean): Promise<HTTPResponse>
+    async view (viewPath: string, data?: Record<string, any> | undefined, parse?: boolean): Promise<HTTPResponse | this> {
+        return this.html(await this.app.make('edge').render(viewPath, data), parse!) as never
+    }
+
+    /**
+     * 
+     * Parse content as edge view
+     * 
+     * @param content The content to serve
+     * @param send if set to true, the content will be returned, instead of the Response instance
+     * @returns 
+     */
+    async viewTemplate (content: string, data?: Record<string, any> | undefined): Promise<this>
+    async viewTemplate (content: string, data: Record<string, any> | undefined, parse: boolean): Promise<HTTPResponse>
+    async viewTemplate (content: string, data?: Record<string, any> | undefined, parse?: boolean): Promise<HTTPResponse | this> {
+        return this.html(await this.app.make('edge').renderRaw(content, data), parse!) as never
+    }
+
+    /**
      * 
      * @param content The content to serve
      * @param send if set to true, the content will be returned, instead of the Response instance

@@ -31,6 +31,8 @@
     "@h3ravel/support": "workspace:^",
     "@h3ravel/url": "workspace:^",
     "@h3ravel/view": "workspace:^",
+    "@h3ravel/validation": "workspace:^",
+    "@h3ravel/foundation": "workspace:^",
     "cross-env": "catalog:",
     "h3": "catalog:prod",
     "reflect-metadata": "catalog:",

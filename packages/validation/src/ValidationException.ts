@@ -1,15 +1,16 @@
 import { MessageBag } from './utilities/MessageBag'
 import { Str } from '@h3ravel/support'
+import { UnprocessableEntityHttpException } from '@h3ravel/foundation'
 import { Validator } from './Validator'
 
-export class ValidationException extends Error {
-    public validator: Validator
+export class ValidationException extends UnprocessableEntityHttpException {
+    public validator: Validator<any, any>
     public response?: any
     public status: number = 422
     public errorBag: string = 'default'
     public redirectTo?: string
 
-    constructor(validator: Validator, response: any = null, errorBag = 'default') {
+    constructor(validator: Validator<any, any>, response: any = null, errorBag = 'default') {
         super(ValidationException.summarize(validator))
 
         this.name = 'ValidationException'
@@ -18,6 +19,13 @@ export class ValidationException extends Error {
         this.errorBag = errorBag
 
         Object.setPrototypeOf(this, ValidationException.prototype)
+    }
+
+    public toResponse () {
+        return {
+            message: this.message,
+            errors: this.errors(),
+        }
     }
 
     /**
@@ -44,7 +52,7 @@ export class ValidationException extends Error {
     /**
      * Create a readable summary message from the validation errors.
      */
-    protected static summarize (validator: Validator): string {
+    protected static summarize (validator: Validator<any, any>): string {
         const messages = validator.errors().all()
 
         if (!messages.length || typeof messages[0] !== 'string') {

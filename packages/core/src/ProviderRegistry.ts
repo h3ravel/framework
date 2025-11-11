@@ -1,5 +1,5 @@
 import type { Application } from './Application'
-import { ContainerResolver } from '../src/Di/ContainerResolver'
+import { ContainerResolver } from '../src/Manager/ContainerResolver'
 import { ServiceProvider } from './ServiceProvider'
 import fg from 'fast-glob'
 import path from 'node:path'

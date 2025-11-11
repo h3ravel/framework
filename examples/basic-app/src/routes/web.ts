@@ -22,4 +22,19 @@ export default (Route: Router) => {
             }
         })
     })
+
+    Route.put('/validation', async ({ request, response }) => {
+        // console.log(request)
+        const data = await request.validate({
+            name: ['required', 'string'],
+            age: ['required', 'integer'],
+        })
+
+        return response
+            .setStatusCode(202)
+            .json({
+                message: `User ${data.name} created`,
+                data,
+            })
+    })
 }

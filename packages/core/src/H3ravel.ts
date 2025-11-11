@@ -1,4 +1,4 @@
-import { Application, ConfigException, Kernel, OServiceProvider } from '.'
+import { Application, Kernel, OServiceProvider } from '.'
 import { HttpContext, LogRequests, Request, Response } from '@h3ravel/http'
 
 import { EntryConfig } from './Contracts/H3ravelContract'
@@ -61,7 +61,7 @@ export const h3ravel = async (
                 app,
                 request: await Request.create(event, app),
                 response: new Response(event, app),
-            });
+            }, event);
 
             (event as any)._h3ravelContext = ctx
             return ctx
@@ -78,46 +78,10 @@ export const h3ravel = async (
         }
     }
 
-    const originalFire = app.fire
-
-    const proxyThis = (function makeProxy (appRef, orig) {
-        return new Proxy(appRef, {
-            get (target, prop, receiver) {
-                if (prop === 'fire') return orig
-                // preserve correct behavior for symbols / inspect / prototype lookups
-                return Reflect.get(target, prop, receiver)
-            },
-            has (target, prop) {
-                if (prop === 'fire') return true
-                return Reflect.has(target, prop)
-            },
-            getOwnPropertyDescriptor (target, prop) {
-                if (prop === 'fire') {
-                    return {
-                        configurable: true,
-                        enumerable: false,
-                        writable: true,
-                        value: orig,
-                    }
-                }
-                return Reflect.getOwnPropertyDescriptor(target, prop as PropertyKey)
-            }
-        })
-    })(app, originalFire)
-
+    // Fire up the dev server
     if (config.initialize && h3App) {
-        // Fire up the server
-        return await Reflect.apply(originalFire, app, [h3App])
+        return await app.fire(h3App)
     }
 
-    app.fire = function () {
-        if (!h3App) {
-            throw new ConfigException('Provide a H3 app instance in the config or install @h3ravel/http')
-        }
-
-        // call original with proxyThis as `this` so internal `this.fire()` resolves to originalFire
-        return Reflect.apply(originalFire, proxyThis, [h3App])
-    }
-
-    return app
+    return app.setH3App(h3App)
 }

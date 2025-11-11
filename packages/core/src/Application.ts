@@ -1,13 +1,12 @@
 import 'reflect-metadata'
 
-import { FileSystem, type HttpContext, type IApplication, type IPathName, Logger } from '@h3ravel/shared'
+import { FileSystem, type HttpContext, type IApplication, type IPathName, Logger, PathLoader } from '@h3ravel/shared'
 import type { H3, H3Event } from 'h3'
 import { InvalidArgumentException, Str } from '@h3ravel/support'
 
 import { AServiceProvider } from './Contracts/ServiceProviderConstructor'
 import { Container } from './Container'
-import { ContainerResolver } from './Di/ContainerResolver'
-import { PathLoader } from '@h3ravel/shared'
+import { ContainerResolver } from './Manager/ContainerResolver'
 import { ProviderRegistry } from './ProviderRegistry'
 import { Registerer } from './Registerer'
 import { ServiceProvider } from './ServiceProvider'
@@ -17,16 +16,20 @@ import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
 import { readFile } from 'node:fs/promises'
 import semver from 'semver'
+import { Foundation } from './Manager/Foundation'
+import { ConfigException } from './Exceptions/ConfigException'
 
 export class Application extends Container implements IApplication {
     public paths = new PathLoader()
     public context?: (event: H3Event) => Promise<HttpContext>
+    public h3Event?: H3Event
     private tries: number = 0
     private booted = false
     private basePath: string
     private versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
     private static versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
 
+    private h3App?: H3
     private providers: Array<ServiceProvider> = []
     protected externalProviders: Array<AServiceProvider> = []
     protected filteredProviders: Array<string> = []
@@ -241,6 +244,39 @@ export class Application extends Container implements IApplication {
     }
 
     /**
+     * Provide safe overides for the app
+     */
+    public configure () {
+        return new Foundation(this)
+    }
+
+    /**
+     * Fire up the developement server using the user provided arguments
+     * 
+     * Port will be auto assigned if provided one is not available
+     * 
+     * @param h3App The current H3 app instance
+     * @param preferedPort If provided, this will overide the port set in the evironment
+     * @alias serve
+     */
+    public async fire (): Promise<this>
+    public async fire (h3App: H3, preferredPort?: number): Promise<this>
+    public async fire (h3App?: H3, preferredPort?: number): Promise<this> {
+
+        if (h3App) {
+            return await this.serve(h3App, preferredPort)
+        }
+
+        if (!this.h3App) {
+            throw new ConfigException('[Provide a H3 app instance in the config or install @h3ravel/http]')
+        }
+
+
+        return await this.serve(this.h3App, preferredPort)
+    }
+
+
+    /**
      * Fire up the developement server using the user provided arguments
      * 
      * Port will be auto assigned if provided one is not available
@@ -248,9 +284,7 @@ export class Application extends Container implements IApplication {
      * @param h3App The current H3 app instance
      * @param preferedPort If provided, this will overide the port set in the evironment
      */
-    public async fire (): Promise<this>
-    public async fire (h3App: H3, preferredPort?: number): Promise<this>
-    public async fire (h3App?: H3, preferredPort?: number): Promise<this> {
+    public async serve (h3App?: H3, preferredPort?: number): Promise<this> {
         if (!h3App) {
             throw new InvalidArgumentException('No valid H3 app instance was provided.')
 
@@ -293,6 +327,17 @@ export class Application extends Container implements IApplication {
             ], '\n')
         }
 
+        return this
+    }
+
+    /**
+     * Save the curretn H3 instance for possible future use.
+     *
+     * @param h3App The current H3 app instance
+     * @returns 
+     */
+    setH3App (h3App?: H3) {
+        this.h3App = h3App
         return this
     }
 

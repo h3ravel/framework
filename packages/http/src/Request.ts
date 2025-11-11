@@ -9,8 +9,12 @@ import { UploadedFile } from './UploadedFile'
 import { FormRequest } from './FormRequest'
 import { Url } from '@h3ravel/url'
 import { HttpRequest } from './Utilities/HttpRequest'
+import { MessagesForRules, RulesForData, Validator } from '@h3ravel/validation'
 
-export class Request extends HttpRequest implements IRequest {
+export class Request<
+    D extends Record<string, any> = Record<string, any>,
+    R extends RulesForData<D> = RulesForData<D>
+> extends HttpRequest implements IRequest<D, R> {
     /**
      * The decoded JSON content for the request.
      */
@@ -98,6 +102,22 @@ export class Request extends HttpRequest implements IRequest {
                 this.body = content
             }
         }
+    }
+
+    /**
+     * Validate the incoming request data
+     * 
+     * @param data 
+     * @param rules 
+     * @param messages 
+     */
+    async validate (
+        rules: R,
+        messages: Partial<Record<MessagesForRules<R>, string>> = {}
+    ): Promise<D> {
+        const validator = new Validator(this.all(), rules, messages)
+
+        return await validator.validate() as D
     }
 
     /**

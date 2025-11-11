@@ -1,4 +1,5 @@
 import { IApplication, type HttpContext as IHttpContext, IRequest, IResponse } from '@h3ravel/shared'
+import type { H3Event } from 'h3'
 
 /**
  * Represents the HTTP context for a single request lifecycle.
@@ -6,6 +7,7 @@ import { IApplication, type HttpContext as IHttpContext, IRequest, IResponse } f
  */
 export class HttpContext implements IHttpContext {
     private static contexts = new WeakMap<any, HttpContext>()
+    public event?: H3Event
 
     constructor(
         public app: IApplication,
@@ -18,12 +20,13 @@ export class HttpContext implements IHttpContext {
      * @param ctx - Object containing app, request, and response
      * @returns A new HttpContext instance
      */
-    static init (ctx: { app: IApplication; request: IRequest; response: IResponse }, event?: unknown): HttpContext {
-        if (event && HttpContext.contexts.has(event)) {
+    static init (ctx: { app: IApplication; request: IRequest; response: IResponse }, event?: H3Event): HttpContext {
+        if (!!event && HttpContext.contexts.has(event)) {
             return HttpContext.contexts.get(event)!
         }
 
         const instance = new HttpContext(ctx.app, ctx.request, ctx.response)
+        instance.event = event
 
         if (event) {
             HttpContext.contexts.set(event, instance)

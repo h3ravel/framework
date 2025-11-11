@@ -1,10 +1,13 @@
 import type { Bindings, IContainer, UseKey } from '@h3ravel/shared'
+import { Handler } from '@h3ravel/foundation'
 
 type IBinding = UseKey | (new (..._args: any[]) => unknown)
 
 export class Container implements IContainer {
     public bindings = new Map<IBinding, () => unknown>()
     public singletons = new Map<IBinding, unknown>()
+    public exceptionHandler?: Handler
+    private afterResolvingCallbacks = new Map<IBinding, ((resolved: any, app: this) => void)[]>()
 
     /**
      * Check if the target has any decorators
@@ -80,20 +83,50 @@ export class Container implements IContainer {
         /**
          * Direct factory binding
          */
+        let resolved: any
+
         if (this.bindings.has(key)) {
-            return this.bindings.get(key)!()
+            resolved = this.bindings.get(key)!()
+        } else if (typeof key === 'function') {
+            /**
+             * If this is a class constructor, auto-resolve via reflection
+             */
+            resolved = this.build(key)
+        } else {
+            throw new Error(
+                `No binding found for key: ${typeof key === 'string' ? key : (key as any)?.name}`
+            )
         }
 
-        /**
-         * If this is a class constructor, auto-resolve via reflection
-         */
-        if (typeof key === 'function') {
-            return this.build(key)
-        }
+        this.runAfterResolvingCallbacks(key, resolved)
+        return resolved
+    }
 
-        throw new Error(
-            `No binding found for key: ${typeof key === 'string' ? key : (key as any)?.name}`
-        )
+    /**
+     * Register a callback to be executed after a service is resolved
+     */
+    afterResolving<T extends UseKey> (
+        key: T | (new (..._args: any[]) => Bindings[T]),
+        callback: (resolved: Bindings[T], app: this) => void
+    ) {
+        const existing = this.afterResolvingCallbacks.get(key) || []
+
+        existing.push(callback)
+        this.afterResolvingCallbacks.set(key, existing)
+    }
+
+    /**
+     * Execute all registered afterResolving callbacks for a given key
+     */
+    private runAfterResolvingCallbacks<T extends UseKey> (
+        key: T,
+        resolved: Bindings[T]
+    ) {
+        const callbacks = this.afterResolvingCallbacks.get(key) || []
+
+        for (let i = 0; i < callbacks.length; i++) {
+            callbacks[i](resolved, this)
+        }
     }
 
     /**

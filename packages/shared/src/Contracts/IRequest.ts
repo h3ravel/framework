@@ -11,7 +11,10 @@ type RequestObject = Record<string, any>;
 /**
  * Interface for the Request contract, defining methods for handling HTTP request data.
  */
-export declare class IRequest {
+export declare class IRequest<
+    D extends Record<string, any> = Record<string, any>,
+    R extends Record<string, any> = Record<string, any>
+> {
     /**
      * The current app instance
      */
@@ -277,6 +280,17 @@ export declare class IRequest {
      * @internal use explicit input sources instead
      */
     get (key: string, defaultValue?: any): any;
+    /**
+     * Validate the incoming request data
+     * 
+     * @param data 
+     * @param rules 
+     * @param messages 
+     */
+    validate (
+        rules: R,
+        messages?: Partial<Record<string, string>>
+    ): Promise<D>;
     /**
      * Enables support for the _method request parameter to determine the intended HTTP method.
      *

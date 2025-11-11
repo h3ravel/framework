@@ -1,10 +1,11 @@
-import { ServiceProvider } from '@h3ravel/core'
-
 /**
  * Service provider for Validation utilities
  */
-export class ValidationServiceProvider extends ServiceProvider {
+export class ValidationServiceProvider {
+    public registeredCommands?: (new (app: any, kernel: any) => any)[]
     public static priority = 895
+
+    constructor(private app: any) { }
 
     /**
      * Register URL services in the container

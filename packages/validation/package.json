@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/validation",
-  "version": "1.0.15",
+  "version": "0.1.0",
   "description": "Lightweight validation library providing expressive rule-based validation for requests, data objects, and custom logic for H3ravel applications.",
   "h3ravel": {
     "providers": [
@@ -53,7 +53,6 @@
     "builder"
   ],
   "scripts": {
-    "barrel": "barrelsby --directory src --delete --singleQuotes",
     "build": "tsdown --config-loader unconfig",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
@@ -69,7 +68,8 @@
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
     "@h3ravel/config": "workspace:^",
-    "@h3ravel/database": "workspace:^"
+    "@h3ravel/database": "workspace:^",
+    "@h3ravel/foundation": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

@@ -4,10 +4,11 @@ import { Application, Container, Kernel } from '@h3ravel/core'
 import { Request, Response, HttpContext } from '@h3ravel/http'
 import { Str } from '@h3ravel/support'
 import { Resolver, RouteEventHandler } from '@h3ravel/shared'
-import type { EventHandler, ExtractControllerMethods, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
+import type { EventHandler, ExtractControllerMethods, IController, IMiddleware, IResponse, IRouter, RouterEnd } from '@h3ravel/shared'
 import { Helpers } from './Helpers'
 import { Model } from '@h3ravel/database'
 import { RouteDefinition, RouteMethod } from '@h3ravel/shared'
+import { ExceptionHandler } from '@h3ravel/foundation'
 
 export class Router implements IRouter {
     private routes: RouteDefinition[] = []
@@ -37,7 +38,7 @@ export class Router implements IRouter {
                     app: this.app,
                     request: await Request.create(event, this.app),
                     response: new Response(event, this.app),
-                });
+                }, event);
 
                 (event as any)._h3ravelContext = ctx
                 return ctx
@@ -190,11 +191,48 @@ export class Router implements IRouter {
                 /**
                  * Call the controller method, passing all resolved dependencies
                  */
-                return await controller[action](...args)
+                return await this.handleResponse(async () => await controller[action]?.(...args), ctx)
             }
         }
 
-        return handler as EventHandler
+        /**
+         * Call the route callback handler
+         */
+        return async (ctx) => {
+            return await this.handleResponse(handler as EventHandler, ctx)
+        }
+    }
+
+    /**
+     * Gracefully handle the outgoing response and pass all caught errors
+     * to the exception handler.
+     * 
+     * @param handler 
+     * @param ctx 
+     * @returns 
+     */
+    private async handleResponse (handler: (ctx: HttpContext) => Promise<IResponse>, ctx: HttpContext): Promise<IResponse> {
+        this.app.exceptionHandler ??= this.app.make(ExceptionHandler)
+
+        if (!this.app.exceptionHandler) {
+            return await handler(ctx)
+        }
+
+        try {
+            return await handler(ctx)
+        } catch (error) {
+            /**
+             * Handle the exception here.
+             */
+            if (this.app.exceptionHandler.handle) {
+                return await this.app.exceptionHandler.handle?.(error as Error, ctx)
+            }
+
+            /**
+             * If no exception handler has been defined, throw the original exception.
+             */
+            throw error
+        }
     }
 
     /**

@@ -14,6 +14,8 @@ packages:
   - packages/console
   - packages/view
   - packages/url
+  - packages/validation
+  - packages/foundation
   - examples/*
   - docs
 
@@ -45,6 +47,7 @@ catalog:
   husky: ^9.1.7
   knex: ^3.1.0
   luxon: ^3.7.2
+  mysql2: 3.15.3
   path: ^0.12.7
   preferred-pm: ^4.1.1
   reflect-metadata: ^0.2.2
@@ -53,7 +56,6 @@ catalog:
   semver: ^7.7.2
   source-map-support: ^0.5.21
   sqlite3: 5.1.7
-  mysql2: 3.15.3
   ts-node: ^10.9.2
   tsconfig-paths: ^4.2.0
   tslib: ^2.8.1
@@ -65,17 +67,19 @@ catalog:
 catalogs:
   prod:
     '@h3ravel/arquebus': ^0.6.17
-    '@h3ravel/musket': ^0.3.11
+    '@h3ravel/musket': ^0.3.12
     h3: 2.0.1-rc.5
 
 ignoredBuiltDependencies:
   - '@h3ravel/arquebus'
   - '@swc/core'
   - argon2
+  - esbuild
+
+nodeLinker: isolated
 
 onlyBuiltDependencies:
-  - esbuild
-  - sqlite3
   - '@h3ravel/musket'
+  - sqlite3
 
 shamefullyHoist: true
