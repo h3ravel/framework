@@ -1,10 +1,11 @@
 import type { DotNestedKeys, DotNestedValue } from './ObjContract'
+import { HttpContext, RequestMethod } from './IHttp'
 
 import type { H3Event } from 'h3'
 import type { IApplication } from './IApplication'
 import { IParamBag } from './IParamBag'
+import { ISessionManager } from './ISessionManager'
 import { IUploadedFile } from './IUploadedFile'
-import { RequestMethod } from './IHttp'
 
 type RequestObject = Record<string, any>;
 
@@ -23,6 +24,10 @@ export declare class IRequest<
      * Parsed request body
      */
     body: unknown
+    /**
+     * The current Http Context
+     */
+    context: HttpContext
     /**
      * Gets route parameters.
      * @returns An object containing route parameters.
@@ -147,6 +152,17 @@ export declare class IRequest<
      * Get the keys for all of the input and files.
      */
     keys (): string[];
+    /**
+     * Get an instance of the current session manager
+     * 
+     * @param key 
+     * @param defaultValue 
+     * @returns an instance of the current session manager.
+     */
+    public session<K extends string | Record<string, any> | undefined = undefined> (key?: K, defaultValue?: any): K extends undefined
+        ? ISessionManager
+        : K extends string
+        ? any : void | Promise<void>
     /**
      * Determine if the request is sending JSON.
      *

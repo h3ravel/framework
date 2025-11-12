@@ -1,3 +1,4 @@
+import { Driver } from './Driver'
 import { SessionDriver } from '../Contracts/SessionContract'
 
 /**
@@ -6,48 +7,40 @@ import { SessionDriver } from '../Contracts/SessionContract'
  * Lightweight, ephemeral session storage.
  * Intended for tests, local development, or short-lived apps.
  */
-export class MemoryDriver implements SessionDriver {
+export class MemoryDriver extends Driver implements SessionDriver {
     private static store: Record<string, Record<string, any>> = {}
-    private sessionId: string
 
-    constructor(sessionId: string) {
+    constructor(protected sessionId: string) {
+        super()
         this.sessionId = sessionId
         if (!MemoryDriver.store[this.sessionId]) {
             MemoryDriver.store[this.sessionId] = {}
         }
     }
 
-    get (key: string): any {
-        return MemoryDriver.store[this.sessionId][key]
+    /**
+     * Read and decrypt session data from file.
+     */
+    protected fetchPayload (): Record<string, any> {
+        return { ...MemoryDriver.store[this.sessionId] }
     }
 
-    set (key: string, value: any): void {
-        MemoryDriver.store[this.sessionId][key] = value
-    }
-
-    put (data: Record<string, any>): void {
-        MemoryDriver.store[this.sessionId] = {
+    /**
+     * Write and encrypt session data to file.
+     */
+    protected savePayload (data: Record<string, any>): void {
+        MemoryDriver.store[this.sessionId] = Object.entries(data).length < 1 ? {} : {
             ...MemoryDriver.store[this.sessionId],
             ...data,
         }
     }
 
-    push (key: string, value: any): void {
-        const existing = MemoryDriver.store[this.sessionId][key] || []
-        if (!Array.isArray(existing)) throw new Error(`Cannot push to non-array key: ${key}`)
-        existing.push(value)
-        MemoryDriver.store[this.sessionId][key] = existing
-    }
-
-    forget (key: string): void {
-        delete MemoryDriver.store[this.sessionId][key]
-    }
-
-    all (): Record<string, any> {
-        return { ...MemoryDriver.store[this.sessionId] }
-    }
-
-    flush (): void {
-        MemoryDriver.store[this.sessionId] = {}
+    /** 
+     * Invalidate session completely and regenerate empty session. 
+     */
+    invalidate () {
+        delete MemoryDriver.store[this.sessionId]
+        this.sessionId = crypto.randomUUID()
+        this.savePayload({})
     }
 }

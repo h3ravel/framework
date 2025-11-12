@@ -1,6 +1,7 @@
 import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 import type { H3Event, HTTPResponse } from 'h3'
 
+import { HttpContext } from './IHttp'
 import type { IApplication } from './IApplication'
 import { IHttpResponse } from './IHttpResponse'
 
@@ -12,6 +13,10 @@ export interface IResponse extends IHttpResponse {
      * The current app instance
      */
     app: IApplication;
+    /**
+     * The current Http Context
+     */
+    context: HttpContext
     /**
      * Sends content for the current web response.
      */

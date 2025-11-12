@@ -1,10 +1,13 @@
-import { beforeEach, describe, expect, it, test, vi } from 'vitest'
+import { Application, h3ravel } from '@h3ravel/core' // if this exists
+import { HttpContext, Response } from '@h3ravel/http'
+import { beforeAll, beforeEach, describe, expect, it, test, vi } from 'vitest'
 
-import { Application } from '@h3ravel/core' // if this exists
+import { HttpServiceProvider } from '../src/Providers/HttpServiceProvider'
 import { InputBag } from '../src/Utilities/InputBag'
 import { ParamBag } from '../src/Utilities/ParamBag'
 import { Request } from '../src/Request'
 import { UploadedFile } from '../src/UploadedFile'
+import path from 'node:path'
 
 // ---- mocks: FormRequest and UploadedFile.createFromBase ----
 // The Request class uses FormRequest and UploadedFile.createFromBase.
@@ -50,13 +53,7 @@ vi.spyOn(UploadedFile, 'createFromBase' as any).mockImplementation((fileBase: an
 // ---- helper to craft a fake H3Event ----
 function makeEvent (overrides: Partial<any> = {}) {
     // minimal header map that implements .get and .entries()
-    const headersMap = new Map<string, string>(Object.entries((overrides.headers as Record<string, string>) || {}))
-    const headers = {
-        get: (k: string) => headersMap.get(k.toLowerCase()) ?? headersMap.get(k) ?? null,
-        entries: () => headersMap.entries(),
-        // keep an iterator too
-        [Symbol.iterator]: () => headersMap[Symbol.iterator](),
-    }
+    const headers = new Headers((overrides.headers as Record<string, string>) || {})
 
     const req = {
         method: (overrides.method || 'GET'),
@@ -71,6 +68,7 @@ function makeEvent (overrides: Partial<any> = {}) {
 
     const event: any = {
         req,
+        res: { headers: new Headers() },
         context: {
             params: overrides.params || {},
         }
@@ -82,24 +80,30 @@ function makeEvent (overrides: Partial<any> = {}) {
     return event as any
 }
 
+const appKey = 'base64:dnZm+Ei7ExEHzhj/wO/3YKUckMQtpLjRVk1VLYiV/es='
 const TestFile = new File([Buffer.from('TestFile')], 'a.png')
 const TestUpload = UploadedFile.createFromBase(TestFile)
 
-// Minimal Application stub if you don't have real Application importable in test env.
-// If you DO have a real Application class you can remove this stub and use the real one.
-class AppStub implements Partial<Application> {
-    basePath = process.cwd()
-    make () { return undefined }
-    fire () { return undefined as never }
-}
-
-// ---- TESTS ----
-
 describe('Request', () => {
-    let app: any
+    let app: Application
+    process.env.APP_KEY = appKey
 
-    beforeEach(() => {
-        app = new AppStub()
+    beforeEach(async () => {
+        const { SessionServiceProvider } = (await import(('@h3ravel/session')))
+        const { ConfigServiceProvider } = (await import(('@h3ravel/config')))
+        const { RouteServiceProvider } = (await import(('@h3ravel/router')))
+        app = await h3ravel(
+            [SessionServiceProvider, HttpServiceProvider, ConfigServiceProvider, RouteServiceProvider],
+            path.join(process.cwd(), 'packages/http/tests'),
+            {
+                autoload: false,
+                customPaths: {
+                    config: 'config',
+                    routes: 'routes',
+                }
+            })
+        app.make('config')
+
         vi.restoreAllMocks() // restore in case any global spy persists
     })
 
@@ -395,5 +399,27 @@ describe('Request', () => {
         expect(request()).toBe(req)
         expect(request()).toBeInstanceOf(Request)
     })
+
+    // describe('Request', () => {
+    //     it('session() has access to session', async () => {
+    //         const event = makeEvent({
+    //             method: 'POST',
+    //             headers: new Headers({ 'content-type': 'application/json' }),
+    //             json: async () => ({ nested: { x: 'y' } })
+    //         })
+    //         const ctx = HttpContext.init({
+    //             app,
+    //             request: await Request.create(event, app),
+    //             response: new Response(event, app),
+    //         }, event)
+
+
+    //         const jsonBag = ctx.request.session({})
+    //         console.log(jsonBag)
+    //         // expect(jsonBag.get('nested.x')).toBe('y')
+    //         // subsequent calls return same InputBag instance
+    //         // expect(req.json()).toBe(jsonBag)
+    //     })
+    // })
 })
 

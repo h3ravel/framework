@@ -1,4 +1,4 @@
-import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
+import type { DotNestedKeys, DotNestedValue, HttpContext } from '@h3ravel/shared'
 import { type H3Event, HTTPResponse } from 'h3'
 
 import { Application } from '@h3ravel/core'
@@ -7,6 +7,11 @@ import { IResponse } from '@h3ravel/shared'
 import { safeDot } from '@h3ravel/support'
 
 export class Response extends HttpResponse implements IResponse {
+    /**
+     * The current Http Context
+     */
+    context!: HttpContext
+
     constructor(
         /**
          * The current H3 H3Event instance

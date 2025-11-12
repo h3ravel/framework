@@ -1,9 +1,9 @@
-import { Application, h3ravel } from '@h3ravel/core'
 import { ValidationRule, ValidationServiceProvider } from '../src'
 import { beforeAll, describe, expect, it } from 'vitest'
 
 import { ValidationException } from '../src/ValidationException'
 import { Validator } from '../src/Validator'
+import { h3ravel } from '@h3ravel/core'
 import path from 'node:path'
 
 describe('Validator', () => {
@@ -202,14 +202,21 @@ describe('Validator', () => {
                     }
                 })
 
-
-            if (!(await DB.instance().schema.hasTable('users'))) {
-                await DB.instance().schema.createTable('users', (table: any) => {
-                    table.increments('id')
-                    table.string('username').nullable()
-                    table.timestamps()
-                })
-            }
+            await DB.instance().schema.hasTable('users').then((exists) => {
+                if (!exists) {
+                    return DB.instance().schema.createTable('users', (table: any) => {
+                        table.increments('id')
+                        table.string('username').nullable()
+                        table.timestamps()
+                    })
+                } else {
+                    return DB.instance().schema.alterTable('users', async (table: any) => {
+                        if (!await DB.instance().schema.hasColumn('users', 'username')) {
+                            table.string('username').nullable()
+                        }
+                    })
+                }
+            })
 
             class User extends Model { }
             await User.query().firstOrCreate({ 'username': 'legacy' })

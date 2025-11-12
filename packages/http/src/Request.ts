@@ -1,6 +1,6 @@
 import { getRequestIP, type H3Event } from 'h3'
 import { Arr, data_get, data_set, Obj, safeDot, Str } from '@h3ravel/support'
-import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
+import type { DotNestedKeys, DotNestedValue, ISessionManager } from '@h3ravel/shared'
 import { IRequest } from '@h3ravel/shared'
 import { Application } from '@h3ravel/core'
 import { RequestMethod, RequestObject } from '@h3ravel/shared'
@@ -58,6 +58,7 @@ export class Request<
         await instance.setBody()
         await instance.initialize()
         globalThis.request = () => instance
+        globalThis.session = (...args: []) => instance.session(...args)
         return instance
     }
 
@@ -335,6 +336,42 @@ export class Request<
      */
     public keys (): string[] {
         return [...Object.keys(this.input()), ...this.files.keys()]
+    }
+
+    /**
+     * Get an instance of the current session manager
+     * 
+     * @param key 
+     * @param defaultValue 
+     * @returns a global instance of the current session manager.
+     */
+    public session<K extends string | Record<string, any> | undefined = undefined> (key?: K, defaultValue?: any): K extends undefined
+        ? ISessionManager
+        : K extends string
+        ? any : void | Promise<void> {
+        const session = new this.sessionManagerClass(
+            this.context,
+            config('session.driver', 'file'),
+            {
+                cwd: config('session.files'),
+                sessionDir: '/',
+                dir: '/',
+                table: config('session.table'),
+                prefix: config('database.connections.redis.options.prefix'),
+                client: config(`database.connections.${config('session.driver', 'file')}.client`),
+            }
+        )
+
+        if (typeof key === 'string') {
+            return session.get(key, defaultValue)
+        } else if (typeof key === 'object') {
+            for (const [k, val] of Object.entries(key)) {
+                session.put(k, val)
+            }
+            return undefined as any
+        }
+
+        return session as any
     }
 
     /**

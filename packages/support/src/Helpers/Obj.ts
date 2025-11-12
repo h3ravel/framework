@@ -6,7 +6,7 @@ import type { DotPath, KeysToSnakeCase } from '../Contracts/ObjContract'
  * with dot-separated keys.
  *
  * Example:
- * doter({
+ * dot({
  *   user: { name: "John", address: { city: "NY" } },
  *   active: true
  * })

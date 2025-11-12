@@ -2,9 +2,6 @@ import { Application, h3ravel } from '@h3ravel/core'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { existsSync, readFileSync } from 'node:fs'
 
-import { DB } from '@h3ravel/database'
-import { DatabaseDriver } from '../src'
-import { Encryption } from '../src/Encryption'
 import { HttpContext } from '@h3ravel/shared'
 import { SessionManager } from '../src/SessionManager'
 import { SessionServiceProvider } from '../src/Providers/SessionServiceProvider'
@@ -29,7 +26,8 @@ function makeEvent (overides: Record<string, any> = {}) {
     } as any
 }
 
-describe('@h3ravel/session MemoryDriver', () => {
+describe('@h3ravel/session FileDriver', () => {
+    let tmpDir: string
     let session: SessionManager
 
     beforeAll(async () => {
@@ -47,6 +45,8 @@ describe('@h3ravel/session MemoryDriver', () => {
                     routes: 'routes',
                 }
             })
+
+        tmpDir = config('session.files')
     })
 
     beforeEach(async () => {
@@ -61,61 +61,47 @@ describe('@h3ravel/session MemoryDriver', () => {
 
         process.env.APP_KEY = appKey
 
-        session = new SessionManager(ctx, 'memory')
+        session = new SessionManager(ctx, 'file', { cwd: tmpDir, sessionDir: '/' })
+    })
+
+    afterAll(async () => {
+        await rmdir(tmpDir, { recursive: true, maxRetries: 2 })
+    })
+
+
+    it('should generate a session ID and create a file', () => {
+        const file = path.join(tmpDir, session.id())
+        expect(existsSync(file)).toBe(true)
+    })
+
+
+    it('should put and get values', () => {
+        session.put('foo', 'bar')
+        expect(session.get('foo')).toBe('bar')
+
+        const content = readFileSync(path.join(tmpDir, session.id()), 'utf8')
+        expect(content).toContain(':') // encrypted string has iv:data
     })
 
     it('can persist sessions', async () => {
         const data = { name: 'string' }
-        const session = new SessionManager(ctx, 'memory')
         session.put('app', data)
 
         expect(session.get('app')).toMatchObject(data)
     })
 
-    it('can encrypt and decrypt using APP_KEY', async () => {
-        const str = 'Hello World'
-        const encryptor = new Encryption()
-        const enc = encryptor.encrypt(str)
-        const dec = encryptor.decrypt(enc)
-
-        expect(typeof enc === 'string').toBeTruthy()
-        expect(typeof dec === 'string').toBeTruthy()
-        expect(dec).toBe(str)
-    })
-
-    it('should generate a session ID', () => {
-        expect(session.id()).toBeTypeOf('string')
-        expect(session.id().length).toBeGreaterThan(0)
-    })
-
-    it('should set and get a value', () => {
-        session.put('foo', 'bar')
-        expect(session.get('foo')).toBe('bar')
-    })
-
-    it('should push to an array', () => {
-        session.put('arr', [])
-        session.push('arr', 'x')
-        session.push('arr', 'y')
-        expect(session.get('arr')).toEqual(['x', 'y'])
-    })
-
     it('should flush all data', () => {
-        session.put('foo', 'bar')
+        session.put('x', 1)
         session.flush()
-        expect(session.all()).toEqual({})
+        const all = session.all()
+        expect(all).toEqual({})
     })
 
-    it('should forget a key', () => {
-        session.put('temp', 123)
-        session.forget('temp')
-        expect(session.get('temp')).toBeUndefined()
-    })
-
-    it('should set multiple values', () => {
-        session.set({ a: 1, b: 2 })
-        expect(session.get('a')).toBe(1)
-        expect(session.get('b')).toBe(2)
+    it('should forget a key', async () => {
+        await session.put('temp', 'should-remove')
+        await session.forget('temp')
+        const all = await session.all()
+        expect(all.temp).toBeUndefined()
     })
 
     it('returns default value when key not found', async () => {

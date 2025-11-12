@@ -117,43 +117,42 @@ export class ProviderRegistry {
      * @returns 
      */
     static sort (providers: ProviderCtor[]) {
-        /**
-         * Base priority (default 0)
-         */
-        providers.forEach((Provider) => {
-            const key = this.getKey(Provider)
-            this.priorityMap.set(`${Provider.name}::${key}`, (Provider as any).priority ?? 0)
-        })
+        const makeKey = (Provider: ProviderCtor) => `${Provider.name}::${this.getKey(Provider)}`
 
-        /**
-         * Handle before/after adjustments
-         */
+        // Step 1: Sort purely by priority (descending)
+        providers.sort((A, B) => ((B as any).priority ?? 0) - ((A as any).priority ?? 0))
+
+        // Step 2: Apply order overrides ("before:" / "after:")
+        const findIndex = (target: string) => {
+            if (target.includes('::')) {
+                return providers.findIndex(p => makeKey(p) === target)
+            }
+            return providers.findIndex(p => p.name === target)
+        }
+
         providers.forEach((Provider) => {
             const order = (Provider as any).order
             if (!order) return
 
-            const [direction, target] = order.split(':')
-            const targetPriority = this.priorityMap.get(target) ?? 0
-            const key = this.getKey(Provider)
+            const [direction, rawTarget] = order.split(':')
+            const targetIndex = findIndex(rawTarget)
+            if (targetIndex === -1) return
 
-            if (direction === 'before') {
-                this.priorityMap.set(`${Provider.name}::${key}`, targetPriority - 1)
-            } else if (direction === 'after') {
-                this.priorityMap.set(`${Provider.name}::${key}`, targetPriority + 1)
-            }
+            const currentIndex = providers.indexOf(Provider)
+            if (currentIndex === -1) return
+
+            // Remove and reinsert at correct spot
+            providers.splice(currentIndex, 1)
+            const insertIndex = direction === 'before'
+                ? targetIndex
+                : targetIndex + 1
+
+            providers.splice(insertIndex, 0, Provider)
         })
 
-        /**
-         * Return service providers sorted based on thier name and priority
-         */
-        return providers.sort(
-            (A, B) => {
-                const keyA = this.getKey(A)
-                const keyB = this.getKey(B)
-                return (this.priorityMap.get(`${B.name}::${keyB}`) ?? 0) - (this.priorityMap.get(`${A.name}::${keyA}`) ?? 0)
-            }
-        )
+        return providers
     }
+
 
     /**
      * Sort service providers

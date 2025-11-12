@@ -1,6 +1,6 @@
 import { getQuery, getRequestURL, getRouterParams, parseCookies, type H3Event } from 'h3'
 import { Application } from '@h3ravel/core'
-import { RequestMethod } from '@h3ravel/shared'
+import { ISessionManager, RequestMethod } from '@h3ravel/shared'
 import { SuspiciousOperationException } from '../Exceptions/SuspiciousOperationException'
 import { InputBag } from '../Utilities/InputBag'
 import { HeaderBag } from '../Utilities/HeaderBag'
@@ -13,6 +13,7 @@ import { HeaderUtility } from './HeaderUtility'
 import { IpUtils } from './IpUtils'
 import { ConflictingHeadersException } from '../Exceptions/ConflictingHeadersException'
 import { isIP } from 'node:net'
+import { HttpContext } from '../HttpContext'
 
 export class HttpRequest {
     public HEADER_FORWARDED = 0b000001 // When using RFC 7239
@@ -113,6 +114,11 @@ export class HttpRequest {
     public cookies!: InputBag
 
     /**
+     * The current Http Context
+     */
+    context!: HttpContext
+
+    /**
      * The request attributes (parameters parsed from the PATH_INFO, ...).
      */
     public attributes!: ParamBag
@@ -130,6 +136,8 @@ export class HttpRequest {
     protected static trustedProxies: string[] = []
 
     protected static httpMethodParameterOverride: boolean = false
+
+    protected sessionManagerClass!: typeof ISessionManager
 
     /**
      * List of Acceptable Content Types
@@ -180,6 +188,8 @@ export class HttpRequest {
         this.#method = undefined
         this.format = undefined
         this.#uri = (await import(String('@h3ravel/url'))).Url.of(getRequestURL(this.event).toString(), this.app)
+
+        this.sessionManagerClass = (await import(('@h3ravel/session'))).SessionManager
     }
 
     /**

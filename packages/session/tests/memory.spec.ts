@@ -1,15 +1,11 @@
 import { Application, h3ravel } from '@h3ravel/core'
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
-import { existsSync, readFileSync } from 'node:fs'
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
-import { DB } from '@h3ravel/database'
-import { DatabaseDriver } from '../src'
 import { Encryption } from '../src/Encryption'
 import { HttpContext } from '@h3ravel/shared'
 import { SessionManager } from '../src/SessionManager'
 import { SessionServiceProvider } from '../src/Providers/SessionServiceProvider'
 import path from 'node:path'
-import { rmdir } from 'node:fs/promises'
 
 let ctx: HttpContext
 let app: Application

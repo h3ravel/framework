@@ -7,7 +7,7 @@ import type { H3Event } from 'h3'
  */
 export class HttpContext implements IHttpContext {
     private static contexts = new WeakMap<any, HttpContext>()
-    public event?: H3Event
+    public event!: H3Event
 
     constructor(
         public app: IApplication,
@@ -26,7 +26,9 @@ export class HttpContext implements IHttpContext {
         }
 
         const instance = new HttpContext(ctx.app, ctx.request, ctx.response)
-        instance.event = event
+        instance.event = event!
+        ctx.request.context = instance
+        ctx.response.context = instance
 
         if (event) {
             HttpContext.contexts.set(event, instance)
