@@ -35,6 +35,13 @@ export class Kernel {
     const { app } = ctx.request
 
     /** 
+     * Bind HTTP Context to the service container
+     */
+    app.bind('http.context', () => {
+      return ctx
+    })
+
+    /** 
      * Bind HTTP Response instance to the service container
      */
     app.bind('http.response', () => {

@@ -267,7 +267,7 @@ export class Application extends Container implements IApplication {
             return await this.serve(h3App, preferredPort)
         }
 
-        if (!this.h3App) {
+        if (!this?.h3App) {
             throw new ConfigException('[Provide a H3 app instance in the config or install @h3ravel/http]')
         }
 

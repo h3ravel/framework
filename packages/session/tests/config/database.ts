@@ -32,8 +32,8 @@ export default () => {
 
             sqlite: {
                 driver: 'sqlite3', //better-sqlite3
-                // database: ':memory:',
-                database: base_path('config/db.sqlite3'),
+                database: ':memory:',
+                // database: base_path('config/db.sqlite3'),
                 prefix: '',
                 foreign_key_constraints: env('DB_FOREIGN_KEYS', true),
                 flags: [],

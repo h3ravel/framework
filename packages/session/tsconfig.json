@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "paths": {
+      "@h3ravel/session": ["./src/index.ts"]
+    }
+  },
+  "exclude": ["dist", "node_modules"]
+}

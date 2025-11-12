@@ -135,6 +135,14 @@
     },
     {
       "name": "index.ts",
+      "root": "packages/session/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
       "root": "packages/foundation/src",
       "exclude": [
         "**/*.test.ts",

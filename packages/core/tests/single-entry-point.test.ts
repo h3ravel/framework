@@ -23,7 +23,7 @@ describe('Single Entry Point without @h3ravel/http installed', async () => {
     })
 
     it('will throw ConfigException when an H3 app instance is not provided and fire() is called', async () => {
-        expect(app.fire).toThrowError(new ConfigException('Provide a H3 app instance in the config or install @h3ravel/http'))
+        await expect(app.fire()).rejects.toThrowError(new ConfigException('[Provide a H3 app instance in the config or install @h3ravel/http]'))
     })
 })
 

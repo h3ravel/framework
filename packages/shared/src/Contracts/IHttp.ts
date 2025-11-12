@@ -1,4 +1,4 @@
-import type { Middleware, MiddlewareOptions } from 'h3'
+import type { H3Event, Middleware, MiddlewareOptions } from 'h3'
 
 import { IApplication } from './IApplication'
 import { IRequest } from './IRequest'
@@ -141,6 +141,7 @@ export declare class IRouter {
  */
 export declare class HttpContext {
     app: IApplication
+    event: H3Event
     request: IRequest
     response: IResponse
     private static contexts: WeakMap<any, HttpContext>

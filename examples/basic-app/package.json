@@ -33,6 +33,7 @@
     "@h3ravel/view": "workspace:^",
     "@h3ravel/validation": "workspace:^",
     "@h3ravel/foundation": "workspace:^",
+    "@h3ravel/session": "workspace:^",
     "cross-env": "catalog:",
     "h3": "catalog:prod",
     "reflect-metadata": "catalog:",

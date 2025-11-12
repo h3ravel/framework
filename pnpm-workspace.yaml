@@ -14,6 +14,7 @@ packages:
   - packages/console
   - packages/view
   - packages/url
+  - packages/session
   - packages/validation
   - packages/foundation
   - examples/*

@@ -1,9 +1,10 @@
+import { Application, h3ravel } from '@h3ravel/core'
+import { ValidationRule, ValidationServiceProvider } from '../src'
 import { beforeAll, describe, expect, it } from 'vitest'
 
-import RuleContract from 'simple-body-validator/lib/cjs/rules/ruleContract'
 import { ValidationException } from '../src/ValidationException'
-import { ValidationRule } from '../src'
 import { Validator } from '../src/Validator'
+import path from 'node:path'
 
 describe('Validator', () => {
     describe('basic rules', () => {
@@ -187,26 +188,31 @@ describe('Validator', () => {
     })
 
     describe('extended rules', () => {
-        // let app: Application
-
         beforeAll(async () => {
-            // const DatabaseServiceProvider = (await import(('@h3ravel/database'))).DatabaseServiceProvider
-            // const HttpServiceProvider = (await import(('@h3ravel/http'))).HttpServiceProvider
-            // const ConfigServiceProvider = (await import(('@h3ravel/config'))).ConfigServiceProvider
-            // app = await h3ravel(
-            //     [HttpServiceProvider, DatabaseServiceProvider, ConfigServiceProvider, ValidationServiceProvider],
-            //     path.join(process.cwd(), 'packages/validation/tests'),
-            //     {
-            //         autoload: false,
-            //         customPaths: {
-            //             config: 'config'
-            //         }
-            //     })
+            const { DatabaseServiceProvider, DB, Model } = (await import('@h3ravel/database'))
+            const { HttpServiceProvider } = (await import(('@h3ravel/http')))
+            const { ConfigServiceProvider } = (await import(('@h3ravel/config')))
+            await h3ravel(
+                [HttpServiceProvider, DatabaseServiceProvider, ConfigServiceProvider, ValidationServiceProvider],
+                path.join(process.cwd(), 'packages/validation/tests'),
+                {
+                    autoload: false,
+                    customPaths: {
+                        config: 'config'
+                    }
+                })
 
-            // // const { DB } = await import('@h3ravel/database')
-            // // class User extends Model {
-            // // }
-            // console.log(app)
+
+            if (!(await DB.instance().schema.hasTable('users'))) {
+                await DB.instance().schema.createTable('users', (table: any) => {
+                    table.increments('id')
+                    table.string('username').nullable()
+                    table.timestamps()
+                })
+            }
+
+            class User extends Model { }
+            await User.query().firstOrCreate({ 'username': 'legacy' })
         })
 
         it('includes: should validate included item in the given list of values.', async () => {
@@ -249,15 +255,25 @@ describe('Validator', () => {
             expect(result).toBe(true)
         })
 
-        // it('exists: the user should exist', async () => {
-        //     const v = new Validator(
-        //         { username: 'legacy' },
-        //         { username: 'exists:users,username' }
-        //     )
+        it('exists: the user should exist', async () => {
+            const v = new Validator(
+                { username: 'legacy' },
+                { username: 'exists:users,username' }
+            )
 
-        //     const result = await v.passes()
-        //     expect(result).toBe(true)
-        // })
+            const result = await v.passes()
+            expect(result).toBe(true)
+        })
+
+        it('unique: the user should be unique', async () => {
+            const v = new Validator(
+                { username: 'kaylah' },
+                { username: 'unique:users,username' }
+            )
+
+            const result = await v.passes()
+            expect(result).toBe(true)
+        })
     })
 
     describe('custom rules', () => {

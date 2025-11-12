@@ -99,7 +99,7 @@ export class HeaderBag implements Iterable<[string, (string | null)[]]> {
         key: string,
         defaultValue: string | null = null
     ): R extends undefined ? string | null : R {
-        const headers = this.all(key) as (string | null)[]
+        const headers = this.all(key) || this.all('http-' + key)
         if (!headers.length) return defaultValue as R extends undefined ? string | null : R
         return headers[0] as R extends undefined ? string | null : R
     }

@@ -17,6 +17,7 @@
       "@h3ravel/support": ["packages/support/src/index.ts"],
       "@h3ravel/url": ["packages/url/src/index.ts"],
       "@h3ravel/view": ["packages/view/src/index.ts"],
+      "@h3ravel/session": ["packages/session/src/index.ts"],
       "@h3ravel/foundation": ["packages/foundation/src/index.ts"],
       "@h3ravel/validation": ["packages/validation/src/index.ts"]
     },

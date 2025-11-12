@@ -1,9 +1,9 @@
 import type { H3, HTTPResponse, serve } from 'h3'
+import type { HttpContext, IRouter } from './IHttp'
 
 import type { Edge } from 'edge.js'
 import type { IRequest } from './IRequest'
 import type { IResponse } from './IResponse'
-import type { IRouter } from './IHttp'
 import type { PathLoader } from '../Utils/PathLoader'
 
 type RemoveIndexSignature<T> = {
@@ -35,6 +35,7 @@ export type Bindings = {
     'path.base': string
     'load.paths': PathLoader
     'http.serve': typeof serve
+    'http.context': HttpContext
     'http.request': IRequest
     'http.response': IResponse
 }
