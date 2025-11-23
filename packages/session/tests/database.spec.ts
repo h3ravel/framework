@@ -161,32 +161,26 @@ describe('@h3ravel/session Database Driver', () => {
 
     it('flashes data for the next request', async () => {
         await driver.flash('flashKey', 'flashVal')
-        const session = await DB.table(table).where('id', sessionId).first()
-        const payload = encryptor.decrypt(session.payload)
-        expect(payload._flash.flashKey).toBe('flashVal')
+        expect(driver.flashBag.get('flashKey')).toBe('flashVal')
     })
 
     it('reflashes data', async () => {
         await driver.flash('f1', 'val')
         await driver.reflash()
-        const session = await DB.table(table).where('id', sessionId).first()
-        const payload = encryptor.decrypt(session.payload)
-        expect(payload._flash_keep.f1).toBe('val')
+        expect(driver.flashBag.get('f1')).toBe('val')
     })
 
     it('keeps selected flash keys', async () => {
         await driver.flash('keep1', 'val1')
         await driver.flash('keep2', 'val2')
         await driver.keep(['keep1'])
-        const session = await DB.table(table).where('id', sessionId).first()
-        const payload = encryptor.decrypt(session.payload)
-        expect(payload._flash_keep).toHaveProperty('keep1')
-        expect(payload._flash_keep).not.toHaveProperty('keep2')
+        expect(driver.flashBag.all()).toHaveProperty('keep1')
+        expect(driver.flashBag.all()).not.toHaveProperty('keep2')
     })
 
     it('stores temporary data with now()', async () => {
         await driver.now('tmp', 'one-time')
-        expect((global as any).__session_now.tmp).toBe('one-time')
+        expect(driver.flashBag.get('tmp')).toBe('one-time')
     })
 
     it('regenerates session id while keeping data', async () => {

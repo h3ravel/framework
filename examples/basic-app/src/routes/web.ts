@@ -30,8 +30,6 @@ export default (Route: Router) => {
             age: ['required', 'integer'],
         })
 
-        session({ data })
-        console.log(await request.session().all(), request.session().only(['data']), session('data.age'))
         return response
             .setStatusCode(202)
             .json({

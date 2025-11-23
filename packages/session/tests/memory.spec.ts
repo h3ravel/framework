@@ -167,7 +167,7 @@ describe('@h3ravel/session MemoryDriver', () => {
 
     it('stores temporary data with now()', async () => {
         await session.now('tmp', 'one-time')
-        expect((global as any).__session_now.tmp).toBe('one-time')
+        expect(session.flashBag.get('tmp')).toBe('one-time')
     })
 
     it('determine if an item is not present in the session', async () => {

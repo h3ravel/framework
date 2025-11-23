@@ -1,37 +1,46 @@
-import { Encryption } from '../Encryption'
 import { SessionDriver } from '../Contracts/SessionContract'
+import { FlashBag } from '../FlashBag'
+import { Driver } from './Driver'
 
 /**
  * RedisDriver (placeholder)
  */
-export class RedisDriver implements SessionDriver {
-    private store: Record<string, string | Record<string, string>> = {}
-    private encryptor = new Encryption()
+export class RedisDriver extends Driver implements SessionDriver {
+    private static store: Record<string, Record<string, any>> = {}
 
     constructor(
         /**
          * The current session ID
          */
-        private sessionId: string,
-        private redisClient?: 'RedisClient',
-        private prefix?: string
-    ) { }
-
-    get (key: string, defaultValue: any = null) {
-        return defaultValue
+        protected sessionId: string,
+        protected redisClient?: 'RedisClient',
+        protected prefix?: string
+    ) {
+        super()
     }
 
-    set (key: string, value: any) { }
-
-    all () {
+    /**
+     * Fetch and return session payload.
+     * 
+     * @returns Decrypted and usable payload
+     */
+    protected fetchPayload (): Record<string, any> {
         return {}
     }
 
-    put (values: Record<string, any>) { }
+    /**
+     * Persist session payload and flash bag state.
+     * 
+     * @param data 
+     */
+    protected savePayload (payload: Record<string, any>): void {
+    }
 
-    push (key: string, value: any) { }
-
-    forget (key: string) { }
-
-    flush () { }
+    /**
+     * Invalidate current session and regenerate new session ID.
+     */
+    invalidate (): void {
+        this.flashBag = new FlashBag()
+        this.savePayload({})
+    }
 }

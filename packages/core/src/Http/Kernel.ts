@@ -1,6 +1,8 @@
-import type { HttpContext, IMiddleware } from '@h3ravel/shared'
-
+import { Arr, Obj } from '@h3ravel/support'
+import { Resolver, type HttpContext, type IMiddleware } from '@h3ravel/shared'
+import { Application } from '..'
 import type { H3Event } from 'h3'
+import { MiddlewareHandler } from '@h3ravel/foundation'
 
 /**
  * Kernel class handles middleware execution and response transformations.
@@ -8,13 +10,21 @@ import type { H3Event } from 'h3'
  */
 export class Kernel {
   /**
-   * @param context - A factory function that converts an H3Event into an HttpContext.
+   * A factory function that converts an H3Event into an HttpContext.
+   */
+  protected context: (event: H3Event) => HttpContext | Promise<HttpContext>
+  protected applicationContext!: HttpContext
+
+  /**
+   * @param app - The current application instance
    * @param middleware - An array of middleware classes that will be executed in sequence.
    */
   constructor(
-    protected context: (event: H3Event) => HttpContext | Promise<HttpContext>,
-    protected middleware: IMiddleware[] = [],
-  ) { }
+    public app: Application,
+    public middleware: IMiddleware[] = [],
+  ) {
+    this.context = async (event) => app.context!(event)
+  }
 
   /**
    * Handles an incoming request and passes it through middleware before invoking the next handler.
@@ -30,41 +40,32 @@ export class Kernel {
     /**
      * Convert the raw event into a standardized HttpContext
      */
-    const ctx = await this.context(event)
+    this.applicationContext = await this.context(event)
 
-    const { app } = ctx.request
-
-    /** 
-     * Bind HTTP Context to the service container
+    /**
+     * Bind HttpContext, request, and response to the container
      */
-    app.bind('http.context', () => {
-      return ctx
-    })
+    this.app.bind('http.context', () => this.applicationContext)
+    this.app.bind('http.request', () => this.applicationContext.request)
+    this.app.bind('http.response', () => this.applicationContext.response)
 
-    /** 
-     * Bind HTTP Response instance to the service container
-     */
-    app.bind('http.response', () => {
-      return ctx.response
-    })
-
-    /** 
-     * Bind HTTP Request instance to the service container
-     */
-    app.bind('http.request', () => {
-      return ctx.request
-    })
+    // Resolve or create MiddlewareHandler
+    this.app.middlewareHandler = this.app.has(MiddlewareHandler)
+      ? this.app.make(MiddlewareHandler)
+      : new MiddlewareHandler()
 
     /**
      * Run middleware stack and obtain result
      */
-    const result = await this.runMiddleware(ctx, () => next(ctx))
+    const result = await this.app.middlewareHandler
+      .register(this.middleware)
+      .run(this.applicationContext, next)
 
     /**
-     * If a plain object is returned from a controller or middleware,
-     * automatically set the JSON Content-Type header for the response.
-     */
-    if (result !== undefined && this.isPlainObject(result)) {
+   * If a plain object is returned from a controller or middleware,
+   * automatically set the JSON Content-Type header for the response.
+   */
+    if (result !== undefined && Obj.isPlainObject(result, true) && !result?.headers) {
       event.res.headers.set('Content-Type', 'application/json; charset=UTF-8')
     }
 
@@ -72,48 +73,30 @@ export class Kernel {
   }
 
   /**
-   * Sequentially runs middleware in the order they were registered.
-   * 
-   * @param context - The standardized HttpContext.
-   * @param next - Callback to execute when middleware completes.
-   * @returns A promise resolving to the final handler's result.
+   * Resolve the provided callback using the current H3 event instance 
    */
-  private async runMiddleware (
-    context: HttpContext,
-    next: (ctx: HttpContext) => Promise<unknown>
-  ) {
-    let index = -1
+  public async resolve (
+    event: H3Event,
+    middleware: IMiddleware | IMiddleware[],
+    handler: (ctx: HttpContext) => Promise<any>
+  ): Promise<any> {
+    const { Response } = await import('@h3ravel/http')
 
-    const runner = async (i: number): Promise<unknown> => {
-      if (i <= index) throw new Error('next() called multiple times')
-      index = i
-      const middleware = this.middleware[i]
+    this.middleware = Array.from(new Set([...this.middleware, ...Arr.wrap(middleware)]))
 
-      if (middleware) {
-        /**
-         * Execute the current middleware and proceed to the next one
-         */
-        return middleware.handle(context, () => runner(i + 1))
+    return this.handle(event, (ctx) => new Promise((resolve) => {
+      if (Resolver.isAsyncFunction(handler)) {
+        handler(ctx).then((response: any) => {
+
+          if (response instanceof Response) {
+            resolve(response.prepare(ctx.request as never).send())
+          } else {
+            resolve(response)
+          }
+        })
       } else {
-        /**
-         * If no more middleware, call the final handler
-         */
-        return next(context)
+        resolve(handler(ctx))
       }
-    }
-
-    return runner(0)
-  }
-
-  /**
-   * Utility function to determine if a value is a plain object or array.
-   * 
-   * @param value - The value to check.
-   * @returns True if the value is a plain object or array, otherwise false.
-   */
-  private isPlainObject (value: unknown): value is Record<string, unknown> {
-    return typeof value === 'object' &&
-      value !== null &&
-      (value.constructor === Object || value.constructor === Array)
+    }))
   }
 }

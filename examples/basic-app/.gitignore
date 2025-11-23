@@ -6,11 +6,16 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 .DS_Store
+!.gitkeep
 
 # H3ravel Files
 .h3ravel/serve
 src/config/hashing.ts
 src/database/*.sqlite
+storage/framework/sessions/*
+!storage/framework/sessions/.gitkeep
+storage/app/public/*
+!storage/app/public/.gitkeep
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

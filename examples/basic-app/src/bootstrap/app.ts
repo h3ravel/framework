@@ -26,6 +26,8 @@ export default class {
                      */
                     .truncateRequestExceptionsAt(200)
             })
+            .withMiddleware(() => {
+            })
 
         return await app.fire()
     }

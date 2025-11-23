@@ -1,20 +1,19 @@
 import { HttpContext } from '../HttpContext'
 import { Logger } from '@h3ravel/shared'
 import { Middleware } from '../Middleware'
-import { toResponse } from 'h3'
 
 export class LogRequests extends Middleware {
-    async handle ({ request, event }: HttpContext, next: () => Promise<unknown>): Promise<unknown> {
+    async handle ({ request, response }: HttpContext, next: () => Promise<unknown>): Promise<unknown> {
 
-        await toResponse(await next(), event!)
+        const _next = await next()
 
-        // const code = Number(response.status)
+        const code = Number(response.getStatusCode())
         const method = request.method().toLowerCase()
-        // let color = 'bgRed'
+        let color = 'bgRed'
 
-        // if (code < 200) color = 'bgWhite'
-        // else if (code >= 200 && code <= 300) color = 'bgBlue'
-        // else if (code >= 300 && code <= 400) color = 'bgOrange'
+        if (code < 200) color = 'bgWhite'
+        else if (code >= 200 && code <= 300) color = 'bgBlue'
+        else if (code >= 300 && code <= 400) color = 'bgOrange'
 
         let mColor = 'bgYellow'
         if (method == 'get') mColor = 'bgBlue'
@@ -24,11 +23,10 @@ export class LogRequests extends Middleware {
         Logger.log([
             [` ${method.toUpperCase()} `, mColor as never],
             [request.fullUrl(), 'white'],
-            // ['→', 'blue'],
-            // [` ${code} `, color as never]
+            ['→', 'blue'],
+            [` ${code} `, color as never]
         ], ' ')
 
-        // return next()
-        return
+        return _next
     }
 }

@@ -1,6 +1,7 @@
 import { safeDot, setNested } from 'packages/support/dist'
 
 import { Encryption } from '../Encryption'
+import { FlashBag } from '../FlashBag'
 import { SessionDriver } from '../Contracts/SessionContract'
 
 /**
@@ -11,6 +12,10 @@ import { SessionDriver } from '../Contracts/SessionContract'
 export abstract class Driver implements SessionDriver {
     protected encryptor = new Encryption()
     protected sessionId!: string
+    public flashBag: FlashBag = new FlashBag()
+
+    constructor() {
+    }
 
     /** 
      * Invalidate session completely and regenerate empty session. 
@@ -22,14 +27,32 @@ export abstract class Driver implements SessionDriver {
      * 
      * @returns 
      */
-    protected abstract fetchPayload (): Record<string, any>
+    protected abstract fetchPayload<T extends Record<string, any>> (loadFlash?: boolean): T | Promise<T>
 
     /**
      * Save updated payload
      * 
      * @param payload 
      */
-    protected abstract savePayload (payload: Record<string, any>): void
+    protected abstract savePayload (payload: Record<string, any>): void | Promise<void>
+
+    /**
+     * Save the raw session payload (session + flash)
+     */
+    private saveRawPayload () {
+        this.savePayload(Object.assign({}, this.fetchPayload(), { _flash: this.flashBag.raw() }))
+    }
+
+    /**
+     * Retrieve all data from the session including flash
+     * 
+     * @returns 
+     */
+    getAll<T = any> (): T | Promise<T> {
+        const payload = this.fetchPayload() as Record<string, any>
+        const flash = payload._flash ?? { old: {}, new: {} }
+        return { ...payload, ...flash.old, ...flash.new }
+    }
 
     /**
      * Retrieve a value from the session
@@ -38,8 +61,8 @@ export abstract class Driver implements SessionDriver {
      * @param defaultValue 
      * @returns 
      */
-    get (key: string, defaultValue?: any): Promise<any> | any {
-        const payload = this.fetchPayload() as Record<string, any>
+    get<T = any> (key: string, defaultValue?: any): T | Promise<T> {
+        const payload = this.getAll() as Record<string, any>
         return safeDot(payload, key) || defaultValue
     }
 
@@ -49,7 +72,7 @@ export abstract class Driver implements SessionDriver {
      * @param key 
      * @param value 
      */
-    set (value: Record<string, any>): Promise<void> | void {
+    set (value: Record<string, any>): void | Promise<void> {
         const payload = this.fetchPayload()
         Object.assign(payload, value)
         return this.savePayload(payload)
@@ -60,7 +83,7 @@ export abstract class Driver implements SessionDriver {
      * 
      * @param values 
      */
-    put (key: string, value: any): void {
+    put (key: string, value: any): void | Promise<void> {
         const payload = this.fetchPayload()
         setNested(payload, key, value)
         return this.savePayload(payload)
@@ -72,8 +95,8 @@ export abstract class Driver implements SessionDriver {
      * @param key 
      * @param value 
      */
-    push (key: string, value: any): void {
-        const payload = this.fetchPayload()
+    push (key: string, value: any): void | Promise<void> {
+        const payload = this.fetchPayload() as Record<string, any>
         if (!Array.isArray(payload[key])) payload[key] = []
         payload[key].push(value)
         return this.savePayload(payload)
@@ -84,8 +107,8 @@ export abstract class Driver implements SessionDriver {
      * 
      * @param key 
      */
-    forget (key: string) {
-        const payload = this.fetchPayload()
+    forget (key: string): void | Promise<void> {
+        const payload = this.fetchPayload() as Record<string, any>
         delete payload[key]
         return this.savePayload(payload)
     }
@@ -95,8 +118,8 @@ export abstract class Driver implements SessionDriver {
      * 
      * @returns 
      */
-    all () {
-        return this.fetchPayload()
+    all<T extends Record<string, any>> (): T | Promise<T> {
+        return this.fetchPayload() as T
     }
 
     /** 
@@ -105,8 +128,8 @@ export abstract class Driver implements SessionDriver {
      * @param key 
      * @returns 
      */
-    exists (key: string): Promise<boolean> | boolean {
-        const data = this.fetchPayload()
+    exists (key: string): boolean | Promise<boolean> {
+        const data = this.getAll()
         return Object.prototype.hasOwnProperty.call(data, key)
     }
 
@@ -116,8 +139,8 @@ export abstract class Driver implements SessionDriver {
      * @param key 
      * @returns 
      */
-    has (key: string): Promise<boolean> | boolean {
-        const data = this.fetchPayload()
+    has (key: string): boolean | Promise<boolean> {
+        const data = this.getAll() as Record<string, any>
         return data[key] !== undefined && data[key] !== null
     }
 
@@ -127,13 +150,13 @@ export abstract class Driver implements SessionDriver {
      * @param keys 
      * @returns 
      */
-    only (keys: string[]) {
-        const data = this.fetchPayload()
+    only<T extends Record<string, any>> (keys: string[]): T | Promise<T> {
+        const data = this.fetchPayload() as Record<string, any>
         const result: Record<string, any> = {}
         keys.forEach(k => {
             if (k in data) result[k] = data[k]
         })
-        return result
+        return result as T
     }
 
     /**
@@ -142,10 +165,10 @@ export abstract class Driver implements SessionDriver {
      * @param keys 
      * @returns 
      */
-    except (keys: string[]) {
-        const data = this.fetchPayload()
+    except<T extends Record<string, any>> (keys: string[]): T | Promise<T> {
+        const data = this.fetchPayload() as Record<string, any>
         keys.forEach(k => delete data[k])
-        return data
+        return data as T
     }
 
     /**
@@ -155,8 +178,8 @@ export abstract class Driver implements SessionDriver {
      * @param defaultValue 
      * @returns 
      */
-    pull (key: string, defaultValue: any = null) {
-        const data = this.fetchPayload()
+    pull<T = any> (key: string, defaultValue: any = null): T | Promise<T> {
+        const data = this.fetchPayload() as Record<string, any>
         const value = data[key] ?? defaultValue
         delete data[key]
         this.savePayload(data)
@@ -170,8 +193,8 @@ export abstract class Driver implements SessionDriver {
      * @param amount 
      * @returns 
      */
-    increment (key: string, amount = 1): Promise<number> | number {
-        const data = this.fetchPayload()
+    increment (key: string, amount = 1): number | Promise<number> {
+        const data = this.fetchPayload() as Record<string, any>
         const newVal = (parseFloat(data[key]) || 0) + amount
         data[key] = newVal
         this.savePayload(data)
@@ -185,7 +208,7 @@ export abstract class Driver implements SessionDriver {
      * @param amount 
      * @returns 
      */
-    decrement (key: string, amount = 1) {
+    decrement (key: string, amount = 1): number | Promise<number> {
         return this.increment(key, -amount)
     }
 
@@ -195,11 +218,9 @@ export abstract class Driver implements SessionDriver {
      * @param key 
      * @param value 
      */
-    flash (key: string, value: any) {
-        const data = this.fetchPayload()
-        data._flash = data._flash || {}
-        data._flash[key] = value
-        this.savePayload(data)
+    flash (key: string, value: any): void | Promise<void> {
+        this.flashBag.flash(key, value)
+        this.saveRawPayload()
     }
 
     /**
@@ -207,11 +228,9 @@ export abstract class Driver implements SessionDriver {
      * 
      * @returns 
      */
-    reflash () {
-        const data = this.fetchPayload()
-        if (!data._flash) return
-        data._flash_keep = { ...data._flash }
-        this.savePayload(data)
+    reflash (): void | Promise<void> {
+        this.flashBag.reflash()
+        this.saveRawPayload()
     }
 
     /**
@@ -220,36 +239,38 @@ export abstract class Driver implements SessionDriver {
      * @param keys 
      * @returns 
      */
-    keep (keys: string[]) {
-        const data = this.fetchPayload()
-        if (!data._flash) return
-        const kept: Record<string, any> = {}
-        keys.forEach(k => {
-            if (data._flash[k]) kept[k] = data._flash[k]
-        })
-        data._flash_keep = kept
-        this.savePayload(data)
+    keep (keys: string[]): void | Promise<void> {
+        this.flashBag.keep(keys)
+        this.saveRawPayload()
     }
 
     /**
-     * Store data only for current request cycle (not persisted).
+     * Store a temporary value (flash) for this request only (not persisted)
      * 
      * @param key 
      * @param value 
      */
-    now (key: string, value: any) {
-        // Not persisted to DB — use in-memory only.
-        ; (global as any).__session_now = (global as any).__session_now || {}
-            ; (global as any).__session_now[key] = value
+    now (key: string, value: any): void | Promise<void> {
+        this.flashBag.now(key, value)
+        this.saveRawPayload()
     }
 
     /**
      * Regenerate session ID and persist data under new ID.
      */
-    regenerate () {
+    regenerate (): void | Promise<void> {
         const oldData = this.fetchPayload()
         this.sessionId = crypto.randomUUID()
         this.savePayload(oldData)
+    }
+
+    /**
+     * Age flash data at the end of the request lifecycle.
+     */
+    ageFlashData (): void | Promise<void> {
+        const data = this.flashBag.ageFlashData()
+        this.saveRawPayload()
+        return data
     }
 
     /** 
@@ -258,7 +279,7 @@ export abstract class Driver implements SessionDriver {
      * @param key 
      * @returns 
      */
-    missing (key: string): Promise<boolean> | boolean {
+    missing (key: string): boolean | Promise<boolean> {
         return !this.exists(key)
     }
 

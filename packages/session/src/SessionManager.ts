@@ -3,6 +3,7 @@ import { HttpContext, IRequest, ISessionManager } from '@h3ravel/shared'
 import { createHash, createHmac, randomBytes } from 'crypto'
 import { getCookie, setCookie } from 'h3'
 
+import { FlashBag } from './FlashBag'
 import { SessionStore } from './SessionStore'
 
 /**
@@ -16,6 +17,7 @@ export class SessionManager implements ISessionManager {
     private appKey: string
     private sessionId: string
     private request: IRequest
+    public flashBag: FlashBag
 
     /**
      * @param ctx - incoming request http context
@@ -30,6 +32,7 @@ export class SessionManager implements ISessionManager {
 
         // Then instantiate the driver through the registry so different constructors are supported
         this.driver = SessionStore.make(driverName, driverOptions.sessionId ?? this.sessionId, driverOptions)
+        this.flashBag = this.driver.flashBag
     }
 
     /**
@@ -273,5 +276,14 @@ export class SessionManager implements ISessionManager {
      */
     invalidate () {
         return this.driver.invalidate()
+    }
+
+    /**
+     * Age flash data at the end of the request lifecycle.
+     * 
+     * @returns 
+     */
+    ageFlashData () {
+        return this.driver.ageFlashData()
     }
 }

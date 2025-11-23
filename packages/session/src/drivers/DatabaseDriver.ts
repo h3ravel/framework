@@ -2,6 +2,7 @@ import { safeDot, setNested } from '@h3ravel/support'
 
 import { DB } from '@h3ravel/database'
 import { Driver } from './Driver'
+import { FlashBag } from '../FlashBag'
 import { SessionDriver } from '../Contracts/SessionContract'
 
 /**
@@ -22,48 +23,44 @@ export class DatabaseDriver extends Driver implements SessionDriver {
     }
 
     /**
-     * Helper: get the query builder for this table.
+     * Get the query builder for this table
      */
     private query () {
         return DB.table(this.table).where('id', this.sessionId)
     }
 
     /**
-     * Fetch current payload
-     * 
-     * @returns 
+     * Fetch the session payload
      */
-    protected async fetchPayload (): Promise<Record<string, any>> {
+    protected async fetchPayload<T extends Record<string, any>> (): Promise<T> {
         const row = await this.query().first()
-
-        if (!row) return {}
+        if (!row) return {} as T
 
         try {
-            const encrypted = row.payload
+            const decrypted = this.encryptor.decrypt(row.payload)
+            const payload = typeof decrypted === 'string' ? JSON.parse(decrypted) : decrypted
 
-            if (!encrypted) return {}
-            const decrypted = this.encryptor.decrypt(encrypted)
-            return typeof decrypted === 'string' ? JSON.parse(decrypted) : decrypted
+            // Merge flash data with payload
+            return payload
         } catch {
-            return {}
+            return {} as T
         }
     }
 
     /**
-     * Save updated payload
-     * 
-     * @param payload 
+     * Save the session payload back to DB
      */
     protected async savePayload (payload: Record<string, any>) {
+        // Remove flash data before saving
+        // const { _flash, ...persistentPayload } = payload
+
         const now = Math.floor(Date.now() / 1000)
         const exists = await this.query().exists()
+
         const encrypted = this.encryptor.encrypt(JSON.stringify(payload))
 
         if (exists) {
-            await this.query().update({
-                payload: encrypted,
-                last_activity: now,
-            })
+            await this.query().update({ payload: encrypted, last_activity: now })
         } else {
             await DB.table(this.table).insert({
                 id: this.sessionId,
@@ -74,33 +71,33 @@ export class DatabaseDriver extends Driver implements SessionDriver {
     }
 
     /**
-     * Retrieve a value from the session
-     * 
-     * @param key 
-     * @param defaultValue 
-     * @returns 
+     * Retrieve all data from the session including flash
      */
-    async get (key: string, defaultValue?: any): Promise<any> {
+    async getAll<T = any> (): Promise<T> {
         const payload = await this.fetchPayload()
+        const flash = payload._flash ?? { old: {}, new: {} }
+        return { ...payload, ...flash.old, ...flash.new }
+    }
+
+    /**
+     * Get a value from the session
+     */
+    async get<T = any> (key: string, defaultValue?: any): Promise<T> {
+        const payload = await this.getAll()
         return safeDot(payload, key) || defaultValue
     }
 
-    /** 
-     * Store a value in the session
-     * 
-     * @param key 
-     * @param value 
+    /**
+     * Set one or multiple session values
      */
-    async set (value: Record<string, any>): Promise<void> {
+    async set (values: Record<string, any>): Promise<void> {
         const payload = await this.fetchPayload()
-        Object.assign(payload, value)
+        Object.assign(payload, values)
         await this.savePayload(payload)
     }
 
-    /** 
-     * Store multiple key/value pairs
-     * 
-     * @param values 
+    /**
+     * Store a single key/value pair
      */
     async put (key: string, value: any): Promise<void> {
         const payload = await this.fetchPayload()
@@ -108,11 +105,8 @@ export class DatabaseDriver extends Driver implements SessionDriver {
         await this.savePayload(payload)
     }
 
-    /** 
+    /**
      * Append a value to an array key
-     * 
-     * @param key 
-     * @param value 
      */
     async push (key: string, value: any): Promise<void> {
         const payload = await this.fetchPayload()
@@ -121,10 +115,8 @@ export class DatabaseDriver extends Driver implements SessionDriver {
         await this.savePayload(payload)
     }
 
-    /** 
-     * Remove a key from the session
-     * 
-     * @param key 
+    /**
+     * Forget a session key
      */
     async forget (key: string): Promise<void> {
         const payload = await this.fetchPayload()
@@ -132,70 +124,52 @@ export class DatabaseDriver extends Driver implements SessionDriver {
         await this.savePayload(payload)
     }
 
-    /** 
-     * Retrieve all session data
-     * 
-     * @returns 
+    /**
+     * Retrieve all session data (excluding flash)
      */
-    async all (): Promise<Record<string, any>> {
-        return await this.fetchPayload()
+    async all<T extends Record<string, any>> (): Promise<T> {
+        return this.fetchPayload()
     }
 
-    /** 
-     * Determine if a key exists (even if null).
-     * 
-     * @param key 
-     * @returns 
+    /**
+     * Determine if a key exists (even if null)
      */
-    async exists (key: string) {
-        const data = await this.fetchPayload()
+    async exists (key: string): Promise<boolean> {
+        const data = await this.getAll()
         return Object.prototype.hasOwnProperty.call(data, key)
     }
 
-    /** 
-     * Determine if a key has a non-null value.
-     * 
-     * @param key 
-     * @returns 
+    /**
+     * Determine if a key has a non-null value
      */
-    async has (key: string) {
-        const data = await this.fetchPayload()
+    async has (key: string): Promise<boolean> {
+        const data = await this.getAll()
         return data[key] !== undefined && data[key] !== null
     }
 
     /**
-     * Get only specific keys.
-     * 
-     * @param keys 
-     * @returns 
+     * Get only specific keys
      */
-    async only (keys: string[]) {
+    async only<T extends Record<string, any>> (keys: string[]): Promise<T> {
         const data = await this.fetchPayload()
         const result: Record<string, any> = {}
         keys.forEach(k => {
             if (k in data) result[k] = data[k]
         })
-        return result
+        return result as T
     }
 
     /**
-     * Return all keys except the specified ones.
-     * 
-     * @param keys 
-     * @returns 
+     * Return all except specific keys
      */
-    async except (keys: string[]) {
+    async except<T extends Record<string, any>> (keys: string[]): Promise<T> {
         const data = await this.fetchPayload()
         keys.forEach(k => delete data[k])
-        return data
+        return data as T
     }
 
     /**
-     * Return and delete a key from the session.
-     * 
-     * @param key 
-     * @param defaultValue 
-     * @returns 
+     * Retrieve and delete a value
      */
     async pull (key: string, defaultValue: any = null) {
         const data = await this.fetchPayload()
@@ -206,11 +180,7 @@ export class DatabaseDriver extends Driver implements SessionDriver {
     }
 
     /**
-     * Increment a numeric value by amount (default 1).
-     * 
-     * @param key 
-     * @param amount 
-     * @returns 
+     * Increment a numeric value
      */
     async increment (key: string, amount = 1) {
         const data = await this.fetchPayload()
@@ -221,72 +191,42 @@ export class DatabaseDriver extends Driver implements SessionDriver {
     }
 
     /**
-     * Decrement a numeric value by amount (default 1).
-     * 
-     * @param key 
-     * @param amount 
-     * @returns 
+     * Decrement a numeric value
      */
     async decrement (key: string, amount = 1) {
         return this.increment(key, -amount)
     }
 
     /**
-     * Flash a value for next request only.
-     * 
-     * @param key 
-     * @param value 
+     * Flash a value for next request only
      */
     async flash (key: string, value: any) {
-        const data = await this.fetchPayload()
-        data._flash = data._flash || {}
-        data._flash[key] = value
-        await this.savePayload(data)
+        this.flashBag.flash(key, value)
     }
 
     /**
-     * Reflash all flash data for one more cycle.
-     * 
-     * @returns 
+     * Reflash all flash data for one more cycle
      */
     async reflash () {
-        const data = await this.fetchPayload()
-        if (!data._flash) return
-        data._flash_keep = { ...data._flash }
-        await this.savePayload(data)
+        this.flashBag.reflash()
     }
 
     /**
-     * Keep only selected flash data.
-     * 
-     * @param keys 
-     * @returns 
+     * Keep only specific flash keys
      */
     async keep (keys: string[]) {
-        const data = await this.fetchPayload()
-        if (!data._flash) return
-        const kept: Record<string, any> = {}
-        keys.forEach(k => {
-            if (data._flash[k]) kept[k] = data._flash[k]
-        })
-        data._flash_keep = kept
-        await this.savePayload(data)
+        this.flashBag.keep(keys)
     }
 
     /**
-     * Store data only for current request cycle (not persisted).
-     * 
-     * @param key 
-     * @param value 
+     * Store a temporary value (flash) for this request only (not persisted)
      */
     async now (key: string, value: any) {
-        // Not persisted to DB — use in-memory only.
-        ; (global as any).__session_now = (global as any).__session_now || {}
-            ; (global as any).__session_now[key] = value
+        this.flashBag.now(key, value)
     }
 
     /**
-     * Regenerate session ID and persist data under new ID.
+     * Regenerate session ID with same data
      */
     async regenerate () {
         const oldData = await this.fetchPayload()
@@ -294,29 +234,34 @@ export class DatabaseDriver extends Driver implements SessionDriver {
         await this.savePayload(oldData)
     }
 
-    /** 
-     * Determine if an item is not present in the session. 
-     * 
-     * @param key 
-     * @returns 
+    /**
+     * Check if a key is missing
      */
     async missing (key: string): Promise<boolean> {
         return !(await this.exists(key))
     }
 
-    /** 
+    /**
      * Flush all session data
      */
     async flush (): Promise<void> {
         await this.savePayload({})
     }
 
-    /** 
-     * Invalidate session completely and regenerate empty session. 
+    /**
+     * Invalidate the session and regenerate
      */
     async invalidate () {
         await DB.table(this.table).where('id', this.sessionId).delete()
         this.sessionId = crypto.randomUUID()
+        this.flashBag = new FlashBag()
         await this.savePayload({})
+    }
+
+    /**
+     * Age flash data at the end of the request lifecycle.
+     */
+    async ageFlashData (): Promise<void> {
+        this.flashBag.ageFlashData()
     }
 }

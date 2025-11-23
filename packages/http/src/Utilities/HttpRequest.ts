@@ -137,6 +137,7 @@ export class HttpRequest {
 
     protected static httpMethodParameterOverride: boolean = false
 
+    protected sessionManager!: ISessionManager
     protected sessionManagerClass!: typeof ISessionManager
 
     /**

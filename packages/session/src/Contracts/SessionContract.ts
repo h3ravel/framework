@@ -1,3 +1,5 @@
+import { FlashBag } from '../FlashBag'
+
 /**
  * SessionDriver Interface
  *
@@ -5,13 +7,15 @@
  * consistency across different storage mechanisms (memory, files, database, redis).
  */
 export interface SessionDriver {
+    flashBag: FlashBag
+
     /**
      * Retrieve a value from the session by key.
      * 
      * @param key 
      * @param defaultValue 
      */
-    get (key: string, defaultValue?: any): any | Promise<any>
+    get<T = any> (key: string, defaultValue?: any): T | Promise<T>
 
     /**
      * Store multiple values in the session.
@@ -20,6 +24,13 @@ export interface SessionDriver {
      * @param defaultValue 
      */
     set (value: Record<string, any>): void | Promise<void>
+
+    /**
+     * Retrieve all data from the session including flash
+     * 
+     * @returns 
+     */
+    getAll<T extends Record<string, any>> (): Promise<T> | T
 
     /**
      * Store a value in the session.
@@ -61,21 +72,21 @@ export interface SessionDriver {
     /**
      * Get all data from the session.
      */
-    all (): Promise<Record<string, any>> | Record<string, any>
+    all<T extends Record<string, any>> (): Promise<T> | T
 
     /**
      * Get only a subset of session keys.
      * 
      * @param keys 
      */
-    only (keys: string[]): Promise<Record<string, any>> | Record<string, any>
+    only<T extends Record<string, any>> (keys: string[]): Promise<T> | T
 
     /**
      * Get all session data except the specified keys.
      * 
      * @param keys 
      */
-    except (keys: string[]): Promise<Record<string, any>> | Record<string, any>
+    except<T extends Record<string, any>> (keys: string[]): Promise<T> | T
 
     /**
      * Get and remove an item from the session.
@@ -83,7 +94,7 @@ export interface SessionDriver {
      * @param key 
      * @param defaultValue 
      */
-    pull (key: string, defaultValue?: any): Promise<any> | any
+    pull<T = any> (key: string, defaultValue?: any): Promise<T> | T
 
     /**
      * Increment a numeric session value.
@@ -150,6 +161,11 @@ export interface SessionDriver {
      * Flush all session data
      */
     flush (): Promise<void> | void
+
+    /** 
+     * Age flash data at the end of the request lifecycle.
+     */
+    ageFlashData (): Promise<void> | void
 }
 
 export interface DriverOption {

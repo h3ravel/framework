@@ -349,7 +349,7 @@ export class Request<
         ? ISessionManager
         : K extends string
         ? any : void | Promise<void> {
-        const session = new this.sessionManagerClass(
+        this.sessionManager ??= new this.sessionManagerClass(
             this.context,
             config('session.driver', 'file'),
             {
@@ -363,15 +363,15 @@ export class Request<
         )
 
         if (typeof key === 'string') {
-            return session.get(key, defaultValue)
+            return this.sessionManager.get(key, defaultValue)
         } else if (typeof key === 'object') {
             for (const [k, val] of Object.entries(key)) {
-                session.put(k, val)
+                this.sessionManager.put(k, val)
             }
             return undefined as any
         }
 
-        return session as any
+        return this.sessionManager as any
     }
 
     /**

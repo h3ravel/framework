@@ -1,30 +1,22 @@
 /// <reference path="../../../http/src/app.globals.d.ts" />
 
-import { FileSystem, HttpContext, IRequest, IResponse } from '@h3ravel/shared'
-import { LimitSpec, RateLimiterAdapter, Unlimited } from '../Contracts/RateLimiterAdapter'
+import { ExceptionConditionCallback, ExceptionConstructor, FileSystem, HttpContext, IRequest, IResponse, RenderExceptionCallback, ReportExceptionCallback, ThrottleExceptionCallback } from '@h3ravel/shared'
+import { LimitSpec, RateLimiterAdapter } from '../Contracts/RateLimiterAdapter'
 
-import { HTTPResponse } from 'h3'
 import { InMemoryRateLimiter } from '../Adapters/InMemoryRateLimiter'
 import { readFileSync } from 'node:fs'
 
-type Constructor<T = any> = new (...args: any[]) => T
-type ReportCallback = (error: any) => boolean | void | Promise<boolean | void>
-type RenderCallback = (error: any, ctx: HttpContext) => IResponse | Promise<IResponse> | undefined | null
-type ConditionCallback = (error: any) => boolean
-type ThrottleCallback = (error: any) => LimitSpec | Unlimited | null | undefined
-
 /**
  *
- * Notes:
- *  - This file purposely keeps the API surface familiar to Laravel-ish handlers,
- *    but trimmed to essentials for H3ravel.
+ * Base Exception Handler
+ * .
  *  - We will use `RateLimiterAdapter` to plug in Redis / cache-backed limiters later.
  */
 export abstract class Handler {
     /**
      * List of exception constructors that should not be reported.
      */
-    protected dontReportList: Constructor[] = []
+    protected dontReportList: ExceptionConstructor[] = []
 
     /**
      * Log Level
@@ -34,32 +26,32 @@ export abstract class Handler {
     /**
      * Internal exceptions that are not reported by default. Subclasses may expand.
      */
-    protected internalDontReport: Constructor[] = []
+    protected internalDontReport: ExceptionConstructor[] = []
 
     /**
      * Callbacks that inspect exceptions to determine if they should NOT be reported.
      */
-    protected dontReportCallbacks: ConditionCallback[] = []
+    protected dontReportCallbacks: ExceptionConditionCallback[] = []
 
     /**
      * Reportable callbacks (can cancel reporting by returning false). 
      */
-    protected reportCallbacks: ReportCallback[] = []
+    protected reportCallbacks: ReportExceptionCallback[] = []
 
     /**
      * Render callbacks (can return a Response for a specific exception type).
      */
-    protected renderCallbacks: RenderCallback[] = []
+    protected renderCallbacks: RenderExceptionCallback[] = []
 
     /**
      * Exception mapping: from constructor -> mapper function (returns instance or new error).
      */
-    protected exceptionMap = new Map<Constructor, (error: any) => any>()
+    protected exceptionMap = new Map<ExceptionConstructor, (error: any) => any>()
 
     /**
      * Throttle callbacks: return limit spec or Unlimited or null
      */
-    protected throttleCallbacks: ThrottleCallback[] = []
+    protected throttleCallbacks: ThrottleExceptionCallback[] = []
 
     /**
      * Context callbacks for building log context 
@@ -123,30 +115,30 @@ export abstract class Handler {
      * @param cb 
      * @returns 
      */
-    public reportable (cb: ReportCallback) {
+    public reportable (cb: ReportExceptionCallback) {
         this.reportCallbacks.push(cb)
         return this
     }
 
-    public renderable (cb: RenderCallback) {
+    public renderable (cb: RenderExceptionCallback) {
         this.renderCallbacks.push(cb)
         return this
     }
 
-    public dontReport (exceptions: Constructor | Constructor[]) {
+    public dontReport (exceptions: ExceptionConstructor | ExceptionConstructor[]) {
         const arr = Array.isArray(exceptions) ? exceptions : [exceptions]
         this.dontReportList = Array.from(new Set([...this.dontReportList, ...arr]))
         return this
     }
 
-    public stopIgnoring (exceptions: Constructor | Constructor[]) {
+    public stopIgnoring (exceptions: ExceptionConstructor | ExceptionConstructor[]) {
         const arr = Array.isArray(exceptions) ? exceptions : [exceptions]
         this.dontReportList = this.dontReportList.filter((c) => !arr.includes(c))
         this.internalDontReport = this.internalDontReport.filter((c) => !arr.includes(c))
         return this
     }
 
-    public dontReportWhen (cb: ConditionCallback) {
+    public dontReportWhen (cb: ExceptionConditionCallback) {
         this.dontReportCallbacks.push(cb)
         return this
     }
@@ -156,12 +148,12 @@ export abstract class Handler {
         return this
     }
 
-    public map (from: Constructor, mapper: (error: any) => any) {
+    public map (from: ExceptionConstructor, mapper: (error: any) => any) {
         this.exceptionMap.set(from, mapper)
         return this
     }
 
-    public throttleUsing (cb: ThrottleCallback) {
+    public throttleUsing (cb: ThrottleExceptionCallback) {
         this.throttleCallbacks.push(cb)
         return this
     }
@@ -627,7 +619,7 @@ export abstract class Handler {
      * @param list 
      * @returns 
      */
-    protected isInstanceOfAny (e: any, list: Constructor[]) {
+    protected isInstanceOfAny (e: any, list: ExceptionConstructor[]) {
         if (!e) return false
         for (const c of list) {
             try {

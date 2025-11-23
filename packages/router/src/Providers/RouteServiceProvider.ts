@@ -1,6 +1,6 @@
 import { Logger } from '@h3ravel/shared'
 import { RouteListCommand } from '../Commands/RouteListCommand'
-import { Router } from '../Route'
+import { Router } from '../Router'
 import { ServiceProvider } from '@h3ravel/core'
 import path from 'node:path'
 import { readdir } from 'node:fs/promises'

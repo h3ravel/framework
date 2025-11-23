@@ -1,5 +1,5 @@
 import type { Bindings, IContainer, UseKey } from '@h3ravel/shared'
-import { Handler } from '@h3ravel/foundation'
+import { Handler, MiddlewareHandler } from '@h3ravel/foundation'
 
 type IBinding = UseKey | (new (..._args: any[]) => unknown)
 
@@ -7,6 +7,7 @@ export class Container implements IContainer {
     public bindings = new Map<IBinding, () => unknown>()
     public singletons = new Map<IBinding, unknown>()
     public exceptionHandler?: Handler
+    public middlewareHandler?: MiddlewareHandler
     private afterResolvingCallbacks = new Map<IBinding, ((resolved: any, app: this) => void)[]>()
 
     /**
@@ -33,6 +34,9 @@ export class Container implements IContainer {
 
     /**
      * Bind a transient service to the container
+     * 
+     * @param key 
+     * @param factory 
      */
     bind<T> (key: new (...args: any[]) => T, factory: () => T): void
     bind<T extends UseKey> (key: T, factory: () => Bindings[T]): void
@@ -45,6 +49,8 @@ export class Container implements IContainer {
 
     /**
      * Remove one or more transient services from the container
+     * 
+     * @param key 
      */
     unbind<T extends UseKey> (key: T | T[]) {
         if (Array.isArray(key)) {
@@ -59,7 +65,10 @@ export class Container implements IContainer {
     }
 
     /**
-     * Bind a singleton service to the container
+     * Bind a singleton service to the container 
+     * 
+     * @param key 
+     * @param factory 
      */
     singleton<T extends UseKey> (
         key: T | (new (..._args: any[]) => Bindings[T]),
@@ -75,6 +84,8 @@ export class Container implements IContainer {
 
     /**
      * Resolve a service from the container
+     * 
+     * @param key 
      */
     make<T extends UseKey> (key: T): Bindings[T]
     make<C extends abstract new (...args: any[]) => any> (key: C): InstanceType<C>
@@ -104,6 +115,9 @@ export class Container implements IContainer {
 
     /**
      * Register a callback to be executed after a service is resolved
+     * 
+     * @param key 
+     * @param callback 
      */
     afterResolving<T extends UseKey> (
         key: T | (new (..._args: any[]) => Bindings[T]),
@@ -117,6 +131,9 @@ export class Container implements IContainer {
 
     /**
      * Execute all registered afterResolving callbacks for a given key
+     * 
+     * @param key 
+     * @param resolved 
      */
     private runAfterResolvingCallbacks<T extends UseKey> (
         key: T,
@@ -131,6 +148,9 @@ export class Container implements IContainer {
 
     /**
      * Automatically build a class with constructor dependency injection
+     * 
+     * @param ClassType 
+     * @returns 
      */
     private build<T extends UseKey> (ClassType: new (..._args: any[]) => Bindings[T]): Bindings[T] {
         let dependencies: any[] = []
@@ -149,8 +169,14 @@ export class Container implements IContainer {
 
     /**
      * Check if a service is registered
+     * 
+     * @param key 
+     * @returns 
      */
-    has (key: UseKey): boolean {
+    has<T extends UseKey> (key: T): boolean
+    has<C extends abstract new (...args: any[]) => any> (key: C): boolean
+    has<F extends (...args: any[]) => any> (key: F): boolean
+    has (key: any): boolean {
         return this.bindings.has(key)
     }
 }

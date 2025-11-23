@@ -1,6 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs'
 
 import { Driver } from './Driver'
+import { FlashBag } from '../FlashBag'
 import { SessionDriver } from '../Contracts/SessionContract'
 import path from 'path'
 
@@ -46,31 +47,54 @@ export class FileDriver extends Driver implements SessionDriver {
     }
 
     /**
-     * Read and decrypt session data from file.
+     * Read raw decrypted payload (including _flash).
      */
-    protected fetchPayload (): Record<string, any> {
+    private readRawPayload (): Record<string, any> {
         const file = this.sessionFilePath()
         if (!existsSync(file)) return {}
         const content = readFileSync(file, 'utf8')
-        return this.encryptor.decrypt(content)
+        try {
+            return this.encryptor.decrypt(content)
+        } catch {
+            return {}
+        }
+    }
+
+    /**
+     * Fetch decrypted payload and strip out flash metadata.
+     */
+    protected fetchPayload<T extends Record<string, any>> (): T {
+        const payload = this.readRawPayload()
+        // Merge flash data with payload
+        return payload as T
     }
 
     /**
      * Write and encrypt session data to file.
+     * Always persists flash state.
+     *
+     * @param data 
      */
-    protected savePayload (data: Record<string, any>): void {
+    protected savePayload (payload: Record<string, any>): void {
         const file = this.sessionFilePath()
-        const encrypted = this.encryptor.encrypt(data)
+
+        // Remove flash data before saving
+        // const { _flash, ...persistentPayload } = payload
+
+        const encrypted = this.encryptor.encrypt(payload)
         writeFileSync(file, encrypted, 'utf8')
     }
 
-    /** 
-     * Invalidate session completely and regenerate empty session. 
+    /**
+     * Completely invalidate the current session and regenerate a new one.
      */
-    invalidate () {
+    invalidate (): void {
         const file = this.sessionFilePath()
-        rmSync(file, { recursive: true })
+        if (existsSync(file)) {
+            rmSync(file, { recursive: true })
+        }
         this.sessionId = crypto.randomUUID()
+        this.flashBag = new FlashBag()
         this.savePayload({})
     }
 }

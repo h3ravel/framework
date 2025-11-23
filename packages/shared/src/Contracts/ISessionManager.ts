@@ -150,4 +150,10 @@ export declare class ISessionManager {
      * Flush all session data
      */
     flush (): void | Promise<void>;
+    /**
+     * Age flash data at the end of the request lifecycle.
+     * 
+     * @returns
+     */
+    ageFlashData (): void | Promise<void>;
 }

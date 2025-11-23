@@ -44,22 +44,19 @@ export class Router implements IRouter {
                 return ctx
             }
 
-            // Initialize the Application Kernel
-            const kernel = new Kernel(this.app.context, middleware)
+            const globalMiddleware = this.app.has('app.globalMiddleware')
+                ? this.app.make('app.globalMiddleware') || []
+                : []
 
-            return kernel.handle(event, (ctx) => new Promise((resolve) => {
-                if (Resolver.isAsyncFunction(handler)) {
-                    handler(ctx).then((response: any) => {
-                        if (response instanceof Response) {
-                            resolve(response.prepare(ctx.request as Request).send())
-                        } else {
-                            resolve(response)
-                        }
-                    })
-                } else {
-                    resolve(handler(ctx))
-                }
-            }))
+            const middlewareStack: IMiddleware[] = [
+                ...globalMiddleware,
+                ...middleware,
+            ]
+
+            // Initialize the Application Kernel
+            const kernel = new Kernel(this.app, middlewareStack)
+
+            return await kernel.resolve(event, middleware, handler)
         }
     }
 
@@ -96,7 +93,7 @@ export class Router implements IRouter {
 
         const fullPath = `${this.groupPrefix}${path}`.replace(/\/+/g, '/')
         this.routes.push({ method, path: fullPath, name, handler, signature })
-        this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
+        this.h3App[method](fullPath, this.resolveHandler(handler, middleware))
         this.app.singleton('app.routes', () => this.routes)
     }
 
@@ -213,7 +210,6 @@ export class Router implements IRouter {
      */
     private async handleResponse (handler: (ctx: HttpContext) => Promise<IResponse>, ctx: HttpContext): Promise<IResponse> {
         this.app.exceptionHandler ??= this.app.make(ExceptionHandler)
-
         if (!this.app.exceptionHandler) {
             return await handler(ctx)
         }

@@ -1,8 +1,8 @@
 import { Application, Kernel, OServiceProvider } from '.'
-import { HttpContext, LogRequests, Request, Response } from '@h3ravel/http'
 
 import { EntryConfig } from './Contracts/H3ravelContract'
 import { H3 } from 'h3'
+import { HttpContext } from '@h3ravel/shared'
 
 /**
  * Simple global entry point for H3ravel applications
@@ -29,6 +29,9 @@ export const h3ravel = async (
      */
     middleware: (ctx: HttpContext) => Promise<unknown> = async () => undefined,
 ): Promise<Application> => {
+
+    const { FlashDataMiddleware, HttpContext, LogRequests, Request, Response } = await import('@h3ravel/http')
+
     // Initialize the H3 app instance
     let h3App: H3 | undefined
 
@@ -67,8 +70,13 @@ export const h3ravel = async (
             return ctx
         }
 
+        app.singleton('app.globalMiddleware', () => [
+            new LogRequests(),
+            new FlashDataMiddleware(),
+        ])
+
         // Initialize the Application Kernel
-        const kernel = new Kernel(async (event) => app.context!(event), [new LogRequests()])
+        const kernel = new Kernel(app)
 
         // Register kernel with H3
         h3App.use((event) => kernel.handle(event, middleware))

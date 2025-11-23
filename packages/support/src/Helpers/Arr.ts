@@ -712,9 +712,14 @@ export class Arr {
      */
     static whereNotNull<T> (
         array: T[],
-        key: keyof T
+        key?: keyof T
     ): T[] {
-        if (!Array.isArray(array)) return []
+        if (!Array.isArray(array))
+            return []
+
+        if (!key)
+            return array.filter((item) => item !== null && item !== undefined)
+
         return array.filter(item => (item[key] !== null && item[key] !== undefined))
     }
 
