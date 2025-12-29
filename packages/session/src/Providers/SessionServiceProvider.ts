@@ -1,14 +1,12 @@
 import { dbBuilder, fileBuilder, memoryBuilder, redisBuilder } from '../adapters'
 
 import { MakeSessionTableCommand } from '../Commands/MakeSessionTableCommand'
+import { ServiceProvider } from '@h3ravel/foundation'
 import { SessionStore } from '../SessionStore'
 
-export class SessionServiceProvider {
-    public registeredCommands?: (new (app: any, kernel: any) => any)[]
+export class SessionServiceProvider extends ServiceProvider {
     public static priority = 895
     public static order = 'before:HttpServiceProvider'
-
-    constructor(private app: any) { }
 
     register (): void {
         /**
@@ -20,8 +18,5 @@ export class SessionServiceProvider {
         SessionStore.register('redis', redisBuilder)
 
         this.registeredCommands = [MakeSessionTableCommand]
-    }
-
-    boot (): void {
     }
 }

@@ -58,11 +58,12 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^",
     "@h3ravel/database": "workspace:^",
+    "@h3ravel/foundation": "workspace:^",
     "@h3ravel/shared": "workspace:^"
   },
   "devDependencies": {
+    "@h3ravel/contracts": "workspace:^",
     "typescript": "^5.4.0"
   }
 }

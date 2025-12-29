@@ -1,9 +1,18 @@
-import { ISessionManager } from '@h3ravel/shared'
-import { Request, Response } from '.'
+import type { ISessionManager } from '@h3ravel/contracts'
+import type { Request, Response } from '.'
 
 export { }
 
 declare global {
+    /**
+     * Get the flashed input from previous request
+     * 
+     * @param key 
+     * @param defaultValue 
+     * @returns 
+     */
+    function old (): Promise<Record<string, any>>
+    function old (key: string, defaultValue?: any): Promise<any>
     /**
      * Get an instance of the Request class
      * 

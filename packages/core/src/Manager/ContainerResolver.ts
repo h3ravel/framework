@@ -2,6 +2,11 @@ import 'reflect-metadata'
 
 import { Application } from '..'
 
+type Predicate =
+    | string
+    | ((...args: any[]) => any)
+    | (abstract new (...args: any[]) => any)
+
 export class ContainerResolver {
     constructor(private app: Application) { }
 
@@ -33,9 +38,17 @@ export class ContainerResolver {
         })
     }
 
-    static isClass (C: any) {
+    static isClass (C: Predicate): C is new (...args: any[]) => any {
         return typeof C === 'function' &&
             C.prototype !== undefined &&
             Object.toString.call(C).substring(0, 5) === 'class'
+    }
+
+    static isAbstract (C: Predicate): C is new (...args: any[]) => any {
+        return this.isClass(C) && C.name.startsWith('I')
+    }
+
+    static isCallable (C: Predicate): C is (...args: any[]) => any {
+        return typeof C === 'function' && !ContainerResolver.isClass(C)
     }
 }

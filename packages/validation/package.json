@@ -63,13 +63,14 @@
   "dependencies": {
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
-    "simple-body-validator": "^1.3.9"
+    "simple-body-validator": "catalog:",
+    "@h3ravel/foundation": "workspace:^"
   },
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
     "@h3ravel/config": "workspace:^",
     "@h3ravel/database": "workspace:^",
-    "@h3ravel/foundation": "workspace:^"
+    "@h3ravel/contracts": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

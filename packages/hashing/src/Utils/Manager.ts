@@ -1,4 +1,4 @@
-import { InvalidArgumentException, type SnakeToTitleCase, Str } from '@h3ravel/support'
+import { type SnakeToTitleCase, Str, InvalidArgumentException } from '@h3ravel/support'
 
 import type { Configuration, HashAlgorithm } from '../Contracts/ManagerContract'
 import { BcryptHasher } from '../Drivers/BcryptHasher'
@@ -6,7 +6,7 @@ import { ArgonHasher } from '../Drivers/ArgonHasher'
 import { Argon2idHasher } from '../Drivers/Argon2idHasher'
 import path from 'node:path'
 import { existsSync } from 'node:fs'
-import { ConfigException } from '@h3ravel/core'
+import { ConfigException } from '@h3ravel/foundation'
 
 type CreateMethodName = `create${SnakeToTitleCase<HashAlgorithm>}Driver`
 

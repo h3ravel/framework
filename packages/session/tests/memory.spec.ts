@@ -52,7 +52,7 @@ describe('@h3ravel/session MemoryDriver', () => {
         ctx = HttpContext.init({
             app,
             request: await Request.create(event, app),
-            response: new Response(event, app),
+            response: new Response(app, event),
         }, event)
 
         process.env.APP_KEY = appKey

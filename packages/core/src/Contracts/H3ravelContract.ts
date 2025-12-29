@@ -1,4 +1,4 @@
-import { H3 } from 'h3'
+import { H3, H3Event } from 'h3'
 
 export interface EntryConfig {
     /**
@@ -6,6 +6,10 @@ export interface EntryConfig {
      * is not installed.
      */
     h3?: H3
+    /**
+     * @param H3Event You can provide your own `H3Event` app instance, this is usefull for testing scenarios.
+     */
+    h3Event?: H3Event
     /**
      * Determines if we should initialize the app on call.
      * 

@@ -1,47 +1,58 @@
 import 'reflect-metadata'
 
-import { FileSystem, type HttpContext, type IApplication, type IPathName, Logger, PathLoader } from '@h3ravel/shared'
-import type { H3, H3Event } from 'h3'
+import { FileSystem, Logger, PathLoader } from '@h3ravel/shared'
+import { type H3, type H3Event } from 'h3'
+
+import { ConcreteConstructor, IKernel, IUrl, type IApplication, type IHttpContext, type IPathName, type IServiceProvider } from '@h3ravel/contracts'
 import { InvalidArgumentException, Str } from '@h3ravel/support'
 
-import { AServiceProvider } from './Contracts/ServiceProviderConstructor'
+import { AppBuilder, ConfigException } from '@h3ravel/foundation'
 import { Container } from './Container'
 import { ContainerResolver } from './Manager/ContainerResolver'
 import { ProviderRegistry } from './ProviderRegistry'
 import { Registerer } from './Registerer'
-import { type ServiceProvider } from './ServiceProvider'
 import { detect } from 'detect-port'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
 import { readFile } from 'node:fs/promises'
 import semver from 'semver'
-import { Foundation } from './Manager/Foundation'
-import { ConfigException } from './Exceptions/ConfigException'
 
 export class Application extends Container implements IApplication {
+    /**
+     * Indicates if the application has "booted".
+     */
+    #booted = false
     public paths = new PathLoader()
-    public context?: (event: H3Event) => Promise<HttpContext>
+    public context?: (event: H3Event) => Promise<IHttpContext>
     public h3Event?: H3Event
     private tries: number = 0
-    private booted = false
     private basePath: string
     private versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
     private static versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
 
     private h3App?: H3
-    private providers: Array<ServiceProvider> = []
-    protected externalProviders: Array<AServiceProvider> = []
+    private providers: Array<IServiceProvider> = []
+    protected externalProviders: Array<ConcreteConstructor<IServiceProvider>> = []
     protected filteredProviders: Array<string> = []
+
+    /**
+     * The route resolver callback.
+     */
+    protected uriResolver?: () => typeof IUrl
 
     /**
      * List of registered console commands
      */
     public registeredCommands: (new (app: any, kernel: any) => any)[] = []
 
+    /**
+     * The array of booted callbacks.
+     */
+    protected bootedCallbacks: Array<(...args: any[]) => void> = []
+
     constructor(basePath: string) {
         super()
-
         dotenvExpand.expand(dotenv.config({ quiet: true }))
 
         this.basePath = basePath
@@ -91,7 +102,7 @@ export class Application extends Container implements IApplication {
     /**
      * Get all registered providers
      */
-    public getRegisteredProviders () {
+    public getRegisteredProviders (): IServiceProvider[] {
         return this.providers
     }
 
@@ -103,13 +114,13 @@ export class Application extends Container implements IApplication {
      * Minimal App: Loads only core, config, http, router by default.
      * Full-Stack App: Installs database, mail, queue, cache → they self-register via their providers.
      */
-    protected async getConfiguredProviders (): Promise<Array<AServiceProvider>> {
+    protected async getConfiguredProviders (): Promise<ConcreteConstructor<IServiceProvider>[]> {
         return [
-            (await import('@h3ravel/core')).CoreServiceProvider,
+            (await import('@h3ravel/core')).CoreServiceProvider as never,
         ]
     }
 
-    protected async getAllProviders (): Promise<Array<AServiceProvider>> {
+    protected async getAllProviders (): Promise<Array<ConcreteConstructor<IServiceProvider>>> {
         const coreProviders = await this.getConfiguredProviders()
         return [...coreProviders, ...this.externalProviders]
     }
@@ -123,7 +134,7 @@ export class Application extends Container implements IApplication {
      * 
      * @returns 
      */
-    public async quickStartup (providers: Array<AServiceProvider>, filtered: string[] = [], autoRegisterProviders = true) {
+    public async quickStartup (providers: Array<ConcreteConstructor<IServiceProvider>>, filtered: string[] = [], autoRegisterProviders = true) {
         this.registerProviders(providers, filtered)
         await this.registerConfiguredProviders(autoRegisterProviders)
         return this.boot()
@@ -159,7 +170,7 @@ export class Application extends Container implements IApplication {
      * @param providers 
      * @param filtered 
      */
-    registerProviders (providers: Array<AServiceProvider>, filtered: string[] = []): void {
+    registerProviders (providers: Array<ConcreteConstructor<IServiceProvider>>, filtered: string[] = []): void {
         this.externalProviders.push(...providers)
         this.filteredProviders = filtered
     }
@@ -167,7 +178,7 @@ export class Application extends Container implements IApplication {
     /**
      * Register a provider
      */
-    public async register (provider: ServiceProvider) {
+    public async register (provider: IServiceProvider) {
         await new ContainerResolver(this).resolveMethodParams(provider, 'register', this)
         if (provider.registeredCommands && provider.registeredCommands.length > 0) {
             this.registeredCommands.push(...provider.registeredCommands)
@@ -196,6 +207,13 @@ export class Application extends Container implements IApplication {
 
     }
 
+    /**
+     * checks if the application is running in Unit Test
+     */
+    public runningUnitTests (): boolean {
+        return process.env.VITEST === 'true'
+    }
+
     public getRuntimeEnv (): 'browser' | 'node' | 'unknown' {
         if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             return 'browser'
@@ -207,11 +225,18 @@ export class Application extends Container implements IApplication {
     }
 
     /**
+     * Determine if the application has booted.
+     */
+    public isBooted (): boolean {
+        return this.#booted
+    }
+
+    /**
      * Boot all service providers after registration
      */
     public async boot () {
 
-        if (this.booted) return this
+        if (this.#booted) return this
 
         /**
          * If debug is enabled, let's show the loaded service provider info
@@ -236,18 +261,122 @@ export class Application extends Container implements IApplication {
                      */
                     await provider.boot(this)
                 }
+
+                if (provider.callBootedCallbacks) {
+                    await provider.callBootedCallbacks()
+                }
             }
         }
 
-        this.booted = true
+        this.#booted = true
+
+        this.fireAppCallbacks(this.bootedCallbacks)
+
         return this
+    }
+
+    /**
+     * Register a new "booted" listener.
+     *
+     * @param callback
+     */
+    public booted (callback: (...args: any[]) => void): void {
+        this.bootedCallbacks.push(callback)
+
+        if (this.isBooted()) {
+            callback(this)
+        }
+    }
+
+    /**
+     * Call the booting callbacks for the application.
+     *
+     * @param  callbacks
+     */
+    protected fireAppCallbacks (callbacks: Array<(...args: any[]) => void>): void {
+        let index = 0
+
+        while (index < callbacks.length) {
+            callbacks[index](this)
+
+            index++
+        }
+    }
+
+    /**
+     * Handle the incoming HTTP request and send the response to the browser.
+     *
+     * @param  request
+     */
+    async handleRequest (): Promise<void> {
+        this.h3App?.all('/**', async (event) => {
+            const context = await this.context!(event)
+
+            const kernel = this.make(IKernel)
+
+            if (!this.bound('http.context'))
+                this.bind('http.context', () => context)
+
+            if (!this.bound('http.request'))
+                this.bind('http.request', () => context.request)
+
+            if (!this.bound('http.response'))
+                this.bind('http.response', () => context.response)
+
+            const response = await kernel.handle(context.request)
+
+            if (response)
+                this.bind('http.response', () => response)
+
+            kernel.terminate(context.request, response!)
+
+            if (typeof response?.prepare !== 'undefined') {
+                const content = response.prepare(context.request).send()
+                return content
+            } else {
+                return response
+            }
+        })
+    }
+
+    /**
+     * Get the URI resolver callback.
+     */
+    getUriResolver (): () => typeof IUrl | undefined {
+        return this.uriResolver ?? (() => undefined)
+    }
+
+    /**
+     * Set the URI resolver callback.
+     *
+     * @param  callback
+     */
+    setUriResolver (callback: () => typeof IUrl) {
+        this.uriResolver = callback
+
+        return this
+    }
+
+    /**
+     * Determine if middleware has been disabled for the application.
+     */
+    public shouldSkipMiddleware () {
+        return this.bound('middleware.disable') && this.make('middleware.disable') === true
     }
 
     /**
      * Provide safe overides for the app
      */
     public configure () {
-        return new Foundation(this)
+        return new AppBuilder(this)
+            .withKernels()
+    }
+
+    /**
+     * Check if the current application environment matches the one provided
+     */
+    public environment<E = string | undefined> (env: E): E extends undefined ? string : boolean {
+        return (this.make('config').get('app.env') === env) as never
     }
 
     /**
@@ -263,14 +392,11 @@ export class Application extends Container implements IApplication {
     public async fire (h3App: H3, preferredPort?: number): Promise<this>
     public async fire (h3App?: H3, preferredPort?: number): Promise<this> {
 
-        if (h3App) {
-            return await this.serve(h3App, preferredPort)
-        }
+        if (h3App)
+            this.h3App = h3App
 
-        if (!this?.h3App) {
+        if (!this?.h3App)
             throw new ConfigException('[Provide a H3 app instance in the config or install @h3ravel/http]')
-        }
-
 
         return await this.serve(this.h3App, preferredPort)
     }

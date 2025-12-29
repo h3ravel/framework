@@ -1,5 +1,5 @@
 import { DriverOption, SessionDriver } from './Contracts/SessionContract'
-import { HttpContext, IRequest, ISessionManager } from '@h3ravel/shared'
+import type { IHttpContext, IRequest, ISessionManager } from '@h3ravel/contracts'
 import { createHash, createHmac, randomBytes } from 'crypto'
 import { getCookie, setCookie } from 'h3'
 
@@ -24,7 +24,7 @@ export class SessionManager implements ISessionManager {
      * @param driverName - registered driver key ('file' | 'database' | 'memory' | 'redis')
      * @param driverOptions - optional bag for driver-specific options
      */
-    constructor(private ctx: HttpContext, driverName: 'file' | 'memory' | 'database' | 'redis' = 'file', driverOptions: DriverOption = {}) {
+    constructor(private ctx: IHttpContext, driverName: 'file' | 'memory' | 'database' | 'redis' = 'file', driverOptions: DriverOption = {}) {
         this.appKey = process.env.APP_KEY!
         this.request = ctx.request
 

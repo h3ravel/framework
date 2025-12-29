@@ -1,4 +1,4 @@
-import { HttpContext, IMiddleware } from '@h3ravel/shared'
+import { IApplication, IHttpContext, IMiddleware, IMiddlewareHandler } from '@h3ravel/contracts'
 
 import { Arr } from '@h3ravel/support'
 
@@ -6,8 +6,8 @@ import { Arr } from '@h3ravel/support'
  * Handles registration and execution of middleware.
  * Every middleware implements IMiddleware with a handle(context, next) method.
  */
-export class MiddlewareHandler {
-    constructor(private middleware: IMiddleware[] = []) { }
+export class MiddlewareHandler implements IMiddlewareHandler {
+    constructor(private middleware: IMiddleware[] = [], private app: IApplication) { }
 
     /**
      * Registers a middleware instance.
@@ -30,8 +30,8 @@ export class MiddlewareHandler {
      */
 
     async run (
-        context: HttpContext,
-        next: (ctx: HttpContext) => Promise<any>
+        context: IHttpContext,
+        next: (ctx: IHttpContext) => Promise<any>
     ) {
         let index = -1
         const dispatch = async (i: number): Promise<any> => {
@@ -49,7 +49,10 @@ export class MiddlewareHandler {
             /**
              * Execute the current middleware and proceed to the next one
              */
-            return current.handle(context, () => dispatch(i + 1))
+            // const handler = this.app.make(current.handle)
+            // console.log(current, )
+            return await this.app.invoke(current, 'handle', [context.request, () => dispatch(i + 1)])
+            // return current.handle(context.request, () => dispatch(i + 1))
         }
 
         return dispatch(0)

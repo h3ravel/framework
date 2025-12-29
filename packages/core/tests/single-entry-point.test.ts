@@ -5,12 +5,11 @@ import { h3ravel } from '@h3ravel/core'
 
 let app: Application
 
-console.log = vi.fn(() => 0)
-
 describe('Single Entry Point without @h3ravel/http installed', async () => {
     beforeEach(async () => {
+        const { EventsServiceProvider } = await import(('@h3ravel/events'))
         const { RouteServiceProvider } = await import(('@h3ravel/router'))
-        app = await h3ravel([RouteServiceProvider])
+        app = await h3ravel([EventsServiceProvider, RouteServiceProvider])
     })
 
     it('returns the fully configured Application instance', async () => {

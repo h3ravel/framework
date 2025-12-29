@@ -1,4 +1,4 @@
-import { Command } from '@h3ravel/console'
+import { Command } from '@h3ravel/musket'
 import { Injectable } from '@h3ravel/core'
 import { User } from 'src/app/Models/user'
 

@@ -255,8 +255,10 @@ export class Logger {
         if (typeof config === 'string') {
             const conf = [[config, joiner]] as [string, keyof ChalkInstance][]
             return this.parse(conf, '', log as false, sc)
-        } else if (config) {
+        } else if (Array.isArray(config)) {
             return this.parse(config, String(joiner), log as false, sc)
+        } else if (log && !this.shouldSuppressOutput('line')) {
+            return console.log(this.textFormat(config, Logger.chalker(['blue'])))
         }
 
         return this

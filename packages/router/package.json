@@ -57,15 +57,19 @@
     "test": "jest --passWithNoTests",
     "version-patch": "pnpm version patch"
   },
+  "peerDependencies": {
+    "@h3ravel/database": "workspace:^"
+  },
   "dependencies": {
+    "h3": "catalog:prod",
+    "@h3ravel/contracts": "workspace:^",
     "@h3ravel/core": "workspace:^",
+    "@h3ravel/events": "workspace:^",
     "@h3ravel/musket": "catalog:prod",
-    "@h3ravel/database": "workspace:^",
     "@h3ravel/http": "workspace:^",
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
     "@h3ravel/foundation": "workspace:^",
-    "h3": "catalog:prod",
     "reflect-metadata": "catalog:"
   }
 }

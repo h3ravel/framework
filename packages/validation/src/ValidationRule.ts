@@ -1,9 +1,13 @@
-import { Rule } from 'simple-body-validator'
-import type { RuleCallable } from './Contracts/RuleBuilder'
-import { Validator } from './Validator'
+import type { IValidationRule, RulesForData, ValidationRuleCallable } from '@h3ravel/contracts'
 
-export abstract class ValidationRule extends Rule {
-    rules: RuleCallable[] = []
+import { Rule } from 'simple-body-validator'
+import type { Validator } from './Validator'
+
+export abstract class ValidationRule<
+    D extends Record<string, any> = any,
+    R extends RulesForData<D> = any
+> extends Rule implements IValidationRule {
+    rules: ValidationRuleCallable[] = []
     private passing: boolean = false
 
     /**
@@ -13,7 +17,7 @@ export abstract class ValidationRule extends Rule {
     /**
      * Set the current validator.
      */
-    public setValidator?(validator: Validator<any, any>): this
+    public setValidator?(validator: Validator<D, R>): this
     /**
      * Set the data under validation.
      */

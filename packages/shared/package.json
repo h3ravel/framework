@@ -71,6 +71,7 @@
     "preferred-pm": "catalog:"
   },
   "devDependencies": {
+    "@h3ravel/contracts": "workspace:^",
     "fetchdts": "^0.1.6",
     "pnpm": "^10.14.0"
   }

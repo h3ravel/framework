@@ -1,4 +1,3 @@
-export * from './Contracts/UrlContract'
 export * from './Helpers'
 export * from './Providers/UrlServiceProvider'
 export * from './RequestAwareHelpers'

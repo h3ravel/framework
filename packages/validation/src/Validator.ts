@@ -1,10 +1,9 @@
-import { BaseClass, CustomRules } from './Contracts/RuleBuilder'
-import { DotPaths, MessagesForRules, RulesForData } from './Contracts/ValidatorContracts'
-import { Validator as SimpleBodyValidator, make, register, setTranslationObject } from 'simple-body-validator'
+import type { BaseValidationRuleClass, CustomValidationRules, DotPaths } from '@h3ravel/contracts'
+import type { IValidator, MessagesForRules, RulesForData, ValidationRuleSet } from '@h3ravel/contracts'
+import { type Validator as SimpleBodyValidator, make, register, setTranslationObject } from 'simple-body-validator'
 
 import { ExtendedRules } from './Rules/ExtendedRules'
 import { MessageBag } from './utilities/MessageBag'
-import { RuleSet } from './Contracts/ValidationRuleName'
 import { ValidationException } from './ValidationException'
 import { ValidationRule } from './ValidationRule'
 
@@ -13,9 +12,9 @@ register('telephone', function (value) {
 })
 
 export class Validator<
-    D extends Record<string, any>,
-    R extends RulesForData<D>
-> {
+    D extends Record<string, any> = any,
+    R extends RulesForData<D> = RulesForData<D>
+> implements IValidator<D, R> {
     #messages: Partial<Record<MessagesForRules<R>, string>>
     #after: (() => void)[] = []
 
@@ -26,7 +25,7 @@ export class Validator<
     private executed: boolean = false
     private instance?: SimpleBodyValidator
     private errorBagName = 'default'
-    private registeredCustomRules: CustomRules[] = [
+    private registeredCustomRules: CustomValidationRules[] = [
         new ExtendedRules()
     ]
     private shouldStopOnFirstFailure = false
@@ -166,7 +165,7 @@ export class Validator<
      *
      * @param  callback
      */
-    public after<C extends ((validator: Validator<D, R>) => void) | BaseClass> (callback: C | C[]) {
+    public after<C extends ((validator: Validator<D, R>) => void) | BaseValidationRuleClass> (callback: C | C[]) {
 
         if (Array.isArray(callback)) {
             for (const rule of callback as any[]) {
@@ -212,7 +211,7 @@ export class Validator<
     /**
      * Add a single rule to existing rules.
      */
-    public addRule (key: DotPaths<D>, rule: RuleSet): this {
+    public addRule (key: DotPaths<D>, rule: ValidationRuleSet): this {
         this.rules[key as never] = rule as never
         return this
     }

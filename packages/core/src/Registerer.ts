@@ -1,10 +1,13 @@
 import { dd, dump } from '@h3ravel/support'
 
 import { Application } from '.'
+import { IRegisterer } from '@h3ravel/contracts'
 import nodepath from 'node:path'
 
-export class Registerer {
-    constructor(private app: Application) { }
+export class Registerer extends IRegisterer {
+    constructor(private app: Application) {
+        super()
+    }
 
     static register (app: Application) {
         const reg = new Registerer(app)

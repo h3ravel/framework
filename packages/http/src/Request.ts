@@ -1,19 +1,17 @@
 import { getRequestIP, type H3Event } from 'h3'
 import { Arr, data_get, data_set, Obj, safeDot, Str } from '@h3ravel/support'
-import type { DotNestedKeys, DotNestedValue, ISessionManager } from '@h3ravel/shared'
-import { IRequest } from '@h3ravel/shared'
-import { Application } from '@h3ravel/core'
-import { RequestMethod, RequestObject } from '@h3ravel/shared'
+import type { DotNestedKeys, DotNestedValue, ISessionManager, IRequest, IRoute, RulesForData, MessagesForRules } from '@h3ravel/contracts'
+import { IApplication } from '@h3ravel/contracts'
+import { RequestMethod, RequestObject, IUrl } from '@h3ravel/contracts'
 import { InputBag } from './Utilities/InputBag'
 import { UploadedFile } from './UploadedFile'
 import { FormRequest } from './FormRequest'
-import { Url } from '@h3ravel/url'
 import { HttpRequest } from './Utilities/HttpRequest'
-import { MessagesForRules, RulesForData, Validator } from '@h3ravel/validation'
 
 export class Request<
     D extends Record<string, any> = Record<string, any>,
-    R extends RulesForData<D> = RulesForData<D>
+    R extends RulesForData<D> = RulesForData<D>,
+    U extends Record<string, any> = Record<string, any>
 > extends HttpRequest implements IRequest<D, R> {
     /**
      * The decoded JSON content for the request.
@@ -25,6 +23,16 @@ export class Request<
      */
     protected convertedFiles?: Record<string, UploadedFile | UploadedFile[]>
 
+    /**
+     * The route resolver callback.
+     */
+    protected routeResolver?: () => IRoute
+
+    /**
+     * The user resolver callback.
+     */
+    protected userResolver?: (guard?: string) => U
+
     constructor(
         /**
          * The current H3 H3Event instance
@@ -33,7 +41,7 @@ export class Request<
         /**
          * The current app instance
          */
-        app: Application
+        app: IApplication
     ) {
         if (Request.httpMethodParameterOverride) {
             HttpRequest.enableHttpMethodParameterOverride()
@@ -52,13 +60,38 @@ export class Request<
         /**
          * The current app instance
          */
-        app: Application
+        app: IApplication
     ) {
         const instance = new Request(event, app)
         await instance.setBody()
         await instance.initialize()
+        globalThis.old = (...args: any[]) => instance.old(args?.[0], args?.[1]) as never
         globalThis.request = () => instance
-        globalThis.session = (...args: []) => instance.session(...args)
+        globalThis.session = (...args: any[]) => instance.session(...args)
+        return instance
+    }
+
+    /**
+     * Factory method to create a syncronous Request instance from an H3Event.
+     */
+    static createSync (
+        /**
+         * The current H3 H3Event instance
+         */
+        event: H3Event,
+        /**
+         * The current app instance
+         */
+        app: IApplication
+    ) {
+        const instance = new Request(event, app)
+        instance.content = event.req.body
+        instance.body = instance.content
+        instance.buildRequirements()
+        instance.sessionManagerClass = {} as never
+        globalThis.old = (...args: any[]) => instance.old(args?.[0], args?.[1]) as never
+        globalThis.request = () => instance
+        globalThis.session = (...args: any[]) => instance.session(...args)
         return instance
     }
 
@@ -116,6 +149,8 @@ export class Request<
         rules: R,
         messages: Partial<Record<MessagesForRules<R>, string>> = {}
     ): Promise<D> {
+        const { Validator } = await import('@h3ravel/validation')
+
         const validator = new Validator(this.all(), rules, messages)
 
         return await validator.validate() as D
@@ -170,13 +205,11 @@ export class Request<
      * @param expectArray set to true to return an `UploadedFile[]` array.
      * @returns
      */
-    public file<K extends string | undefined = undefined, E extends boolean | undefined = undefined> (
-        key?: K,
-        defaultValue?: any,
-        expectArray?: E
-    ): K extends undefined
-        ? Record<string, E extends true ? UploadedFile[] : UploadedFile>
-        : E extends true ? UploadedFile[] : UploadedFile {
+    public file (): Record<string, UploadedFile>;
+    public file (key?: undefined, defaultValue?: any, expectArray?: true): Record<string, UploadedFile[]>;
+    public file (key: string, defaultValue?: any, expectArray?: false | undefined): UploadedFile;
+    public file (key: string, defaultValue?: any, expectArray?: true): UploadedFile[];
+    public file<K extends string | undefined = undefined, E extends boolean | undefined = undefined> (key?: K, defaultValue?: any, expectArray?: E) {
         const files = data_get(this.allFiles(), key!, defaultValue)
 
         if (!files) return defaultValue
@@ -189,6 +222,33 @@ export class Request<
 
         // Single file case
         return files as any
+    }
+
+    /**
+     * Get the user making the request.
+     *
+     * @param  guard
+     */
+    public user (guard?: string): U | undefined {
+        return Reflect.apply(this.getUserResolver(), this, [guard])
+    }
+
+    /**
+     * Get the route handling the request.
+     *
+     * @param  param
+     * @param  defaultRoute
+     */
+    public route (): IRoute
+    public route (param?: string, defaultParam?: any): any
+    public route (param?: string, defaultParam?: any) {
+        const route = Reflect.apply(this.getRouteResolver(), this, [])
+
+        if (typeof route === 'undefined' || !param) {
+            return route
+        }
+
+        return route.parameter(param, defaultParam)
     }
 
     /**
@@ -262,6 +322,17 @@ export class Request<
     }
 
     /**
+     * Get the current decoded path info for the request.
+     */
+    public decodedPath () {
+        try {
+            return decodeURIComponent(this.path())
+        } catch {
+            return this.path()
+        }
+    }
+
+    /**
      * Determine if the data contains a given key.
      * 
      * @param keys 
@@ -290,6 +361,13 @@ export class Request<
         const data = Object.entries(this.all<Record<string, T>>()).filter(([key]) => keys.includes(key))
 
         return Object.fromEntries(data) as T
+    }
+
+    /**
+     * Determine if the request is over HTTPS.
+     */
+    public secure () {
+        return this.isSecure()
     }
 
     /**
@@ -375,6 +453,27 @@ export class Request<
     }
 
     /**
+     * Get the host name.
+     */
+    public host () {
+        return this.getHost()
+    }
+
+    /**
+     * Get the HTTP host being requested.
+     */
+    public httpHost () {
+        return this.getHttpHost()
+    }
+
+    /**
+     * Get the scheme and HTTP host.
+     */
+    public schemeAndHttpHost () {
+        return this.getSchemeAndHttpHost()
+    }
+
+    /**
      * Determine if the request is sending JSON.
      *
      * @return bool
@@ -431,10 +530,47 @@ export class Request<
     }
 
     /**
+     * Get the flashed input from previous request
+     * 
+     * @param key 
+     * @param defaultValue 
+     * @returns 
+     */
+    public async old (): Promise<Record<string, any>>
+    public async old (key: string, defaultValue?: any): Promise<any>
+    public async old (key?: string, defaultValue?: any): Promise<any> {
+        const payload = await this.session().get('_old', {})
+
+        if (key) return safeDot(payload, key) || defaultValue
+        return payload
+        // new MessageBag(instance.errors().all())
+    }
+
+    /**
      * Get a URI instance for the request.
      */
-    public uri (): Url {
-        return this.getUriInstance()
+    public uri (): IUrl {
+        const Url = Reflect.apply(this.app.getUriResolver(), this, [])!
+
+        return Url.of(this.fullUrl(), this.app)
+    }
+
+    /**
+     * Get the root URL for the application.
+     *
+     * @return string
+     */
+    public root () {
+        return Str.rtrim(this.getSchemeAndHttpHost() + this.getBaseUrl(), '/')
+    }
+
+    /**
+     * Get the URL (no query string) for the request.
+     *
+     * @return string
+     */
+    public url () {
+        return Str.rtrim(this.uri().toString().replace(/\?.*/, ''), '/')
     }
 
     /**
@@ -442,6 +578,14 @@ export class Request<
      */
     public fullUrl (): string {
         return this.event.req.url
+    }
+
+    /**
+     * Get the current path info for the request.
+     */
+    public path (): string {
+        const pattern = (this.getPathInfo() ?? '').replace(/^\/+|\/+$/g, '')
+        return pattern === '' ? '/' : pattern
     }
 
     /**
@@ -483,6 +627,42 @@ export class Request<
         }
 
         return Obj.get(this.#json.all(), key, defaultValue)
+    }
+
+    /**
+     * Get the user resolver callback.
+     */
+    public getUserResolver (): ((gaurd?: string) => U | undefined) {
+        return this.userResolver ?? (() => undefined)
+    }
+
+    /**
+     * Set the user resolver callback.
+     *
+     * @param  callback
+     */
+    public setUserResolver (callback: (gaurd?: string) => U) {
+        this.userResolver = callback
+
+        return this
+    }
+
+    /**
+     * Get the route resolver callback.
+     */
+    public getRouteResolver (): () => IRoute | undefined {
+        return this.routeResolver ?? (() => undefined)
+    }
+
+    /**
+     * Set the route resolver callback.
+     *
+     * @param  callback
+     */
+    public setRouteResolver (callback: () => IRoute) {
+        this.routeResolver = callback
+
+        return this
     }
 
     /**

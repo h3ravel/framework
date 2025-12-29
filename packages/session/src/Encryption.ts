@@ -1,6 +1,6 @@
 import crypto, { createHash } from 'crypto'
 
-import { ConfigException } from 'packages/core/dist'
+import { ConfigException } from '@h3ravel/foundation'
 
 export class Encryption {
     private key: Buffer

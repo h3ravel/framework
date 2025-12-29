@@ -1,28 +1,44 @@
-import type { DotNestedKeys, DotNestedValue, HttpContext } from '@h3ravel/shared'
-import { type H3Event, HTTPResponse } from 'h3'
+import type { DotNestedKeys, DotNestedValue, IHttpContext, IResponse } from '@h3ravel/contracts'
+import { Str, safeDot } from '@h3ravel/support'
 
-import { Application } from '@h3ravel/core'
+import { H3Event } from 'h3'
 import { HttpResponse } from './Utilities/HttpResponse'
-import { IResponse } from '@h3ravel/shared'
-import { safeDot } from '@h3ravel/support'
+import { IApplication } from '@h3ravel/contracts'
+import { Responsable } from './Utilities/Responsable'
+import { ResponseCodes } from './Utilities/ResponseUtilities'
 
 export class Response extends HttpResponse implements IResponse {
+    static codes = ResponseCodes
+
     /**
      * The current Http Context
      */
-    context!: HttpContext
+    context!: IHttpContext
 
-    constructor(
-        /**
-         * The current H3 H3Event instance
-         */
-        event: H3Event,
-        /**
-         * The current app instance
-         */
-        public app: Application
-    ) {
+    /**
+     * 
+     * @param app The current app instance
+     * @param content The current H3 H3Event instance
+     * @param status The http status code
+     * @param headers The http headers
+     */
+    constructor(app: IApplication, content: H3Event)
+    constructor(app: IApplication, content: string, status?: ResponseCodes, headers?: Record<string, (string | null)[] | string>)
+    constructor(public app: IApplication, event?: H3Event | string, status: ResponseCodes = 200, headers: Record<string, (string | null)[] | string> = {}) {
+        const hasHeaders = Object.entries(headers).length > 0
+        const content = !(event instanceof H3Event) ? event : ''
+        event = event instanceof H3Event ? event : app.make('http.context')?.event
+
         super(event)
+
+        if (content || status !== 200 || hasHeaders) {
+            this.setContent(content)
+                .setStatusCode(status)
+
+            if (hasHeaders)
+                this.withHeaders(headers)
+        }
+
         globalThis.response = () => this
     }
 
@@ -31,7 +47,7 @@ export class Response extends HttpResponse implements IResponse {
      */
     public sendContent (type?: 'html' | 'json' | 'text' | 'xml', parse?: boolean) {
         if (!type) {
-            return this.text(this.content, parse!)
+            type = Str.detectContentType(this.content)
         }
 
         return this[type].call(this, this.content, parse!)
@@ -52,9 +68,10 @@ export class Response extends HttpResponse implements IResponse {
      * @returns 
      */
     async view (viewPath: string, data?: Record<string, any> | undefined): Promise<this>
-    async view (viewPath: string, data: Record<string, any> | undefined, parse: boolean): Promise<HTTPResponse>
-    async view (viewPath: string, data?: Record<string, any> | undefined, parse?: boolean): Promise<HTTPResponse | this> {
-        return this.html(await this.app.make('edge').render(viewPath, data), parse!) as never
+    async view (viewPath: string, data: Record<string, any> | undefined, parse: boolean): Promise<Responsable>
+    async view (viewPath: string, data?: Record<string, any> | undefined, parse?: boolean): Promise<Responsable | this> {
+        const base = this.html(await this.app.make('edge').render(viewPath, data), parse!)
+        return new Responsable(base.body!, base)
     }
 
     /**
@@ -66,9 +83,10 @@ export class Response extends HttpResponse implements IResponse {
      * @returns 
      */
     async viewTemplate (content: string, data?: Record<string, any> | undefined): Promise<this>
-    async viewTemplate (content: string, data: Record<string, any> | undefined, parse: boolean): Promise<HTTPResponse>
-    async viewTemplate (content: string, data?: Record<string, any> | undefined, parse?: boolean): Promise<HTTPResponse | this> {
-        return this.html(await this.app.make('edge').renderRaw(content, data), parse!) as never
+    async viewTemplate (content: string, data: Record<string, any> | undefined, parse: boolean): Promise<Responsable>
+    async viewTemplate (content: string, data?: Record<string, any> | undefined, parse?: boolean): Promise<Responsable | this> {
+        const base = this.html(await this.app.make('edge').renderRaw(content, data), parse!)
+        return new Responsable(base.body!, base)
     }
 
     /**
@@ -78,9 +96,10 @@ export class Response extends HttpResponse implements IResponse {
      * @returns 
      */
     html (content?: string): this
-    html (content: string, parse: boolean): HTTPResponse
-    html (content?: string, parse?: boolean): HTTPResponse | this {
-        return this.httpResponse('text/html', content ?? this.content, parse!) as never
+    html (content: string, parse: boolean): Responsable
+    html (content?: string, parse?: boolean): Responsable | this {
+        const base = this.httpResponse('text/html', content ?? this.content, parse!)
+        return new Responsable(base.body!, base)
     }
 
     /**
@@ -88,7 +107,7 @@ export class Response extends HttpResponse implements IResponse {
      */
     json<T = unknown> (data?: T): this
     json<T = unknown> (data: T, parse: boolean): T
-    json<T = unknown> (data?: T, parse?: boolean): HTTPResponse | this {
+    json<T = unknown> (data?: T, parse?: boolean): Responsable | this {
         const content = data ?? this.content
         return this.httpResponse(
             'application/json',
@@ -101,8 +120,8 @@ export class Response extends HttpResponse implements IResponse {
      * Send plain text.
      */
     text (content?: string): this
-    text (content: string, parse: boolean): HTTPResponse
-    text (content?: string, parse?: boolean): HTTPResponse | this {
+    text (content: string, parse: boolean): Responsable
+    text (content?: string, parse?: boolean): Responsable | this {
         return this.httpResponse('text/plain', content ?? this.content, parse!) as never
     }
 
@@ -110,7 +129,7 @@ export class Response extends HttpResponse implements IResponse {
      * Send plain xml.
      */
     xml (data?: string): this
-    xml (data: string, parse: boolean): HTTPResponse
+    xml (data: string, parse: boolean): Responsable
     xml (data?: string, parse?: boolean) {
         return this.httpResponse('application/xml', data ?? this.content, parse!) as never
     }
@@ -122,11 +141,11 @@ export class Response extends HttpResponse implements IResponse {
      * @param data 
      */
     private httpResponse (contentType: string, data?: string): this
-    private httpResponse (contentType: string, data: string, parse: boolean): HTTPResponse
+    private httpResponse (contentType: string, data: string, parse: boolean): Responsable
     private httpResponse (contentType: string, data?: string, parse?: boolean) {
         if (parse) {
             this.sendHeaders()
-            return new HTTPResponse(
+            return new Responsable(
                 data ?? this.content, {
                 status: this.statusCode,
                 statusText: this.statusText,

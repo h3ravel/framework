@@ -1,4 +1,4 @@
-import { type HttpContext } from '@h3ravel/shared'
+import { IHttpContext } from '@h3ravel/contracts'
 import { Model } from '@h3ravel/database'
 
 export class Helpers {
@@ -38,7 +38,7 @@ export class Helpers {
      * @param model - The model instance to resolve bindings against
      * @returns A resolved model instance or an object containing param values
      */
-    static async resolveRouteModelBinding (path: string, ctx: HttpContext, model: Model): Promise<any> {
+    static async resolveRouteModelBinding (path: string, ctx: IHttpContext, model: Model): Promise<any> {
         const name = model.constructor.name.toLowerCase()
         /**
          * Extract field (defaults to 'id' if not specified after '|')

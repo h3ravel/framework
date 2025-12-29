@@ -1,4 +1,4 @@
-import { ServiceProvider } from '@h3ravel/core'
+import { ServiceProvider } from '@h3ravel/foundation'
 
 /**
  * Cache drivers and utilities.

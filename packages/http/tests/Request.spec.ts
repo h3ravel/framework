@@ -1,6 +1,5 @@
 import { Application, h3ravel } from '@h3ravel/core' // if this exists
-import { HttpContext, Response } from '@h3ravel/http'
-import { beforeAll, beforeEach, describe, expect, it, test, vi } from 'vitest'
+import { beforeEach, describe, expect, it, test, vi } from 'vitest'
 
 import { HttpServiceProvider } from '../src/Providers/HttpServiceProvider'
 import { InputBag } from '../src/Utilities/InputBag'
@@ -410,7 +409,7 @@ describe('Request', () => {
     //         const ctx = HttpContext.init({
     //             app,
     //             request: await Request.create(event, app),
-    //             response: new Response(event, app),
+    //             response: new Response(app, event),
     //         }, event)
 
 

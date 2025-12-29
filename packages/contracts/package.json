@@ -1,0 +1,70 @@
+{
+  "name": "@h3ravel/contracts",
+  "version": "0.27.7",
+  "description": "H3ravel Contracts.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "dist/index.d.ts"
+      ]
+    }
+  },
+  "files": [
+    "dist",
+    "tsconfig.json"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      },
+      "./*": "./*"
+    }
+  },
+  "homepage": "https://h3ravel.toneflix.net",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/h3ravel/framework.git",
+    "directory": "packages/contracts"
+  },
+  "keywords": [
+    "h3ravel",
+    "modern",
+    "web",
+    "H3",
+    "framework",
+    "nodejs",
+    "typescript",
+    "laravel",
+    "contracts"
+  ],
+  "scripts": {
+    "build": "tsdown --config-loader unconfig",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "lint": "eslint . --ext .ts",
+    "test": "jest --passWithNoTests",
+    "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump contracts package and publish\" && pnpm publish --tag latest",
+    "version-patch": "pnpm version patch"
+  },
+  "devDependencies": {
+    "edge.js": "catalog:",
+    "simple-body-validator": "catalog:"
+  },
+  "dependencies": {
+    "h3": "catalog:prod"
+  }
+}

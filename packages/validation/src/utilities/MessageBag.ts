@@ -1,16 +1,6 @@
-export interface MessageProvider {
-    getMessageBag (): MessageBag;
-}
+import type { IMessageBag, ValidationMessageProvider } from '@h3ravel/contracts'
 
-export interface MessageBagContract {
-    add (key: string, message: string): this;
-    has (key: string | string[]): boolean;
-    all (format?: string): string[];
-    first (key?: string | null, format?: string | null): string;
-    getMessages (): Record<string, string[]>;
-}
-
-export class MessageBag implements MessageBagContract, MessageProvider {
+export class MessageBag implements IMessageBag {
     /**
      * All of the registered messages.
      */
@@ -66,9 +56,9 @@ export class MessageBag implements MessageBagContract, MessageProvider {
     /**
      * Merge another message source into this one.
      */
-    merge (messages: Record<string, string[]> | MessageProvider): this {
+    merge (messages: Record<string, string[]> | ValidationMessageProvider): this {
         const incoming =
-            (messages as MessageProvider).getMessageBag?.()?.getMessages?.() ??
+            (messages as ValidationMessageProvider).getMessageBag?.()?.getMessages?.() ??
             (messages as Record<string, string[]>)
 
         for (const [key, list] of Object.entries(incoming)) {

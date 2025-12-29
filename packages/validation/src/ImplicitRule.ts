@@ -1,9 +1,9 @@
 import { ImplicitRule as Rule } from 'simple-body-validator'
-import type { RuleCallable } from './Contracts/RuleBuilder'
-import { Validator } from './Validator'
+import type { ValidationRuleCallable } from '@h3ravel/contracts'
+import type { Validator } from './Validator'
 
 export abstract class ImplicitRule extends Rule {
-    rules: RuleCallable[] = []
+    rules: ValidationRuleCallable[] = []
 
     /**
      * Run the validation rule.

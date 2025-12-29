@@ -64,6 +64,7 @@
   "devDependencies": {
     "tsx": "catalog:",
     "@h3ravel/core": "workspace:^",
+    "@h3ravel/contracts": "workspace:^",
     "typescript": "^5.9.2"
   }
 }

@@ -1,7 +1,7 @@
 import { DateTime } from '@h3ravel/support'
-import type { RuleCallable } from '../Contracts/RuleBuilder'
 import { ValidationRule } from '../ValidationRule'
-import { Validator } from '../Validator'
+import type { ValidationRuleCallable } from '@h3ravel/contracts'
+import type { Validator } from '../Validator'
 
 export class ExtendedRules extends ValidationRule {
     /**
@@ -14,7 +14,7 @@ export class ExtendedRules extends ValidationRule {
         return this
     }
 
-    rules: RuleCallable[] = [
+    rules: ValidationRuleCallable[] = [
         {
 
             name: 'hex',

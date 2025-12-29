@@ -27,6 +27,8 @@ export class DatabaseServiceProvider extends ServiceProvider {
             arquebus.addConnection(connection)
         }
 
+        this.app.singleton('db', () => arquebus.fire())
+
         /** Register Musket Commands */
         this.registerCommands([MigrateCommand, MakeCommand, SeedCommand])
     }

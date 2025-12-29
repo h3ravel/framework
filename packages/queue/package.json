@@ -57,7 +57,8 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^"
+    "@h3ravel/core": "workspace:^",
+    "@h3ravel/contracts": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

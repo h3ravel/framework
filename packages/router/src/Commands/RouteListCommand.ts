@@ -1,8 +1,10 @@
-import { Logger, LoggerChalk, RouteDefinition, RouteMethod } from '@h3ravel/shared'
+import { Logger, LoggerChalk, RouteMethod } from '@h3ravel/shared'
 
+import { Application } from '@h3ravel/core'
+import { ClassicRouteDefinition } from '@h3ravel/contracts'
 import { Command } from '@h3ravel/musket'
 
-export class RouteListCommand extends Command {
+export class RouteListCommand extends Command<Application> {
 
     /**
      * The name and signature of the console command.
@@ -40,7 +42,7 @@ export class RouteListCommand extends Command {
         /**
          * Sort the routes alphabetically
          */
-        const list = [...(this.app.make('app.routes') as RouteDefinition[])].sort((a, b) => {
+        const list = [...(this.app.make('app.routes') as ClassicRouteDefinition[])].sort((a, b) => {
             if (a.path === '/' && b.path !== '/') return -1
             if (b.path === '/' && a.path !== '/') return 1
             return a.path.localeCompare(b.path)
@@ -96,9 +98,9 @@ export class RouteListCommand extends Command {
     private pair (method: RouteMethod) {
         switch (method.toLowerCase()) {
             case 'get':
-                return Logger.log('|', 'gray', false) + Logger.log('HEAD', this.color('head'), false)
+                return Logger.log('|', 'gray', false) + Logger.log('HEAD', this.color('HEAD'), false)
             case 'put':
-                return Logger.log('|', 'gray', false) + Logger.log('PATCH', this.color('patch'), false)
+                return Logger.log('|', 'gray', false) + Logger.log('PATCH', this.color('PATCH'), false)
             default:
                 return ''
         }

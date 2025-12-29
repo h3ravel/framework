@@ -1,10 +1,12 @@
 import { DateTime, RuntimeException } from '@h3ravel/support'
 
+import { IHeaderBag } from '@h3ravel/contracts'
+
 /**
  * HeaderBag — A container for HTTP headers
- * for Node/H3 environments.
+ * for H3ravel App.
  */
-export class HeaderBag implements Iterable<[string, (string | null)[]]> {
+export class HeaderBag extends IHeaderBag {
     protected static readonly UPPER = '_ABCDEFGHIJKLMNOPQRSTUVWXYZ'
     protected static readonly LOWER = '-abcdefghijklmnopqrstuvwxyz'
 
@@ -13,8 +15,12 @@ export class HeaderBag implements Iterable<[string, (string | null)[]]> {
     protected cacheControl: Record<string, string | boolean> = {}
 
     constructor(headers: Record<string, string | string[] | null> = {}) {
+        super()
         for (const [key, values] of Object.entries(headers)) {
             this.set(key, values)
+            if (key.startsWith('HTTP_')) {
+                this.set(key.slice(5), values)
+            }
         }
     }
 
@@ -97,8 +103,8 @@ export class HeaderBag implements Iterable<[string, (string | null)[]]> {
      */
     public get<R = undefined> (
         key: string,
-        defaultValue: string | null = null
-    ): R extends undefined ? string | null : R {
+        defaultValue: string | null | undefined = null
+    ): R extends undefined ? string | null | undefined : R {
         const headers = this.all(key) || this.all('http-' + key)
         if (!headers.length) return defaultValue as R extends undefined ? string | null : R
         return headers[0] as R extends undefined ? string | null : R

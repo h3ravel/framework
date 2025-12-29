@@ -731,7 +731,7 @@ export class Arr {
      * @param value 
      * @returns 
      */
-    static wrap<T> (value: T | T[] | null | undefined): T[] {
+    static wrap<T = any> (value: T | T[] | null | undefined): T[] {
         if (value === null || value === undefined) return []
         return Array.isArray(value) ? value : [value]
     }

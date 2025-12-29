@@ -1,5 +1,7 @@
 import 'reflect-metadata'
 
+import { Application } from '..'
+import { IApplication } from '@h3ravel/contracts'
 import { ServiceProvider } from '../ServiceProvider'
 import { str } from '@h3ravel/support'
 
@@ -19,6 +21,8 @@ export class CoreServiceProvider extends ServiceProvider {
         Object.assign(globalThis, {
             str,
         })
+
+        this.app.alias(IApplication, Application)
     }
 
     boot (): void | Promise<void> {

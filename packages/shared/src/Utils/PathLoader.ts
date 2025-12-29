@@ -1,4 +1,4 @@
-import { IPathName } from '../Contracts/IApplication'
+import { IPathName } from '@h3ravel/contracts'
 import nodepath from 'path'
 
 export class PathLoader {

@@ -1,0 +1,1 @@
+export type JobClassConstructor = (new (...args: any) => any);

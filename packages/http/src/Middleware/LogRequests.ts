@@ -1,11 +1,13 @@
-import { HttpContext } from '../HttpContext'
+import { IRequest, IResponse } from '@h3ravel/contracts'
+
+import { Injectable } from '@h3ravel/foundation'
 import { Logger } from '@h3ravel/shared'
 import { Middleware } from '../Middleware'
 
 export class LogRequests extends Middleware {
-    async handle ({ request, response }: HttpContext, next: () => Promise<unknown>): Promise<unknown> {
-
-        const _next = await next()
+    @Injectable()
+    async handle (request: IRequest, response: IResponse, next: (request: IRequest) => Promise<unknown>): Promise<unknown> {
+        const _next = await next(request)
 
         const code = Number(response.getStatusCode())
         const method = request.method().toLowerCase()

@@ -3,6 +3,7 @@
     "baseUrl": ".",
     "paths": {
       "@h3ravel/cache": ["packages/cache/src/index.ts"],
+      "@h3ravel/events": ["packages/events/src/index.ts"],
       "@h3ravel/config": ["packages/config/src/index.ts"],
       "@h3ravel/console": ["packages/console/src/index.ts"],
       "@h3ravel/core": ["packages/core/src/index.ts"],
@@ -19,7 +20,8 @@
       "@h3ravel/view": ["packages/view/src/index.ts"],
       "@h3ravel/session": ["packages/session/src/index.ts"],
       "@h3ravel/foundation": ["packages/foundation/src/index.ts"],
-      "@h3ravel/validation": ["packages/validation/src/index.ts"]
+      "@h3ravel/validation": ["packages/validation/src/index.ts"],
+      "@h3ravel/contracts": ["packages/contracts/src/index.ts"]
     },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

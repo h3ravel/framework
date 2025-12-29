@@ -1,4 +1,4 @@
-import { IParamBag, RequestObject } from '@h3ravel/shared'
+import { IParamBag, RequestObject } from '@h3ravel/contracts'
 
 import { BadRequestException } from '../Exceptions/BadRequestException'
 import { H3Event } from 'h3'
@@ -22,12 +22,12 @@ export class ParamBag implements IParamBag {
     /**
      * Returns the parameters.
      * @
-     * @param key The name of the parameter to return or null to get them all
+     * @param key The name of the parameter to return or undefined to get them all
      *
      * @throws BadRequestException if the value is not an array
      */
     all (key?: string) {
-        if (key === null) return { ...this.parameters }
+        if (!key) return { ...this.parameters }
         const value = key ? this.parameters[key] : undefined
         if (value && typeof value !== 'object') {
             throw new BadRequestException(`Unexpected value for parameter "${key}": expected object, got ${typeof value}`)

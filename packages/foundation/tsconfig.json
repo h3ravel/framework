@@ -1,15 +1,7 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "target": "es2022",
-    "module": "es2022",
-    "moduleResolution": "bundler",
-    "esModuleInterop": true,
-    "strict": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "resolveJsonModule": true
+    "outDir": "dist"
   },
-  "exclude": ["./dist", "./**/dist", "./node_modules"]
+  "exclude": ["dist", "node_modules"]
 }

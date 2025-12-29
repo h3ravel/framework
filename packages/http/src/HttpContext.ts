@@ -1,4 +1,4 @@
-import { IApplication, type HttpContext as IHttpContext, IRequest, IResponse } from '@h3ravel/shared'
+import { IApplication, IHttpContext, IRequest, IResponse } from '@h3ravel/contracts'
 import type { H3Event } from 'h3'
 
 /**

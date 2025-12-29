@@ -27,6 +27,7 @@ export default class {
                     .truncateRequestExceptionsAt(200)
             })
             .withMiddleware(() => {
+                console.log('-=withMiddleware=-')
             })
 
         return await app.fire()

@@ -1,8 +1,8 @@
 import { Application, Kernel, OServiceProvider } from '.'
+import { IApplication, IHttpContext } from '@h3ravel/contracts'
 
 import { EntryConfig } from './Contracts/H3ravelContract'
 import { H3 } from 'h3'
-import { HttpContext } from '@h3ravel/shared'
 
 /**
  * Simple global entry point for H3ravel applications
@@ -27,7 +27,7 @@ export const h3ravel = async (
     /**
      * final middleware function to call once the server is fired up
      */
-    middleware: (ctx: HttpContext) => Promise<unknown> = async () => undefined,
+    middleware: (ctx: IHttpContext) => Promise<unknown> = async () => undefined,
 ): Promise<Application> => {
 
     const { FlashDataMiddleware, HttpContext, LogRequests, Request, Response } = await import('@h3ravel/http')
@@ -52,9 +52,12 @@ export const h3ravel = async (
     try {
         // Get the http app container binding
         h3App = app.make('http.app')
+        app.setH3App(h3App)
 
         // Define app context factory
         app.context = async (event) => {
+            event = config.h3Event ?? event
+
             // If we’ve already attached the context to this event, reuse it
             if ((event as any)._h3ravelContext)
                 return (event as any)._h3ravelContext
@@ -63,23 +66,29 @@ export const h3ravel = async (
             const ctx = HttpContext.init({
                 app,
                 request: await Request.create(event, app),
-                response: new Response(event, app),
+                response: new Response(app, event),
             }, event);
 
             (event as any)._h3ravelContext = ctx
             return ctx
         }
 
+        app.singleton(IApplication, () => app)
         app.singleton('app.globalMiddleware', () => [
-            new LogRequests(),
-            new FlashDataMiddleware(),
-        ])
+            LogRequests,
+            FlashDataMiddleware
+        ].map(e => app.make(e)))
 
         // Initialize the Application Kernel
-        const kernel = new Kernel(app)
-
-        // Register kernel with H3
-        h3App.use((event) => kernel.handle(event, middleware))
+        // const kernel = new Kernel(app)
+        // // Register kernel with H3
+        // h3App.use(async (event) => {
+        //     const resp = await kernel.handle(event, middleware)
+        //     console.log(resp)
+        //     return resp
+        // })
+        await app.handleRequest()
+        void middleware
     } catch {
         if (!h3App && config.h3) {
             h3App = config.h3

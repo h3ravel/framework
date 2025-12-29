@@ -1,19 +1,27 @@
 import { Arr, Obj } from '@h3ravel/support'
-import { Resolver, type HttpContext, type IMiddleware } from '@h3ravel/shared'
+import type { IHttpContext, IMiddleware, IRouter } from '@h3ravel/contracts'
+
 import { Application } from '..'
 import type { H3Event } from 'h3'
 import { MiddlewareHandler } from '@h3ravel/foundation'
+import { Resolver } from '@h3ravel/shared'
 
 /**
  * Kernel class handles middleware execution and response transformations.
  * It acts as the core middleware pipeline for HTTP requests.
  */
 export class Kernel {
+
+  /**
+   * The router instance.
+   */
+  protected router: IRouter
+
   /**
    * A factory function that converts an H3Event into an HttpContext.
    */
-  protected context: (event: H3Event) => HttpContext | Promise<HttpContext>
-  protected applicationContext!: HttpContext
+  protected context: (event: H3Event) => IHttpContext | Promise<IHttpContext>
+  protected applicationContext!: IHttpContext
 
   /**
    * @param app - The current application instance
@@ -23,6 +31,7 @@ export class Kernel {
     public app: Application,
     public middleware: IMiddleware[] = [],
   ) {
+    this.router = app.make('router')
     this.context = async (event) => app.context!(event)
   }
 
@@ -35,8 +44,9 @@ export class Kernel {
    */
   async handle (
     event: H3Event,
-    next: (ctx: HttpContext) => Promise<unknown>
+    next: (ctx: IHttpContext) => Promise<unknown>
   ): Promise<unknown> {
+    const { request } = await this.app.context!(event)
     /**
      * Convert the raw event into a standardized HttpContext
      */
@@ -52,7 +62,9 @@ export class Kernel {
     // Resolve or create MiddlewareHandler
     this.app.middlewareHandler = this.app.has(MiddlewareHandler)
       ? this.app.make(MiddlewareHandler)
-      : new MiddlewareHandler()
+      : new MiddlewareHandler([], this.app);
+
+    (request.constructor as any).enableHttpMethodParameterOverride()
 
     /**
      * Run middleware stack and obtain result
@@ -78,7 +90,7 @@ export class Kernel {
   public async resolve (
     event: H3Event,
     middleware: IMiddleware | IMiddleware[],
-    handler: (ctx: HttpContext) => Promise<any>
+    handler: (ctx: IHttpContext) => Promise<any>
   ): Promise<any> {
     const { Response } = await import('@h3ravel/http')
 

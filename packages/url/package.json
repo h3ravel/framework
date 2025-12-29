@@ -61,18 +61,11 @@
   },
   "dependencies": {
     "@h3ravel/support": "workspace:^",
+    "@h3ravel/contracts": "workspace:^",
+    "@h3ravel/foundation": "workspace:^",
     "@h3ravel/shared": "workspace:^"
-  },
-  "peerDependencies": {
-    "@h3ravel/core": "workspace:^",
-    "@h3ravel/config": "workspace:^"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
-  },
-  "peerDependenciesMeta": {
-    "@h3ravel/config": {
-      "optional": true
-    }
   }
 }

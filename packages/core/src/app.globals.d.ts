@@ -1,4 +1,4 @@
-import { HTTPResponse } from 'h3'
+import { IResponsable } from '@h3ravel/contracts'
 
 export { }
 
@@ -37,7 +37,7 @@ declare global {
      * @param viewPath 
      * @param params 
      */
-    function view (viewPath: string, params?: Record<string, any> | undefined): Promise<HTTPResponse>
+    function view (viewPath: string, params?: Record<string, any> | undefined): Promise<IResponsable>
 
     /**
      * Get static asset

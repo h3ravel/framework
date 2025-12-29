@@ -1,6 +1,5 @@
-import { getQuery, getRequestURL, getRouterParams, parseCookies, type H3Event } from 'h3'
-import { Application } from '@h3ravel/core'
-import { ISessionManager, RequestMethod } from '@h3ravel/shared'
+import { getQuery, getRouterParams, parseCookies, type H3Event } from 'h3'
+import { IApplication } from '@h3ravel/contracts'
 import { SuspiciousOperationException } from '../Exceptions/SuspiciousOperationException'
 import { InputBag } from '../Utilities/InputBag'
 import { HeaderBag } from '../Utilities/HeaderBag'
@@ -8,34 +7,34 @@ import { ParamBag } from '../Utilities/ParamBag'
 import { FileBag } from '../Utilities/FileBag'
 import { ServerBag } from '../Utilities/ServerBag'
 import { FormRequest } from '../FormRequest'
-import { Url } from '@h3ravel/url'
 import { HeaderUtility } from './HeaderUtility'
 import { IpUtils } from './IpUtils'
 import { ConflictingHeadersException } from '../Exceptions/ConflictingHeadersException'
-import { isIP } from 'node:net'
-import { HttpContext } from '../HttpContext'
+import { Str } from '@h3ravel/support'
+import path from 'node:path'
+import { IHttpContext, IUrl, ISessionManager, RequestMethod } from '@h3ravel/contracts'
 
 export class HttpRequest {
-    public HEADER_FORWARDED = 0b000001 // When using RFC 7239
-    public HEADER_X_FORWARDED_FOR = 0b000010
-    public HEADER_X_FORWARDED_HOST = 0b000100
-    public HEADER_X_FORWARDED_PROTO = 0b001000
-    public HEADER_X_FORWARDED_PORT = 0b010000
-    public HEADER_X_FORWARDED_PREFIX = 0b100000
+    public static HEADER_FORWARDED = 0b000001 // When using RFC 7239
+    public static HEADER_X_FORWARDED_FOR = 0b000010
+    public static HEADER_X_FORWARDED_HOST = 0b000100
+    public static HEADER_X_FORWARDED_PROTO = 0b001000
+    public static HEADER_X_FORWARDED_PORT = 0b010000
+    public static HEADER_X_FORWARDED_PREFIX = 0b100000
 
-    public HEADER_X_FORWARDED_AWS_ELB = 0b0011010 // AWS ELB doesn't send X-Forwarded-Host
-    public HEADER_X_FORWARDED_TRAEFIK = 0b0111110 // All "X-Forwarded-*" headers sent by Traefik reverse proxy
+    public static HEADER_X_FORWARDED_AWS_ELB = 0b0011010 // AWS ELB doesn't send X-Forwarded-Host
+    public static HEADER_X_FORWARDED_TRAEFIK = 0b0111110 // All "X-Forwarded-*" headers sent by Traefik reverse proxy
 
-    public METHOD_HEAD = 'HEAD'
-    public METHOD_GET = 'GET'
-    public METHOD_POST = 'POST'
-    public METHOD_PUT = 'PUT'
-    public METHOD_PATCH = 'PATCH'
-    public METHOD_DELETE = 'DELETE'
-    public METHOD_PURGE = 'PURGE'
-    public METHOD_OPTIONS = 'OPTIONS'
-    public METHOD_TRACE = 'TRACE'
-    public METHOD_CONNECT = 'CONNECT'
+    public static METHOD_HEAD = 'HEAD'
+    public static METHOD_GET = 'GET'
+    public static METHOD_POST = 'POST'
+    public static METHOD_PUT = 'PUT'
+    public static METHOD_PATCH = 'PATCH'
+    public static METHOD_DELETE = 'DELETE'
+    public static METHOD_PURGE = 'PURGE'
+    public static METHOD_OPTIONS = 'OPTIONS'
+    public static METHOD_TRACE = 'TRACE'
+    public static METHOD_CONNECT = 'CONNECT'
 
     /**
      * Names for headers that can be trusted when
@@ -47,22 +46,22 @@ export class HttpRequest {
      * by popular reverse proxies (like Apache mod_proxy or Amazon EC2).
      */
     private TRUSTED_HEADERS = {
-        [this.HEADER_FORWARDED]: 'FORWARDED',
-        [this.HEADER_X_FORWARDED_FOR]: 'X_FORWARDED_FOR',
-        [this.HEADER_X_FORWARDED_HOST]: 'X_FORWARDED_HOST',
-        [this.HEADER_X_FORWARDED_PROTO]: 'X_FORWARDED_PROTO',
-        [this.HEADER_X_FORWARDED_PORT]: 'X_FORWARDED_PORT',
-        [this.HEADER_X_FORWARDED_PREFIX]: 'X_FORWARDED_PREFIX',
+        [HttpRequest.HEADER_FORWARDED]: 'FORWARDED',
+        [HttpRequest.HEADER_X_FORWARDED_FOR]: 'X_FORWARDED_FOR',
+        [HttpRequest.HEADER_X_FORWARDED_HOST]: 'X_FORWARDED_HOST',
+        [HttpRequest.HEADER_X_FORWARDED_PROTO]: 'X_FORWARDED_PROTO',
+        [HttpRequest.HEADER_X_FORWARDED_PORT]: 'X_FORWARDED_PORT',
+        [HttpRequest.HEADER_X_FORWARDED_PREFIX]: 'X_FORWARDED_PREFIX',
     }
 
     private FORWARDED_PARAMS = {
-        [this.HEADER_X_FORWARDED_FOR]: 'for',
-        [this.HEADER_X_FORWARDED_HOST]: 'host',
-        [this.HEADER_X_FORWARDED_PROTO]: 'proto',
-        [this.HEADER_X_FORWARDED_PORT]: 'host',
+        [HttpRequest.HEADER_X_FORWARDED_FOR]: 'for',
+        [HttpRequest.HEADER_X_FORWARDED_HOST]: 'host',
+        [HttpRequest.HEADER_X_FORWARDED_PROTO]: 'proto',
+        [HttpRequest.HEADER_X_FORWARDED_PORT]: 'host',
     }
 
-    #uri!: Url
+    #uri!: IUrl
 
     /**
      * Parsed request body
@@ -71,14 +70,28 @@ export class HttpRequest {
 
     #method?: RequestMethod = undefined
 
+    #isHostValid: boolean = true
+
+    #isIisRewrite: boolean = false
+
     protected format?: string
+
+    protected basePath?: string
+
+    protected baseUrl?: string
+
+    protected requestUri?: string
+
+    protected pathInfo?: string
 
     protected formData!: FormRequest
 
     private preferredFormat?: string
     private isForwardedValid: boolean = true
 
+    public static trustedHosts: string[] = []
     private static trustedHeaderSet: number = -1
+    protected static trustedHostPatterns: RegExp[] = []
 
     /**
      * Gets route parameters.
@@ -116,7 +129,7 @@ export class HttpRequest {
     /**
      * The current Http Context
      */
-    context!: HttpContext
+    context!: IHttpContext
 
     /**
      * The request attributes (parameters parsed from the PATH_INFO, ...).
@@ -155,7 +168,7 @@ export class HttpRequest {
         /**
          * The current app instance
          */
-        public app: Application
+        public app: IApplication
     ) { }
 
     /**
@@ -170,6 +183,11 @@ export class HttpRequest {
      * @param content    The raw body data
      */
     public async initialize (): Promise<void> {
+        this.buildRequirements()
+        this.sessionManagerClass = (await import(('@h3ravel/session'))).SessionManager
+    }
+
+    protected buildRequirements () {
         this.params = getRouterParams(this.event)
         this.request = new InputBag(this.formData ? this.formData.input() : {}, this.event)
         this.query = new InputBag(getQuery(this.event), this.event)
@@ -182,15 +200,13 @@ export class HttpRequest {
         // this.languages = undefined
         // this.charsets = undefined
         // this.encodings = undefined
-        // this.pathInfo = undefined
-        // this.requestUri = undefined
-        // this.baseUrl = undefined
-        // this.basePath = undefined
+        this.pathInfo = undefined
+        this.requestUri = undefined
+        this.baseUrl = undefined
+        this.basePath = undefined
         this.#method = undefined
         this.format = undefined
-        this.#uri = (await import(String('@h3ravel/url'))).Url.of(getRequestURL(this.event).toString(), this.app)
-
-        this.sessionManagerClass = (await import(('@h3ravel/session'))).SessionManager
+        // this.#uri = Url.of(getRequestURL(this.event).toString(), this.app)
     }
 
     /**
@@ -218,9 +234,308 @@ export class HttpRequest {
     /**
      * Get a URI instance for the request.
      */
-    public getUriInstance (): Url {
+    public getUriInstance (): IUrl {
         return this.#uri
     }
+
+    /**
+     * Returns the requested URI (path and query string).
+     *
+     * @return {string} The raw URI (i.e. not URI decoded)
+     */
+    public getRequestUri (): string {
+        return this.requestUri ??= this.prepareRequestUri()
+    }
+
+    /**
+     * Gets the scheme and HTTP host.
+     *
+     * If the URL was called with basic authentication, the user
+     * and the password are not added to the generated string.
+     */
+    public getSchemeAndHttpHost (): string {
+        return this.getScheme() + '://' + this.getHttpHost()
+    }
+
+    /**
+     * Returns the HTTP host being requested.
+     *
+     * The port name will be appended to the host if it's non-standard.
+     */
+    public getHttpHost (): string {
+        const scheme = this.getScheme()
+        const port = this.getPort()
+
+        if (('http' === scheme && 80 == port) || ('https' === scheme && 443 == port)) {
+            return this.getHost()
+        }
+
+        return this.getHost() + ':' + port
+    }
+
+    /**
+     * Returns the root path from which this request is executed.
+     *
+     * @returns {string} The raw path (i.e. not urldecoded)
+     */
+    public getBasePath (): string {
+        return this.basePath ??= this.prepareBasePath()
+    }
+
+    /**
+     * Returns the root URL from which this request is executed.
+     *
+     * The base URL never ends with a /.
+     *
+     * This is similar to getBasePath(), except that it also includes the
+     * script filename (e.g. index.php) if one exists.
+     *
+     * @return string The raw URL (i.e. not urldecoded)
+     */
+    public getBaseUrl (): string {
+        let trustedPrefix = ''
+        let trustedPrefixValues: string[]
+
+        // the proxy prefix must be prepended to any prefix being needed at the webserver level
+        if (this.isFromTrustedProxy() && (trustedPrefixValues = this.getTrustedValues(HttpRequest.HEADER_X_FORWARDED_PREFIX))) {
+            trustedPrefix = Str.rtrim(trustedPrefixValues[0], '/')
+        }
+
+        return trustedPrefix + this.getBaseUrlReal()
+    }
+
+    /**
+     * Returns the real base URL received by the webserver from which this request is executed.
+     * The URL does not include trusted reverse proxy prefix.
+     *
+     * @return string The raw URL (i.e. not urldecoded)
+     */
+    private getBaseUrlReal (): string {
+        return this.baseUrl ??= this.prepareBaseUrl()
+    }
+
+    /**
+     * Gets the request's scheme.
+     */
+    public getScheme (): string {
+        return this.isSecure() ? 'https' : 'http'
+    }
+
+    /**
+     * Prepares the base URL.
+     */
+    protected prepareBaseUrl (): string {
+        const requestUri = this.getRequestUri() ?? ''
+        const scriptName = path.basename(__filename) // current script filename
+        const baseUrl = '/' + scriptName
+
+        // ensure requestUri starts with /
+        const normalizedRequestUri = requestUri.startsWith('/') ? requestUri : '/' + requestUri
+
+        // check if full baseUrl matches start of requestUri
+        if (normalizedRequestUri.startsWith(baseUrl)) {
+            return baseUrl
+        }
+
+        // fallback: use directory of script
+        const dirBase = path.dirname(baseUrl)
+        if (normalizedRequestUri.startsWith(dirBase)) {
+            return dirBase.replace(/[/\\]+$/, '')
+        }
+
+        // nothing matches, return empty
+        return ''
+    }
+
+    /**
+     * Prepares the Request URI.
+     */
+    protected prepareRequestUri (): string {
+        let requestUri = ''
+        // console.log(this.server.all())
+        // IIS-style URL rewrite could be behind a header like x-original-url
+        const unencodedUrl = this.server.get('x-original-url') ?? ''
+        if (this.isIisRewrite() && unencodedUrl) {
+            requestUri = unencodedUrl
+            this.server.remove('x-original-url')
+        } else if (this.server.has('REQUEST_URI')) {
+            requestUri = this.server.get('REQUEST_URI') ?? ''
+
+            if (requestUri && requestUri[0] === '/') {
+                // Remove fragment
+                const hashPos = requestUri.indexOf('#')
+                if (hashPos !== -1) {
+                    requestUri = requestUri.substring(0, hashPos)
+                }
+            } else {
+                // Could be full URL from proxy, parse path + query
+                try {
+                    const urlObj = new URL(requestUri)
+                    requestUri = urlObj.pathname
+                    if (urlObj.search) {
+                        requestUri += urlObj.search
+                    }
+                } catch {
+                    // fallback if invalid URL, keep as-is
+                }
+            }
+        } else {
+            // fallback: just use request path
+            requestUri = this.getRequestUri() ?? '/'
+        }
+
+        // normalize the request URI for future use
+        this.server.set('REQUEST_URI', requestUri)
+
+        return requestUri
+    }
+
+    /**
+     * Prepares the base path.
+     */
+    protected prepareBasePath (): string {
+        const baseUrl = this.getBaseUrl()
+        if (!baseUrl) {
+            return ''
+        }
+
+        const scriptFilename = this.server.get('SCRIPT_FILENAME') ?? ''
+        const filename = path.basename(scriptFilename)
+
+        let basePath: string
+        if (path.basename(baseUrl) === filename) {
+            basePath = path.dirname(baseUrl)
+        } else {
+            basePath = baseUrl
+        }
+
+        // normalize Windows paths to forward slashes
+        basePath = basePath.replace(/\\/g, '/')
+
+        // remove trailing slash
+        return basePath.replace(/\/+$/, '')
+    }
+
+    /**
+     * Prepares the path info.
+     */
+    protected preparePathInfo (): string {
+        let requestUri = this.getRequestUri()
+        if (!requestUri) return '/'
+
+        // Remove the query string
+        const qPos = requestUri.indexOf('?')
+        if (qPos !== -1) {
+            requestUri = requestUri.substring(0, qPos)
+        }
+
+        // Ensure it starts with /
+        if (requestUri && requestUri[0] !== '/') {
+            requestUri = '/' + requestUri
+        }
+
+        const baseUrl = this.getBaseUrlReal()
+        if (baseUrl == null) {
+            return requestUri
+        }
+
+        // Remove the base URL prefix
+        let pathInfo = requestUri.substring(baseUrl.length)
+
+        // Ensure pathInfo starts with /
+        if (!pathInfo || pathInfo[0] !== '/') {
+            pathInfo = '/' + pathInfo
+        }
+
+        return pathInfo
+    }
+
+
+    /**
+     * Returns the port on which the request is made.
+     *
+     * This method can read the client port from the "X-Forwarded-Port" header
+     * when trusted proxies were set via "setTrustedProxies()".
+     *
+     * The "X-Forwarded-Port" header must contain the client port.
+     *
+     * @return int|string|null Can be a string if fetched from the server bag
+     */
+    public getPort (): number | string | undefined {
+        let pos: number
+        let host: string | string[] | undefined | null
+
+        if (this.isFromTrustedProxy() && (host = this.getTrustedValues(HttpRequest.HEADER_X_FORWARDED_PORT))) {
+            host = host[0]
+        } else if (this.isFromTrustedProxy() && (host = this.getTrustedValues(HttpRequest.HEADER_X_FORWARDED_HOST))) {
+            host = host[0]
+        } else if (!(host = this.headers.get('HOST'))) {
+            return this.server.get('SERVER_PORT')
+        }
+
+        if (host[0] === '[') {
+            pos = host.lastIndexOf(':', host.lastIndexOf(']'))
+        } else {
+            pos = host.lastIndexOf(':')
+        }
+
+        if (pos !== -1) {
+            const portStr = typeof host === 'string' ? host.substring(pos + 1) : host.at(0)?.substring(pos + 1)
+            if (portStr) {
+                return parseInt(portStr, 10)
+            }
+        }
+
+        return 'https' === this.getScheme() ? 443 : 80
+    }
+
+    public getHost (): string {
+        let host: string | undefined | null
+
+        if (this.isFromTrustedProxy() && (host = this.getTrustedValues(HttpRequest.HEADER_X_FORWARDED_HOST)?.[0])) {
+            // do nothing, host already assigned
+        } else if (!(host = this.headers.get('HOST'))) {
+            host = this.server.get('SERVER_NAME') ?? this.server.get('SERVER_ADDR') ?? process.env.SERVER_NAME ?? ''
+        }
+
+        /* trim and remove port number, lowercase */
+        host = (host ?? '').trim().replace(/:\d+$/, '').toLowerCase()
+
+        /* validate host */
+        if (host && !HttpRequest.isHostValid(host)) {
+            if (!this.#isHostValid) {
+                return ''
+            }
+            this.#isHostValid = false
+            throw new SuspiciousOperationException(`Invalid Host "${host}".`)
+        }
+
+        /* trusted host patterns */
+        const ctor = this.constructor as typeof HttpRequest
+
+        if (ctor.trustedHostPatterns.length > 0) {
+            if (ctor.trustedHosts.includes(host)) {
+                return host
+            }
+
+            for (const pattern of ctor.trustedHostPatterns) {
+                if (pattern.test(host)) {
+                    ctor.trustedHosts.push(host)
+                    return host
+                }
+            }
+
+            if (!this.#isHostValid) {
+                return ''
+            }
+
+            this.#isHostValid = false
+            throw new SuspiciousOperationException(`Untrusted Host "${host}".`)
+        }
+
+        return host
+    }
+
 
     /**
      * Checks whether the request is secure or not.
@@ -231,7 +546,7 @@ export class HttpRequest {
      * The "X-Forwarded-Proto" header must contain the protocol: "https" or "http".
      */
     public isSecure (): boolean {
-        const proto = this.getTrustedValues(this.HEADER_X_FORWARDED_PROTO)
+        const proto = this.getTrustedValues(HttpRequest.HEADER_X_FORWARDED_PROTO)
 
         if (this.isFromTrustedProxy() && proto) {
             return ['https', 'on', 'ssl', '1'].includes(proto[0]?.toLowerCase())
@@ -240,6 +555,24 @@ export class HttpRequest {
         const https = this.server.get('HTTPS')
 
         return !!https && 'off' !== https.toLowerCase()
+    }
+
+
+    /**
+     * Is this IIS with UrlRewriteModule?
+     *
+     * This method consumes, caches and removed the IIS_WasUrlRewritten env var,
+     * so we don't inherit it to sub-requests.
+     */
+    private isIisRewrite (): boolean {
+        try {
+            if (1 === this.server.getInt('IIS_WasUrlRewritten')) {
+                this.#isIisRewrite = true
+                this.server.remove('IIS_WasUrlRewritten')
+            }
+        } catch { /** */ }
+
+        return this.#isIisRewrite
     }
 
 
@@ -290,6 +623,35 @@ export class HttpRequest {
      */
     public isXmlHttpRequest (): boolean {
         return 'XMLHttpRequest' === this.getHeader('X-Requested-With')
+    }
+
+    /**
+     * See https://url.spec.whatwg.org/.
+     */
+    private static isHostValid (host: string): boolean {
+        /**
+         * Validate IPv6: [::1] or similar
+         */
+        if (host[0] === '[') {
+            const last = host[host.length - 1]
+            if (last === ']') {
+                const inside = host.substring(1, host.length - 1)
+                return Str.validateIp(inside, 'ipv6')
+            }
+            return false
+        }
+
+        /**
+         * Validate IPv4: ends with .123 or .123.
+         */
+        if (/\.[0-9]+\.?$/.test(host)) {
+            return Str.validateIp(host, 'ipv4')
+        }
+
+        /**
+         * fallback: remove valid chars and check if anything remains
+         */
+        return '' === host.replace(/[-a-zA-Z0-9_]+\.?/g, '')
     }
 
     /**
@@ -570,7 +932,7 @@ export class HttpRequest {
 
     /**
      * This method is rather heavy because it splits and merges headers, and it's called by many other methods such as
-     * getPort(), isSecure(), getHost(), getClientIps(), getBaseUrl() etc. Thus, we try to cache the results for
+     * getPort(), isSecure(), getHost(), getClientIps(), this.() etc. Thus, we try to cache the results for
      * best performance.
      */
     private getTrustedValues (type: number, ip?: string | null): string[] {
@@ -580,7 +942,7 @@ export class HttpRequest {
         const cacheKey =
             type + '\0' +
             ((trustedHeaderSet & type) ? this.headers.get(trustedHeaders[type]) ?? '' : '') +
-            '\0' + (ip ?? '') + '\0' + (this.headers.get(trustedHeaders[this.HEADER_FORWARDED]) ?? '')
+            '\0' + (ip ?? '') + '\0' + (this.headers.get(trustedHeaders[HttpRequest.HEADER_FORWARDED]) ?? '')
 
         if (this.trustedValuesCache[cacheKey]) {
             return this.trustedValuesCache[cacheKey]
@@ -593,18 +955,18 @@ export class HttpRequest {
         if ((trustedHeaderSet & type) && this.headers.has(trustedHeaders[type])) {
             const headerValue = this.headers.get(trustedHeaders[type])!
             for (const v of headerValue.split(',')) {
-                const value = (type === this.HEADER_X_FORWARDED_PORT ? '0.0.0.0:' : '') + v.trim()
+                const value = (type === HttpRequest.HEADER_X_FORWARDED_PORT ? '0.0.0.0:' : '') + v.trim()
                 clientValues.push(value)
             }
         }
 
         // Handle Forwarded header (RFC 7239)
         if (
-            (trustedHeaderSet & this.HEADER_FORWARDED) &&
+            (trustedHeaderSet & HttpRequest.HEADER_FORWARDED) &&
             this.FORWARDED_PARAMS[type] &&
-            this.headers.has(trustedHeaders[this.HEADER_FORWARDED])
+            this.headers.has(trustedHeaders[HttpRequest.HEADER_FORWARDED])
         ) {
-            const forwarded = this.headers.get(trustedHeaders[this.HEADER_FORWARDED])!
+            const forwarded = this.headers.get(trustedHeaders[HttpRequest.HEADER_FORWARDED])!
             const parts = HeaderUtility.split(forwarded, ',;=')
             const param = this.FORWARDED_PARAMS[type]
 
@@ -616,7 +978,7 @@ export class HttpRequest {
                 }
                 if (v == null) continue
 
-                if (type === this.HEADER_X_FORWARDED_PORT) {
+                if (type === HttpRequest.HEADER_X_FORWARDED_PORT) {
                     if (v.endsWith(']') || !(v = v.substring(v.lastIndexOf(':')))) {
                         v = this.isSecure() ? ':443' : ':80'
                     }
@@ -653,11 +1015,17 @@ export class HttpRequest {
         this.isForwardedValid = false
 
         throw new ConflictingHeadersException(
-            `The request has both a trusted "${trustedHeaders[this.HEADER_FORWARDED]}" header and a trusted "${trustedHeaders[type]}" header, conflicting with each other. ` +
+            `The request has both a trusted "${trustedHeaders[HttpRequest.HEADER_FORWARDED]}" header and a trusted "${trustedHeaders[type]}" header, conflicting with each other. ` +
             'You should either configure your proxy to remove one of them, or configure your project to distrust the offending one.'
         )
     }
 
+    /**
+     * 
+     * @param clientIps 
+     * @param ip 
+     * @returns 
+     */
     private normalizeAndFilterClientIps (clientIps: string[], ip: string): string[] {
         if (!clientIps || clientIps.length === 0) {
             return []
@@ -688,7 +1056,7 @@ export class HttpRequest {
             }
 
             // Validate IP format
-            if (isIP(clientIp) > 0) {
+            if (Str.validateIp(clientIp)) {
                 clientIps.splice(i, 1)
                 i--
                 continue
@@ -706,6 +1074,42 @@ export class HttpRequest {
         return clientIps.length > 0 ? clientIps.reverse() : (firstTrustedIp ? [firstTrustedIp] : [])
     }
 
+    /**
+     * Sets a list of trusted host patterns.
+     *
+     * You should only list the hosts you manage using regexes.
+     * 
+     * @param hostPatterns 
+     */
+    public static setTrustedHosts (hostPatterns: string[]): void {
+        /* Convert host patterns to case-insensitive regex */
+        this.trustedHostPatterns = hostPatterns.map(
+            (hostPattern) => new RegExp(hostPattern, 'i')
+        )
+
+        /**
+         * reset trusted hosts when patterns change
+         */
+        this.trustedHosts = []
+    }
+
+    /**
+     * Returns the path being requested relative to the executed script.
+     *
+     * The path info always starts with a /.
+     *
+     * @return {string} The raw path (i.e. not urldecoded)
+     */
+    public getPathInfo (): string {
+        return this.pathInfo ??= this.preparePathInfo()
+    }
+
+    /**
+     * Gets the list of trusted host patterns.
+     */
+    public static getTrustedHosts (): RegExp[] {
+        return this.trustedHostPatterns
+    }
 
     /**
      * Enables support for the _method request parameter to determine the intended HTTP method.

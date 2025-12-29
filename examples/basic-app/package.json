@@ -34,6 +34,7 @@
     "@h3ravel/validation": "workspace:^",
     "@h3ravel/foundation": "workspace:^",
     "@h3ravel/session": "workspace:^",
+    "@h3ravel/events": "workspace:^",
     "cross-env": "catalog:",
     "h3": "catalog:prod",
     "reflect-metadata": "catalog:",
@@ -44,7 +45,7 @@
     "@rollup/plugin-run": "catalog:",
     "@swc/core": "catalog:",
     "@types/node": "^24.9.2",
-    "tsdown": "^0.15.12",
+    "tsdown": "catalog:",
     "tsx": "catalog:",
     "typescript": "^5.9.3"
   }

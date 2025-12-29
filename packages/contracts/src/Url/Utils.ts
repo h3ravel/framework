@@ -1,0 +1,1 @@
+export type RouteParams<N = any> = Record<string, N>

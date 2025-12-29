@@ -1,8 +1,10 @@
-import { H3Event } from 'h3'
-import { HttpContext } from './HttpContext'
-import { IMiddleware } from '@h3ravel/shared'
+import { IApplication, IMiddleware } from '@h3ravel/contracts'
 
-export abstract class Middleware implements IMiddleware {
-    constructor(protected event?: H3Event) { }
-    abstract handle (context: HttpContext, next: () => Promise<unknown>): Promise<unknown>
+import { Injectable } from '@h3ravel/foundation'
+
+@Injectable()
+export abstract class Middleware extends IMiddleware {
+    constructor(protected app: IApplication) {
+        super()
+    }
 }

@@ -1,4 +1,4 @@
-import { HttpExceptionFactory } from './HttpExceptionFactory'
+import { HttpExceptionFactory } from './Base/HttpExceptionFactory'
 
 export class NotFoundHttpException extends HttpExceptionFactory {
     constructor(

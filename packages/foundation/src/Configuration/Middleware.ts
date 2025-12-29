@@ -1,7 +1,7 @@
-import { MiddlewareIdentifier, MiddlewareList, RedirectHandler } from '../Contracts/MiddlewareContract'
+import { IApplication, IMiddleware } from '@h3ravel/contracts'
+import { MiddlewareList, RedirectHandler } from '../Contracts/MiddlewareContract'
 
 import { Arr } from '@h3ravel/support'
-import { MiddlewareHandler } from '../Http/MiddlewareHandler'
 
 /**
  * Core Middleware configuration container.
@@ -38,20 +38,20 @@ export class Middleware {
     protected groupPrepends: Record<string, MiddlewareList> = {}
     protected groupAppends: Record<string, MiddlewareList> = {}
     protected groupRemovals: Record<string, MiddlewareList> = {}
-    protected groupReplacements: Record<string, Record<string, string>> = {}
+    protected groupReplacements: Record<string, Record<string, IMiddleware>> = {}
 
-    protected pageMiddleware: Record<string, MiddlewareList> = {}
-    protected _priority: string[] = []
+    protected pageMiddleware: MiddlewareList[] = []
+    protected _priority: MiddlewareList = []
     protected _trustHosts = false
     protected _statefulApi = false
     protected _throttleWithRedis = false
     protected apiLimiter: string | null = null
     protected authenticatedSessions = false
-    protected customAliases: Record<string, string> = {}
-    protected prependPriority: Record<string, string> = {}
-    protected appendPriority: Record<string, string> = {}
+    protected customAliases: Record<string, IMiddleware> = {}
+    protected prependPriority: Record<string, IMiddleware> = {}
+    protected appendPriority: Record<string, IMiddleware> = {}
 
-    constructor(public handler: MiddlewareHandler) { }
+    constructor(private app?: IApplication) { }
 
     /**
      * Prepend middleware to the application's global middleware stack.
@@ -59,7 +59,7 @@ export class Middleware {
      * @param middleware 
      * @returns 
      */
-    public prepend (middleware: MiddlewareList | MiddlewareIdentifier): this {
+    public prepend (middleware: MiddlewareList | IMiddleware): this {
         this.prepends = [...Arr.wrap(middleware), ...this.prepends]
         return this
     }
@@ -70,7 +70,7 @@ export class Middleware {
      * @param middleware 
      * @returns 
      */
-    public append (middleware: MiddlewareList | MiddlewareIdentifier): this {
+    public append (middleware: MiddlewareList | IMiddleware): this {
         this.appends = [...this.appends, ...Arr.wrap(middleware)]
         return this
     }
@@ -81,7 +81,7 @@ export class Middleware {
      * @param middleware 
      * @returns 
      */
-    public remove (middleware: MiddlewareList | MiddlewareIdentifier): this {
+    public remove (middleware: MiddlewareList | IMiddleware): this {
         this.removals = [...this.removals, ...Arr.wrap(middleware)]
         return this
     }
@@ -129,7 +129,7 @@ export class Middleware {
      * @param middleware 
      * @returns 
      */
-    public prependToGroup (group: string, middleware: MiddlewareList | MiddlewareIdentifier): this {
+    public prependToGroup (group: string, middleware: MiddlewareList | IMiddleware): this {
         this.groupPrepends[group] = [...Arr.wrap(middleware), ...(this.groupPrepends[group] ?? [])]
         return this
     }
@@ -141,7 +141,7 @@ export class Middleware {
      * @param middleware 
      * @returns 
      */
-    public appendToGroup (group: string, middleware: MiddlewareList | MiddlewareIdentifier): this {
+    public appendToGroup (group: string, middleware: MiddlewareList | IMiddleware): this {
         this.groupAppends[group] = [...(this.groupAppends[group] ?? []), ...Arr.wrap(middleware)]
         return this
     }
@@ -153,7 +153,7 @@ export class Middleware {
      * @param middleware 
      * @returns 
      */
-    public removeFromGroup (group: string, middleware: MiddlewareList | MiddlewareIdentifier): this {
+    public removeFromGroup (group: string, middleware: MiddlewareList | IMiddleware): this {
         this.groupRemovals[group] = [...Arr.wrap(middleware), ...(this.groupRemovals[group] ?? [])]
         return this
     }
@@ -166,7 +166,7 @@ export class Middleware {
      * @param replaceWith 
      * @returns 
      */
-    public replaceInGroup (group: string, search: string, replaceWith: string): this {
+    public replaceInGroup (group: string, search: string, replaceWith: IMiddleware): this {
         this.groupReplacements[group] = this.groupReplacements[group] ?? {}
         this.groupReplacements[group][search] = replaceWith
         return this
@@ -182,10 +182,10 @@ export class Middleware {
      * @returns 
      */
     public web (
-        append: MiddlewareList | MiddlewareIdentifier | [] = [],
-        prepend: MiddlewareList | MiddlewareIdentifier | [] = [],
-        remove: MiddlewareList | MiddlewareIdentifier | [] = [],
-        replace: Record<string, string> = {}
+        append: MiddlewareList | IMiddleware | [] = [],
+        prepend: MiddlewareList | IMiddleware | [] = [],
+        remove: MiddlewareList | IMiddleware | [] = [],
+        replace: Record<string, IMiddleware> = {}
     ): this {
         return this.modifyGroup('web', append, prepend, remove, replace)
     }
@@ -200,10 +200,10 @@ export class Middleware {
      * @returns 
      */
     public api (
-        append: MiddlewareList | MiddlewareIdentifier | [] = [],
-        prepend: MiddlewareList | MiddlewareIdentifier | [] = [],
-        remove: MiddlewareList | MiddlewareIdentifier | [] = [],
-        replace: Record<string, string> = {}
+        append: MiddlewareList | IMiddleware | [] = [],
+        prepend: MiddlewareList | IMiddleware | [] = [],
+        remove: MiddlewareList | IMiddleware | [] = [],
+        replace: Record<string, IMiddleware> = {}
     ): this {
         return this.modifyGroup('api', append, prepend, remove, replace)
     }
@@ -220,10 +220,10 @@ export class Middleware {
      */
     protected modifyGroup (
         group: string,
-        append: MiddlewareList | MiddlewareIdentifier | [],
-        prepend: MiddlewareList | MiddlewareIdentifier | [],
-        remove: MiddlewareList | MiddlewareIdentifier | [],
-        replace: Record<string, string>
+        append: MiddlewareList | IMiddleware | [],
+        prepend: MiddlewareList | IMiddleware | [],
+        remove: MiddlewareList | IMiddleware | [],
+        replace: Record<string, IMiddleware>
     ): this {
         if ((append as any) && (append as any).length !== 0) {
             this.appendToGroup(group, append as any)
@@ -235,8 +235,8 @@ export class Middleware {
             this.removeFromGroup(group, remove as any)
         }
         if (replace && Object.keys(replace).length) {
-            for (const [s, r] of Object.entries(replace)) {
-                this.replaceInGroup(group, s, r)
+            for (const [key, middleware] of Object.entries(replace)) {
+                this.replaceInGroup(group, key, middleware)
             }
         }
         return this
@@ -247,8 +247,8 @@ export class Middleware {
      * @param middleware 
      * @returns 
      */
-    public pages (middleware: Record<string, MiddlewareList>): this {
-        this.pageMiddleware = { ...middleware }
+    public pages (middleware: MiddlewareList[]): this {
+        this.pageMiddleware = [...middleware]
         return this
     }
 
@@ -258,7 +258,7 @@ export class Middleware {
      * @param aliases 
      * @returns 
      */
-    public alias (aliases: Record<string, string>): this {
+    public alias (aliases: Record<string, IMiddleware> = {}): this {
         this.customAliases = { ...aliases }
         return this
     }
@@ -269,7 +269,7 @@ export class Middleware {
      * @param list 
      * @returns 
      */
-    public priority (list: string[]): this {
+    public priority (list: MiddlewareList): this {
         this._priority = [...list]
         return this
     }
@@ -281,7 +281,7 @@ export class Middleware {
      * @param prependKey 
      * @returns 
      */
-    public prependToPriorityList (before: string, prependKey: string): this {
+    public prependToPriorityList (before: IMiddleware, prependKey: string): this {
         this.prependPriority[prependKey] = before
         return this
     }
@@ -293,7 +293,7 @@ export class Middleware {
      * @param appendKey 
      * @returns 
      */
-    public appendToPriorityList (after: string, appendKey: string): this {
+    public appendToPriorityList (after: IMiddleware, appendKey: string): this {
         this.appendPriority[appendKey] = after
         return this
     }
@@ -318,15 +318,23 @@ export class Middleware {
 
     /**
      * Build middleware groups with applied group-level replacements, removals, prepends, appends.
-     * 
-     * @param defaultGroups 
-     * @returns 
      */
-    public getMiddlewareGroups (defaultGroups?: Record<string, MiddlewareList>): Record<string, MiddlewareList> {
+    public getMiddlewareGroups (): Record<string, MiddlewareList> {
         const built: Record<string, MiddlewareList> = {}
 
+        const middleware: Record<string, MiddlewareList> = {
+            'web': [
+                'SubstituteBindings',
+                this.authenticatedSessions ? 'auth.session' : null,
+            ].filter(e => e !== null),
+
+            'api': [
+                this.apiLimiter ? 'throttle:' + this.apiLimiter : null,
+            ].filter(e => e !== null),
+        }
+
         // start with defaults if provided, else use current groups
-        const base = { ...(defaultGroups ?? {}), ...this.groups }
+        const base = { ...middleware, ...this.groups }
 
         for (const [group, list] of Object.entries(base)) {
             // clone base list for mutations
@@ -374,18 +382,25 @@ export class Middleware {
     }
 
     /**
-     * Register redirect handlers; accepts string or () => string.
-     * In this core version, we only store them and do not wire into any concrete Authenticate classes.
+     * Register redirect handlers for the authentication and guest middleware.
+     * 
+     * @param guests 
+     * @param users 
+     * @returns 
      */
     public redirectTo (guests?: RedirectHandler, users?: RedirectHandler): this {
-        // store as normalized lambdas on customAliases for demo purposes
+
+        guests = typeof guests === 'string' ? () => String(guests) : guests
+        users = typeof users === 'string' ? () => String(users) : users
+
         if (guests) {
-            const guestKey = '__redirect_guests'
-            this.customAliases[guestKey] = typeof guests === 'string' ? guests : guests()
+            // Authenticate.redirectUsing(guests)
+            // AuthenticateSession.redirectUsing(guests)
+            // AuthenticationException.redirectUsing(guests)
         }
+
         if (users) {
-            const userKey = '__redirect_users'
-            this.customAliases[userKey] = typeof users === 'string' ? users : users()
+            // RedirectIfAuthenticated.redirectUsing(users)
         }
         return this
     }
@@ -528,7 +543,7 @@ export class Middleware {
      * 
      * @returns 
      */
-    public getPageMiddleware (): Record<string, MiddlewareList> {
+    public getPageMiddleware (): MiddlewareList[] {
         return { ...this.pageMiddleware }
     }
 
@@ -537,7 +552,7 @@ export class Middleware {
      * 
      * @returns 
      */
-    public getMiddlewareAliases (): Record<string, string> {
+    public getMiddlewareAliases (): Record<string, IMiddleware> {
         return { ...this.defaultAliases(), ...this.customAliases }
     }
 
@@ -546,7 +561,7 @@ export class Middleware {
      * 
      * @returns 
      */
-    public defaultAliases (): Record<string, string> {
+    public defaultAliases (): Record<string, IMiddleware> {
         const aliases: Record<string, string> = {
             auth: 'Authenticate',
             'auth.basic': 'AuthenticateWithBasicAuth',
@@ -559,6 +574,7 @@ export class Middleware {
             verified: 'EnsureEmailIsVerified',
         }
 
+        // @ts-expect-error TODO: ensure that actuall middlewares are aliased, not strings
         return aliases
     }
 
@@ -567,7 +583,7 @@ export class Middleware {
      * 
      * @returns 
      */
-    public getMiddlewarePriority (): string[] {
+    public getMiddlewarePriority (): MiddlewareList {
         return [...this._priority]
     }
 
@@ -576,7 +592,7 @@ export class Middleware {
      * 
      * @returns 
      */
-    public getMiddlewarePriorityPrepends (): Record<string, string> {
+    public getMiddlewarePriorityPrepends (): Record<string, IMiddleware> {
         return { ...this.prependPriority }
     }
 
@@ -585,7 +601,7 @@ export class Middleware {
      * 
      * @returns 
      */
-    public getMiddlewarePriorityAppends (): Record<string, string> {
+    public getMiddlewarePriorityAppends (): Record<string, IMiddleware> {
         return { ...this.appendPriority }
     }
 }

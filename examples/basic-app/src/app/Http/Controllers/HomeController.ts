@@ -1,6 +1,6 @@
-import { Controller } from '@h3ravel/core'
+import { IController } from '@h3ravel/contracts'
 
-export class HomeController extends Controller {
+export class HomeController extends IController {
     public async index () {
         return await view('index', {
             links: {
