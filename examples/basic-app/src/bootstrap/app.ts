@@ -13,7 +13,7 @@ export default class {
                      * Register global reporters here
                      */
                     .report((error) => {
-                        console.error('Unhandled Exception:', error)
+                        console.error('Unhandled Exception:', error.message, '(Reported at src/bootstrap/app.ts)')
                     })
                     /**
                      * Prevent some exceptions from being reported

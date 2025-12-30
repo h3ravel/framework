@@ -100,9 +100,27 @@ export abstract class IRoute {
      */
     abstract getAction (key?: string): any;
     /**
+     * Mark this route as a fallback route.
+     */
+    abstract fallback (): this
+    /**
+     * Set the fallback value.
+     *
+     * @param  sFallback
+     */
+    abstract setFallback (isFallback: boolean): this
+    /**
+     * Get the HTTP verbs the route responds to.
+     */
+    abstract getMethods (): RouteMethod[]
+    /**
      * Determine if the route only responds to HTTP requests.
      */
     abstract httpOnly (): boolean;
+    /**
+     * Determine if the route only responds to HTTPS requests.
+     */
+    abstract httpsOnly (): boolean
     /**
      * Get or set the middlewares attached to the route.
      *

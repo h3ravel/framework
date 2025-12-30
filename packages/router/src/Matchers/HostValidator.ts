@@ -1,7 +1,8 @@
+import { IRouteValidator } from '../Contracts/IRouteValidator'
 import { Request } from '@h3ravel/http'
 import { Route } from '../Route'
 
-export class HostValidator {
+export class HostValidator extends IRouteValidator {
     /**
      * Validate a given rule against a route and request.
      *

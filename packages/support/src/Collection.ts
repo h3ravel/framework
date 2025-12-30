@@ -5,7 +5,7 @@ export class Collection<Item = any> extends BaseCollection<Item> {
      * 
      * @param collection 
      */
-    constructor(collection?: Item[] | Item) {
+    constructor(collection?: Item[] | Item | Record<string, Item>) {
         super(collection)
     }
 }
@@ -15,6 +15,6 @@ export class Collection<Item = any> extends BaseCollection<Item> {
  * @param collection 
  * @returns 
  */
-export const collect = <T> (collection?: T | T[] | undefined): Collection<T> => {
+export const collect = <T> (collection?: T | T[] | Record<string, T> | undefined): Collection<T> => {
     return new Collection(collection)
 }

@@ -62,10 +62,7 @@ export abstract class IExceptionHandler {
      *
      * @param _attributes
      */
-    abstract level (type: string, level: string): {
-        level: string;
-        type: string;
-    };
+    abstract level (type: string | Error, level: 'log' | 'debug' | 'warn' | 'info' | 'error'): this
     /**
      * Not implemented here; applicable to validation pipeline/UI.
      *

@@ -1,7 +1,7 @@
 import { Container, ContainerResolver } from '@h3ravel/core'
 
 import { CallableConstructor } from '@h3ravel/contracts'
-import { Pipe } from './Contracts/Pipeline'
+import { Pipe } from './Contracts/Utilities'
 import { RuntimeException } from '@h3ravel/support'
 
 export class Pipeline<XP = any> {
@@ -86,9 +86,6 @@ export class Pipeline<XP = any> {
 
             // Normal flow
             return await pipeline(this.passable)
-        } catch (e: any) {
-            console.log('Pipeline Error:', e)
-            throw e
         } finally {
             if (this.finally) {
                 (this.finally)(this.passable)

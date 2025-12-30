@@ -136,15 +136,18 @@ export class RouteCollection extends AbstractRouteCollection implements IRouteCo
      * May throw framework-specific exceptions (MethodNotAllowed / NotFound).
      */
     public match (request: Request): Route {
-        const routesByMethod = this.get(request.getMethod()) as Record<string, Route>
+        const routes = this.get(request.getMethod()) as Record<string, Route>
 
-        const route = this.matchAgainstRoutes(routesByMethod, request)
+        const route = this.matchAgainstRoutes(routes, request)
+
         return this.handleMatchedRoute(request, route)
     }
 
     /**
      * Get routes from the collection by method.
      */
+    public get (): Route[]
+    public get (method: string): Record<string, Route>
     public get (method?: string): Record<string, Route> | Route[] {
         if (typeof method === 'undefined' || method === null) {
             return this.getRoutes()

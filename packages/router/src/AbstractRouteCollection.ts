@@ -1,5 +1,6 @@
 import type { IAbstractRouteCollection, RouteMethod } from '@h3ravel/contracts'
 
+import { Collection } from '@h3ravel/support'
 import { NotFoundHttpException } from '@h3ravel/foundation'
 import { Request } from '@h3ravel/http'
 import { Route } from './Route'
@@ -12,44 +13,31 @@ import { Route } from './Route'
  */
 export abstract class AbstractRouteCollection implements IAbstractRouteCollection {
     public static verbs: RouteMethod[] = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
-    abstract get (method?: string): Record<string, Route> | Route[]
+    abstract get (): Route[]
+    abstract get (method: string): Record<string, Route>
     abstract getRoutes (): Route[]
 
-    /* 
+    /**
      * Match a request against a set of routes belonging to one HTTP verb.
      * 
      * @param routes 
      * @param req 
+     * @param includingMethod 
      * @returns 
      */
     protected matchAgainstRoutes (
-        routes: Record<string, Route> | Route[],
+        routes: Record<string, Route>,
         req: Request,
-    ): Route | null {
-        const path = req.path()
-        const host = req.getHost()
+        includingMethod = true
+    ): Route | undefined {
 
-        for (let route of (Array.isArray(routes) ? routes : Object.entries(routes))) {
-            route = Array.isArray(route) ? route[1] : route
+        const [fallbacks, routeList] = (new Collection(routes)).partition(function (route) {
+            return route.isFallback
+        })
 
-            /* 
-             * Domain match check.
-             */
-            if (route.domain() && !this.matchDomain(route.domain(), host)) {
-                continue
-            }
-
-            /* 
-             * URI match check (simple or compiled).
-             */
-            if (!this.matchUri(route, path)) {
-                continue
-            }
-
-            return route
-        }
-
-        return null
+        return new Collection({ ...routeList.all(), ...fallbacks.all() }).first(
+            (route) => route.matches(req, includingMethod)
+        )
     }
 
     /* 
@@ -63,7 +51,7 @@ export abstract class AbstractRouteCollection implements IAbstractRouteCollectio
             return route.bind(req)
         }
 
-        throw new NotFoundHttpException(`The route ${req.path()} could not be found.`, undefined, 404)
+        throw new NotFoundHttpException(`The route "${req.path()}" was not found.`, undefined, 404)
     }
 
     /**

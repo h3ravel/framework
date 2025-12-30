@@ -1,5 +1,5 @@
 import { ExceptionHandler, Exceptions, Kernel, Middleware, MiddlewareList } from '..'
-import { IApplication, IKernel } from '@h3ravel/contracts'
+import { IApplication, IExceptionHandler, IKernel } from '@h3ravel/contracts'
 
 export class AppBuilder {
 
@@ -28,13 +28,17 @@ export class AppBuilder {
      **/
     public withExceptions (using: (exceptions: Exceptions) => void) {
         // Register the ExceptionHandler as a singleton
-        this.app.singleton(ExceptionHandler, () => new ExceptionHandler())
+        this.app.singleton(IExceptionHandler, () => new ExceptionHandler())
+        this.app.alias([
+            [ExceptionHandler, IExceptionHandler],
+            ['app.ExceptionHandler', IExceptionHandler]
+        ])
 
         // Default to a no-op callback if none provided
         using ??= () => true
 
         // Hook into the lifecycle to initialize Exceptions once the handler is resolved
-        this.app.afterResolving(ExceptionHandler, (handler) => {
+        this.app.afterResolving(IExceptionHandler, (handler) => {
             using(new Exceptions(handler))
         })
 

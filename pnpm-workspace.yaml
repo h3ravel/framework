@@ -73,7 +73,7 @@ catalogs:
   prod:
     '@h3ravel/arquebus': ^0.6.17
     '@h3ravel/musket': ^0.4.0
-    '@h3ravel/collect.js': ^5.1.1
+    '@h3ravel/collect.js': ^5.3.2
     h3: 2.0.1-rc.5
 
 ignoredBuiltDependencies:

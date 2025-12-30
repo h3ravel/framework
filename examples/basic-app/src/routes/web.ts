@@ -12,11 +12,10 @@ export default (Route: Router) => {
     Route.get('/url-examples', [UrlExampleController, 'index'], 'url.examples')
     Route.get('/url-signing', [UrlExampleController, 'signing'], 'url.signing')
     Route.get('/url-manipulation', [UrlExampleController, 'manipulation'], 'url.manipulation')
-    Route.match(['post', 'get'], 'path5/{user:name}/{name}', () => { }).name('path5')
+    Route.match(['post', 'get'], 'path5/{user:username}/{name?}', () => ({ name: 2 })).name('path5')
     Route.match(['get'], '/', [HomeController, 'index']).name('index').middleware('web')
-    Route.match(['get'], '/test/{user:name}', (request, free) => {
-        console.log(free)
-        return '{ Test Result }'
+    Route.match(['get'], '/test/{user:username}', (_, user) => {
+        return `{ Test Result: ${user} }`
     }).name('index')
 
     Route.get('/app', async function () {

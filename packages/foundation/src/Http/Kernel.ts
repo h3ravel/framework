@@ -1,7 +1,7 @@
 // namespace Illuminate\Foundation\Http;
 
 import { Arr, DateTime, InvalidArgumentException } from '@h3ravel/support'
-import { IApplication, IKernel, IMiddleware, IRequest, IResponse, IRouter } from '@h3ravel/contracts'
+import { IApplication, IExceptionHandler, IKernel, IMiddleware, IRequest, IResponse, IRouter } from '@h3ravel/contracts'
 import { MiddlewareIdentifier, MiddlewareList } from '../Contracts/MiddlewareContract'
 
 import { Injectable } from '..'
@@ -75,7 +75,7 @@ export class Kernel extends IKernel {
 
         let response: IResponse | undefined
         try {
-            // request.constructor.prototype.enableHttpMethodParameterOverride()
+            (request.constructor as any).enableHttpMethodParameterOverride()
 
             response = await this.sendRequestThroughRouter(request)
         } catch (e) {
@@ -456,7 +456,7 @@ export class Kernel extends IKernel {
      * @param  e
      */
     protected reportException (e: Error) {
-        this.app.exceptionHandler?.report(e)
+        this.app.make(IExceptionHandler).report(e)
     }
 
     /**
@@ -466,7 +466,7 @@ export class Kernel extends IKernel {
      * @param  e
      */
     protected renderException (request: IRequest, e: Error) {
-        return this.app.exceptionHandler?.render(request, e)
+        return this.app.make(IExceptionHandler).render(request, e)
     }
 
     /**

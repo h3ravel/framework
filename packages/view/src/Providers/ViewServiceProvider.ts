@@ -1,4 +1,5 @@
 import { EdgeViewEngine } from '../EdgeViewEngine'
+import { Responsable } from '@h3ravel/http'
 import { ServiceProvider } from '@h3ravel/core'
 
 /**
@@ -36,7 +37,12 @@ export class ViewServiceProvider extends ServiceProvider {
      * @returns 
      */
     const view = async (template: string, data?: Record<string, any>) => {
-      const response = this.app.make('http.response')
+      let response = this.app.make('http.response')
+      const request = this.app.make('http.request')
+
+      if (response instanceof Responsable) {
+        response = response.toResponse(request)
+      }
 
       return response.html(await this.app.make('edge').render(template, data), true)
     }

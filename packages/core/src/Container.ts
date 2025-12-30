@@ -8,7 +8,6 @@ type IBinding = UseKey | (new (...args: any[]) => unknown)
 export class Container extends IContainer {
     public bindings = new Map<IBinding, () => unknown>()
     public singletons = new Map<IBinding, unknown>()
-    public exceptionHandler?: Handler
     public middlewareHandler?: MiddlewareHandler
     /**
      * All of the before resolving callbacks by class type.
@@ -133,18 +132,12 @@ export class Container extends IContainer {
         factory: any
     ): void {
 
-        const alias = ContainerResolver.isAbstract(key) ? key.name.toLowerCase().substring(1) as T : undefined
-
         this.bindings.set(key, () => {
             if (!this.singletons.has(key)) {
                 this.singletons.set(key, this.call(factory))
             }
 
-            if (alias && !this.singletons.has(alias)) {
-                this.singletons.set(alias, this.call(factory))
-            }
-
-            return this.singletons.get(alias ?? key)
+            return this.singletons.get(key)
         })
     }
 

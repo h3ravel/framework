@@ -22,11 +22,11 @@ export abstract class IResponse extends IHttpResponse {
     /**
      * Sends content for the current web response.
      */
-    abstract sendContent (type?: 'html' | 'json' | 'text' | 'xml', parse?: boolean): unknown;
+    abstract sendContent (type?: 'html' | 'json' | 'text' | 'xml', parse?: boolean): IResponsable;
     /**
      * Sends content for the current web response.
      */
-    abstract send (type?: 'html' | 'json' | 'text' | 'xml'): unknown;
+    abstract send (type?: 'html' | 'json' | 'text' | 'xml'): IResponsable;
 
     /**
      * Use an edge view as content

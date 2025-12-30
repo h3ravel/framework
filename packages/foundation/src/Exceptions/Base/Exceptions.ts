@@ -1,12 +1,12 @@
 import { Arr } from '@h3ravel/support'
-import { Handler } from './Handler'
+import { IExceptionHandler } from '@h3ravel/contracts'
 import { RequestException } from './RequestException'
 
 export class Exceptions {
     /**
      * Create a new exception handling configuration instance.
      */
-    constructor(public handler: Handler) { }
+    constructor(public handler: IExceptionHandler) { }
 
     /**
      * Register a reportable callback.
@@ -65,7 +65,7 @@ export class Exceptions {
     /**
      * Set the log level for the given exception type.
      */
-    public level (type: string, level: string) {
+    public level (type: string | Error, level: 'log' | 'debug' | 'warn' | 'info' | 'error') {
         this.handler.level(type, level)
         return this
     }

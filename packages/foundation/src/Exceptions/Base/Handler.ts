@@ -4,9 +4,11 @@ import type { ExceptionConditionCallback, ExceptionConstructor, IHttpContext, IR
 import { LimitSpec, RateLimiterAdapter } from '../../Contracts/RateLimiterAdapter'
 import { IExceptionHandler, type RenderExceptionCallback, type ReportExceptionCallback, type ThrottleExceptionCallback } from '@h3ravel/contracts'
 
-import { FileSystem } from '@h3ravel/shared'
+import { FileSystem, Console } from '@h3ravel/shared'
 import { InMemoryRateLimiter } from '../../Adapters/InMemoryRateLimiter'
 import { readFileSync } from 'node:fs'
+import { HttpExceptionFactory } from './HttpExceptionFactory'
+import { statusTexts } from '../../Http/ResponseUtilities'
 
 /**
  *
@@ -21,9 +23,9 @@ export abstract class Handler extends IExceptionHandler {
     protected dontReportList: ExceptionConstructor[] = []
 
     /**
-     * Log Level
+     * A map of exceptions with their corresponding custom log levels.
      */
-    protected logLevel: { type?: string, level?: string } = {}
+    protected levels = new Map<Error | string, Exclude<keyof typeof Console, 'prototype'>>()
 
     /**
      * Internal exceptions that are not reported by default. Subclasses may expand.
@@ -86,7 +88,7 @@ export abstract class Handler extends IExceptionHandler {
      * @param error 
      * @param ctx 
      */
-    public handle?(error: Error, ctx: IHttpContext): Promise<any>
+    handle?(error: Error, ctx: IHttpContext): Promise<any>
 
     /**
      * Finalize response callback (respondUsing)
@@ -111,65 +113,65 @@ export abstract class Handler extends IExceptionHandler {
      * @param cb 
      * @returns 
      */
-    public reportable (cb: ReportExceptionCallback) {
+    reportable (cb: ReportExceptionCallback) {
         this.reportCallbacks.push(cb)
         return this
     }
 
-    public renderable (cb: RenderExceptionCallback) {
+    renderable (cb: RenderExceptionCallback) {
         this.renderCallbacks.push(cb)
         return this
     }
 
-    public dontReport (exceptions: ExceptionConstructor | ExceptionConstructor[]) {
+    dontReport (exceptions: ExceptionConstructor | ExceptionConstructor[]) {
         const arr = Array.isArray(exceptions) ? exceptions : [exceptions]
         this.dontReportList = Array.from(new Set([...this.dontReportList, ...arr]))
         return this
     }
 
-    public stopIgnoring (exceptions: ExceptionConstructor | ExceptionConstructor[]) {
+    stopIgnoring (exceptions: ExceptionConstructor | ExceptionConstructor[]) {
         const arr = Array.isArray(exceptions) ? exceptions : [exceptions]
         this.dontReportList = this.dontReportList.filter((c) => !arr.includes(c))
         this.internalDontReport = this.internalDontReport.filter((c) => !arr.includes(c))
         return this
     }
 
-    public dontReportWhen (cb: ExceptionConditionCallback) {
+    dontReportWhen (cb: ExceptionConditionCallback) {
         this.dontReportCallbacks.push(cb)
         return this
     }
 
-    public dontReportDuplicates () {
+    dontReportDuplicates () {
         this.withoutDuplicates = true
         return this
     }
 
-    public map (from: ExceptionConstructor, mapper: (error: any) => any) {
+    map (from: ExceptionConstructor, mapper: (error: any) => any) {
         this.exceptionMap.set(from, mapper)
         return this
     }
 
-    public throttleUsing (cb: ThrottleExceptionCallback) {
+    throttleUsing (cb: ThrottleExceptionCallback) {
         this.throttleCallbacks.push(cb)
         return this
     }
 
-    public buildContextUsing (cb: (e: any, current?: Record<string, any>) => Record<string, any>) {
+    buildContextUsing (cb: (e: any, current?: Record<string, any>) => Record<string, any>) {
         this.contextCallbacks.push(cb)
         return this
     }
 
-    public setRateLimiter (adapter: RateLimiterAdapter) {
+    setRateLimiter (adapter: RateLimiterAdapter) {
         this.rateLimiter = adapter
         return this
     }
 
-    public respondUsing (cb: (response: IResponse, error: any, request: IRequest) => IResponse | Promise<IResponse>) {
+    respondUsing (cb: (response: IResponse, error: any, request: IRequest) => IResponse | Promise<IResponse>) {
         this.finalizeResponseCallback = cb
         return this
     }
 
-    public shouldRenderJsonWhen (cb: (request: IRequest, error: any) => boolean) {
+    shouldRenderJsonWhen (cb: (request: IRequest, error: any) => boolean) {
         this.shouldRenderJsonWhenCallback = cb
         return this
     }
@@ -180,7 +182,7 @@ export abstract class Handler extends IExceptionHandler {
      * @param error 
      * @returns 
      */
-    public async report (error: any): Promise<void> {
+    async report (error: Error): Promise<void> {
         const e = this.mapException(error)
 
         if (this.shouldntReport(e)) {
@@ -238,14 +240,12 @@ export abstract class Handler extends IExceptionHandler {
 
             const context = this.buildExceptionContext(e)
 
-            if (typeof (logger as any)[level] === 'function') {
-                ; (logger as any)[level](e?.message ?? String(e), context)
+            if (typeof logger[level] === 'function') {
+                logger[level](context)
             } else if (typeof logger.log === 'function') {
-                logger.log(level, e?.message ?? String(e), context)
+                logger.log(level, context)
             } else {
-                /* Fallback */
-
-                console.error(`[${level}]`, e, context)
+                Console.error(`[${level}]`, context)
             }
         } catch {
             /* If logger fails, rethrow original exception to avoid silent failure in critical systems. */
@@ -357,7 +357,7 @@ export abstract class Handler extends IExceptionHandler {
      * @param error 
      * @returns 
      */
-    public async render (request: IRequest, error: any): Promise<IResponse> {
+    async render (request: IRequest, error: any): Promise<IResponse> {
         const e = this.mapException(error)
 
         const { Response } = await import('@h3ravel/http')
@@ -409,17 +409,17 @@ export abstract class Handler extends IExceptionHandler {
             return this.finalizeRenderedResponse(request, this.prepareJsonResponse(request, e), e)
         }
 
-        return this.finalizeRenderedResponse(request, await this.prepareResponse(request, e), e)
+        return await this.finalizeRenderedResponse(request, await this.prepareResponse(request, e), e)
     }
 
     /**
      * getResponse
      */
-    public getResponse (request: IRequest, payload: Record<string, any>, e: any): IResponse | Promise<IResponse> {
+    getResponse (request: IRequest, payload: Record<string, any>, e: any): IResponse | Promise<IResponse> {
         if (this.shouldReturnJson(request, e)) {
             return response()
                 .setCharset('utf-8')
-                .setStatusCode(this.isHttpException(e) ? (e.status as number) : 500)
+                .setStatusCode(this.isHttpException(e) ? e.getStatusCode() : 500)
                 .json(payload)
         }
 
@@ -432,9 +432,10 @@ export abstract class Handler extends IExceptionHandler {
 
         return response()
             .setCharset('utf-8')
-            .setStatusCode(this.isHttpException(e) ? (e.status as number) : 500)
+            .setStatusCode(this.isHttpException(e) ? e.getStatusCode() : 500)
             .viewTemplate(readFileSync(view, { encoding: 'utf-8' }), {
-                statusCode: this.isHttpException(e) ? (e.status as number) : 500,
+                statusCode: this.isHttpException(e) ? e.getStatusCode() : 500,
+                statusText: statusTexts[this.isHttpException(e) ? e.getStatusCode() : 500],
                 message: body,
                 exception: e,
                 debug: this.appDebug()
@@ -444,11 +445,13 @@ export abstract class Handler extends IExceptionHandler {
     /**
      * Default non-JSON response (simple string). Subclass to integrate templating.
      * 
-     * @param _request 
+     * @param request 
      * @param e 
      * @returns 
      */
-    protected prepareResponse (_request: IRequest, e: any): IResponse | Promise<IResponse> {
+    protected prepareResponse (request: IRequest, e: any): IResponse | Promise<IResponse> {
+        void request
+
         const body = this.isHttpException(e) ? (e.message ?? 'Error') : 'Internal Server Error'
 
         const view = FileSystem.resolveModulePath('@h3ravel/foundation', [
@@ -458,9 +461,10 @@ export abstract class Handler extends IExceptionHandler {
 
         return response()
             .setCharset('utf-8')
-            .setStatusCode(this.isHttpException(e) ? (e.status as number) : 500)
+            .setStatusCode(this.isHttpException(e) ? e.getStatusCode() : 500)
             .viewTemplate(readFileSync(view, { encoding: 'utf-8' }), {
-                statusCode: this.isHttpException(e) ? (e.status as number) : 500,
+                statusCode: this.isHttpException(e) ? e.getStatusCode() : 500,
+                statusText: statusTexts[this.isHttpException(e) ? e.getStatusCode() : 500],
                 message: body,
                 exception: e,
                 debug: this.appDebug()
@@ -527,7 +531,7 @@ export abstract class Handler extends IExceptionHandler {
         const payload = this.convertExceptionToArray(e)
         return response()
             .setCharset('utf-8')
-            .setStatusCode(this.isHttpException(e) ? (e.status as number) : 500)
+            .setStatusCode(this.isHttpException(e) ? e.getStatusCode() : 500)
             .json(payload)
     }
 
@@ -601,7 +605,10 @@ export abstract class Handler extends IExceptionHandler {
      */
     protected context (): Record<string, any> {
         try {
-            /* Example: if you have an Auth module, fetch user id here */
+            /**
+             * TODO: To be implemented
+             * Example: if we have an Auth module, we canfetch user id here 
+             */
             return {}
         } catch {
             return {}
@@ -633,8 +640,8 @@ export abstract class Handler extends IExceptionHandler {
      * @param e 
      * @returns 
      */
-    protected isHttpException (e: any): e is { status: number; headers?: Record<string, any>, message?: string } {
-        return e && typeof e.status === 'number'
+    protected isHttpException (e: any): e is HttpExceptionFactory {
+        return e instanceof HttpExceptionFactory
     }
 
     /**
@@ -642,15 +649,15 @@ export abstract class Handler extends IExceptionHandler {
      * 
      * @param _e 
      */
-    protected mapLogLevel (_e: any): string {
-        return 'error'
+    protected mapLogLevel (e: string | Error): Exclude<keyof typeof Console, 'prototype'> {
+        return this.levels.get(e) ?? 'error'
     }
 
     /**
      * Subclasses should return PSR-like logger (object with methods like error, warn, info or a `log` fn)
      */
-    protected newLogger (): any {
-        return console
+    protected newLogger () {
+        return Console
     }
 
     /**
@@ -683,7 +690,7 @@ export abstract class Handler extends IExceptionHandler {
      * 
      * @param _length 
      */
-    public truncateRequestExceptionsAt (_length: number) {
+    truncateRequestExceptionsAt (_length: number) {
         return this
     }
 
@@ -692,8 +699,9 @@ export abstract class Handler extends IExceptionHandler {
      * 
      * @param _attributes 
      */
-    public level (type: string, level: string) {
-        return this.logLevel = { level, type }
+    level (type: string | Error, level: Exclude<keyof typeof Console, 'prototype'>) {
+        this.levels.set(type, level)
+        return this
     }
 
     /**
@@ -701,7 +709,7 @@ export abstract class Handler extends IExceptionHandler {
      * 
      * @param _attributes 
      */
-    public dontFlash (_attributes: string | string[]) {
+    dontFlash (_attributes: string | string[]) {
         return this
     }
 }

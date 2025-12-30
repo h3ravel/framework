@@ -1,7 +1,7 @@
 import 'reflect-metadata'
 import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Application, Container, Kernel } from '@h3ravel/core'
-import { Request, Response, HttpContext } from '@h3ravel/http'
+import { Request, Response, HttpContext, JsonResponse } from '@h3ravel/http'
 import { Arr, Collection, isClass, Str, Stringable, tap } from '@h3ravel/support'
 import { Dispatcher } from '@h3ravel/events'
 import { FileSystem } from '@h3ravel/shared'
@@ -400,8 +400,8 @@ export class Router implements IRouter {
      * @returns 
      */
     private async handleResponse (handler: (ctx: HttpContext) => Promise<IResponse>, ctx: HttpContext): Promise<IResponse> {
-        this.app.exceptionHandler ??= this.app.make(ExceptionHandler)
-        if (!this.app.exceptionHandler) {
+        const exceptionHandler = this.app.make(ExceptionHandler)
+        if (!exceptionHandler) {
             return await handler(ctx)
         }
 
@@ -411,8 +411,8 @@ export class Router implements IRouter {
             /**
              * Handle the exception here.
              */
-            if (this.app.exceptionHandler.handle) {
-                return await this.app.exceptionHandler.handle?.(error as Error, ctx)
+            if (typeof exceptionHandler.handle !== 'undefined') {
+                return await exceptionHandler.handle(error as Error, ctx) as IResponse
             }
 
             /**
@@ -470,7 +470,6 @@ export class Router implements IRouter {
         request.setRouteResolver(() => route)
 
         this.events.dispatch(new RouteMatched(route, request))
-        // console.log(route.methods, route.getPath(), 'route.methods')
         const response = await this.prepareResponse(request, await this.runRouteWithinStack(route, request))
 
         return response
@@ -534,14 +533,14 @@ export class Router implements IRouter {
      * @param excluded
      * @return array
      */
-    resolveMiddleware (middleware: IMiddleware[], excluded: any[] = []) {
+    resolveMiddleware (middleware: IMiddleware[], excluded: IMiddleware[] = []) {
         excluded = excluded.length === 0
             ? excluded
             : (new Collection<IMiddleware>(excluded))
                 .map((name) => MiddlewareResolver.setApp(this.app).resolve(name, this.#middleware, this.middlewareGroups))
                 .flatten()
                 .values()
-                .all()
+                .all() as never
 
         const middlewares = (new Collection<IMiddleware>(middleware))
             .map((name) => MiddlewareResolver.setApp(this.app).resolve(name, this.#middleware, this.middlewareGroups))
@@ -631,8 +630,7 @@ export class Router implements IRouter {
         if (response instanceof Stringable || typeof response === 'string') {
             response = new Response(request.app, response.toString(), 200, { 'Content-Type': 'text/html' })
         } else if (!(response instanceof IResponse) && !(response instanceof Response)) {
-            // TODO: Implement a universal feature to convert classes to string or at least extract stringable content from them
-            response = new Response(request.app, 'UNIMPLEMENTED', 200, { 'Content-Type': 'text/html' })
+            response = new JsonResponse(request.app, response)
         }
 
         if (response.getStatusCode() === Response.codes.HTTP_NOT_MODIFIED) {
@@ -848,11 +846,7 @@ export class Router implements IRouter {
      * @param uri - The route uri.
      * @param action - The handler function or [controller class, method] array.
      */
-    match<C extends typeof IController> (
-        methods: Lowercase<RouteMethod>[],
-        uri: string,
-        action: ActionInput<C>,
-    ): Route {
+    match<C extends typeof IController> (methods: Lowercase<RouteMethod>[], uri: string, action: ActionInput<C>): Route {
         return this.#addRoute(Arr.wrap(methods).map(e => e.toUpperCase() as RouteMethod), uri, action)
     }
 

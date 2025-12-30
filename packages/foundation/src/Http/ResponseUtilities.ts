@@ -1,4 +1,4 @@
-import { CacheOptions } from '../Contracts/HttpContract'
+import { CacheOptions } from '@h3ravel/contracts'
 
 export enum ResponseCodes {
     HTTP_CONTINUE = 100,

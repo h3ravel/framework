@@ -5,7 +5,7 @@ import { H3Event } from 'h3'
 import { HttpResponse } from './Utilities/HttpResponse'
 import { IApplication } from '@h3ravel/contracts'
 import { Responsable } from './Utilities/Responsable'
-import { ResponseCodes } from './Utilities/ResponseUtilities'
+import { ResponseCodes } from '@h3ravel/foundation'
 
 export class Response extends HttpResponse implements IResponse {
     static codes = ResponseCodes
@@ -45,7 +45,7 @@ export class Response extends HttpResponse implements IResponse {
     /**
      * Sends content for the current web response.
      */
-    public sendContent (type?: 'html' | 'json' | 'text' | 'xml', parse?: boolean) {
+    public sendContent (type?: 'html' | 'json' | 'text' | 'xml', parse?: boolean): Responsable {
         if (!type) {
             type = Str.detectContentType(this.content)
         }
@@ -85,8 +85,7 @@ export class Response extends HttpResponse implements IResponse {
     async viewTemplate (content: string, data?: Record<string, any> | undefined): Promise<this>
     async viewTemplate (content: string, data: Record<string, any> | undefined, parse: boolean): Promise<Responsable>
     async viewTemplate (content: string, data?: Record<string, any> | undefined, parse?: boolean): Promise<Responsable | this> {
-        const base = this.html(await this.app.make('edge').renderRaw(content, data), parse!)
-        return new Responsable(base.body!, base)
+        return this.html(await this.app.make('edge').renderRaw(content, data), parse!)
     }
 
     /**
@@ -99,6 +98,9 @@ export class Response extends HttpResponse implements IResponse {
     html (content: string, parse: boolean): Responsable
     html (content?: string, parse?: boolean): Responsable | this {
         const base = this.httpResponse('text/html', content ?? this.content, parse!)
+        if (base instanceof Response) {
+            return new Responsable(base.content, { status: base.statusCode, statusText: base.statusText, headers: base.headers })
+        }
         return new Responsable(base.body!, base)
     }
 
@@ -106,14 +108,14 @@ export class Response extends HttpResponse implements IResponse {
      * Send a JSON response.
      */
     json<T = unknown> (data?: T): this
-    json<T = unknown> (data: T, parse: boolean): T
+    json<T = unknown> (data: T, parse: boolean): Responsable
     json<T = unknown> (data?: T, parse?: boolean): Responsable | this {
         const content = data ?? this.content
         return this.httpResponse(
             'application/json',
             typeof content !== 'string' ? JSON.stringify(content) : content,
             parse!
-        ) as never
+        )
     }
 
     /**

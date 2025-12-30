@@ -3,6 +3,7 @@ import type { RouteMethod } from '../Utilities/Utilities'
 
 export declare abstract class IAbstractRouteCollection {
     static verbs: RouteMethod[]
-    abstract get (method?: string): Record<string, IRoute> | IRoute[];
+    abstract get (): IRoute[];
+    abstract get (method: string): Record<string, IRoute>;
     abstract getRoutes (): IRoute[];
 }

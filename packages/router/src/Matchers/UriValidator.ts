@@ -1,8 +1,9 @@
+import { IRouteValidator } from '../Contracts/IRouteValidator'
 import { Request } from '@h3ravel/http'
 import { Route } from '../Route'
 import { Str } from '@h3ravel/support'
 
-export class UriValidator {
+export class UriValidator extends IRouteValidator {
     /**
      * Validate a given rule against a route and request.
      *
@@ -10,8 +11,7 @@ export class UriValidator {
      * @param  request
      */
     public matches (route: Route, request: Request) {
-        const path = Str.rtrim(request.getPathInfo(), '/') || '/'
-
-        return route.getCompiled()?.getRegex().test(decodeURIComponent(path))
+        const path = Str.of(request.getPathInfo()).ltrim('/').rtrim('/').toString() || '/'
+        return route.getCompiled()!.getRegex().test(decodeURIComponent(path))
     }
 }

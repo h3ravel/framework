@@ -9,6 +9,7 @@ export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'patch' | 'apiResour
 export type RouteMethod = 'GET' | 'HEAD' | 'PUT' | 'PATCH' | 'POST' | 'DELETE' | 'OPTIONS';
 export type RequestMethod = 'HEAD' | 'GET' | 'PUT' | 'DELETE' | 'TRACE' | 'OPTIONS' | 'PURGE' | 'POST' | 'CONNECT' | 'PATCH';
 export type ControllerMethod = 'index' | 'show' | 'update' | 'destroy';
+export type GenericObject = Record<string, any>;
 export type RequestObject = Record<string, any>;
 export type ResponseObject = Record<string, any>;
 
@@ -22,12 +23,12 @@ export type ExtractClassMethods<T> = {
 export type EventHandler = (ctx: IHttpContext) => any
 
 export type ClassConstructor<T = any> = abstract new (...args: any[]) => T
+export type RouteEventHandler = (ctx: IHttpContext, ...args: any[]) => any
 export type MergedConstructor<T = any> = (new (...args: any[]) => T) & Record<string, T>
 export type AbstractConstructor<T = any> = (abstract new (...args: any[]) => T) & Record<string, T>
 export type CallableConstructor<X = any, Y = any> = (...args: Y[]) => X
 export type AppEvent = CallableConstructor
 export type AppListener = CallableConstructor
-export type RouteEventHandler = CallableConstructor
 export type ConcreteConstructor<T = any> = new (...args: any[]) => Required<T>
 
 export interface RouteActions {
@@ -42,6 +43,7 @@ export interface RouteActions {
     controller?: RouteEventHandler | IController | string
     missing?: CallableConstructor
     uses?: any
+    http?: boolean
     https?: boolean
     middleware?: MiddlewareList
     namespace?: string

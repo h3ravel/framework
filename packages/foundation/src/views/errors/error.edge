@@ -85,7 +85,7 @@
 
 <body>
     <div class="error-container">
-        <h1>{{ statusCode }}</h1>
+        <h1>{{ statusCode || 500 }}</h1>
         <h2>{{ statusText || 'Something went wrong' }}</h2>
 
         @if(!debug)

@@ -146,8 +146,8 @@ catalogs:
       specifier: ^0.6.17
       version: 0.6.17
     '@h3ravel/collect.js':
-      specifier: ^5.1.1
-      version: 5.1.1
+      specifier: ^5.3.2
+      version: 5.3.2
     '@h3ravel/musket':
       specifier: ^0.4.0
       version: 0.4.0
@@ -784,7 +784,7 @@ importers:
     devDependencies:
       '@h3ravel/collect.js':
         specifier: catalog:prod
-        version: 5.1.1
+        version: 5.3.2
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -1617,8 +1617,8 @@ packages:
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
-  '@h3ravel/collect.js@5.1.1':
-    resolution: {integrity: sha512-ypP6ugFOYR94A5J2YAoBsyvHLZ8Z5dRl22i0WodMK8sWYAzvgM4UjSMS8k58fP8fkwJtYxxScnyXpAY0y4Y/Hw==}
+  '@h3ravel/collect.js@5.3.2':
+    resolution: {integrity: sha512-oCI+1cUOE5il+z6OTiE0NuYB4gniqvK161XuepAlqEv1LdI+T86oGGww2s97pket1sYHbHfggvvRnKiSJKiSHQ==}
 
   '@h3ravel/musket@0.4.0':
     resolution: {integrity: sha512-avecKyX+jDNm5AFUBLARoCSNYUJm8mda6MvykoGhaMhULaKUQFzxu9wwzvI+HKY+VOFjyErXbO2aOYe+kvbC2g==}
@@ -7089,7 +7089,7 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/collect.js@5.1.1': {}
+  '@h3ravel/collect.js@5.3.2': {}
 
   '@h3ravel/musket@0.4.0(@h3ravel/support@0.15.6)(@types/node@24.10.0)':
     dependencies:

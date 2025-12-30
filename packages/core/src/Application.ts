@@ -330,9 +330,8 @@ export class Application extends Container implements IApplication {
 
             kernel.terminate(context.request, response!)
 
-            if (typeof response?.prepare !== 'undefined') {
-                const content = response.prepare(context.request).send()
-                return content
+            if (response && ['Response', 'JsonResponse'].includes(response.constructor.name)) {
+                return response.prepare(context.request).send()
             } else {
                 return response
             }

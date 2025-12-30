@@ -6,12 +6,17 @@ import { CallableDispatcher } from './CallableDispatcher'
 import { CompiledRoute } from './CompiledRoute'
 import { ControllerDispatcher } from './ControllerDispatcher'
 import { H3 } from 'h3'
+import { HostValidator } from './Matchers/HostValidator'
+import { IRouteValidator } from './Contracts/IRouteValidator'
 import { LogicException } from '@h3ravel/foundation'
+import { MethodValidator } from './Matchers/MethodValidator'
 import { Request } from '@h3ravel/http'
 import { RouteAction } from './RouteAction'
 import { RouteParameterBinder } from './RouteParameterBinder'
 import { RouteUri } from './RouteUri'
 import { Router } from './Router'
+import { SchemeValidator } from './Matchers/SchemeValidator'
+import { UriValidator } from './Matchers/UriValidator'
 
 export class Route extends IRoute {
     /**
@@ -60,6 +65,11 @@ export class Route extends IRoute {
     protected bindingFields!: Record<string, string>
 
     /**
+     * Indicates whether the route is a fallback route.
+     */
+    isFallback: boolean = false
+
+    /**
      * The route action array.
      */
     action: RouteActions
@@ -83,6 +93,11 @@ export class Route extends IRoute {
      * The controller instance.
      */
     controller?: Required<IController>
+
+    /**
+     * The validators used by the routes.
+     */
+    static validators: IRouteValidator[]
 
     /**
      * 
@@ -255,10 +270,44 @@ export class Route extends IRoute {
     }
 
     /**
+     * Mark this route as a fallback route.
+     */
+    fallback () {
+        this.isFallback = true
+
+        return this
+    }
+
+    /**
+     * Set the fallback value.
+     *
+     * @param  sFallback
+     */
+    setFallback (isFallback: boolean) {
+        this.isFallback = isFallback
+
+        return this
+    }
+
+    /**
+     * Get the HTTP verbs the route responds to.
+     */
+    getMethods () {
+        return this.methods
+    }
+
+    /**
      * Determine if the route only responds to HTTP requests.
      */
     httpOnly () {
         return Obj.has(this.action, 'http')
+    }
+
+    /**
+     * Determine if the route only responds to HTTPS requests.
+     */
+    httpsOnly () {
+        return this.secure()
     }
 
     /**
@@ -391,9 +440,15 @@ export class Route extends IRoute {
             }
 
             return this.runCallable()
-        } catch (e) {
-            console.log(e)
-            return e.getResponse()
+        } catch (e: any) {
+            if (typeof e.getResponse !== 'undefined') {
+                return e.getResponse()
+            }
+            throw e
+            // return response()
+            //     .setCharset('utf-8')
+            //     .setStatusCode(e.code ?? e.statusCode ?? e.status ?? 500)
+            //     .setContent(e.message)
         }
     }
 
@@ -479,12 +534,17 @@ export class Route extends IRoute {
      * Get the optional parameter names for the route.
      */
     getOptionalParameterNames (): Record<string, null> {
-        const matches = [...this.uri().matchAll(/\{([\w:]+?)\??\}/g)]
-        if (!matches.length) return {}
+        const pattern = /\{([\w]+)(?:[:][\w]+)?(\?)?\}/g
+        const matches = [...this.uri().matchAll(pattern)]
 
         const result: Record<string, null> = {}
+
         for (const match of matches) {
-            result[match[1]] = null
+            const paramName = match[1]
+            const isOptional = !!match[2] // true if '?' exists
+            if (isOptional) {
+                result[paramName] = null
+            }
         }
 
         return result
@@ -509,8 +569,8 @@ export class Route extends IRoute {
     }
 
     protected compileParameterNames (): string[] {
-        const pattern = /\{([\w:]+?)\??\}/g
-        const fullUri = (this.getDomain() ?? '') + this.uri
+        const pattern = /\{([\w]+)(?:[:][\w]+)?\??\}/g
+        const fullUri = (this.getDomain() ?? '') + this.uri()
         const matches = [...fullUri.matchAll(pattern)]
 
         return matches.map(m => m[1])
@@ -522,15 +582,8 @@ export class Route extends IRoute {
     compileRoute (): CompiledRoute {
         if (!this.compiled) {
             const optionalParams = this.getOptionalParameterNames()
-            const paramNames: string[] = []
 
-            // extract all param names in order
-            this.uri().replace(/\{([\w:]+?)\??\}/g, (_, paramName) => {
-                paramNames.push(paramName)
-                return ''
-            })
-
-            this.compiled = new CompiledRoute(this.uri(), paramNames, optionalParams)
+            this.compiled = new CompiledRoute(this.uri(), optionalParams)
         }
 
         return this.compiled
@@ -609,6 +662,27 @@ export class Route extends IRoute {
     }
 
     /**
+     * Get the route validators for the instance.
+     *
+     * @return array
+     */
+    static getValidators () {
+        if (typeof this.validators !== 'undefined') {
+            return this.validators
+        }
+
+        // To match the route, we will use a chain of responsibility pattern with the
+        // validator implementations. We will spin through each one making sure it
+        // passes and then we will know if the route as a whole matches request.
+        return this.validators = [
+            new UriValidator(),
+            new MethodValidator(),
+            new SchemeValidator(),
+            new HostValidator(),
+        ]
+    }
+
+    /**
      * Run the route action and return the response.
      *
      * @return mixed
@@ -658,6 +732,29 @@ export class Route extends IRoute {
     }
 
     /**
+     * Determine if the route matches a given request.
+     * 
+     * @param request 
+     * @param includingMethod 
+     */
+    matches (request: Request, includingMethod = true): boolean {
+        this.compileRoute()
+
+        for (const validator of Route.getValidators()) {
+
+            if (!includingMethod && validator instanceof MethodValidator) {
+                continue
+            }
+
+            if (!validator.matches(this, request)) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    /**
      * Get the controller class used for the route.
      */
     getControllerClass () {
@@ -689,11 +786,14 @@ export class Route extends IRoute {
                 this.getControllerClass(),
                 this.getControllerMethod(),
             ]
+            void controllerClass
+            void controllerMethod
         } else {
             //
         }
 
-        console.log(controllerClass, controllerMethod, this.action, 'controllerMiddleware')
+        // console.log(controllerClass, controllerMethod, this.action, 'controllerMiddleware')
+        // TODO: Let's finish the below
         // if (is_a(controllerClass, HasMiddleware.lass, true)) {
         //     return this.staticallyProvidedControllerMiddleware(
         //         controllerClass,

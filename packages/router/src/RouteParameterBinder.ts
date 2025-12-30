@@ -38,7 +38,7 @@ export class RouteParameterBinder {
      */
     protected bindPathParameters (request: Request): Record<string, string> {
         // ensure path starts with '/'
-        const path = '/' + (request.decodedPath().replace(/^\/+/, ''))
+        const path = request.decodedPath().replace(/^\/+/, '')
 
         const pathRegex = this.route.compiled?.getRegex() ?? ''
         const matches = path.match(pathRegex) ?? []
@@ -72,6 +72,7 @@ export class RouteParameterBinder {
      */
     protected matchToKeys (matches: string[]): Record<string, string> {
         const parameterNames = this.route.parameterNames()
+
         if (!parameterNames || parameterNames.length === 0) {
             return {}
         }

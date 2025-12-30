@@ -1,15 +1,14 @@
+import { CacheOptions, IHttpResponse, IRequest, ResponseObject } from '@h3ravel/contracts'
 import { DateTime, InvalidArgumentException } from '@h3ravel/support'
-import { HTTP_RESPONSE_CACHE_CONTROL_DIRECTIVES, statusTexts } from '../Utilities/ResponseUtilities'
-import { IRequest, ResponseObject } from '@h3ravel/contracts'
+import { HTTP_RESPONSE_CACHE_CONTROL_DIRECTIVES, statusTexts } from '@h3ravel/foundation'
 
-import { CacheOptions } from '../Contracts/HttpContract'
 import { Cookie } from './Cookie'
 import type { H3Event } from 'h3'
 import { HeaderBag } from '../Utilities/HeaderBag'
 import { HttpResponseException } from '../Exceptions/HttpResponseException'
 import { ResponseHeaderBag } from '../Utilities/ResponseHeaderBag'
 
-export class HttpResponse {
+export class HttpResponse extends IHttpResponse {
     protected statusCode: number = 200
     protected headers: ResponseHeaderBag
     protected content!: any
@@ -49,6 +48,7 @@ export class HttpResponse {
          */
         protected readonly event: H3Event,
     ) {
+        super()
         this.headers = new ResponseHeaderBag(this.event)
         this.setContent()
         this.setProtocolVersion('1.0')

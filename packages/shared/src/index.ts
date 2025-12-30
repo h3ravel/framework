@@ -1,6 +1,7 @@
 export * from './Contracts/ObjContract'
 export * from './Contracts/PromptsContract'
 export * from './Contracts/Utils'
+export * from './Utils/Console'
 export * from './Utils/EnvParser'
 export * from './Utils/FileSystem'
 export * from './Utils/Logger'

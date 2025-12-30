@@ -1,6 +1,5 @@
 import type { Bindings, UseKey } from '../Utilities/BindingsContract'
 import type { IMiddlewareHandler } from '../Routing/IMiddlewareHandler'
-import { IExceptionHandler } from '../Exceptions/IExceptionHandler'
 import { ClassConstructor, CallableConstructor, ExtractClassMethods, ConcreteConstructor } from '../Utilities/Utilities'
 import { IMiddleware } from '../Routing/IMiddleware'
 
@@ -8,7 +7,6 @@ import { IMiddleware } from '../Routing/IMiddleware'
  * Interface for the Container contract, defining methods for dependency injection and service resolution.
  */
 export abstract class IContainer {
-    abstract exceptionHandler?: IExceptionHandler
     abstract middlewareHandler?: IMiddlewareHandler
 
     /**
