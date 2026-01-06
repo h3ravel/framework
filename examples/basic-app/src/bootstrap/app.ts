@@ -1,12 +1,25 @@
+import { Application, h3ravel } from '@h3ravel/core'
+
 import { UnprocessableEntityHttpException } from '@h3ravel/foundation'
-import { h3ravel } from '@h3ravel/core'
+import path from 'node:path'
 import providers from 'src/bootstrap/providers'
 
 export default class {
     async bootstrap () {
         const app = await h3ravel(providers, process.cwd(), { autoload: true, initialize: false }, async () => undefined)
+        this.configure(app)
+        return await app.fire()
+    }
 
-        app.configure()
+    configure (app: Application) {
+        return app.configure()
+            .withRouting({
+                web: path.join(process.cwd(), 'src/routes/web.ts'),
+                api: path.join(process.cwd(), 'src/routes/api.ts'),
+                commands: path.join(process.cwd(), 'src/routes/console.ts'),
+                channels: path.join(process.cwd(), 'src/routes/channels.ts'),
+                health: '/up',
+            })
             .withExceptions((exceptions) => {
                 return exceptions
                     /**
@@ -29,7 +42,5 @@ export default class {
             .withMiddleware(() => {
                 console.log('-=withMiddleware=-')
             })
-
-        return await app.fire()
     }
 }

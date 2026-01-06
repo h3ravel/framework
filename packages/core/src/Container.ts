@@ -1,9 +1,8 @@
 import 'reflect-metadata'
-import { ExtractClassMethods, IContainer, type UseKey, ClassConstructor, type Bindings, CallableConstructor, IMiddleware, ConcreteConstructor } from '@h3ravel/contracts'
-import { Handler, MiddlewareHandler } from '@h3ravel/foundation'
+import { CallableConstructor, IMiddleware, ConcreteConstructor, type IBinding } from '@h3ravel/contracts'
+import { ExtractClassMethods, IContainer, type UseKey, ClassConstructor, type Bindings } from '@h3ravel/contracts'
+import { MiddlewareHandler } from '@h3ravel/foundation'
 import { ContainerResolver } from './Manager/ContainerResolver'
-
-type IBinding = UseKey | (new (...args: any[]) => unknown)
 
 export class Container extends IContainer {
     public bindings = new Map<IBinding, () => unknown>()
@@ -24,7 +23,11 @@ export class Container extends IContainer {
     /**
      * The container's shared instances.
      */
-    protected instances = new Map<string, new (...args: any[]) => any>()
+    protected instances = new Map<string | IBinding, new (...args: any[]) => any>()
+    /**
+     * The container's resolved instances.
+     */
+    protected resolvedInstances = new Set<IBinding | string>()
     /**
      * The registered type alias.
      */
@@ -234,6 +237,8 @@ export class Container extends IContainer {
         if (raiseEvents)
             this.runAfterResolvingCallbacks(abstract, resolved)
 
+        this.resolvedInstances.add(abstract)
+
         return resolved
     }
 
@@ -322,7 +327,7 @@ export class Container extends IContainer {
      *
      * @param name
      */
-    isAlias (name: string) {
+    isAlias (name: IBinding | string) {
         return this.aliases.has(name) && typeof this.aliases.get(name) !== 'undefined'
     }
 
@@ -332,9 +337,11 @@ export class Container extends IContainer {
      * @param  abstract
      */
     getAlias (abstract: any): any {
-        if (typeof abstract === 'string' && this.aliases.has(abstract)) {
+        if (typeof abstract === 'string' && this.aliases.has(abstract))
             return this.getAlias(this.aliases.get(abstract))
-        }
+
+        if (abstract == null)
+            return abstract
 
         return this.aliases.get(abstract) ?? abstract
     }
@@ -381,6 +388,19 @@ export class Container extends IContainer {
     has<F extends (...args: any[]) => any> (key: F): boolean
     has (key: any): boolean {
         return this.bound(key)
+    }
+
+    /**
+     * Determine if the given abstract type has been resolved.
+     *
+     * @param abstract
+     */
+    resolved (abstract: IBinding | string): boolean {
+        if (this.isAlias(abstract)) {
+            abstract = this.getAlias(abstract)
+        }
+
+        return this.resolvedInstances.has(abstract) || this.instances.has(abstract)
     }
 
     /**

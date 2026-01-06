@@ -7,8 +7,8 @@ import { IController } from '@h3ravel/contracts'
 export abstract class Controller extends IController {
     protected app: Application
 
-    constructor(app: Application) {
+    constructor(app?: Application) {
         super()
-        this.app = app
+        this.app = app!
     }
 }

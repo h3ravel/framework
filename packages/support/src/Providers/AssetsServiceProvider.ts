@@ -1,7 +1,7 @@
 import { readFile, stat } from 'node:fs/promises'
 
-import { ServiceProvider } from '@h3ravel/core'
-import { Str } from '@h3ravel/support'
+import { ServiceProvider } from '../Providers/ServiceProvider'
+import { Str } from '../Helpers/Str'
 import { join } from 'node:path'
 import { serveStatic } from 'h3'
 import { statSync } from 'node:fs'
@@ -21,7 +21,7 @@ export class AssetsServiceProvider extends ServiceProvider {
         /**
          * Use a middleware to check if this request for for a file
          */
-        app.middleware((event) => {
+        app.h3middleware((event) => {
             const { pathname } = new URL(event.req.url)
 
             /**

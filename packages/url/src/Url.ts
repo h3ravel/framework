@@ -77,7 +77,6 @@ export class Url {
     /**
      * Create a URL from a named route
      */
-    // Route parameter map (declaration-mergeable by consumers)
     static route<TName extends string = string, TParams extends RouteParams = RouteParams> (
         name: TName,
         params: TParams = {} as TParams,
@@ -89,15 +88,18 @@ export class Url {
 
         // Use (app as any).make to avoid TS error if make is not typed on Application
         const router = app.make('router')
-        if (!router || typeof router.route !== 'function') {
+        if (!router) {
             throw new Error('Router not available or does not support route generation')
         }
 
-        if (typeof router.route !== 'function') {
+        if (typeof router.getRoutes !== 'function') {
             throw new Error('Router does not support route generation')
         }
 
-        const routeUrl = router.route(name, params)
+        const routeUrl = router.getRoutes().getByName(name)?.uri()
+        // TODO: Provide route params
+        // const routeUrl = router.route(name, params)
+        void params
         if (!routeUrl) {
             throw new Error(`Route "${name}" not found`)
         }

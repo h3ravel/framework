@@ -64,7 +64,7 @@ export class RouteCollection extends AbstractRouteCollection implements IRouteCo
         // Controller action lookup
         const action = route.getAction()
 
-        const controller = action.controller ?? null
+        const controller = action.controller ?? undefined
 
         if (controller && !this.inActionLookup(controller)) {
             this.addToActionList(action, route)
@@ -123,7 +123,7 @@ export class RouteCollection extends AbstractRouteCollection implements IRouteCo
 
         for (const key of Object.keys(this.allRoutes)) {
             const route = this.allRoutes[key]
-            const controller = route.getAction().controller ?? null
+            const controller = route.getAction().controller ?? undefined
             if (controller && !this.inActionLookup(controller)) {
                 this.addToActionList(route.getAction(), route)
             }
@@ -136,7 +136,7 @@ export class RouteCollection extends AbstractRouteCollection implements IRouteCo
      * May throw framework-specific exceptions (MethodNotAllowed / NotFound).
      */
     public match (request: Request): Route {
-        const routes = this.get(request.getMethod()) as Record<string, Route>
+        const routes = this.get(request.getMethod())
 
         const route = this.matchAgainstRoutes(routes, request)
 
@@ -149,7 +149,7 @@ export class RouteCollection extends AbstractRouteCollection implements IRouteCo
     public get (): Route[]
     public get (method: string): Record<string, Route>
     public get (method?: string): Record<string, Route> | Route[] {
-        if (typeof method === 'undefined' || method === null) {
+        if (typeof method === 'undefined' || method === undefined) {
             return this.getRoutes()
         }
 
@@ -160,21 +160,21 @@ export class RouteCollection extends AbstractRouteCollection implements IRouteCo
      * Determine if the route collection contains a given named route.
      */
     public hasNamedRoute (name: string): boolean {
-        return this.getByName(name) !== null
+        return this.getByName(name) !== undefined
     }
 
     /**
      * Get a route instance by its name.
      */
-    public getByName (name: string): Route | null {
-        return this.nameList[name] ?? null
+    public getByName (name: string): Route | undefined {
+        return this.nameList[name] ?? undefined
     }
 
     /**
      * Get a route instance by its controller action.
      */
-    public getByAction (action: string): Route | null {
-        return this.actionList[action] ?? null
+    public getByAction (action: string): Route | undefined {
+        return this.actionList[action] ?? undefined
     }
 
     /**

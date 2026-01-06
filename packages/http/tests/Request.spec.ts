@@ -196,7 +196,7 @@ describe('Request', () => {
         // create request and then tweak query to simulate GET params
         const req = await Request.create(event, app as any)
             // simulate query bag contents by directly setting query (InputBag exposes all())
-            ; (req as any).query = new InputBag({ q: '1' }, event)
+            ; (req as any)._query = new InputBag({ q: '1' }, event)
         const merged = (req as any).all()
         expect(merged).toEqual(expect.objectContaining({ foo: 'bar', q: '1' }))
     })
@@ -209,7 +209,7 @@ describe('Request', () => {
             text: async () => '',
         })
         const getReq = await Request.create(getEvent, app as any)
-            ; (getReq as any).query = new InputBag({ a: 'q' }, getEvent)
+            ; (getReq as any)._query = new InputBag({ a: 'q' }, getEvent)
         expect(getReq.input()).toEqual(expect.objectContaining({ a: 'q' }))
 
         // POST request
@@ -378,7 +378,7 @@ describe('Request', () => {
         })
         const req = await Request.create(event, app as any)
             ; (req as any).attributes = new ParamBag({ routeParam: 'rp' }, event)
-            ; (req as any).query = new InputBag({ q: '1' }, event)
+            ; (req as any)._query = new InputBag({ q: '1' }, event)
             ; (req as any).request = new InputBag({ bodyKey: 'b' }, event)
 
         expect(req.get('routeParam')).toBe('rp')

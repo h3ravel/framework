@@ -595,7 +595,9 @@ export class Str {
                 return true
             }
 
-            pattern = pattern.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&').replace(/\\\*/g, '.*')
+            pattern = pattern
+                .replace(/[\\^$*+?.()|[\]{}]/g, '\\$&')
+                .replace(/\\\*/g, '.*')
 
             const regex: RegExp = new RegExp('^' + pattern + '$', ignoreCase ? 'iu' : 'u')
 

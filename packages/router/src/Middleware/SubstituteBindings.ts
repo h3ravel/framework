@@ -19,7 +19,7 @@ export class SubstituteBindings extends Middleware {
     async handle (request: Request, next: (request: Request) => Promise<unknown>) {
 
         const route = request.route()
-
+        console.log(route, '----')
         try {
             this.router.substituteBindings(route)
             this.router.substituteImplicitBindings(route)

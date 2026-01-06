@@ -22,7 +22,7 @@ export abstract class IServiceProvider {
     /**
      * Indicate that this service provider only runs in console
      */
-    static console: boolean
+    static console?: boolean
 
     /**
      * Indicate that this service provider only runs in console

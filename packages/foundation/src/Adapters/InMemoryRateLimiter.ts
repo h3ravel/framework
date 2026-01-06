@@ -1,4 +1,4 @@
-import { RateLimiterAdapter } from '../Contracts/RateLimiterAdapter'
+import { RateLimiterAdapter } from '@h3ravel/contracts'
 
 /**
  * Very small in-memory token-bucket / counter limiter.

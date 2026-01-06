@@ -1,9 +1,9 @@
 import 'reflect-metadata'
 
 import { FileSystem, Logger, PathLoader } from '@h3ravel/shared'
-import { type H3, type H3Event } from 'h3'
+import { H3, serve, type H3Event } from 'h3'
 
-import { ConcreteConstructor, IKernel, IUrl, type IApplication, type IHttpContext, type IPathName, type IServiceProvider } from '@h3ravel/contracts'
+import { CKernel, ConcreteConstructor, IBootstraper, IKernel, IUrl, type IApplication, type IHttpContext, type IPathName, type IServiceProvider } from '@h3ravel/contracts'
 import { InvalidArgumentException, Str } from '@h3ravel/support'
 
 import { AppBuilder, ConfigException } from '@h3ravel/foundation'
@@ -17,15 +17,16 @@ import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
 import { readFile } from 'node:fs/promises'
 import semver from 'semver'
+import { CoreServiceProvider } from './Providers/CoreServiceProvider'
 
 export class Application extends Container implements IApplication {
     /**
      * Indicates if the application has "booted".
      */
     #booted = false
-    public paths = new PathLoader()
-    public context?: (event: H3Event) => Promise<IHttpContext>
-    public h3Event?: H3Event
+    paths = new PathLoader()
+    context?: (event: H3Event) => Promise<IHttpContext>
+    h3Event?: H3Event
     private tries: number = 0
     private basePath: string
     private versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
@@ -33,8 +34,9 @@ export class Application extends Container implements IApplication {
 
     private h3App?: H3
     private providers: Array<IServiceProvider> = []
-    protected externalProviders: Array<ConcreteConstructor<IServiceProvider>> = []
+    protected externalProviders: Array<ConcreteConstructor<IServiceProvider, false>> = []
     protected filteredProviders: Array<string> = []
+    private autoRegisterProviders: boolean = false
 
     /**
      * The route resolver callback.
@@ -44,14 +46,29 @@ export class Application extends Container implements IApplication {
     /**
      * List of registered console commands
      */
-    public registeredCommands: (new (app: any, kernel: any) => any)[] = []
+    registeredCommands: (new (app: any, kernel: any) => any)[] = []
 
     /**
      * The array of booted callbacks.
      */
-    protected bootedCallbacks: Array<(...args: any[]) => void> = []
+    protected bootedCallbacks: Array<(app: this) => void> = []
 
-    constructor(basePath: string) {
+    /**
+     * The array of booting callbacks.
+     */
+    protected bootingCallbacks: Array<(app: this) => void> = []
+
+    /**
+     * Indicates if the application has been bootstrapped before.
+     */
+    protected bootstrapped = false
+
+    /**
+     * Controls logging
+     */
+    private logsDisabled = false
+
+    constructor(basePath: string, protected initializer?: string) {
         super()
         dotenvExpand.expand(dotenv.config({ quiet: true }))
 
@@ -102,7 +119,7 @@ export class Application extends Container implements IApplication {
     /**
      * Get all registered providers
      */
-    public getRegisteredProviders (): IServiceProvider[] {
+    getRegisteredProviders (): IServiceProvider[] {
         return this.providers
     }
 
@@ -114,13 +131,13 @@ export class Application extends Container implements IApplication {
      * Minimal App: Loads only core, config, http, router by default.
      * Full-Stack App: Installs database, mail, queue, cache → they self-register via their providers.
      */
-    protected async getConfiguredProviders (): Promise<ConcreteConstructor<IServiceProvider>[]> {
+    protected async getConfiguredProviders (): Promise<ConcreteConstructor<IServiceProvider, false>[]> {
         return [
-            (await import('@h3ravel/core')).CoreServiceProvider as never,
+            CoreServiceProvider
         ]
     }
 
-    protected async getAllProviders (): Promise<Array<ConcreteConstructor<IServiceProvider>>> {
+    protected async getAllProviders (): Promise<Array<ConcreteConstructor<IServiceProvider, false>>> {
         const coreProviders = await this.getConfiguredProviders()
         return [...coreProviders, ...this.externalProviders]
     }
@@ -134,26 +151,35 @@ export class Application extends Container implements IApplication {
      * 
      * @returns 
      */
-    public async quickStartup (providers: Array<ConcreteConstructor<IServiceProvider>>, filtered: string[] = [], autoRegisterProviders = true) {
+    initialize (providers: Array<ConcreteConstructor<IServiceProvider, false>>, filtered: string[] = [], autoRegisterProviders = true) {
+        /**
+         * Bind HTTP APP to the service container
+         */
+        this.singleton('http.app', () => {
+            return new H3()
+        })
+
+        /**
+         * Bind the HTTP server to the service container
+         */
+        this.singleton('http.serve', () => serve)
+
         this.registerProviders(providers, filtered)
-        await this.registerConfiguredProviders(autoRegisterProviders)
-        return this.boot()
+        this.autoRegisterProviders = autoRegisterProviders
+        return this
     }
 
     /**
      * Dynamically register all configured providers
-     * 
-     * @param autoRegister If set to false, service providers will not be auto discovered and registered.
      */
-    public async registerConfiguredProviders (autoRegister = true) {
+    async registerConfiguredProviders () {
         const providers = await this.getAllProviders()
-
         ProviderRegistry.setSortable(false)
         ProviderRegistry.setFiltered(this.filteredProviders)
         ProviderRegistry.registerMany(providers)
 
-        if (autoRegister) {
-            await ProviderRegistry.discoverProviders(autoRegister)
+        if (this.autoRegisterProviders) {
+            await ProviderRegistry.discoverProviders(this.autoRegisterProviders)
         }
 
         ProviderRegistry.doSort()
@@ -170,15 +196,15 @@ export class Application extends Container implements IApplication {
      * @param providers 
      * @param filtered 
      */
-    registerProviders (providers: Array<ConcreteConstructor<IServiceProvider>>, filtered: string[] = []): void {
+    registerProviders (providers: Array<ConcreteConstructor<IServiceProvider, false>>, filtered: string[] = []): void {
         this.externalProviders.push(...providers)
-        this.filteredProviders = filtered
+        this.filteredProviders = Array.from(new Set(this.filteredProviders.concat(filtered)))
     }
 
     /**
      * Register a provider
      */
-    public async register (provider: IServiceProvider) {
+    async register (provider: IServiceProvider) {
         await new ContainerResolver(this).resolveMethodParams(provider, 'register', this)
         if (provider.registeredCommands && provider.registeredCommands.length > 0) {
             this.registeredCommands.push(...provider.registeredCommands)
@@ -191,7 +217,7 @@ export class Application extends Container implements IApplication {
      * 
      * @param commands An array of console commands to register.
      */
-    public withCommands (commands: (new (app: any, kernel: any) => any)[]) {
+    withCommands (commands: (new (app: any, kernel: any) => any)[]) {
         this.registeredCommands = commands
 
         return this
@@ -200,7 +226,7 @@ export class Application extends Container implements IApplication {
     /**
      * checks if the application is running in CLI
      */
-    public runningInConsole (): boolean {
+    runningInConsole (): boolean {
         return typeof process !== 'undefined'
             && !!process.stdout
             && !!process.stdin
@@ -210,11 +236,11 @@ export class Application extends Container implements IApplication {
     /**
      * checks if the application is running in Unit Test
      */
-    public runningUnitTests (): boolean {
+    runningUnitTests (): boolean {
         return process.env.VITEST === 'true'
     }
 
-    public getRuntimeEnv (): 'browser' | 'node' | 'unknown' {
+    getRuntimeEnv (): 'browser' | 'node' | 'unknown' {
         if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             return 'browser'
         }
@@ -227,25 +253,44 @@ export class Application extends Container implements IApplication {
     /**
      * Determine if the application has booted.
      */
-    public isBooted (): boolean {
+    isBooted (): boolean {
         return this.#booted
+    }
+
+    /**
+     * Determine if the application has booted.
+     */
+    logging (logging: boolean = true): this {
+        this.logsDisabled = !logging
+        return this
+    }
+
+    protected logsEnabled () {
+        if (this.logsDisabled) return false
+
+        const debuggable = process.env.APP_DEBUG === 'true' && process.env.EXTENDED_DEBUG !== 'false'
+
+        return (debuggable || Number(process.env.VERBOSE) > 1) && !this.providers.some(e => e.runsInConsole)
     }
 
     /**
      * Boot all service providers after registration
      */
-    public async boot () {
+    async boot () {
 
         if (this.#booted) return this
+
+        this.fireAppCallbacks(this.bootingCallbacks)
+
+        /**
+         * Register all the configured service providers
+         */
+        await this.registerConfiguredProviders()
 
         /**
          * If debug is enabled, let's show the loaded service provider info
          */
-        if (((process.env.APP_DEBUG === 'true' && process.env.EXTENDED_DEBUG !== 'false') || Number(process.env.VERBOSE) > 1) &&
-            !this.providers.some(e => e.runsInConsole)
-        ) {
-            ProviderRegistry.log(this.providers)
-        }
+        ProviderRegistry.log(this.providers, this.logsEnabled())
 
         for (const provider of this.providers) {
             if (provider.boot) {
@@ -276,11 +321,20 @@ export class Application extends Container implements IApplication {
     }
 
     /**
+     * Register a new boot listener.
+     *
+     * @param  callable  $callback
+     */
+    booting (callback: (app: this) => void): void {
+        this.bootingCallbacks.push(callback)
+    }
+
+    /**
      * Register a new "booted" listener.
      *
      * @param callback
      */
-    public booted (callback: (...args: any[]) => void): void {
+    booted (callback: (app: this) => void): void {
         this.bootedCallbacks.push(callback)
 
         if (this.isBooted()) {
@@ -293,7 +347,7 @@ export class Application extends Container implements IApplication {
      *
      * @param  callbacks
      */
-    protected fireAppCallbacks (callbacks: Array<(...args: any[]) => void>): void {
+    protected fireAppCallbacks (callbacks: Array<(app: this) => void>): void {
         let index = 0
 
         while (index < callbacks.length) {
@@ -339,6 +393,19 @@ export class Application extends Container implements IApplication {
     }
 
     /**
+     * Handle the incoming Artisan command.
+     */
+    async handleCommand () {
+        const kernel = this.make(CKernel)
+
+        const status = await kernel.handle()
+
+        kernel.terminate(status)
+
+        return status
+    }
+
+    /**
      * Get the URI resolver callback.
      */
     getUriResolver (): () => typeof IUrl | undefined {
@@ -359,22 +426,23 @@ export class Application extends Container implements IApplication {
     /**
      * Determine if middleware has been disabled for the application.
      */
-    public shouldSkipMiddleware () {
+    shouldSkipMiddleware () {
         return this.bound('middleware.disable') && this.make('middleware.disable') === true
     }
 
     /**
      * Provide safe overides for the app
      */
-    public configure () {
+    configure (): AppBuilder {
         return new AppBuilder(this)
             .withKernels()
+            .withCommands()
     }
 
     /**
      * Check if the current application environment matches the one provided
      */
-    public environment<E = string | undefined> (env: E): E extends undefined ? string : boolean {
+    environment<E = string | undefined> (env: E): E extends undefined ? string : boolean {
         return (this.make('config').get('app.env') === env) as never
     }
 
@@ -387,9 +455,9 @@ export class Application extends Container implements IApplication {
      * @param preferedPort If provided, this will overide the port set in the evironment
      * @alias serve
      */
-    public async fire (): Promise<this>
-    public async fire (h3App: H3, preferredPort?: number): Promise<this>
-    public async fire (h3App?: H3, preferredPort?: number): Promise<this> {
+    async fire (): Promise<this>
+    async fire (h3App: H3, preferredPort?: number): Promise<this>
+    async fire (h3App?: H3, preferredPort?: number): Promise<this> {
 
         if (h3App)
             this.h3App = h3App
@@ -409,11 +477,14 @@ export class Application extends Container implements IApplication {
      * @param h3App The current H3 app instance
      * @param preferedPort If provided, this will overide the port set in the evironment
      */
-    public async serve (h3App?: H3, preferredPort?: number): Promise<this> {
+    async serve (h3App?: H3, preferredPort?: number): Promise<this> {
         if (!h3App) {
             throw new InvalidArgumentException('No valid H3 app instance was provided.')
 
         }
+
+        // Boot the application service providers and other requirements
+        await this.boot()
 
         const serve = this.make('http.serve')
 
@@ -453,6 +524,32 @@ export class Application extends Container implements IApplication {
         }
 
         return this
+    }
+
+    /**
+     * Run the given array of bootstrap classes.
+     *
+     * @param bootstrappers
+     */
+    async bootstrapWith (bootstrappers: ConcreteConstructor<IBootstraper>[]): Promise<void> {
+        this.bootstrapped = true
+
+        for (const bootstrapper of bootstrappers) {
+            if (this.has('app.events'))
+                this.make('app.events').dispatch('bootstrapping: ' + bootstrapper.name, [this])
+
+            await this.make(bootstrapper).bootstrap(this)
+
+            if (this.has('app.events'))
+                this.make('app.events').dispatch('bootstrapped: ' + bootstrapper.name, [this])
+        }
+    }
+
+    /**
+     * Determine if the application has been bootstrapped before.
+     */
+    hasBeenBootstrapped (): boolean {
+        return this.bootstrapped
     }
 
     /**

@@ -13,7 +13,7 @@ export const mainTsconfig = {
     },
     target: 'es2022',
     module: 'es2022',
-    moduleResolution: 'Node',
+    moduleResolution: 'bundler',
     esModuleInterop: true,
     strict: true,
     allowJs: true,

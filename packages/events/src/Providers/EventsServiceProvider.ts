@@ -22,6 +22,10 @@ export class EventsServiceProvider extends ServiceProvider {
                 })
         })
 
-        this.app.alias(IDispatcher, Dispatcher)
+        this.app.alias([
+            ['events', 'app.events'],
+            [Dispatcher, 'app.events'],
+            [IDispatcher, 'app.events'],
+        ])
     }
 }

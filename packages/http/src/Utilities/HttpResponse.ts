@@ -742,7 +742,7 @@ export class HttpResponse extends IHttpResponse {
         }
 
         // 6. Fix protocol
-        const protocol = request.server?.get('SERVER_PROTOCOL') || 'HTTP/1.1'
+        const protocol = request._server?.get('SERVER_PROTOCOL') || 'HTTP/1.1'
         if (protocol !== 'HTTP/1.0') {
             this.setProtocolVersion('1.1')
         }

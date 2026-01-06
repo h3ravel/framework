@@ -1,17 +1,26 @@
+import type { ActionInput, GenericObject, ResourceOptions, RouteActions, RouteMethod } from '../Utilities/Utilities'
 import type { Middleware, MiddlewareOptions } from 'h3'
-import type { IRoute } from './IRoute'
-import type { IRouteCollection } from './IRouteCollection'
+
 import type { IController } from '../Core/IController'
 import type { IMiddleware } from './IMiddleware'
-import type { ActionInput, RouteEventHandler, RouteActions, RouteMethod, ExtractClassMethods, RouterEnd } from '../Utilities/Utilities'
+import { IPendingResourceRegistration } from './IPendingResourceRegistration'
+import { IPendingSingletonResourceRegistration } from './IPendingSingletonResourceRegistration'
 import { IRequest } from '../Http/IRequest'
-import { MiddlewareList } from '../Foundation/MiddlewareContract'
 import { IResponse } from '../Http/IResponse'
+import type { IRoute } from './IRoute'
+import type { IRouteCollection } from './IRouteCollection'
+import { MiddlewareList } from '../Foundation/MiddlewareContract'
 
 /**
  * Interface for the Router contract, defining methods for HTTP routing.
  */
 export abstract class IRouter {
+    /**
+     * The priority-sorted list of middleware.
+     *
+     * Forces the listed middleware to always be in the given order.
+     */
+    public abstract middlewarePriority: MiddlewareList
     /**
      * All of the verbs supported by the router.
      */
@@ -68,112 +77,110 @@ export abstract class IRouter {
     abstract dispatchToRoute (request: IRequest): Promise<IResponse>;
     /**
      * Registers a route that responds to HTTP GET requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
+     * 
+     * @param uri - The route uri.
+     * @param action - The handler function or [controller class, method] array.
+     * @returns 
      */
-    abstract get<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractClassMethods<InstanceType<C>>],
-        name?: string,
-        middleware?: IMiddleware[]
-    ): Omit<this, RouterEnd>;
+    abstract get<C extends typeof IController> (uri: string, action: ActionInput<C>): IRoute
     /**
      * Registers a route that responds to HTTP POST requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
+     * 
+     * @param uri - The route uri.
+     * @param action - The handler function or [controller class, method] array.
+     * @returns 
      */
-    abstract post<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractClassMethods<InstanceType<C>>],
-        name?: string, middleware?: IMiddleware[]
-    ): Omit<this, RouterEnd>;
+    abstract post<C extends typeof IController> (uri: string, action: ActionInput<C>): IRoute
     /**
      * Registers a route that responds to HTTP PUT requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
+     * 
+     * @param uri - The route uri.
+     * @param action - The handler function or [controller class, method] array.
+     * @returns 
      */
-    abstract put<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractClassMethods<InstanceType<C>>],
-        name?: string,
-        middleware?: IMiddleware[]
-    ): Omit<this, RouterEnd>;
+    abstract put<C extends typeof IController> (uri: string, action: ActionInput<C>): IRoute
     /**
      * Registers a route that responds to HTTP PATCH requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
+     * 
+     * @param uri - The route uri.
+     * @param action - The handler function or [controller class, method] array.
+     * @returns 
      */
-    abstract patch<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractClassMethods<InstanceType<C>>],
-        name?: string,
-        middleware?: IMiddleware[]
-    ): Omit<this, RouterEnd>;
+    abstract patch<C extends typeof IController> (uri: string, action: ActionInput<C>): IRoute
     /**
      * Registers a route that responds to HTTP DELETE requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
+     * 
+     * @param uri - The route uri.
+     * @param action - The handler function or [controller class, method] array.
+     * @returns 
      */
-    abstract delete<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractClassMethods<InstanceType<C>>],
-        name?: string,
-        middleware?: IMiddleware[]
-    ): Omit<this, RouterEnd>;
+    abstract delete<C extends typeof IController> (uri: string, action: ActionInput<C>): IRoute
+    /**
+     * Registers a route the matches the provided methods.
+     * 
+     * @param methods - The route methods to match.
+     * @param uri - The route uri.
+     * @param action - The handler function or [controller class, method] array.
+     */
+    abstract match<C extends typeof IController> (
+        methods: RouteMethod | RouteMethod[],
+        uri: string,
+        action: ActionInput<C>
+    ): IRoute;
+    /**
+     * Route a resource to a controller.
+     *
+     * @param  name
+     * @param  controller
+     * @param  options
+     */
+    abstract resource<C extends typeof IController> (name: string, controller: C, options: ResourceOptions): IPendingResourceRegistration
+    /**
+     * Register an array of API resource controllers.
+     *
+     * @param  resources
+     * @param  options
+     */
+    abstract apiResources (resources: GenericObject<typeof IController>, options: ResourceOptions): void
     /**
      * API Resource support
      *
      * @param path
      * @param controller
      */
-    abstract apiResource<C extends new (...args: any) => any> (
-        path: string,
-        Controller: C, middleware?: IMiddleware[]
-    ): Omit<this, RouterEnd | 'name'>;
+    abstract apiResource<C extends typeof IController> (name: string, controller: C, options: ResourceOptions): IPendingResourceRegistration
+
     /**
-     * Registers a route the matches the provided methods.
-     * @param methods - The route methods to match.
-     * @param uri - The route uri.
-     * @param action - The handler function or [controller class, method] array.
-     */
-    abstract match<C extends typeof IController> (
-        methods: Lowercase<RouteMethod>[],
-        uri: string,
-        action: ActionInput<C>
-    ): IRoute;
-    /**
-     * Named route URL generator
+     * Register an array of singleton resource controllers.
      *
-     * @param name
-     * @param params
-     * @returns
+     * @param  singletons
+     * @param  options
      */
-    abstract route (name: string, params?: Record<string, string>): string | undefined;
+    abstract singletons (singletons: GenericObject<typeof IController>, options: ResourceOptions): void
+    /**
+     * Route a singleton resource to a controller.
+     *
+     * @param  name
+     * @param  controller
+     * @param  options
+     */
+    abstract singleton<C extends typeof IController> (name: string, controller: C, options: ResourceOptions): IPendingSingletonResourceRegistration
+
+    /**
+     * Register an array of API singleton resource controllers.
+     *
+     * @param  singletons
+     * @param  options
+     */
+    abstract apiSingletons (singletons: GenericObject<typeof IController>, options: ResourceOptions): void
+    /**
+     * Route an API singleton resource to a controller.
+     *
+     * @param  name
+     * @param  controller
+     * @param  options
+     */
+    abstract apiSingleton<C extends typeof IController> (name: string, controller: C, options: ResourceOptions): IPendingSingletonResourceRegistration
     /**
      * Grouping
      *
@@ -214,12 +221,35 @@ export abstract class IRouter {
      * @param handler - The middleware handler.
      * @param opts - Optional middleware options.
      */
-    abstract middleware (
+    abstract h3middleware (
         path: string | IMiddleware[] | Middleware,
-        handler: Middleware | MiddlewareOptions,
+        handler?: Middleware | MiddlewareOptions,
         opts?: MiddlewareOptions
     ): this;
-
+    /**
+     * Get all of the defined middleware short-hand names.
+     */
+    abstract getMiddleware (): GenericObject
+    /**
+     * Register a short-hand name for a middleware.
+     *
+     * @param  name
+     * @param  class
+     */
+    abstract aliasMiddleware (name: string, cls: IMiddleware): this
+    /**
+     * Gather the middleware for the given route with resolved class names.
+     *
+     * @param  route
+     */
+    abstract gatherRouteMiddleware (route: IRoute): any
+    /**
+     * Resolve a flat array of middleware classes from the provided array.
+     *
+     * @param middleware
+     * @param excluded
+     */
+    abstract resolveMiddleware (middleware: IMiddleware[], excluded: IMiddleware[]): any
     /**
      * Register a group of middleware.
      *

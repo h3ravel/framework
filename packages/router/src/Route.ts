@@ -1,4 +1,4 @@
-import { ActionInput, CallableConstructor, ControllerMethod, IController, IControllerDispatcher, IRoute, ResponsableType, RouteActions, RouteMethod } from '@h3ravel/contracts'
+import { ActionInput, CallableConstructor, GenericObject, IController, IControllerDispatcher, IRoute, ResourceMethod, ResponsableType, RouteActions, RouteMethod } from '@h3ravel/contracts'
 import { Application, Container } from '@h3ravel/core'
 import { Arr, Obj, Str, isClass } from '@h3ravel/support'
 
@@ -62,7 +62,7 @@ export class Route extends IRoute {
     /**
      * The fields that implicit binding should use for a given parameter.
      */
-    protected bindingFields!: Record<string, string>
+    protected bindingFields!: GenericObject<string>
 
     /**
      * Indicates whether the route is a fallback route.
@@ -315,17 +315,20 @@ export class Route extends IRoute {
      *
      * @param  middleware
      */
-    middleware<X extends any | undefined = undefined> (middleware?: X | X[]): X extends undefined ? any : this {
+    middleware (): any[];
+    middleware (middleware?: string | string[]): this;
+    middleware<X extends any | undefined = undefined> (middleware?: X | X[]): any[] | this {
         if (!middleware)
             return Arr.wrap(this.action.middleware ?? []) as never
 
         if (!Array.isArray(middleware))
             middleware = Arr.wrap(middleware)
 
-        for (let index = 0; index < middleware.length; index++) {
-            const value = middleware[index]
-            middleware[index] = value
-        }
+        // This makes absolutely no sense
+        // for (let index = 0; index < middleware.length; index++) {
+        //     const value = middleware[index]
+        //     middleware[index] = value
+        // }
 
         this.action.middleware = [...Arr.wrap(this.action.middleware ?? []), ...middleware] as never
 
@@ -505,6 +508,37 @@ export class Route extends IRoute {
      */
     getCompiled () {
         return this.compiled
+    }
+
+    /**
+     * Get the binding field for the given parameter.
+     *
+     * @param  parameter
+     */
+    bindingFieldFor (parameter: string | number): string | undefined {
+        if (typeof parameter === 'number') {
+            return Object.values(this.bindingFields)[parameter]
+        }
+
+        return this.bindingFields[parameter]
+    }
+
+    /**
+     * Get the binding fields for the route.
+     */
+    getBindingFields (): GenericObject<string> {
+        return this.bindingFields ?? {}
+    }
+
+    /**
+     * Set the binding fields for the route.
+     *
+     * @param  bindingFields
+     */
+    setBindingFields (bindingFields: GenericObject<string>): this {
+        this.bindingFields = bindingFields
+
+        return this
     }
 
     /**
@@ -764,9 +798,9 @@ export class Route extends IRoute {
     /**
      * Get the controller method used for the route.
      */
-    getControllerMethod (): ControllerMethod {
+    getControllerMethod (): ResourceMethod {
         const holder = isClass(this.action.uses) && typeof this.action.controller === 'string' ? this.action.controller : 'index'
-        return Str.parseCallback(holder)[1] as ControllerMethod
+        return Str.parseCallback(holder)[1] as ResourceMethod
     }
 
     /**
@@ -775,36 +809,36 @@ export class Route extends IRoute {
      * @return array
      */
     controllerMiddleware () {
-        let controllerClass: string | undefined, controllerMethod: string | undefined
+        let controllerClass: string | undefined, ResourceMethod: string | undefined
 
         if (!this.isControllerAction()) {
             return []
         }
 
         if (typeof this.action.uses === 'string') {
-            [controllerClass, controllerMethod] = [
+            [controllerClass, ResourceMethod] = [
                 this.getControllerClass(),
                 this.getControllerMethod(),
             ]
             void controllerClass
-            void controllerMethod
+            void ResourceMethod
         } else {
             //
         }
 
-        // console.log(controllerClass, controllerMethod, this.action, 'controllerMiddleware')
+        // console.log(controllerClass, ResourceMethod, this.action, 'controllerMiddleware')
         // TODO: Let's finish the below
         // if (is_a(controllerClass, HasMiddleware.lass, true)) {
         //     return this.staticallyProvidedControllerMiddleware(
         //         controllerClass,
-        //         controllerMethod
+        //         ResourceMethod
         //     )
         // }
 
         // if (method_exists(Object.prototype.hasOwnProperty.call(controllerClass, 'getMiddleware')) {
         //     return this.controllerDispatcher().getMiddleware(
         //         this.getController(),
-        //         controllerMethod
+        //         ResourceMethod
         //     )
         // }
 

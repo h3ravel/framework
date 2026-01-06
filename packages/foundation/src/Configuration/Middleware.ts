@@ -1,5 +1,4 @@
-import { IApplication, IMiddleware } from '@h3ravel/contracts'
-import { MiddlewareList, RedirectHandler } from '../Contracts/MiddlewareContract'
+import { IApplication, IMiddleware, MiddlewareList, RedirectHandler } from '@h3ravel/contracts'
 
 import { Arr } from '@h3ravel/support'
 
@@ -329,6 +328,7 @@ export class Middleware {
             ].filter(e => e !== null),
 
             'api': [
+                'SubstituteBindings',
                 this.apiLimiter ? 'throttle:' + this.apiLimiter : null,
             ].filter(e => e !== null),
         }

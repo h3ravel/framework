@@ -1,5 +1,28 @@
 {
   "compilerOptions": {
+    "paths": {
+      "@h3ravel/cache": ["../cache/src/index.ts"],
+      "@h3ravel/events": ["../events/src/index.ts"],
+      "@h3ravel/config": ["../config/src/index.ts"],
+      "@h3ravel/console": ["../console/src/index.ts"],
+      "@h3ravel/core": ["../core/src/index.ts"],
+      "@h3ravel/database": ["../database/src/index.ts"],
+      "@h3ravel/filesystem": ["../filesystem/src/index.ts"],
+      "@h3ravel/hashing": ["../hashing/src/index.ts"],
+      "@h3ravel/http": ["../http/src/index.ts"],
+      "@h3ravel/mail": ["../mail/src/index.ts"],
+      "@h3ravel/queue": ["../queue/src/index.ts"],
+      "@h3ravel/router": ["../router/src/index.ts"],
+      "@h3ravel/shared": ["../shared/src/index.ts"],
+      "@h3ravel/support": ["../support/src/index.ts"],
+      "@h3ravel/support/facades": ["../support/src/Facades/index.ts"],
+      "@h3ravel/url": ["../url/src/index.ts"],
+      "@h3ravel/view": ["../view/src/index.ts"],
+      "@h3ravel/session": ["../session/src/index.ts"],
+      "@h3ravel/foundation": ["../foundation/src/index.ts"],
+      "@h3ravel/validation": ["../validation/src/index.ts"],
+      "@h3ravel/contracts": ["../contracts/src/index.ts"]
+    },
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "target": "es2022",

@@ -11,20 +11,17 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
+    "./facades": {
+      "import": "./dist/facades.js",
+      "require": "./dist/facades.cjs"
+    },
     "./package.json": "./package.json"
   },
   "files": [
     "dist"
   ],
   "publishConfig": {
-    "access": "public",
-    "exports": {
-      ".": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs"
-      },
-      "./*": "./*"
-    }
+    "access": "public"
   },
   "homepage": "https://h3ravel.toneflix.net",
   "repository": {
@@ -58,6 +55,7 @@
     "typescript": "^5.4.0"
   },
   "dependencies": {
+    "@h3ravel/contracts": "workspace:^",
     "dayjs": "catalog:",
     "luxon": "catalog:"
   }

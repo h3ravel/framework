@@ -1,4 +1,4 @@
-import { Collection, collection } from '../src/Collection'
+import { Collection, collect } from '../src/Collection'
 import { describe, expect, test } from 'vitest'
 
 describe('Collection', () => {
@@ -7,6 +7,6 @@ describe('Collection', () => {
         // console.log(new Collection({ name: 'james' }), new Collection([1, 2, 3]), collection('Men'))
 
         expect(new Collection({ name: 'james' }).get('name')).toBe('james')
-        expect(collection([1, 2, 3]).all()).toEqual([1, 2, 3])
+        expect(collect([1, 2, 3]).all()).toEqual([1, 2, 3])
     })
 })

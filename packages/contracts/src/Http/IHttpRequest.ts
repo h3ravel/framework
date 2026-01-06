@@ -30,11 +30,11 @@ export abstract class IHttpRequest {
     /**
      * Query string parameters (GET).
      */
-    abstract query: InputBag
+    abstract _query: InputBag
     /**
      * Server and execution environment parameters
      */
-    abstract server: IServerBag
+    abstract _server: IServerBag
     /**
      * Cookies
      */

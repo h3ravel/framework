@@ -294,9 +294,25 @@ export abstract class IRequest<
      */
     abstract uri (): unknown;
     /**
-     * Get the full URL for the request.
+     * Get the root URL for the application.
+     *
+     * @return string
      */
-    abstract fullUrl (): string;
+    abstract root (): string
+    /**
+     * Get the URL (no query string) for the request.
+     *
+     * @return string
+     */
+    abstract url (): string
+    /**
+     * Get the full URL for the request. 
+     */
+    abstract fullUrl (): string
+    /**
+     * Get the current path info for the request.
+     */
+    abstract path (): string
     /**
      * Return the Request instance.
      */
@@ -333,6 +349,57 @@ export abstract class IRequest<
      * @param  callback
      */
     abstract setRouteResolver (callback: () => IRoute): this
+    /**
+     * Get the bearer token from the request headers.
+     */
+    abstract bearerToken (): string | undefined
+    /**
+     * Retrieve a request payload item from the request.
+     * 
+     * @param  key
+     * @param  default
+     */
+    abstract post (key?: string, defaultValue?: any): any
+    /**
+     * Determine if a header is set on the request.
+     *
+     * @param  key
+     */
+    abstract hasHeader (key: string): boolean
+    /**
+     * Retrieve a header from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    abstract header (key?: string, defaultValue?: any): any
+    /**
+     * Determine if a cookie is set on the request.
+     *
+     * @param  string  $key
+     */
+    abstract hasCookie (key: string): boolean
+    /**
+     * Retrieve a cookie from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    abstract cookie (key?: string, defaultValue?: any): any
+    /**
+     * Retrieve a query string item from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    abstract query (key?: string, defaultValue?: any): any
+    /**
+     * Retrieve a server variable from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    abstract server (key?: string, defaultValue?: any): any
     /**
      * Returns the request body content.
      *

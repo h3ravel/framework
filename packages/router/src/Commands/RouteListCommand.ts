@@ -1,7 +1,7 @@
-import { Logger, LoggerChalk, RouteMethod } from '@h3ravel/shared'
+import { ClassicRouteDefinition, RouteMethod } from '@h3ravel/contracts'
+import { Logger, LoggerChalk } from '@h3ravel/shared'
 
 import { Application } from '@h3ravel/core'
-import { ClassicRouteDefinition } from '@h3ravel/contracts'
 import { Command } from '@h3ravel/musket'
 
 export class RouteListCommand extends Command<Application> {

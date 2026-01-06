@@ -80,6 +80,11 @@
             font-size: 0.85rem;
             overflow-x: auto;
         }
+
+        pre.details {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
     </style>
 </head>
 
@@ -99,7 +104,7 @@
         @if(debug)
         <div class="debug-section">
             <h2>Error Details</h2>
-            <pre>{{ exception?.message }}</pre>
+            <pre class="details">{{ exception?.message }}</pre>
 
             @if(exception?.stack)
             <h2>Stack Trace</h2>

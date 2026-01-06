@@ -4,7 +4,7 @@ import { ConfigRepository, EnvLoader } from '..'
 
 import { Bindings } from '@h3ravel/contracts'
 import { ConfigPublishCommand } from '../Commands/ConfigPublishCommand'
-import { ServiceProvider } from '@h3ravel/foundation'
+import { ServiceProvider } from '@h3ravel/support'
 
 /**
  * Loads configuration and environment files.

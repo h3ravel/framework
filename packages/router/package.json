@@ -3,10 +3,7 @@
   "version": "1.13.6",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "h3ravel": {
-    "providers": [
-      "RouteServiceProvider",
-      "AssetsServiceProvider"
-    ]
+    "providers": []
   },
   "type": "module",
   "main": "./dist/index.cjs",

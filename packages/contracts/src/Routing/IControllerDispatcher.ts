@@ -1,4 +1,4 @@
-import { ControllerMethod, RouteMethod } from '../Utilities/Utilities'
+import { ResourceMethod, RouteMethod } from '../Utilities/Utilities'
 
 import { IController } from '../Core/IController'
 import { IMiddleware } from './IMiddleware'
@@ -12,7 +12,7 @@ export abstract class IControllerDispatcher {
      * @param  controller
      * @param  method
      */
-    abstract dispatch (route: IRoute, controller: IController, method: ControllerMethod): Promise<any>;
+    abstract dispatch (route: IRoute, controller: IController, method: ResourceMethod): Promise<any>;
 
     /**
      * Get the middleware for the controller instance.

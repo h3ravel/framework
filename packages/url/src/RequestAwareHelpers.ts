@@ -94,7 +94,7 @@ export class RequestAwareHelpers {
      */
     query (): RouteParams {
         const request = this.getCurrentRequest()
-        return request.query || {}
+        return request._query || {}
     }
 }
 

@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 
 import { Application } from '..'
+import { IApplication } from '@h3ravel/contracts'
 
 type Predicate =
     | string
@@ -8,7 +9,7 @@ type Predicate =
     | (abstract new (...args: any[]) => any)
 
 export class ContainerResolver {
-    constructor(private app: Application) { }
+    constructor(private app: IApplication) { }
 
     async resolveMethodParams<I extends Record<string, any>> (instance: I, method: keyof I, ..._default: any[]) {
         /**

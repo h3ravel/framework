@@ -1,6 +1,8 @@
 import type { ConcreteConstructor, IPathName } from '../Utilities/Utilities'
 import type { H3, H3Event } from 'h3'
 
+import { IAppBuilder } from '../Configuration/IAppBuilder'
+import { IBootstraper } from '../Foundation/IBootstraper'
 import { IContainer } from './IContainer'
 import type { IHttpContext } from '../Http/IHttpContext'
 import type { IServiceProvider } from './IServiceProvider'
@@ -28,7 +30,7 @@ export abstract class IApplication extends IContainer {
      *
      * @returns
      */
-    abstract quickStartup (providers: Array<ConcreteConstructor<IServiceProvider>>, filtered?: string[], autoRegisterProviders?: boolean): Promise<this>;
+    abstract initialize (providers: Array<ConcreteConstructor<IServiceProvider, false>>, filtered?: string[], autoRegisterProviders?: boolean): this;
     /**
      * Dynamically register all configured providers
      *
@@ -41,7 +43,7 @@ export abstract class IApplication extends IContainer {
      * @param providers
      * @param filtered
      */
-    abstract registerProviders (providers: Array<ConcreteConstructor<IServiceProvider>>, filtered?: string[]): void;
+    abstract registerProviders (providers: Array<ConcreteConstructor<IServiceProvider, false>>, filtered?: string[]): void;
     /**
      * Register a provider
      */
@@ -71,11 +73,17 @@ export abstract class IApplication extends IContainer {
      */
     abstract boot (): Promise<this>;
     /**
+     * Register a new boot listener.
+     *
+     * @param  callable  $callback
+     */
+    abstract booting (callback: (app: this) => void): void
+    /**
      * Register a new "booted" listener.
      *
      * @param callback
      */
-    abstract booted (callback: (...args: any[]) => void): void
+    abstract booted (callback: (app: this) => void): void
     /**
      * Handle the incoming HTTP request and send the response to the browser.
      *
@@ -100,7 +108,7 @@ export abstract class IApplication extends IContainer {
     /**
      * Provide safe overides for the app
      */
-    abstract configure (): any;
+    abstract configure (): IAppBuilder;
     /**
      * Check if the current application environment matches the one provided
      * 
@@ -127,6 +135,16 @@ export abstract class IApplication extends IContainer {
      * @param preferedPort If provided, this will overide the port set in the evironment
      */
     abstract serve (h3App?: H3, preferredPort?: number): Promise<this>;
+    /**
+     * Run the given array of bootstrap classes.
+     *
+     * @param bootstrappers
+     */
+    abstract bootstrapWith (bootstrappers: ConcreteConstructor<IBootstraper>[]): void | Promise<void>
+    /**
+     * Determine if the application has been bootstrapped before.
+     */
+    abstract hasBeenBootstrapped (): boolean
     /**
      * Save the curretn H3 instance for possible future use.
      *

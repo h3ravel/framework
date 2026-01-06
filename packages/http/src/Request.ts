@@ -159,7 +159,7 @@ export class Request<
     /**
      * Retrieve all data from the instance (query + body).
      */
-    public all<T = Record<string, any>> (keys?: string | string[]): T {
+    all<T = Record<string, any>> (keys?: string | string[]): T {
         const input = Obj.deepMerge({}, this.input(), this.allFiles())
 
         if (!keys) {
@@ -183,11 +183,11 @@ export class Request<
      * @param defaultValue 
      * @returns 
      */
-    public input<K extends string | undefined> (
+    input<K extends string | undefined> (
         key?: K,
         defaultValue?: any
     ): K extends undefined ? RequestObject : any {
-        const source = { ...this.getInputSource().all(), ...this.query.all() }
+        const source = { ...this.getInputSource().all(), ...this._query.all() }
 
         return key ? data_get(source, key, defaultValue) : Arr.except(source, ['_method'])
     }
@@ -205,11 +205,11 @@ export class Request<
      * @param expectArray set to true to return an `UploadedFile[]` array.
      * @returns
      */
-    public file (): Record<string, UploadedFile>;
-    public file (key?: undefined, defaultValue?: any, expectArray?: true): Record<string, UploadedFile[]>;
-    public file (key: string, defaultValue?: any, expectArray?: false | undefined): UploadedFile;
-    public file (key: string, defaultValue?: any, expectArray?: true): UploadedFile[];
-    public file<K extends string | undefined = undefined, E extends boolean | undefined = undefined> (key?: K, defaultValue?: any, expectArray?: E) {
+    file (): Record<string, UploadedFile>;
+    file (key?: undefined, defaultValue?: any, expectArray?: true): Record<string, UploadedFile[]>;
+    file (key: string, defaultValue?: any, expectArray?: false | undefined): UploadedFile;
+    file (key: string, defaultValue?: any, expectArray?: true): UploadedFile[];
+    file<K extends string | undefined = undefined, E extends boolean | undefined = undefined> (key?: K, defaultValue?: any, expectArray?: E) {
         const files = data_get(this.allFiles(), key!, defaultValue)
 
         if (!files) return defaultValue
@@ -229,7 +229,7 @@ export class Request<
      *
      * @param  guard
      */
-    public user (guard?: string): U | undefined {
+    user (guard?: string): U | undefined {
         return Reflect.apply(this.getUserResolver(), this, [guard])
     }
 
@@ -239,9 +239,9 @@ export class Request<
      * @param  param
      * @param  defaultRoute
      */
-    public route (): IRoute
-    public route (param?: string, defaultParam?: any): any
-    public route (param?: string, defaultParam?: any) {
+    route (): IRoute
+    route (param?: string, defaultParam?: any): any
+    route (param?: string, defaultParam?: any) {
         const route = Reflect.apply(this.getRouteResolver(), this, [])
 
         if (typeof route === 'undefined' || !param) {
@@ -257,7 +257,7 @@ export class Request<
      * @param  key
      * @return boolean
      */
-    public hasFile (key: string): boolean {
+    hasFile (key: string): boolean {
         let files = this.file(key, undefined, true)
 
         if (!Array.isArray(files)) {
@@ -279,7 +279,7 @@ export class Request<
     /**
      * Get an object with all the files on the request.
      */
-    public allFiles () {
+    allFiles () {
         if (this.convertedFiles) return this.convertedFiles
 
         const entries = Object
@@ -294,7 +294,7 @@ export class Request<
     /**
        * Extract and convert uploaded files from FormData.
        */
-    public convertUploadedFiles (
+    convertUploadedFiles (
         files: Record<string, UploadedFile | UploadedFile[]>
     ): Record<string, UploadedFile | UploadedFile[]> {
         if (!this.formData)
@@ -324,7 +324,7 @@ export class Request<
     /**
      * Get the current decoded path info for the request.
      */
-    public decodedPath () {
+    decodedPath () {
         try {
             return decodeURIComponent(this.path())
         } catch {
@@ -338,14 +338,14 @@ export class Request<
      * @param keys 
      * @returns 
      */
-    public has (keys: string[] | string): boolean {
+    has (keys: string[] | string): boolean {
         return Obj.has(this.all(), keys)
     }
 
     /**
      * Determine if the instance is missing a given key.
      */
-    public missing (key: string | string[]) {
+    missing (key: string | string[]) {
         const keys = Array.isArray(key) ? key : [key]
 
         return !this.has(keys)
@@ -357,7 +357,7 @@ export class Request<
      * @param keys 
      * @returns 
      */
-    public only<T = Record<string, any>> (keys: string[]): T {
+    only<T = Record<string, any>> (keys: string[]): T {
         const data = Object.entries(this.all<Record<string, T>>()).filter(([key]) => keys.includes(key))
 
         return Object.fromEntries(data) as T
@@ -366,7 +366,7 @@ export class Request<
     /**
      * Determine if the request is over HTTPS.
      */
-    public secure () {
+    secure () {
         return this.isSecure()
     }
 
@@ -376,7 +376,7 @@ export class Request<
      * @param keys 
      * @returns 
      */
-    public except<T = Record<string, any>> (keys: string[]): T {
+    except<T = Record<string, any>> (keys: string[]): T {
         const data = Object.entries(this.all<Record<string, T>>()).filter(([key]) => !keys.includes(key))
 
         return Object.fromEntries(data) as T
@@ -388,7 +388,7 @@ export class Request<
      * @param input - An object containing key-value pairs to merge.
      * @returns this - For fluent chaining.
      */
-    public merge (input: Record<string, any>): this {
+    merge (input: Record<string, any>): this {
         const source = this.getInputSource()
 
         for (const [key, value] of Object.entries(input)) {
@@ -403,7 +403,7 @@ export class Request<
      *
      * @param input
      */
-    public mergeIfMissing (input: Record<string, any>) {
+    mergeIfMissing (input: Record<string, any>) {
         return this.merge(
             Object.fromEntries(Object.entries(input).filter(([key]) => this.missing(key)))
         )
@@ -412,7 +412,7 @@ export class Request<
     /**
      * Get the keys for all of the input and files.
      */
-    public keys (): string[] {
+    keys (): string[] {
         return [...Object.keys(this.input()), ...this.files.keys()]
     }
 
@@ -423,7 +423,7 @@ export class Request<
      * @param defaultValue 
      * @returns a global instance of the current session manager.
      */
-    public session<K extends string | Record<string, any> | undefined = undefined> (key?: K, defaultValue?: any): K extends undefined
+    session<K extends string | Record<string, any> | undefined = undefined> (key?: K, defaultValue?: any): K extends undefined
         ? ISessionManager
         : K extends string
         ? any : void | Promise<void> {
@@ -455,21 +455,21 @@ export class Request<
     /**
      * Get the host name.
      */
-    public host () {
+    host () {
         return this.getHost()
     }
 
     /**
      * Get the HTTP host being requested.
      */
-    public httpHost () {
+    httpHost () {
         return this.getHttpHost()
     }
 
     /**
      * Get the scheme and HTTP host.
      */
-    public schemeAndHttpHost () {
+    schemeAndHttpHost () {
         return this.getSchemeAndHttpHost()
     }
 
@@ -478,7 +478,7 @@ export class Request<
      *
      * @return bool
      */
-    public isJson () {
+    isJson () {
         return Str.contains(this.getHeader('CONTENT_TYPE') ?? '', ['/json', '+json'])
     }
 
@@ -487,7 +487,7 @@ export class Request<
      * 
      * @returns 
      */
-    public expectsJson (): boolean {
+    expectsJson (): boolean {
         return Str.contains(this.getHeader('Accept') ?? '', 'application/json')
 
     }
@@ -497,7 +497,7 @@ export class Request<
      * 
      * @returns 
      */
-    public wantsJson (): boolean {
+    wantsJson (): boolean {
         const acceptable = this.getAcceptableContentTypes()
 
         return !!acceptable[0] && Str.contains(acceptable[0].toLowerCase(), ['/json', '+json'])
@@ -508,7 +508,7 @@ export class Request<
      *
      * @return bool
      */
-    public pjax () {
+    pjax () {
         return this.headers.get<boolean>('X-PJAX') == true
     }
 
@@ -518,14 +518,14 @@ export class Request<
      * @alias isXmlHttpRequest()
      * @returns {boolean}
      */
-    public ajax (): boolean {
+    ajax (): boolean {
         return this.isXmlHttpRequest()
     }
 
     /**
      * Get the client IP address.
      */
-    public ip (): string | undefined {
+    ip (): string | undefined {
         return getRequestIP(this.event)
     }
 
@@ -536,9 +536,9 @@ export class Request<
      * @param defaultValue 
      * @returns 
      */
-    public async old (): Promise<Record<string, any>>
-    public async old (key: string, defaultValue?: any): Promise<any>
-    public async old (key?: string, defaultValue?: any): Promise<any> {
+    async old (): Promise<Record<string, any>>
+    async old (key: string, defaultValue?: any): Promise<any>
+    async old (key?: string, defaultValue?: any): Promise<any> {
         const payload = await this.session().get('_old', {})
 
         if (key) return safeDot(payload, key) || defaultValue
@@ -549,7 +549,7 @@ export class Request<
     /**
      * Get a URI instance for the request.
      */
-    public uri (): IUrl {
+    uri (): IUrl {
         const Url = Reflect.apply(this.app.getUriResolver(), this, [])!
 
         return Url.of(this.fullUrl(), this.app)
@@ -560,7 +560,7 @@ export class Request<
      *
      * @return string
      */
-    public root () {
+    root (): string {
         return Str.rtrim(this.getSchemeAndHttpHost() + this.getBaseUrl(), '/')
     }
 
@@ -569,21 +569,21 @@ export class Request<
      *
      * @return string
      */
-    public url () {
+    url (): string {
         return Str.rtrim(this.uri().toString().replace(/\?.*/, ''), '/')
     }
 
     /**
      * Get the full URL for the request. 
      */
-    public fullUrl (): string {
+    fullUrl (): string {
         return this.event.req.url
     }
 
     /**
      * Get the current path info for the request.
      */
-    public path (): string {
+    path (): string {
         const pattern = (this.getPathInfo() ?? '').replace(/^\/+|\/+$/g, '')
         return pattern === '' ? '/' : pattern
     }
@@ -591,14 +591,14 @@ export class Request<
     /**
      * Return the Request instance.
      */
-    public instance (): this {
+    instance (): this {
         return this
     }
 
     /**
      * Get the request method.
      */
-    public method (): RequestMethod {
+    method (): RequestMethod {
         return this.getMethod()
     }
 
@@ -609,7 +609,7 @@ export class Request<
      * @param  defaultValue
      * @return {InputBag}
      */
-    public json<K extends string | undefined = undefined> (
+    json<K extends string | undefined = undefined> (
         key?: string,
         defaultValue?: any
     ): K extends undefined ? InputBag : any {
@@ -632,7 +632,7 @@ export class Request<
     /**
      * Get the user resolver callback.
      */
-    public getUserResolver (): ((gaurd?: string) => U | undefined) {
+    getUserResolver (): ((gaurd?: string) => U | undefined) {
         return this.userResolver ?? (() => undefined)
     }
 
@@ -641,7 +641,7 @@ export class Request<
      *
      * @param  callback
      */
-    public setUserResolver (callback: (gaurd?: string) => U) {
+    setUserResolver (callback: (gaurd?: string) => U) {
         this.userResolver = callback
 
         return this
@@ -650,7 +650,7 @@ export class Request<
     /**
      * Get the route resolver callback.
      */
-    public getRouteResolver (): () => IRoute | undefined {
+    getRouteResolver (): () => IRoute | undefined {
         return this.routeResolver ?? (() => undefined)
     }
 
@@ -659,10 +659,109 @@ export class Request<
      *
      * @param  callback
      */
-    public setRouteResolver (callback: () => IRoute) {
+    setRouteResolver (callback: () => IRoute) {
         this.routeResolver = callback
 
         return this
+    }
+
+    /**
+     * Get the bearer token from the request headers.
+     */
+    bearerToken (): string | undefined {
+        let header = this.header('Authorization', '')
+
+        const position = header.toLowerCase().lastIndexOf('bearer ')
+
+        if (position !== -1) {
+            header = header.slice(position + 7)
+
+            const commaIndex = header.indexOf(',')
+
+            return commaIndex !== -1
+                ? header.slice(0, commaIndex)
+                : header
+        }
+
+        return undefined
+    }
+
+    /**
+     * Retrieve data from the instance.
+     *
+     * @param  key
+     * @param  defaultValue
+     */
+    protected data (key?: string, defaultValue?: any) {
+        return this.input(key, defaultValue)
+    }
+
+    /**
+     * Retrieve a request payload item from the request.
+     * 
+     * @param  key
+     * @param  default
+     */
+    post (key?: string, defaultValue?: any) {
+        return this.retrieveItem('request', key, defaultValue)
+    }
+
+    /**
+     * Determine if a header is set on the request.
+     *
+     * @param  key
+     */
+    hasHeader (key: string) {
+        return this.header(key) != null
+    }
+
+    /**
+     * Retrieve a header from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    header (key?: string, defaultValue?: any) {
+        return this.retrieveItem('headers', key, defaultValue)
+    }
+
+    /**
+     * Determine if a cookie is set on the request.
+     *
+     * @param  string  $key
+     */
+    hasCookie (key: string) {
+        return this.cookie(key) != null
+    }
+
+    /**
+     * Retrieve a cookie from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    cookie (key?: string, defaultValue?: any) {
+        return this.retrieveItem('cookies', key, defaultValue)
+    }
+
+    /**
+     * Retrieve a query string item from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    query (key?: string, defaultValue?: any) {
+        return this.retrieveItem('_query', key, defaultValue)
+    }
+
+    /**
+     * Retrieve a server variable from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    server (key?: string, defaultValue?: any) {
+        return this.retrieveItem('_server', key, defaultValue)
     }
 
     /**
@@ -675,7 +774,30 @@ export class Request<
             return this.json()
         }
 
-        return ['GET', 'HEAD'].includes(this.getRealMethod()) ? this.query : this.request
+        return ['GET', 'HEAD'].includes(this.getRealMethod()) ? this._query : this.request
+    }
+
+    /**
+     * Retrieve a parameter item from a given source.
+     *
+     * @param  source
+     * @param  key
+     * @param  defaultValue
+     */
+    protected retrieveItem (
+        source: 'cookies' | '_server' | 'request' | '_query' | 'headers' | 'files' | 'attributes',
+        key?: string,
+        defaultValue?: any
+    ) {
+        if (key == null) {
+            return this[source].all()
+        }
+
+        if (this[source] instanceof InputBag) {
+            return this[source].all()[key] ?? defaultValue
+        }
+
+        return this[source].get(key, defaultValue)
     }
 
     /**
@@ -683,7 +805,7 @@ export class Request<
      *
      * @param  keys
      */
-    public dump (...keys: any[]): this {
+    dump (...keys: any[]): this {
         if (keys.length > 0) this.only(keys).then(dump)
         else this.all().then(dump)
 

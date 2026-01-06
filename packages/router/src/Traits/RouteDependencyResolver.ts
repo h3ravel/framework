@@ -1,9 +1,9 @@
 import 'reflect-metadata'
 
-import { ControllerMethod, IController } from '@h3ravel/contracts'
+import { IController, ResourceMethod } from '@h3ravel/contracts'
 
 import { Application } from '@h3ravel/core'
-import { LogicException } from '@h3ravel/foundation'
+import { RuntimeException } from '@h3ravel/support'
 
 export class RouteDependencyResolver {
     constructor(protected container: Application) { }
@@ -15,7 +15,7 @@ export class RouteDependencyResolver {
      * @param  instance
      * @param  method
      */
-    public async resolveClassMethodDependencies (parameters: Record<string, any>, instance: IController, method: ControllerMethod) {
+    public async resolveClassMethodDependencies (parameters: Record<string, any>, instance: IController, method: ResourceMethod) {
         if (!Object.prototype.hasOwnProperty.call(instance, method)) {
             return parameters
         }
@@ -24,7 +24,7 @@ export class RouteDependencyResolver {
          * Ensure the method exists on the controller
          */
         if (typeof instance[method] !== 'function') {
-            throw new LogicException(`Method "${method}" not found on controller ${instance.constructor.name}`)
+            throw new RuntimeException(`[${method}] not found on controller [${instance.constructor.name}]`)
         }
 
         /**

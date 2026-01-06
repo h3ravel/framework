@@ -39,6 +39,13 @@ export abstract class IExceptionHandler {
      * @returns
      */
     abstract report (error: any): Promise<void>;
+
+    /**
+     * Render an exception to the console.
+     *
+     * @param e
+     */
+    abstract renderForConsole (e: Error): void
     /**
      * Render an exception into an HTTP Response.
      *

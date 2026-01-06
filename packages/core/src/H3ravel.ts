@@ -1,7 +1,8 @@
-import { Application, Kernel, OServiceProvider } from '.'
+import { Application, OServiceProvider } from '.'
 import { IApplication, IHttpContext } from '@h3ravel/contracts'
 
 import { EntryConfig } from './Contracts/H3ravelContract'
+import { Facades } from '@h3ravel/support/facades'
 import { H3 } from 'h3'
 
 /**
@@ -36,7 +37,7 @@ export const h3ravel = async (
     let h3App: H3 | undefined
 
     // Initialize the Application class
-    const app = new Application(basePath)
+    const app = new Application(basePath, 'h3ravel')
 
     // Overide defined paths
     if (config.customPaths) {
@@ -46,8 +47,8 @@ export const h3ravel = async (
     }
 
     // Start up the app
-    // @ts-expect-error Provider signature does not match since param is optional, but it should work
-    await app.quickStartup(providers, config.filteredProviders, config.autoload)
+    // @ts-expect-error Provider signature does not match since console is optional, but it works
+    app.initialize(providers, config.filteredProviders, config.autoload)
 
     try {
         // Get the http app container binding
@@ -87,6 +88,9 @@ export const h3ravel = async (
         //     console.log(resp)
         //     return resp
         // })
+        if (!Facades.getApplication()) {
+            Facades.setApplication(app)
+        }
         await app.handleRequest()
         void middleware
     } catch {

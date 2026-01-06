@@ -1,5 +1,5 @@
 /// <reference path="../app.globals.d.ts" />
-import { ServiceProvider } from '@h3ravel/foundation'
+import { ServiceProvider } from '@h3ravel/support'
 import { Url } from '../Url'
 import { createUrlHelper } from '../RequestAwareHelpers'
 import { createUrlHelpers } from '../Helpers'

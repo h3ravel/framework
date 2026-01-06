@@ -1,4 +1,4 @@
-import { IRequest, IResponse } from '@h3ravel/shared'
+import { IRequest, IResponse } from '@h3ravel/contracts'
 
 export class RequestHandled {
     /**

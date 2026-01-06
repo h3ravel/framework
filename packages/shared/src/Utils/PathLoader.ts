@@ -11,6 +11,7 @@ export class PathLoader {
         public: '/public',
         storage: '/storage',
         database: '/src/database',
+        commands: '/src/App/Console/Commands/'
     }
 
     /**
@@ -53,5 +54,15 @@ export class PathLoader {
         }
 
         this.paths[name] = path
+    }
+
+    distPath (path: string, skipExt = false) {
+        path = path.replace('/src/', `/${process.env.DIST_DIR ?? 'src'}/`.replace(/([^:]\/)\/+/g, '$1'))
+
+        if (!skipExt) {
+            path = path.replace(/\.(ts|tsx|mts|cts)$/, '.js')
+        }
+
+        return nodepath.normalize(path)
     }
 }

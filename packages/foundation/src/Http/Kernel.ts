@@ -1,19 +1,21 @@
 // namespace Illuminate\Foundation\Http;
 
 import { Arr, DateTime, InvalidArgumentException } from '@h3ravel/support'
-import { IApplication, IExceptionHandler, IKernel, IMiddleware, IRequest, IResponse, IRouter } from '@h3ravel/contracts'
-import { MiddlewareIdentifier, MiddlewareList } from '../Contracts/MiddlewareContract'
+import { ConcreteConstructor, IApplication, IBootstraper, IExceptionHandler, IKernel, IMiddleware, IRequest, IResponse, IRouter, MiddlewareIdentifier, MiddlewareList } from '@h3ravel/contracts'
 
+import { Facades } from '@h3ravel/support/facades'
 import { Injectable } from '..'
+import { RegisterFacades } from '../Bootstrapers/RegisterFacades'
 import { RequestHandled } from './Events/RequestHandled'
+import { Terminating } from '../Core/Events/Terminating'
 
 @Injectable()
 export class Kernel extends IKernel {
-    // use InteractsWithTime;  
     /**
      * The bootstrap classes for the application.
      */
-    #bootstrappers = [
+    #bootstrappers: ConcreteConstructor<IBootstraper>[] = [
+        RegisterFacades
     ]
 
     /**
@@ -62,6 +64,7 @@ export class Kernel extends IKernel {
         protected router: IRouter
     ) {
         super()
+
         this.syncMiddlewareToRouter()
     }
 
@@ -97,9 +100,13 @@ export class Kernel extends IKernel {
      * @param request
      */
     protected async sendRequestThroughRouter (request: IRequest): Promise<IResponse> {
+        const { Pipeline } = await import('@h3ravel/router')
+
         this.app.instance('request', request)
 
-        const { Pipeline } = await import('@h3ravel/router')
+        Facades.clearResolvedInstance('request')
+
+        await this.bootstrap()
 
         return await (new Pipeline(this.app as never))
             .send(request)
@@ -112,10 +119,10 @@ export class Kernel extends IKernel {
      *
      * @return void
      */
-    public bootstrap () {
-        // if (!this.app.hasBeenBootstrapped()) {
-        //     this.app.bootstrapWith(this.bootstrappers());
-        // }
+    async bootstrap () {
+        if (!this.app.hasBeenBootstrapped()) {
+            await this.app.bootstrapWith(this.bootstrappers())
+        }
     }
 
     /**
@@ -135,8 +142,8 @@ export class Kernel extends IKernel {
      * @param request
      * @param  response
      */
-    public terminate (request: IRequest, response: IResponse) {
-        // this.app.make('app.events').dispatch(new Terminating)
+    public terminate (request: IRequest, response: IResponse): void {
+        this.app.make('app.events').dispatch(new Terminating())
 
         this.terminateMiddleware(request, response)
 
@@ -422,14 +429,14 @@ export class Kernel extends IKernel {
      */
     protected syncMiddlewareToRouter () {
         // TODO: Pay Attention to these
-        // this.router.middlewarePriority = this.middlewarePriority
+        this.router.middlewarePriority = this.middlewarePriority
         for (const [key, middleware] of Object.entries(this.middlewareGroups)) {
-            this.router.middlewareGroup(key, middleware)
+            // this.router.middlewareGroup(key, middleware)
         }
 
-        // for (const [key, middleware] of Object.entries(this.middlewareAliases)) {
-        //     this.router.aliasMiddleware(key, middleware)
-        // }
+        for (const [key, middleware] of Object.entries(this.middlewareAliases)) {
+            // this.router.aliasMiddleware(key, middleware)
+        }
     }
 
     /**

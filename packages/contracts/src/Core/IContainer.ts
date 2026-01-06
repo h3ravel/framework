@@ -1,4 +1,4 @@
-import type { Bindings, UseKey } from '../Utilities/BindingsContract'
+import type { Bindings, IBinding, UseKey } from '../Utilities/BindingsContract'
 import type { IMiddlewareHandler } from '../Routing/IMiddlewareHandler'
 import { ClassConstructor, CallableConstructor, ExtractClassMethods, ConcreteConstructor } from '../Utilities/Utilities'
 import { IMiddleware } from '../Routing/IMiddleware'
@@ -114,7 +114,7 @@ export abstract class IContainer {
      *
      * @param name
      */
-    abstract isAlias (name: string): boolean
+    abstract isAlias (name: IBinding): boolean
 
     /**
      * Get the alias for an abstract if available.
@@ -151,6 +151,13 @@ export abstract class IContainer {
     abstract has<T extends UseKey> (key: T): boolean;
     abstract has<C extends abstract new (...args: any[]) => any> (key: C): boolean;
     abstract has<F extends (...args: any[]) => any> (key: F): boolean;
+
+    /**
+     * Determine if the given abstract type has been resolved.
+     *
+     * @param abstract
+     */
+    abstract resolved (abstract: IBinding | string): boolean
 
     /**
      * Register an existing instance as shared in the container.

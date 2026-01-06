@@ -40,11 +40,15 @@ export abstract class AbstractRouteCollection implements IAbstractRouteCollectio
         )
     }
 
-    /* 
+    /**
      * Final handler for a matched route. Responsible for:
      * - Throwing for not found
      * - Throwing for method not allowed
      * - Attaching params extracted from the match
+     * 
+     * @param req 
+     * @param route 
+     * @returns 
      */
     protected handleMatchedRoute (req: Request, route?: Route | null): Route {
         if (route) {

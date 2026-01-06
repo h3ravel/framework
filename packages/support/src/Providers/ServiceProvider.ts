@@ -25,11 +25,11 @@ export abstract class ServiceProvider extends IServiceProvider {
     /**
      * Indicate that this service provider only runs in console
      */
-    static console = false
+    static console?: boolean = false
     /**
      * Indicate that this service provider only runs in console
      */
-    console = false
+    console?: boolean = false
 
     /**
      * Indicate that this service provider only runs in console
@@ -39,7 +39,7 @@ export abstract class ServiceProvider extends IServiceProvider {
     /**
      * List of registered console commands
      */
-    registeredCommands?: (new (app: any, kernel: any) => any)[]
+    registeredCommands: (new (app: any, kernel: any) => any)[] = []
 
     /**
      * All of the registered booted callbacks.

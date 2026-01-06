@@ -2,18 +2,17 @@ import { CallableConstructor, ICallableDispatcher } from '@h3ravel/contracts'
 
 import { Application } from '@h3ravel/core'
 import { Route } from './Route'
-import { RouteDependencyResolver } from './TraitLike/RouteDependencyResolver'
+import { RouteDependencyResolver } from './Traits/RouteDependencyResolver'
+import { mix } from '@h3ravel/shared'
 
-export class CallableDispatcher extends ICallableDispatcher {
-    resolver: RouteDependencyResolver
+export class CallableDispatcher extends mix(ICallableDispatcher, RouteDependencyResolver) {
 
     /**
      * 
      * @param container The container instance.
      */
     public constructor(protected container: Application) {
-        super()
-        this.resolver = new RouteDependencyResolver(container)
+        super(container)
     }
 
     /**
@@ -34,7 +33,7 @@ export class CallableDispatcher extends ICallableDispatcher {
      * @param  handler
      */
     protected resolveParameters (route: Route) {
-        return this.resolver.resolveMethodDependencies(
+        return this.resolveMethodDependencies(
             route.parametersWithoutNulls()
         )
     }

@@ -2,11 +2,12 @@ import { ConcreteConstructor, IServiceProvider } from '@h3ravel/contracts'
 
 import type { Application } from './Application'
 import { ContainerResolver } from '../src/Manager/ContainerResolver'
+import { createRequire } from 'node:module'
 import fg from 'fast-glob'
 import path from 'node:path'
 
 export class ProviderRegistry {
-    private static providers = new Map<string, ConcreteConstructor<IServiceProvider>>()
+    private static providers = new Map<string, ConcreteConstructor<IServiceProvider, false>>()
     private static priorityMap = new Map<string, number>()
     private static filteredProviders: string[] = []
     private static sortable = true
@@ -26,7 +27,7 @@ export class ProviderRegistry {
      * @param provider 
      * @returns 
      */
-    private static getKey (provider: ConcreteConstructor<IServiceProvider>): string {
+    private static getKey (provider: ConcreteConstructor<IServiceProvider, false>): string {
         // If provider has a declared static uid/id → prefer that
         const anyProvider = provider as any
         if (typeof anyProvider.uid === 'string') {
@@ -48,7 +49,7 @@ export class ProviderRegistry {
      * @param providers 
      * @returns 
      */
-    static register (...providers: ConcreteConstructor<IServiceProvider>[]): void {
+    static register (...providers: ConcreteConstructor<IServiceProvider, false>[]): void {
         const list = this.sortable
             ? this.sort(providers.concat(...this.providers.values()))
             : providers.concat(...this.providers.values())
@@ -65,7 +66,7 @@ export class ProviderRegistry {
      * @param providers 
      * @returns 
      */
-    static registerMany (providers: ConcreteConstructor<IServiceProvider>[]): void {
+    static registerMany (providers: ConcreteConstructor<IServiceProvider, false>[]): void {
         const list = this.sortable
             ? this.sort(providers.concat(...this.providers.values()))
             : providers.concat(...this.providers.values())
@@ -115,8 +116,8 @@ export class ProviderRegistry {
      * @param providers 
      * @returns 
      */
-    static sort (providers: ConcreteConstructor<IServiceProvider>[]) {
-        const makeKey = (Provider: ConcreteConstructor<IServiceProvider>) => `${Provider.name}::${this.getKey(Provider)}`
+    static sort (providers: ConcreteConstructor<IServiceProvider, false>[]) {
+        const makeKey = (Provider: ConcreteConstructor<IServiceProvider, false>) => `${Provider.name}::${this.getKey(Provider)}`
 
         // Step 1: Sort purely by priority (descending)
         providers.sort((A, B) => ((B as any).priority ?? 0) - ((A as any).priority ?? 0))
@@ -158,7 +159,7 @@ export class ProviderRegistry {
      */
     static doSort () {
         const raw = this.sort(Array.from(this.providers.values()))
-        const providers = new Map<string, ConcreteConstructor<IServiceProvider>>()
+        const providers = new Map<string, ConcreteConstructor<IServiceProvider, false>>()
 
         for (const provider of raw) {
             const key = this.getKey(provider)
@@ -173,7 +174,9 @@ export class ProviderRegistry {
      * 
      * @param priorityMap 
      */
-    static log<P extends IServiceProvider> (providers?: Array<P> | Map<string, P>) {
+    static log<P extends IServiceProvider> (providers?: Array<P> | Map<string, P>, enabled = true) {
+        if (!enabled) return
+
         const sorted = Array.from(((providers as unknown as P[]) ?? this.providers).values())
 
         console.table(
@@ -192,7 +195,7 @@ export class ProviderRegistry {
      *  
      * @returns 
      */
-    static all (): ConcreteConstructor<IServiceProvider>[] {
+    static all (): ConcreteConstructor<IServiceProvider, false>[] {
         return Array.from(this.providers.values())
     }
 
@@ -202,7 +205,7 @@ export class ProviderRegistry {
      * @param provider 
      * @returns 
      */
-    static has (provider: ConcreteConstructor<IServiceProvider>): boolean {
+    static has (provider: ConcreteConstructor<IServiceProvider, false>): boolean {
         return this.providers.has(this.getKey(provider))
     }
 
@@ -219,11 +222,11 @@ export class ProviderRegistry {
             'node_modules/h3ravel-*/package.json',
         ])
 
-        const providers: ConcreteConstructor<IServiceProvider>[] = []
+        const providers: ConcreteConstructor<IServiceProvider, false>[] = []
 
         if (autoRegister) {
             for (const manifestPath of manifests) {
-                const pkg = await this.getManifest(path.resolve(manifestPath))
+                const pkg = this.getManifest(path.resolve(manifestPath))
 
                 if (pkg.h3ravel?.providers) {
                     providers.push(...await Promise.all(
@@ -233,7 +236,7 @@ export class ProviderRegistry {
                 }
             }
 
-            for (const provider of providers) {
+            for (const provider of providers.filter(e => typeof e !== 'undefined')) {
                 const key = this.getKey(provider)
                 this.providers.set(key, provider)
             }
@@ -248,15 +251,8 @@ export class ProviderRegistry {
      * @param manifestPath 
      * @returns 
      */
-    private static async getManifest (manifestPath: string) {
-        let pkg: any
-        try {
-            pkg = (await import(manifestPath)).default
-        } catch {
-            const { createRequire } = await import('module')
-            const require = createRequire(import.meta.url)
-            pkg = require(manifestPath)
-        }
-        return pkg
+    private static getManifest (manifestPath: string) {
+        const require = createRequire(import.meta.url)
+        return require(manifestPath)
     }
 }

@@ -1,1 +1,1 @@
-export { ServiceProvider } from '@h3ravel/foundation'
+export { ServiceProvider } from '@h3ravel/support'

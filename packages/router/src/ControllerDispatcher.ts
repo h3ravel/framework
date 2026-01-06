@@ -1,21 +1,23 @@
-import { ControllerMethod, IController, IControllerDispatcher, RouteMethod } from '@h3ravel/contracts'
+import { IController, IControllerDispatcher, IMiddleware, ResourceMethod, RouteMethod } from '@h3ravel/contracts'
 
 import { Application } from '@h3ravel/core'
 import { Collection } from '@h3ravel/support'
-import { FiltersControllerMiddleware } from './TraitLike/FiltersControllerMiddleware'
+import { FiltersControllerMiddleware } from './Traits/FiltersControllerMiddleware'
 import { Route } from './Route'
-import { RouteDependencyResolver } from './TraitLike/RouteDependencyResolver'
+import { RouteDependencyResolver } from './Traits/RouteDependencyResolver'
+import { mix } from '@h3ravel/shared'
 
-export class ControllerDispatcher extends IControllerDispatcher {
-    resolver: RouteDependencyResolver
-
+export class ControllerDispatcher extends mix(
+    IControllerDispatcher,
+    RouteDependencyResolver,
+    FiltersControllerMiddleware
+) {
     /**
      * 
      * @param container The container instance.
      */
     public constructor(protected container: Application) {
-        super()
-        this.resolver = new RouteDependencyResolver(container)
+        super(container)
     }
 
     /**
@@ -25,7 +27,7 @@ export class ControllerDispatcher extends IControllerDispatcher {
      * @param  controller
      * @param  method
      */
-    public async dispatch (route: Route, controller: Required<IController>, method: ControllerMethod) {
+    public async dispatch (route: Route, controller: Required<IController>, method: ResourceMethod) {
         const parameters = await this.resolveParameters(route, controller, method)
 
         if (Object.prototype.hasOwnProperty.call(controller, 'callAction')) {
@@ -42,8 +44,8 @@ export class ControllerDispatcher extends IControllerDispatcher {
      * @param  controller
      * @param  method
      */
-    protected async resolveParameters (route: Route, controller: IController, method: ControllerMethod) {
-        return this.resolver.resolveClassMethodDependencies(
+    protected async resolveParameters (route: Route, controller: IController, method: ResourceMethod) {
+        return this.resolveClassMethodDependencies(
             route.parametersWithoutNulls(), controller, method
         )
     }
@@ -60,8 +62,8 @@ export class ControllerDispatcher extends IControllerDispatcher {
         }
 
         return (new Collection(controller.getMiddleware()))
-            .reject((data) => FiltersControllerMiddleware.methodExcludedByOptions(method, data.options))
+            .reject((data) => ControllerDispatcher.methodExcludedByOptions(method, data.options))
             .pluck('middleware')
-            .all()
+            .all() as never
     }
 }

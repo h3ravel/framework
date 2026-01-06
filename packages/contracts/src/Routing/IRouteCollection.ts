@@ -26,9 +26,13 @@ export declare class IRouteCollection extends IAbstractRouteCollection {
      */
     match (request: IRequest): IRoute;
     /**
+     * 
      * Get routes from the collection by method.
+     * 
+     * @param method 
      */
-    get (method?: string): Record<string, IRoute> | IRoute[];
+    public get (): IRoute[]
+    public get (method: string): Record<string, IRoute>
     /**
      * Determine if the route collection contains a given named route.
      */
@@ -36,11 +40,11 @@ export declare class IRouteCollection extends IAbstractRouteCollection {
     /**
      * Get a route instance by its name.
      */
-    getByName (name: string): IRoute | null;
+    getByName (name: string): IRoute | undefined;
     /**
      * Get a route instance by its controller action.
      */
-    getByAction (action: string): IRoute | null;
+    getByAction (action: string): IRoute | undefined;
     /**
      * Get all of the routes in the collection.
      */

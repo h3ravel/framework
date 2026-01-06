@@ -1,7 +1,7 @@
 import { dbBuilder, fileBuilder, memoryBuilder, redisBuilder } from '../adapters'
 
 import { MakeSessionTableCommand } from '../Commands/MakeSessionTableCommand'
-import { ServiceProvider } from '@h3ravel/foundation'
+import { ServiceProvider } from '@h3ravel/support'
 import { SessionStore } from '../SessionStore'
 
 export class SessionServiceProvider extends ServiceProvider {

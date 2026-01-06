@@ -18,7 +18,7 @@ export async function supertestAdapter (app?: Application, serviceProviders: Ser
     if (!app) {
         const { EventsServiceProvider } = await import(('@h3ravel/events'))
         const { HttpServiceProvider } = await import(('@h3ravel/http'))
-        const { RouteServiceProvider } = await import(('@h3ravel/router'))
+        const { RouteServiceProvider } = await import(('@h3ravel/support'))
 
         providers = [EventsServiceProvider, HttpServiceProvider, RouteServiceProvider, ...serviceProviders]
     }

@@ -1,6 +1,7 @@
 import { Container, ContainerResolver } from '@h3ravel/core'
 
 import { CallableConstructor } from '@h3ravel/contracts'
+import { Logger } from '@h3ravel/shared'
 import { Pipe } from './Contracts/Utilities'
 import { RuntimeException } from '@h3ravel/support'
 
@@ -118,8 +119,14 @@ export class Pipeline<XP = any> {
                     if (typeof pipe === 'string') {
                         const [name, extras] = this.parsePipeString(pipe)
                         const bound = this.getContainer().boundMiddlewares(name)
-                        instance = this.getContainer().make(bound as never)
-                        parameters = [passable, stack, ...extras]
+                        if (bound) {
+                            instance = this.getContainer().make(bound as never)
+                            parameters = [passable, stack, ...extras]
+                        } else {
+                            instance = () => {
+                                Logger.error(`Error: Middleware [${name}] not bound: Skipping...`, false)
+                            }
+                        }
 
                         // Pipe is an object instance
                     } else if (typeof pipe === 'function') {

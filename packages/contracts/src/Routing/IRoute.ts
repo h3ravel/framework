@@ -1,4 +1,4 @@
-import type { CallableConstructor, RouteActions, RouteMethod } from '../Utilities/Utilities'
+import type { CallableConstructor, GenericObject, RouteActions, RouteMethod } from '../Utilities/Utilities'
 
 import type { ICompiledRoute } from './ICompiledRoute'
 import type { IContainer } from '../Core/IContainer'
@@ -124,10 +124,10 @@ export abstract class IRoute {
     /**
      * Get or set the middlewares attached to the route.
      *
-     * @param  array|string|null  $middleware
-     * @return $this|array
+     * @param  middleware
      */
-    abstract middleware (middleware?: string | string[]): any[] | this;
+    abstract middleware (): any[];
+    abstract middleware (middleware?: string | string[]): this;
     /**
      * Specify that the "Authorize" / "can" middleware should be applied to the route with the given options.
      *
@@ -184,6 +184,23 @@ export abstract class IRoute {
      * Get the compiled version of the route.
      */
     abstract getCompiled (): ICompiledRoute | undefined;
+
+    /**
+     * Get the binding field for the given parameter.
+     *
+     * @param  parameter
+     */
+    abstract bindingFieldFor (parameter: string | number): string | undefined
+    /**
+     * Get the binding fields for the route.
+     */
+    abstract getBindingFields (): GenericObject<string>
+    /**
+     * Set the binding fields for the route.
+     *
+     * @param  bindingFields
+     */
+    abstract setBindingFields (bindingFields: GenericObject<string>): this
     /**
      * Set a default value for the route.
      *

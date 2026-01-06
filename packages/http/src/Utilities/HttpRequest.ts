@@ -114,12 +114,12 @@ export class HttpRequest {
     /**
      * Query string parameters (GET).
      */
-    public query!: InputBag
+    public _query!: InputBag
 
     /**
      * Server and execution environment parameters
      */
-    public server!: ServerBag
+    public _server!: ServerBag
 
     /**
      * Cookies
@@ -190,12 +190,12 @@ export class HttpRequest {
     protected buildRequirements () {
         this.params = getRouterParams(this.event)
         this.request = new InputBag(this.formData ? this.formData.input() : {}, this.event)
-        this.query = new InputBag(getQuery(this.event), this.event)
+        this._query = new InputBag(getQuery(this.event), this.event)
         this.attributes = new ParamBag(getRouterParams(this.event), this.event)
         this.cookies = new InputBag(parseCookies(this.event), this.event)
         this.files = new FileBag(this.formData ? this.formData.files() : {}, this.event)
-        this.server = new ServerBag(Object.fromEntries(this.event.req.headers.entries()), this.event)
-        this.headers = new HeaderBag(this.server.getHeaders())
+        this._server = new ServerBag(Object.fromEntries(this.event.req.headers.entries()), this.event)
+        this.headers = new HeaderBag(this._server.getHeaders())
         this.acceptableContentTypes = []
         // this.languages = undefined
         // this.charsets = undefined
@@ -352,14 +352,14 @@ export class HttpRequest {
      */
     protected prepareRequestUri (): string {
         let requestUri = ''
-        // console.log(this.server.all())
+        // console.log(this._server.all())
         // IIS-style URL rewrite could be behind a header like x-original-url
-        const unencodedUrl = this.server.get('x-original-url') ?? ''
+        const unencodedUrl = this._server.get('x-original-url') ?? ''
         if (this.isIisRewrite() && unencodedUrl) {
             requestUri = unencodedUrl
-            this.server.remove('x-original-url')
-        } else if (this.server.has('REQUEST_URI')) {
-            requestUri = this.server.get('REQUEST_URI') ?? ''
+            this._server.remove('x-original-url')
+        } else if (this._server.has('REQUEST_URI')) {
+            requestUri = this._server.get('REQUEST_URI') ?? ''
 
             if (requestUri && requestUri[0] === '/') {
                 // Remove fragment
@@ -385,7 +385,7 @@ export class HttpRequest {
         }
 
         // normalize the request URI for future use
-        this.server.set('REQUEST_URI', requestUri)
+        this._server.set('REQUEST_URI', requestUri)
 
         return requestUri
     }
@@ -399,7 +399,7 @@ export class HttpRequest {
             return ''
         }
 
-        const scriptFilename = this.server.get('SCRIPT_FILENAME') ?? ''
+        const scriptFilename = this._server.get('SCRIPT_FILENAME') ?? ''
         const filename = path.basename(scriptFilename)
 
         let basePath: string
@@ -470,7 +470,7 @@ export class HttpRequest {
         } else if (this.isFromTrustedProxy() && (host = this.getTrustedValues(HttpRequest.HEADER_X_FORWARDED_HOST))) {
             host = host[0]
         } else if (!(host = this.headers.get('HOST'))) {
-            return this.server.get('SERVER_PORT')
+            return this._server.get('SERVER_PORT')
         }
 
         if (host[0] === '[') {
@@ -495,7 +495,7 @@ export class HttpRequest {
         if (this.isFromTrustedProxy() && (host = this.getTrustedValues(HttpRequest.HEADER_X_FORWARDED_HOST)?.[0])) {
             // do nothing, host already assigned
         } else if (!(host = this.headers.get('HOST'))) {
-            host = this.server.get('SERVER_NAME') ?? this.server.get('SERVER_ADDR') ?? process.env.SERVER_NAME ?? ''
+            host = this._server.get('SERVER_NAME') ?? this._server.get('SERVER_ADDR') ?? process.env.SERVER_NAME ?? ''
         }
 
         /* trim and remove port number, lowercase */
@@ -552,7 +552,7 @@ export class HttpRequest {
             return ['https', 'on', 'ssl', '1'].includes(proto[0]?.toLowerCase())
         }
 
-        const https = this.server.get('HTTPS')
+        const https = this._server.get('HTTPS')
 
         return !!https && 'off' !== https.toLowerCase()
     }
@@ -566,9 +566,9 @@ export class HttpRequest {
      */
     private isIisRewrite (): boolean {
         try {
-            if (1 === this.server.getInt('IIS_WasUrlRewritten')) {
+            if (1 === this._server.getInt('IIS_WasUrlRewritten')) {
                 this.#isIisRewrite = true
-                this.server.remove('IIS_WasUrlRewritten')
+                this._server.remove('IIS_WasUrlRewritten')
             }
         } catch { /** */ }
 
@@ -699,7 +699,7 @@ export class HttpRequest {
 
         let method = this.event.req.headers.get('X-HTTP-METHOD-OVERRIDE') as RequestMethod
         if (!method && HttpRequest.httpMethodParameterOverride) {
-            method = this.request.get('_method', this.query.get('_method', 'POST')) as RequestMethod
+            method = this.request.get('_method', this._query.get('_method', 'POST')) as RequestMethod
         }
 
         if (typeof method !== 'string') {
@@ -909,8 +909,8 @@ export class HttpRequest {
             return result
         }
 
-        if (this.query.has(key)) {
-            return this.query.all()[key]
+        if (this._query.has(key)) {
+            return this._query.all()[key]
         }
 
         if (this.request.has(key)) {
@@ -927,7 +927,7 @@ export class HttpRequest {
      * contents of a proxy-specific header.
      */
     public isFromTrustedProxy (): boolean {
-        return !HttpRequest.trustedProxies?.length && IpUtils.checkIp(this.server.get('REMOTE_ADDR')!, HttpRequest.trustedProxies)
+        return !HttpRequest.trustedProxies?.length && IpUtils.checkIp(this._server.get('REMOTE_ADDR')!, HttpRequest.trustedProxies)
     }
 
     /**

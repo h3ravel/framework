@@ -1,50 +1,50 @@
 import { HomeController } from 'App/Http/Controllers/HomeController'
 import { HttpContext } from '@h3ravel/http'
-import { MailController } from 'src/app/Http/Controllers/MailController'
-import { Router } from '@h3ravel/router'
-import { UrlExampleController } from 'src/app/Http/Controllers/UrlExampleController'
+import { MailController } from 'App/Http/Controllers/MailController'
+import { Route } from '@h3ravel/support/facades'
+import { UrlExampleController } from 'App/Http/Controllers/UrlExampleController'
 
-export default (Route: Router) => {
-    // Route.get('/', [HomeController, 'index'])
-    Route.get('/mail', [MailController, 'send'])
+// Route.get('/', [HomeController, 'index'])
+Route.get('/mail', [MailController, 'send'])
+// URL examples
+Route.get('/url-examples/{id?}', [UrlExampleController, 'index']).name('url.examples')
+Route.get('/url-signing', [UrlExampleController, 'signing']).name('url.signing')
+Route.get('/url-manipulation', [UrlExampleController, 'manipulation']).name('url.manipulation')
+Route.match(['GET', 'GET'], 'path5/{user:username}/{name?}', () => ({ name: 2 })).name('path5')
+Route.match(['GET'], '/', [HomeController, 'index']).name('index').middleware('web')
+Route.match(['GET'], '/test/{user:username}', (_: any, user: any) => {
+    return `{ Test Result: ${user} }`
+}).name('index')
 
-    // URL examples
-    Route.get('/url-examples', [UrlExampleController, 'index'], 'url.examples')
-    Route.get('/url-signing', [UrlExampleController, 'signing'], 'url.signing')
-    Route.get('/url-manipulation', [UrlExampleController, 'manipulation'], 'url.manipulation')
-    Route.match(['post', 'get'], 'path5/{user:username}/{name?}', () => ({ name: 2 })).name('path5')
-    Route.match(['get'], '/', [HomeController, 'index']).name('index').middleware('web')
-    Route.match(['get'], '/test/{user:username}', (_, user) => {
-        return `{ Test Result: ${user} }`
-    }).name('index')
+Route.get('/app', async function () {
+    return await view('index', {
+        links: {
+            documentation: 'https://h3ravel.toneflix.net/docs',
+            performance: 'https://h3ravel.toneflix.net/performance',
+            integration: 'https://h3ravel.toneflix.net/h3-integration',
+            features: 'https://h3ravel.toneflix.net/features',
+        }
+    })
+})
 
-    Route.get('/app', async function () {
-        return await view('index', {
-            links: {
-                documentation: 'https://h3ravel.toneflix.net/docs',
-                performance: 'https://h3ravel.toneflix.net/performance',
-                integration: 'https://h3ravel.toneflix.net/h3-integration',
-                features: 'https://h3ravel.toneflix.net/features',
-            }
+Route.get('/form', async function () {
+    console.log(session('_errors'))
+    return await view('test.form')
+})
+
+Route.put('/validation', async ({ request, response }: HttpContext) => {
+    const data = await request.validate({
+        name: ['required', 'string'],
+        age: ['required', 'integer'],
+    })
+
+    return response
+        .setStatusCode(202)
+        .json({
+            message: `User ${data.name} created`,
+            data,
         })
-    })
+})
 
-    Route.get('/form', async function () {
-        console.log(session('_errors'))
-        return await view('test.form')
-    })
 
-    Route.put('/validation', async ({ request, response }: HttpContext) => {
-        const data = await request.validate({
-            name: ['required', 'string'],
-            age: ['required', 'integer'],
-        })
-
-        return response
-            .setStatusCode(202)
-            .json({
-                message: `User ${data.name} created`,
-                data,
-            })
-    })
-}
+// console.log(Route.getRoutes())//.getRoutesByMethod()['GET'])

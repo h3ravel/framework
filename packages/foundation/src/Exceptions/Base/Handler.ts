@@ -1,14 +1,15 @@
 /// <reference path="../../../../http/src/app.globals.d.ts" />
 
-import type { ExceptionConditionCallback, ExceptionConstructor, IHttpContext, IRequest, IResponse } from '@h3ravel/contracts'
-import { LimitSpec, RateLimiterAdapter } from '../../Contracts/RateLimiterAdapter'
+import type { ExceptionConditionCallback, ExceptionConstructor, IHttpContext, IRequest, IResponse, RateLimiterAdapter, LimitSpec } from '@h3ravel/contracts'
 import { IExceptionHandler, type RenderExceptionCallback, type ReportExceptionCallback, type ThrottleExceptionCallback } from '@h3ravel/contracts'
 
-import { FileSystem, Console } from '@h3ravel/shared'
+import { FileSystem, Console, Logger } from '@h3ravel/shared'
 import { InMemoryRateLimiter } from '../../Adapters/InMemoryRateLimiter'
 import { readFileSync } from 'node:fs'
 import { HttpExceptionFactory } from './HttpExceptionFactory'
 import { statusTexts } from '../../Http/ResponseUtilities'
+import { Str } from '@h3ravel/support'
+import { CommandNotFoundException } from '../CommandNotFoundException'
 
 /**
  *
@@ -48,7 +49,7 @@ export abstract class Handler extends IExceptionHandler {
     protected renderCallbacks: RenderExceptionCallback[] = []
 
     /**
-     * Exception mapping: from constructor -> mapper function (returns instance or new error).
+     * Exception mapping: from constructor.mapper function (returns instance or new error).
      */
     protected exceptionMap = new Map<ExceptionConstructor, (error: any) => any>()
 
@@ -190,6 +191,36 @@ export abstract class Handler extends IExceptionHandler {
         }
 
         await this.reportThrowable(e)
+    }
+
+    /**
+     * Render an exception to the console.
+     *
+     * @param e
+     */
+    renderForConsole (e: Error) {
+        if (e instanceof CommandNotFoundException) {
+            let message = Str.of(e.message).explode('.').at(0) ?? ''
+            const alternatives = e.getAlternatives()
+            if (alternatives != null) {
+                message += '. Do you mean one of these?'
+
+                Logger.log(message, 'white')
+                Logger.parse(alternatives.map(e => ['• ' + e, 'gray']), '\n')
+
+                Logger.log('', 'white')
+            } else {
+                Logger.log(message, 'white')
+            }
+
+            return
+        }
+
+        const error = this.convertExceptionToArray(e)
+        Logger.log(`Exception: ${error.exception ?? 'UnknownException'}`, 'white')
+        Logger.error(error.message ?? 'Unknown Error')
+        if (error.trace)
+            Logger.parse(error.trace.map(e => ['• ' + e, 'gray']), '\n')
     }
 
     /**
@@ -541,7 +572,7 @@ export abstract class Handler extends IExceptionHandler {
      * @param e 
      * @returns 
      */
-    protected convertExceptionToArray (e: any): Record<string, any> {
+    protected convertExceptionToArray (e: any): { message?: string; exception?: string; trace?: string[] } {
         const debug = this.appDebug()
         if (!debug) {
             return {

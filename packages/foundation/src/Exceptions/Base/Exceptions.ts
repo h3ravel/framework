@@ -123,6 +123,15 @@ export class Exceptions {
     }
 
     /**
+     * Render an exception to the console.
+     *
+     * @param e
+     */
+    public renderForConsole (e: Error) {
+        this.handler.renderForConsole(e)
+    }
+
+    /**
      * Indicate that the given exception class should not be ignored.
      */
     public stopIgnoring (classOrArray: typeof RequestException | typeof RequestException[]) {
