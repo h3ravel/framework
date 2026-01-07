@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/contracts",
-  "version": "0.28.0",
+  "version": "0.28.1",
   "description": "H3ravel Contracts.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -63,8 +63,7 @@
   "devDependencies": {
     "edge.js": "catalog:",
     "simple-body-validator": "catalog:",
-    "@h3ravel/musket": "catalog:prod",
-    "@h3ravel/arquebus": "catalog:prod"
+    "@h3ravel/musket": "catalog:prod"
   },
   "dependencies": {
     "h3": "catalog:prod"

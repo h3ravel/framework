@@ -1,8 +1,4 @@
-import { Builder, Model } from '@h3ravel/arquebus'
-
-import { IQueryBuilder } from '@h3ravel/arquebus/types'
-
-export abstract class IModel<M extends Model = any> extends Model {
+export abstract class IModel<M = any> {
     /**
      * Retrieve the model for a bound value.
      *
@@ -19,7 +15,7 @@ export abstract class IModel<M extends Model = any> extends Model {
      * @param  value
      * @param  field
      */
-    abstract resolveRouteBindingQuery (query: Builder, value: any, field?: undefined | string | null): IQueryBuilder<M>;
+    abstract resolveRouteBindingQuery (query: any, value: any, field?: undefined | string | null): any;
 
     /**
      * Get the value of the model's route key.
