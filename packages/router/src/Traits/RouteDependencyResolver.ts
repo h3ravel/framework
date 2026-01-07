@@ -16,10 +16,6 @@ export class RouteDependencyResolver {
      * @param  method
      */
     public async resolveClassMethodDependencies (parameters: Record<string, any>, instance: IController, method: ResourceMethod) {
-        if (!Object.prototype.hasOwnProperty.call(instance, method)) {
-            return parameters
-        }
-
         /**
          * Ensure the method exists on the controller
          */
@@ -37,25 +33,27 @@ export class RouteDependencyResolver {
          */
         let args = await Promise.all(
             paramTypes.map(async (paramType: any) => {
-                const inst = this.container.make(paramType)
-                // if (inst instanceof Model) {
-                // Route model binding returns a Promise
-                // return await Helpers.resolveRouteModelBinding(path ?? '', ctx, inst)
-                return inst
+                const instance = Object.values(parameters).find(e => e instanceof paramType)
+
+                if (instance && typeof instance === 'object') {
+                    return instance
+                }
+
+                return await this.container.make(paramType)
             })
         )
 
         /**
-         * Ensure that the HttpContext is always available
+         * Ensure that the HttpContext and Application instances are always available
          */
         if (args.length < 1) {
-            args = [this.container.make('http.context')]
+            args = [this.container.getHttpContext(), this.container]
         }
 
         /**
          * Call the controller method, passing all resolved dependencies
          */
-        return this.resolveMethodDependencies([...args, ...parameters])
+        return this.resolveMethodDependencies([...args, ...Object.values(parameters)])
     }
 
     /**

@@ -431,11 +431,12 @@ export class Kernel extends IKernel {
         // TODO: Pay Attention to these
         this.router.middlewarePriority = this.middlewarePriority
         for (const [key, middleware] of Object.entries(this.middlewareGroups)) {
-            // this.router.middlewareGroup(key, middleware)
+            this.router.middlewareGroup(key, middleware)
         }
 
         for (const [key, middleware] of Object.entries(this.middlewareAliases)) {
             // this.router.aliasMiddleware(key, middleware)
+            // console.log(key, middleware, 'key, middleware')
         }
     }
 
@@ -517,7 +518,6 @@ export class Kernel extends IKernel {
     public setMiddlewareGroups (groups: Record<string, MiddlewareList>) {
         this.middlewareGroups = groups
         this.syncMiddlewareToRouter()
-
         return this
     }
 

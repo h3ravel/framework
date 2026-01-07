@@ -1,4 +1,5 @@
 import { IApplication, IHttpContext, IRequest, IResponse } from '@h3ravel/contracts'
+
 import type { H3Event } from 'h3'
 
 /**
@@ -29,6 +30,7 @@ export class HttpContext implements IHttpContext {
         instance.event = event!
         ctx.request.context = instance
         ctx.response.context = instance
+        ctx.app.setHttpContext(instance)
 
         if (event) {
             HttpContext.contexts.set(event, instance)

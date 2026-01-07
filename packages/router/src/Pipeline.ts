@@ -1,6 +1,6 @@
+import { CallableConstructor, IRequest } from '@h3ravel/contracts'
 import { Container, ContainerResolver } from '@h3ravel/core'
 
-import { CallableConstructor } from '@h3ravel/contracts'
 import { Logger } from '@h3ravel/shared'
 import { Pipe } from './Contracts/Utilities'
 import { RuntimeException } from '@h3ravel/support'
@@ -118,13 +118,15 @@ export class Pipeline<XP = any> {
                     // If pipe is a string (class reference)
                     if (typeof pipe === 'string') {
                         const [name, extras] = this.parsePipeString(pipe)
+
                         const bound = this.getContainer().boundMiddlewares(name)
                         if (bound) {
                             instance = this.getContainer().make(bound as never)
                             parameters = [passable, stack, ...extras]
                         } else {
-                            instance = () => {
-                                Logger.error(`Error: Middleware [${name}] not bound: Skipping...`, false)
+                            instance = async function (request: IRequest, next) {
+                                Logger.error(`Error: Middleware [${name}] requested by [${request.getRequestUri()}] not bound: Skipping...`, false)
+                                return next
                             }
                         }
 
@@ -134,7 +136,8 @@ export class Pipeline<XP = any> {
                     }
 
                     const handler: CallableConstructor = instance[this.method as never] ?? instance
-                    const result = await handler.apply(instance, parameters)
+                    // const result = 'await handler.apply(instance, parameters)'
+                    const result = Reflect.apply(handler, instance, parameters)
 
                     return await this.handleCarry(result)
 

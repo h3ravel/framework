@@ -12,7 +12,7 @@ import { MakeCommand } from './Commands/MakeCommand'
 import { PostinstallCommand } from './Commands/PostinstallCommand'
 import { Terminating } from '../Core/Events/Terminating'
 import { altLogo } from './logo'
-import { createRequire } from 'node:module'
+import { createRequire } from 'module'
 import tsDownConfig from './TsdownConfig'
 
 /**

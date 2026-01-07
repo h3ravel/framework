@@ -1,12 +1,13 @@
+import { ConcreteConstructor, IModel } from '@h3ravel/contracts'
+
 import { Arr } from '@h3ravel/support'
-import { Model } from '../Model'
 import { RecordsNotFoundException } from './RecordsNotFoundException'
 
 export class ModelNotFoundException extends RecordsNotFoundException {
     /**
      * Name of the affected Eloquent model.
      */
-    protected model?: Model
+    protected model?: ConcreteConstructor<IModel>
 
     /**
      * The affected model IDs.
@@ -19,11 +20,10 @@ export class ModelNotFoundException extends RecordsNotFoundException {
      * @param  model
      * @param  ids
      */
-    public setModel (model: Model, ids: (number | string)[] = []) {
+    public setModel (model: ConcreteConstructor<IModel>, ids: (number | string)[] = []) {
         this.model = model
         this.ids = Arr.wrap(ids)
-
-        this.message = `No query results for model [{${model.constructor.name}}]`
+        this.message = `No query results for model [${model.name ?? model.constructor.name}]`
 
         if (this.ids.length > 0) {
             this.message += ' ' + this.ids.join(', ')

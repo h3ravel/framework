@@ -143,8 +143,8 @@ catalogs:
       version: 5.1.4
   prod:
     '@h3ravel/arquebus':
-      specifier: ^0.6.17
-      version: 0.6.17
+      specifier: ^0.7.3
+      version: 0.7.3
     '@h3ravel/collect.js':
       specifier: ^5.3.3
       version: 5.3.3
@@ -272,7 +272,7 @@ importers:
     dependencies:
       '@h3ravel/arquebus':
         specifier: catalog:prod
-        version: 0.6.17(@types/node@24.9.2)(sqlite3@5.1.7)
+        version: 0.7.3(@types/node@24.9.2)(sqlite3@5.1.7)
       '@h3ravel/cache':
         specifier: workspace:^
         version: link:../../packages/cache
@@ -461,6 +461,9 @@ importers:
         specifier: catalog:prod
         version: 2.0.1-rc.5
     devDependencies:
+      '@h3ravel/arquebus':
+        specifier: catalog:prod
+        version: 0.7.3(@types/node@24.10.0)(sqlite3@5.1.7)
       '@h3ravel/musket':
         specifier: catalog:prod
         version: 0.6.8(@h3ravel/support@0.15.6)(@types/node@24.10.0)
@@ -530,7 +533,7 @@ importers:
     dependencies:
       '@h3ravel/arquebus':
         specifier: catalog:prod
-        version: 0.6.17(@types/node@24.10.0)(sqlite3@5.1.7)
+        version: 0.7.3(@types/node@24.10.0)(sqlite3@5.1.7)
       '@h3ravel/core':
         specifier: workspace:^
         version: link:../core
@@ -1627,8 +1630,8 @@ packages:
   '@gar/promisify@1.1.3':
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
 
-  '@h3ravel/arquebus@0.6.17':
-    resolution: {integrity: sha512-i94Y4qUr42HMaxuWzoscw0YIs9QWyBtmGp5r8vvltnqDFYQ6YZ4R0cgzhjkPrMKAPPjewQ6Y4Pg1nQtGjuLq5w==}
+  '@h3ravel/arquebus@0.7.3':
+    resolution: {integrity: sha512-C45R/q9YowDU+HzUG08XREx1Wr1M8ayRrH5N78rQJxH1Oz/N3QeLb6zrc5iFMWy4zNscFe44JZa19T9/ByAL2Q==}
     engines: {node: '>=14', pnpm: '>=4'}
     hasBin: true
 
@@ -7042,7 +7045,7 @@ snapshots:
   '@gar/promisify@1.1.3':
     optional: true
 
-  '@h3ravel/arquebus@0.6.17(@types/node@24.10.0)(sqlite3@5.1.7)':
+  '@h3ravel/arquebus@0.7.3(@types/node@24.10.0)(sqlite3@5.1.7)':
     dependencies:
       '@h3ravel/shared': 0.27.7(@types/node@24.10.0)
       '@h3ravel/support': 0.15.6
@@ -7073,7 +7076,7 @@ snapshots:
       - sqlite3
       - supports-color
 
-  '@h3ravel/arquebus@0.6.17(@types/node@24.9.2)(sqlite3@5.1.7)':
+  '@h3ravel/arquebus@0.7.3(@types/node@24.9.2)(sqlite3@5.1.7)':
     dependencies:
       '@h3ravel/shared': 0.27.7(@types/node@24.9.2)
       '@h3ravel/support': 0.15.6

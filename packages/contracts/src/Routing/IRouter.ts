@@ -1,4 +1,5 @@
-import type { ActionInput, GenericObject, ResourceOptions, RouteActions, RouteMethod } from '../Utilities/Utilities'
+import type { ActionInput, CallableConstructor, GenericObject, ResourceOptions, RouteActions, RouteMethod } from '../Utilities/Utilities'
+import { IResponse, ResponsableType } from '../Http/IResponse'
 import type { Middleware, MiddlewareOptions } from 'h3'
 
 import type { IController } from '../Core/IController'
@@ -6,7 +7,6 @@ import type { IMiddleware } from './IMiddleware'
 import { IPendingResourceRegistration } from './IPendingResourceRegistration'
 import { IPendingSingletonResourceRegistration } from './IPendingSingletonResourceRegistration'
 import { IRequest } from '../Http/IRequest'
-import { IResponse } from '../Http/IResponse'
 import type { IRoute } from './IRoute'
 import type { IRouteCollection } from './IRouteCollection'
 import { MiddlewareList } from '../Foundation/MiddlewareContract'
@@ -249,7 +249,7 @@ export abstract class IRouter {
      * @param middleware
      * @param excluded
      */
-    abstract resolveMiddleware (middleware: IMiddleware[], excluded: IMiddleware[]): any
+    abstract resolveMiddleware (middleware: MiddlewareList, excluded: MiddlewareList): any
     /**
      * Register a group of middleware.
      *
@@ -257,4 +257,45 @@ export abstract class IRouter {
      * @param  middleware
      */
     abstract middlewareGroup (name: string, middleware: MiddlewareList): this
+
+    /**
+     * Register a group of middleware.
+     *
+     * @param  name
+     * @param  middleware
+     */
+    abstract middlewareGroup (name: string, middleware: MiddlewareList): this
+
+    /**
+     * Create a response instance from the given value.
+     *
+     * @param  request
+     * @param  response
+     */
+    abstract prepareResponse (request: IRequest, response: ResponsableType): Promise<IResponse>
+
+    /**
+     * Substitute the route bindings onto the route.
+     *
+     * @param  route
+     *
+     * @throws {ModelNotFoundException<IModel>}
+     */
+    abstract substituteBindings (route: IRoute): Promise<IRoute>
+
+    /**
+     * Substitute the implicit route bindings for the given route.
+     *
+     * @param  route
+     *
+     * @throws {ModelNotFoundException<IModel>}
+     */
+    abstract substituteImplicitBindings (route: IRoute): Promise<any | undefined>
+
+    /**
+     * Register a callback to run after implicit bindings are substituted.
+     *
+     * @param  callback
+     */
+    abstract substituteImplicitBindingsUsing (callback: CallableConstructor): this
 }

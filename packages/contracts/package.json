@@ -63,7 +63,8 @@
   "devDependencies": {
     "edge.js": "catalog:",
     "simple-body-validator": "catalog:",
-    "@h3ravel/musket": "catalog:prod"
+    "@h3ravel/musket": "catalog:prod",
+    "@h3ravel/arquebus": "catalog:prod"
   },
   "dependencies": {
     "h3": "catalog:prod"

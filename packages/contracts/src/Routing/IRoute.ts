@@ -1,15 +1,16 @@
-import type { CallableConstructor, GenericObject, RouteActions, RouteMethod } from '../Utilities/Utilities'
+import type { CallableConstructor, ClassConstructor, GenericObject, RouteActions, RouteMethod } from '../Utilities/Utilities'
 
 import type { ICompiledRoute } from './ICompiledRoute'
 import type { IContainer } from '../Core/IContainer'
 import { IController } from '../Core/IController'
 import { IRequest } from '../Http/IRequest'
+import { MiddlewareList } from '../Foundation/MiddlewareContract'
 
 export abstract class IRoute {
     /**
      * The default values for the route.
      */
-    public abstract _defaults: Record<string, any>
+    public abstract _defaults: GenericObject
     /**
      * The compiled version of the route.
      */
@@ -17,7 +18,7 @@ export abstract class IRoute {
     /**
      * The array of matched parameters.
      */
-    public abstract parameters?: Record<string, any>
+    public abstract parameters?: GenericObject
     /**
      * The route action array.
      */
@@ -33,7 +34,7 @@ export abstract class IRoute {
     /**
      * The computed gathered middleware.
      */
-    public abstract computedMiddleware?: Record<string, any>
+    public abstract computedMiddleware?: MiddlewareList
     /**
      * The controller instance.
      */
@@ -164,11 +165,11 @@ export abstract class IRoute {
      *
      * @throws {LogicException}
      */
-    abstract originalParameters (): Record<string, any>;
+    abstract originalParameters (): GenericObject
     /**
      * Get the matched parameters object.
      */
-    abstract getParameters (): Record<string, any>
+    abstract getParameters (): GenericObject
     /**
      * Get a given parameter from the route.
      *
@@ -191,16 +192,31 @@ export abstract class IRoute {
      * @param  parameter
      */
     abstract bindingFieldFor (parameter: string | number): string | undefined
+
     /**
      * Get the binding fields for the route.
      */
     abstract getBindingFields (): GenericObject<string>
+
     /**
      * Set the binding fields for the route.
      *
      * @param  bindingFields
      */
     abstract setBindingFields (bindingFields: GenericObject<string>): this
+
+    /**
+     * Get the parent parameter of the given parameter.
+     *
+     * @param parameter
+     */
+    abstract parentOfParameter (parameter: string): any
+
+    /**
+     * Determines if the route allows "trashed" models to be retrieved when resolving implicit model bindings. 
+     */
+    abstract allowsTrashedBindings (): boolean
+
     /**
      * Set a default value for the route.
      *
@@ -208,54 +224,107 @@ export abstract class IRoute {
      * @param  value
      */
     abstract defaults (key: string, value: any): this;
+
     /**
      * Set the default values for the route.
      *
      * @param  defaults
      */
-    abstract setDefaults (defaults: Record<string, any>): this;
+    abstract setDefaults (defaults: GenericObject): this;
+
     /**
      * Get the optional parameter names for the route.
      */
-    abstract getOptionalParameterNames (): Record<string, null>;
+    abstract getOptionalParameterNames (): GenericObject;
+
     /**
      * Get all of the parameter names for the route.
      */
     abstract parameterNames (): string[];
+
     /**
      * Flush the cached container instance on the route.
      */
     abstract flushController (): void
+
+    /**
+     * Get the parameters that are listed in the route / controller signature.
+     *
+     * @param  conditions
+     */
+    abstract signatureParameters (conditions: ClassConstructor | GenericObject): any[]
+
     /**
      * Compile the route once, cache the result, return compiled data
      */
     abstract compileRoute (): ICompiledRoute;
+
+    /**
+     * Set a parameter to the given value.
+     *
+     * @param  name
+     * @param  value
+     */
+    abstract setParameter (name: string, value?: string | GenericObject): void
+
+    /**
+     * Unset a parameter on the route if it is set.
+     *
+     * @param  name
+     */
+    abstract forgetParameter (name: string): void
+
     /**
      * Get the value of the action that should be taken on a missing model exception.
      */
     abstract getMissing (): CallableConstructor | undefined
+
     /**
      * The route path that can be handled by H3.
      */
     abstract getPath (): string
+
     /**
      * Define the callable that should be invoked on a missing model exception.
      *
      * @param  missing
      */
     abstract missing (missing: CallableConstructor): this
+
     /**
      * Specify middleware that should be removed from the given route.
      *
      * @param  middleware
      */
     abstract withoutMiddleware (middleware: any): this
+
     /**
      * Get the middleware that should be removed from the route.
      */
     abstract excludedMiddleware (): any
+
     /**
      * Get all middleware, including the ones from the controller.
      */
-    abstract gatherMiddleware (): Record<string, any>
+    abstract gatherMiddleware (): GenericObject
+
+    /**
+     * Indicate that the route should enforce scoping of multiple implicit Eloquent bindings.
+     */
+    abstract scopeBindings (): this
+
+    /**
+     * Indicate that the route should not enforce scoping of multiple implicit Eloquent bindings.
+     */
+    abstract withoutScopedBindings (): this
+
+    /**
+     * Determine if the route should enforce scoping of multiple implicit Eloquent bindings.
+     */
+    abstract enforcesScopedBindings (): boolean
+
+    /**
+     * Determine if the route should prevent scoping of multiple implicit Eloquent bindings.
+     */
+    abstract preventsScopedBindings (): boolean
 } 

@@ -2,7 +2,7 @@ import { Arr, Macroable } from '@h3ravel/support'
 import { CallableConstructor, IController, ResourceOptions, RouteActions, RouteMethod } from '@h3ravel/contracts'
 import { UseMagic, trait, use } from '@h3ravel/shared'
 
-import { CreatesRegularExpressionRouteConstraints } from './CreatesRegularExpressionRouteConstraints'
+import { CreatesRegularExpressionRouteConstraints } from './Traits/CreatesRegularExpressionRouteConstraints'
 import { FRoute } from '@h3ravel/support/facades'
 import { Injectable } from '@h3ravel/core'
 import { Router } from './Router'

@@ -68,6 +68,11 @@ export class Application extends Container implements IApplication {
      */
     private logsDisabled = false
 
+    /**
+     * The conrrent HttpContext
+     */
+    private httpContext?: IHttpContext
+
     constructor(basePath: string, protected initializer?: string) {
         super()
         dotenvExpand.expand(dotenv.config({ quiet: true }))
@@ -561,6 +566,24 @@ export class Application extends Container implements IApplication {
     setH3App (h3App?: H3) {
         this.h3App = h3App
         return this
+    }
+
+    /**
+     * Set the HttpContext.
+     *
+     * @param  ctx
+     */
+    setHttpContext (ctx: IHttpContext): this {
+        this.httpContext = ctx
+
+        return this
+    }
+
+    /**
+     * Get the HttpContext.
+     */
+    getHttpContext (): IHttpContext | undefined {
+        return this.httpContext
     }
 
     /**

@@ -1,7 +1,7 @@
 import { Arr, Macroable } from '@h3ravel/support'
 import { IController, MiddlewareIdentifier, MiddlewareList, ResourceMethod, ResourceOptions } from '@h3ravel/contracts'
 
-import { CreatesRegularExpressionRouteConstraints } from './CreatesRegularExpressionRouteConstraints'
+import { CreatesRegularExpressionRouteConstraints } from './Traits/CreatesRegularExpressionRouteConstraints'
 import { ResourceRegistrar } from './ResourceRegistrar'
 import { RouteCollection } from './RouteCollection'
 import { Router } from './Router'

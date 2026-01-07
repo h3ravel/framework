@@ -61,7 +61,7 @@ export class ControllerDispatcher extends mix(
             return []
         }
 
-        return (new Collection(controller.getMiddleware()))
+        return (new Collection(controller.getMiddleware?.() ?? {} as IMiddleware))
             .reject((data) => ControllerDispatcher.methodExcludedByOptions(method, data.options))
             .pluck('middleware')
             .all() as never

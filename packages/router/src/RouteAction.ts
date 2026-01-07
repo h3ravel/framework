@@ -2,6 +2,7 @@ import type { ActionInput, IController, RouteActions } from '@h3ravel/contracts'
 
 import { LogicException } from '@h3ravel/foundation'
 import { UnexpectedValueException } from '@h3ravel/http'
+import { isCallable } from '@h3ravel/support'
 
 export class RouteAction {
     /**
@@ -20,7 +21,7 @@ export class RouteAction {
         /**
          * Handle closure
          */
-        if (typeof action === 'function' && !this.isClass(action)) {
+        if (isCallable(action)) {
             return { uses: action }
         }
 
@@ -73,7 +74,7 @@ export class RouteAction {
         /**
          * uses: function
          */
-        if (typeof uses === 'function' && !this.isClass(uses)) {
+        if (isCallable(uses)) {
             return { ...this.action, uses }
         }
 
@@ -82,9 +83,9 @@ export class RouteAction {
          */
         if (this.isClass(uses)) {
             return {
-                ...this.action,
                 uses: this.action,
                 controller: this.action.name + '@index',
+                ...this.action,
             }
         }
 

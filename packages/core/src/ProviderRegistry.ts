@@ -2,7 +2,7 @@ import { ConcreteConstructor, IServiceProvider } from '@h3ravel/contracts'
 
 import type { Application } from './Application'
 import { ContainerResolver } from '../src/Manager/ContainerResolver'
-import { createRequire } from 'node:module'
+import { createRequire } from 'module'
 import fg from 'fast-glob'
 import path from 'node:path'
 

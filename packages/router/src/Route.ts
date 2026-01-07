@@ -1,6 +1,7 @@
-import { ActionInput, CallableConstructor, GenericObject, IController, IControllerDispatcher, IRoute, ResourceMethod, ResponsableType, RouteActions, RouteMethod } from '@h3ravel/contracts'
+import { ActionInput, CallableConstructor, ClassConstructor, GenericObject, IController, IControllerDispatcher } from '@h3ravel/contracts'
 import { Application, Container } from '@h3ravel/core'
 import { Arr, Obj, Str, isClass } from '@h3ravel/support'
+import { IRoute, MiddlewareList, ResourceMethod, ResponsableType, RouteActions, RouteMethod } from '@h3ravel/contracts'
 
 import { CallableDispatcher } from './CallableDispatcher'
 import { CompiledRoute } from './CompiledRoute'
@@ -12,7 +13,9 @@ import { LogicException } from '@h3ravel/foundation'
 import { MethodValidator } from './Matchers/MethodValidator'
 import { Request } from '@h3ravel/http'
 import { RouteAction } from './RouteAction'
+import { RouteActionConditions } from './Contracts/Utilities'
 import { RouteParameterBinder } from './RouteParameterBinder'
+import { RouteSignatureParameters } from './RouteSignatureParameters'
 import { RouteUri } from './RouteUri'
 import { Router } from './Router'
 import { SchemeValidator } from './Matchers/SchemeValidator'
@@ -65,6 +68,11 @@ export class Route extends IRoute {
     protected bindingFields!: GenericObject<string>
 
     /**
+     * Indicates "trashed" models can be retrieved when resolving implicit model bindings for this route.
+     */
+    protected withTrashedBindings = false
+
+    /**
      * Indicates whether the route is a fallback route.
      */
     isFallback: boolean = false
@@ -87,7 +95,7 @@ export class Route extends IRoute {
     /**
      * The computed gathered middleware.
      */
-    computedMiddleware?: any[]
+    computedMiddleware?: MiddlewareList
 
     /**
      * The controller instance.
@@ -479,7 +487,11 @@ export class Route extends IRoute {
      * Get the matched parameters object.
      */
     getParameters () {
-        return this.parameters ?? {}
+        if (typeof this.parameters !== 'undefined') {
+            return this.parameters
+        }
+
+        throw new LogicException('Route is not bound.')
     }
 
     /**
@@ -539,6 +551,28 @@ export class Route extends IRoute {
         this.bindingFields = bindingFields
 
         return this
+    }
+
+    /**
+     * Get the parent parameter of the given parameter.
+     *
+     * @param parameter
+     */
+    parentOfParameter (parameter: string): any {
+        const key = Object.keys(this.getParameters()).findIndex(e => e == parameter)
+
+        if (!key || key === 0) {
+            return
+        }
+
+        return Object.values(this.getParameters())[key - 1]
+    }
+
+    /**
+     * Determines if the route allows "trashed" models to be retrieved when resolving implicit model bindings. 
+     */
+    allowsTrashedBindings (): boolean {
+        return this.withTrashedBindings
     }
 
     /**
@@ -611,6 +645,21 @@ export class Route extends IRoute {
     }
 
     /**
+     * Get the parameters that are listed in the route / controller signature.
+     *
+     * @param  conditions
+     */
+    signatureParameters (conditions: ClassConstructor | RouteActionConditions) {
+        if (isClass(conditions)) {
+            conditions = { subClass: conditions }
+        }
+
+        return RouteSignatureParameters
+            .setRequirements(this.container, this)
+            .fromAction(this.action, conditions as RouteActionConditions)
+    }
+
+    /**
      * Compile the route once, cache the result, return compiled data
      */
     compileRoute (): CompiledRoute {
@@ -621,6 +670,29 @@ export class Route extends IRoute {
         }
 
         return this.compiled
+    }
+
+    /**
+     * Set a parameter to the given value.
+     *
+     * @param  name
+     * @param  value
+     */
+    setParameter (name: string, value?: string | GenericObject): void {
+        this.getParameters()
+
+        this.parameters![name] = value
+    }
+
+    /**
+     * Unset a parameter on the route if it is set.
+     *
+     * @param  name
+     */
+    forgetParameter (name: string): void {
+        this.getParameters()
+
+        delete this.parameters![name]
     }
 
     /**
@@ -665,21 +737,53 @@ export class Route extends IRoute {
     /**
      * Get the middleware that should be removed from the route.
      */
-    excludedMiddleware (): any {
+    excludedMiddleware (): MiddlewareList {
         return this.action.excluded_middleware ?? {}
     }
 
     /**
      * Get all middleware, including the ones from the controller.
      */
-    gatherMiddleware () {
+    gatherMiddleware (): MiddlewareList {
         if (this.computedMiddleware) {
             return this.computedMiddleware
         }
 
-        this.computedMiddleware = []
+        this.computedMiddleware = Router.uniqueMiddleware([...this.middleware(), ...this.controllerMiddleware()])
 
-        return this.computedMiddleware = Router.uniqueMiddleware([...this.middleware(), ...this.controllerMiddleware()])
+        return this.computedMiddleware
+    }
+
+    /**
+     * Indicate that the route should enforce scoping of multiple implicit Eloquent bindings.
+     */
+    scopeBindings () {
+        this.action['scope_bindings'] = true
+
+        return this
+    }
+
+    /**
+     * Indicate that the route should not enforce scoping of multiple implicit Eloquent bindings.
+     */
+    withoutScopedBindings (): this {
+        this.action['scope_bindings'] = false
+
+        return this
+    }
+
+    /**
+     * Determine if the route should enforce scoping of multiple implicit Eloquent bindings.
+     */
+    enforcesScopedBindings (): boolean {
+        return this.action['scope_bindings'] ?? false
+    }
+
+    /**
+     * Determine if the route should prevent scoping of multiple implicit Eloquent bindings.
+     */
+    preventsScopedBindings (): boolean {
+        return typeof this.action['scope_bindings'] !== 'undefined' && this.action['scope_bindings'] === false
     }
 
     /**
@@ -800,7 +904,7 @@ export class Route extends IRoute {
      */
     getControllerMethod (): ResourceMethod {
         const holder = isClass(this.action.uses) && typeof this.action.controller === 'string' ? this.action.controller : 'index'
-        return Str.parseCallback(holder)[1] as ResourceMethod
+        return Str.parseCallback(holder).at(1) as ResourceMethod
     }
 
     /**

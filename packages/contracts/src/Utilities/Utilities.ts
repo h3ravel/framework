@@ -50,7 +50,8 @@ export interface RouteActions {
     middleware?: MiddlewareList
     namespace?: string
     excluded_middleware?: any
-    scopeBindings?: any
+    scopeBindings?: boolean
+    scope_bindings?: boolean
     withoutMiddleware?: any
     withoutScopedBindings?: any
 }

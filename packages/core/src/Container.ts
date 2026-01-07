@@ -27,7 +27,7 @@ export class Container extends IContainer {
     /**
      * The container's resolved instances.
      */
-    protected resolvedInstances = new Set<IBinding | string>()
+    protected resolvedInstances = new Map<IBinding | string, any>()
     /**
      * The registered type alias.
      */
@@ -216,6 +216,10 @@ export class Container extends IContainer {
          */
         let resolved: any
 
+        if (this.resolvedInstances.has(abstract)) {
+            return this.resolvedInstances.get(abstract)
+        }
+
         if (raiseEvents)
             this.runBeforeResolvingCallbacks(abstract)
 
@@ -237,7 +241,7 @@ export class Container extends IContainer {
         if (raiseEvents)
             this.runAfterResolvingCallbacks(abstract, resolved)
 
-        this.resolvedInstances.add(abstract)
+        this.resolvedInstances.set(abstract, resolved)
 
         return resolved
     }

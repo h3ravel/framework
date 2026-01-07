@@ -1,14 +1,14 @@
 import 'reflect-metadata'
 import { Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Application } from '@h3ravel/core'
-import { Request, Response, HttpContext, JsonResponse } from '@h3ravel/http'
+import { Request, Response, JsonResponse } from '@h3ravel/http'
 import { Arr, Collection, isClass, MacroableClass, Str, Stringable, tap } from '@h3ravel/support'
 import { IDispatcher } from '@h3ravel/contracts'
 import { Magic, mix } from '@h3ravel/shared'
 import { IMiddleware, IRequest, IResponse, IRouter, RouteActions, ActionInput, MiddlewareList, ResponsableType } from '@h3ravel/contracts'
-import type { EventHandler, IController, GenericObject, ResourceOptions, ResourceMethod } from '@h3ravel/contracts'
+import type { EventHandler, IController, GenericObject, ResourceOptions, ResourceMethod, CallableConstructor, IModel, MiddlewareIdentifier } from '@h3ravel/contracts'
 import { RouteMethod, IResponsable } from '@h3ravel/contracts'
-import { ExceptionHandler, internal } from '@h3ravel/foundation'
+import { internal } from '@h3ravel/foundation'
 import { Route } from './Route'
 import { Routing } from './Events/Routing'
 import { RouteMatched } from './Events/RouteMatched'
@@ -22,8 +22,9 @@ import { PendingSingletonResourceRegistration } from './PendingSingletonResource
 import { ResourceRegistrar } from './ResourceRegistrar'
 import { PendingResourceRegistration } from './PendingResourceRegistration'
 import { RouteRegistrar } from './RouteRegisterer'
-import { createRequire } from 'node:module'
+import { createRequire } from 'module'
 import { existsSync } from 'node:fs'
+import { ImplicitRouteBinding } from './ImplicitRouteBinding'
 
 export class Router extends mix(IRouter, MacroableClass, Magic) {
     private DIST_DIR: string
@@ -34,6 +35,11 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
 
     private middlewareMap: IMiddleware[] = []
     private groupMiddleware: EventHandler[] = []
+
+    /**
+     * The registered route value binders.
+     */
+    protected binders: Record<string, any> = {}
 
     /**
      * All of the short-hand keys for middlewares.
@@ -61,6 +67,11 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
      * Forces the listed middleware to always be in the given order.
      */
     public middlewarePriority: MiddlewareList = []
+
+    /**
+     * The registered custom implicit binding callback.
+     */
+    protected implicitBindingCallback?: (container: Application, route: Route, defaultFn: CallableConstructor) => any
 
     /**
      * All of the verbs supported by the router.
@@ -204,37 +215,6 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
     }
 
     /**
-     * Gracefully handle the outgoing response and pass all caught errors
-     * to the exception handler.
-     * 
-     * @param handler 
-     * @param ctx 
-     * @returns 
-     */
-    private async handleResponse (handler: (ctx: HttpContext) => Promise<IResponse>, ctx: HttpContext): Promise<IResponse> {
-        const exceptionHandler = this.app.make(ExceptionHandler)
-        if (!exceptionHandler) {
-            return await handler(ctx)
-        }
-
-        try {
-            return await handler(ctx)
-        } catch (error) {
-            /**
-             * Handle the exception here.
-             */
-            if (typeof exceptionHandler.handle !== 'undefined') {
-                return await exceptionHandler.handle(error as Error, ctx) as IResponse
-            }
-
-            /**
-             * If no exception handler has been defined, throw the original exception.
-             */
-            throw error
-        }
-    }
-
-    /**
      * Dispatch the request to the application.
      *
      * @param request
@@ -307,8 +287,6 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
 
     /**
      * Get all of the defined middleware short-hand names.
-     *
-     * @return array
      */
     getMiddleware (): GenericObject {
         return this.middlewares
@@ -331,7 +309,7 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
      *
      * @param  route
      */
-    gatherRouteMiddleware (route: Route): any {
+    gatherRouteMiddleware (route: Route): MiddlewareList {
         return this.resolveMiddleware(
             route.gatherMiddleware(),
             route.excludedMiddleware()
@@ -343,18 +321,17 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
      *
      * @param middleware
      * @param excluded
-     * @return array
      */
-    resolveMiddleware (middleware: IMiddleware[], excluded: IMiddleware[] = []): any {
+    resolveMiddleware (middleware: MiddlewareList, excluded: MiddlewareList = []): any {
         excluded = excluded.length === 0
             ? excluded
-            : (new Collection<IMiddleware>(excluded))
+            : (new Collection(excluded))
                 .map((name) => MiddlewareResolver.setApp(this.app).resolve(name, this.middlewares, this.middlewareGroups))
                 .flatten()
                 .values()
                 .all() as never
 
-        const middlewares = (new Collection<IMiddleware>(middleware))
+        const middlewares = (new Collection(middleware))
             .map((name) => MiddlewareResolver.setApp(this.app).resolve(name, this.middlewares, this.middlewareGroups))
             .flatten()
 
@@ -390,8 +367,7 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
     /**
      * Sort the given middleware by priority.
      *
-     * @param  \Illuminate\Support\Collection  $middlewares
-     * @return array
+     * @param  middlewares
      */
     protected sortMiddleware (middlewares: Collection) {
         return middlewares.all()
@@ -417,7 +393,7 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
      * @param  request
      * @param  response
      */
-    async prepareResponse (request: IRequest, response: ResponsableType) {
+    async prepareResponse (request: IRequest, response: ResponsableType): Promise<IResponse> {
         this.events?.dispatch(new PreparingResponse(request, response))
 
         return tap(Router.toResponse(request, response), (response) => {
@@ -431,11 +407,11 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
      * @param  request
      * @param  response
      */
-    static toResponse (request: IRequest, response: ResponsableType<Response>) {
+    static toResponse (request: IRequest, response: ResponsableType<Response>): IResponse {
         if (response instanceof IResponsable) {
             response = response.toResponse(request)
         }
-        // console.log(response)
+
         // if (response instanceof Model && response.wasRecentlyCreated) {
         //     response = new JsonResponse(response, 201)
         // }
@@ -453,11 +429,73 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
     }
 
     /**
+     * Substitute the route bindings onto the route.
+     *
+     * @param  route
+     *
+     * @throws {ModelNotFoundException<IModel>}
+     */
+    async substituteBindings (route: Route): Promise<Route> {
+        for (const [key, value] of Object.entries(route.parameters ?? {})) {
+            if (typeof this.binders[key] !== 'undefined') {
+                route.setParameter(key, await this.performBinding(key, value, route))
+            }
+        }
+
+        return route
+    }
+
+    /**
+     * Substitute the implicit route bindings for the given route.
+     *
+     * @param  route
+     *
+     * @throws {ModelNotFoundException<IModel>}
+     */
+    async substituteImplicitBindings (route: Route): Promise<any | undefined> {
+        const defaultFn = () => ImplicitRouteBinding.resolveForRoute(this.app, route)
+
+        return await Reflect.apply(
+            this.implicitBindingCallback ?? defaultFn,
+            undefined,
+            [this.app, route, defaultFn]
+        )
+    }
+
+    /**
+     * Register a callback to run after implicit bindings are substituted.
+     *
+     * @param  callback
+     */
+    substituteImplicitBindingsUsing (callback: CallableConstructor): this {
+        this.implicitBindingCallback = callback
+
+        return this
+    }
+
+    /**
+     * Call the binding callback for the given key.
+     *
+     * @param  key
+     * @param  value
+     * @param  route
+     *
+     * @throws {ModelNotFoundException<IModel>}
+     */
+    protected performBinding (key: string, value: string, route: Route): Promise<any> {
+        return Reflect.apply(
+            this.binders[key],
+            undefined,
+            [value, route]
+        )
+    }
+
+    /**
      * Remove any duplicate middleware from the given array.
      *
      * @param  middleware
      */
-    static uniqueMiddleware (middleware: MiddlewareList) {
+    static uniqueMiddleware (middleware: MiddlewareList): MiddlewareIdentifier[] {
         return Array.from(new Set(middleware))
     }
 

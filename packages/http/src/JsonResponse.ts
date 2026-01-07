@@ -30,7 +30,7 @@ export class JsonResponse extends Response {
             throw new TypeError(`"${this.constructor.name}": If \`json\` is set to true, argument \`data\` must be a string or object implementing toString(), "${typeof data}" given.`)
         }
 
-        data ??= 'new ArrayObject()'
+        data ??= {}
 
         if (json) this.setJson(data)
         else this.setData(data)

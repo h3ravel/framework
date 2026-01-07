@@ -27,10 +27,6 @@ export class AppBuilder {
         this.app.singleton(IKernel, Kernel)
 
         this.app.singleton(CKernel, () => new ConsoleKernel(this.app))
-        this.app.alias([
-            [Kernel, IKernel],
-            [ConsoleKernel, CKernel]
-        ])
 
         return this
     }
