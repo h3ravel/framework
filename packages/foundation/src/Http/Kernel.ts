@@ -1,5 +1,3 @@
-// namespace Illuminate\Foundation\Http;
-
 import { Arr, DateTime, InvalidArgumentException } from '@h3ravel/support'
 import { ConcreteConstructor, IApplication, IBootstraper, IExceptionHandler, IKernel, IMiddleware, IRequest, IResponse, IRouter, MiddlewareIdentifier, MiddlewareList } from '@h3ravel/contracts'
 

@@ -1,7 +1,7 @@
 import { ClassConstructor, ConcreteConstructor, IApplication, IBinding } from '@h3ravel/contracts'
 
 import { RuntimeException } from '../Exceptions/RuntimeException'
-import { isInternal } from '@h3ravel/foundation'
+import { isInternal } from '@h3ravel/shared'
 
 export abstract class Facades {
     /**
