@@ -1,5 +1,5 @@
 export const mainTsconfig = {
-  extends: '@h3ravel/shared/tsconfig.json',
+  extends: '@h3ravel/shared/tsconfig.base.json',
   compilerOptions: {
     baseUrl: '.',
     outDir: 'dist',

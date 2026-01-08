@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/shared",
-  "version": "0.28.3",
+  "version": "0.28.4",
   "description": "Shared Utilities.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -11,7 +11,8 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./tsconfig.base.json": "./tsconfig.base.json"
   },
   "typesVersions": {
     "*": {
@@ -22,7 +23,7 @@
   },
   "files": [
     "dist",
-    "tsconfig.json"
+    "tsconfig.base.json"
   ],
   "publishConfig": {
     "access": "public",
@@ -58,9 +59,7 @@
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests",
     "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump shared package and publish\" && pnpm publish --tag latest",
-    "version-patch": "pnpm version patch",
-    "prepack": "cp tsconfig.json tsconfig.temp.json && cp tsconfig.dist.json tsconfig.json",
-    "postpack": "cp tsconfig.temp.json tsconfig.json && rm tsconfig.temp.json"
+    "version-patch": "pnpm version patch"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.9.0",
