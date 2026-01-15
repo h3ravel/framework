@@ -1,6 +1,4 @@
-import { IApplication, MiddlewareIdentifier } from '@h3ravel/contracts'
-
-import { MiddlewareList } from 'packages/contracts/dist'
+import { IApplication, MiddlewareIdentifier, MiddlewareList } from '@h3ravel/contracts'
 
 type MiddlewareMap = Record<string, MiddlewareIdentifier>
 type MiddlewareGroups = Record<string, MiddlewareIdentifier[]>
@@ -81,12 +79,14 @@ export class MiddlewareResolver {
                 resolved = map[base] ?? base
 
                 results.push(parameters ? `${String(resolved)}:${parameters}` : String(resolved))
+                const bound = this.app.boundMiddlewares(resolved)
+                if (bound) results.push(bound)
             } else {
-                results.push(middleware)
+                const bound = this.app.boundMiddlewares(middleware)
+                if (bound) results.push(bound)
             }
-
         }
 
-        return results
+        return results.filter(e => typeof e !== 'string')
     }
 }

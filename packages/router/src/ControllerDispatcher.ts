@@ -1,6 +1,5 @@
-import { IController, IControllerDispatcher, IMiddleware, ResourceMethod, RouteMethod } from '@h3ravel/contracts'
+import { IApplication, IController, IControllerDispatcher, IMiddleware, ResourceMethod, RouteMethod } from '@h3ravel/contracts'
 
-import { Application } from '@h3ravel/core'
 import { Collection } from '@h3ravel/support'
 import { FiltersControllerMiddleware } from './Traits/FiltersControllerMiddleware'
 import { Route } from './Route'
@@ -16,7 +15,7 @@ export class ControllerDispatcher extends mix(
      * 
      * @param container The container instance.
      */
-    public constructor(protected container: Application) {
+    public constructor(protected container: IApplication) {
         super(container)
     }
 

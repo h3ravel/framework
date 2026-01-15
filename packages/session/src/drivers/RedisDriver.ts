@@ -1,11 +1,11 @@
-import { SessionDriver } from '../Contracts/SessionContract'
-import { FlashBag } from '../FlashBag'
 import { Driver } from './Driver'
+import { FlashBag } from '../FlashBag'
+import { ISessionDriver } from '@h3ravel/contracts'
 
 /**
  * RedisDriver (placeholder)
  */
-export class RedisDriver extends Driver implements SessionDriver {
+export class RedisDriver extends Driver implements ISessionDriver {
     private static store: Record<string, Record<string, any>> = {}
 
     constructor(
@@ -24,8 +24,8 @@ export class RedisDriver extends Driver implements SessionDriver {
      * 
      * @returns Decrypted and usable payload
      */
-    protected fetchPayload (): Record<string, any> {
-        return {}
+    protected fetchPayload<T extends Record<string, any>> (): T {
+        return {} as T
     }
 
     /**
@@ -33,7 +33,7 @@ export class RedisDriver extends Driver implements SessionDriver {
      * 
      * @param data 
      */
-    protected savePayload (payload: Record<string, any>): void {
+    protected savePayload (_payload: Record<string, any>): void {
     }
 
     /**

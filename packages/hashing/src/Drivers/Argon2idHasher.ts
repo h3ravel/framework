@@ -1,16 +1,17 @@
-import { Configuration, Info } from '../Contracts/ManagerContract'
+import { HashConfiguration, HashInfo, IArgon2idHasher } from '@h3ravel/contracts'
 
 import { AbstractHasher } from './AbstractHasher'
 import { RuntimeException } from '@h3ravel/support'
 import argon from 'argon2'
+import { mix } from '@h3ravel/shared'
 
-export class Argon2idHasher extends AbstractHasher {
+export class Argon2idHasher extends mix(AbstractHasher, IArgon2idHasher) {
     private memory: number = 65536
     private verifyAlgorithm: boolean = true
     private threads: number = 1
     private time: number = 4
 
-    constructor(options = {} as Configuration['argon']) {
+    constructor(options = {} as HashConfiguration['argon']) {
         super()
         this.memory = options.memory ?? this.memory
         this.verifyAlgorithm = options.verify ?? process.env.HASH_VERIFY ?? this.verifyAlgorithm
@@ -21,7 +22,7 @@ export class Argon2idHasher extends AbstractHasher {
     /**
      * Hash the given value using Argon2id.
      */
-    public async make (value: string, options = {} as Configuration['argon']): Promise<string> {
+    public async make (value: string, options = {} as HashConfiguration['argon']): Promise<string> {
         try {
             return await argon.hash(value, {
                 type: argon.argon2id,
@@ -40,7 +41,7 @@ export class Argon2idHasher extends AbstractHasher {
     public async check (
         value: string,
         hashedValue?: string | null,
-        _options = {} as Configuration['argon']
+        _options = {} as HashConfiguration['argon']
     ): Promise<boolean> {
         if (!hashedValue || hashedValue.length === 0) {
             return false
@@ -60,14 +61,14 @@ export class Argon2idHasher extends AbstractHasher {
     /**
      * Get information about the given hashed value.
      */
-    public info (hashedValue: string): Info {
+    public info (hashedValue: string): HashInfo {
         return super.info(hashedValue)
     }
 
     /**
      * Check if the given hash needs to be rehashed based on current options.
      */
-    public needsRehash (hashedValue: string, options = {} as Configuration['argon']): boolean {
+    public needsRehash (hashedValue: string, options = {} as HashConfiguration['argon']): boolean {
         const parsed = this.parseInfo(hashedValue)
         if (!parsed) return true
 

@@ -15,6 +15,10 @@
       "import": "./dist/facades.js",
       "require": "./dist/facades.cjs"
     },
+    "./traits": {
+      "import": "./dist/traits.js",
+      "require": "./dist/traits.cjs"
+    },
     "./package.json": "./package.json"
   },
   "files": [

@@ -1,6 +1,6 @@
 import { EdgeViewEngine } from '../EdgeViewEngine'
 import { Responsable } from '@h3ravel/http'
-import { ServiceProvider } from '@h3ravel/core'
+import { ServiceProvider } from '@h3ravel/support'
 
 /**
  * View Service Provider
@@ -18,7 +18,7 @@ export class ViewServiceProvider extends ServiceProvider {
     })
 
     // Register the app instance if available
-    viewEngine.global('app', this.app)
+    // viewEngine.global('app', this.app)
 
     const edge = viewEngine.getEdge()
 
@@ -46,11 +46,6 @@ export class ViewServiceProvider extends ServiceProvider {
 
       return response.html(await this.app.make('edge').render(template, data), true)
     }
-
-    /**
-     * Bind the view method to the global variable space
-     */
-    globalThis.view = view
 
     /**
      * Dynamically bind the view renderer to the service container.

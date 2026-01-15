@@ -70,6 +70,7 @@
     "vitest": "^2.0.0"
   },
   "peerDependencies": {
-    "@h3ravel/shared": "workspace:*"
+    "@h3ravel/shared": "workspace:*",
+    "@h3ravel/support": "workspace:*"
   }
 }

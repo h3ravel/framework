@@ -1,15 +1,16 @@
-import { Configuration, Info } from '../Contracts/ManagerContract'
+import { HashConfiguration, HashInfo, IBcryptHasher } from '@h3ravel/contracts'
 import { InvalidArgumentException, RuntimeException } from '@h3ravel/support'
 
 import { AbstractHasher } from './AbstractHasher'
 import bcrypt from 'bcryptjs'
+import { mix } from '@h3ravel/shared'
 
-export class BcryptHasher extends AbstractHasher {
+export class BcryptHasher extends mix(AbstractHasher, IBcryptHasher) {
     private rounds: number = 12
     private verifyAlgorithm: boolean = true
     private limit: number | null = null
 
-    constructor(options = {} as Configuration['bcrypt']) {
+    constructor(options = {} as HashConfiguration['bcrypt']) {
         super()
         this.rounds = options.rounds ?? this.rounds
         this.verifyAlgorithm = options.verify ?? process.env.HASH_VERIFY ?? this.verifyAlgorithm
@@ -24,7 +25,7 @@ export class BcryptHasher extends AbstractHasher {
      * 
      * @return {String}
      */
-    public async make (value: string, options = {} as Configuration['bcrypt']): Promise<string> {
+    public async make (value: string, options = {} as HashConfiguration['bcrypt']): Promise<string> {
         if (this.limit && value.length > this.limit) {
             throw new InvalidArgumentException(`Value is too long to hash. Value must be less than ${this.limit} bytes`)
         }
@@ -45,7 +46,7 @@ export class BcryptHasher extends AbstractHasher {
      * @param  options
      * @returns
      */
-    public async check (value: string, hashedValue?: string | null, _options = {} as Configuration['bcrypt']) {
+    public async check (value: string, hashedValue?: string | null, _options = {} as HashConfiguration['bcrypt']) {
         if (!hashedValue || hashedValue.length === 0) {
             return false
         }
@@ -64,7 +65,7 @@ export class BcryptHasher extends AbstractHasher {
      * 
      * @return {Object}
      */
-    public info (hashedValue: string): Info {
+    public info (hashedValue: string): HashInfo {
         return super.info(hashedValue)
     }
 
@@ -76,7 +77,7 @@ export class BcryptHasher extends AbstractHasher {
      * 
      * @return {Boolean}
      */
-    public needsRehash (hashedValue: string, options = {} as Configuration['bcrypt']): boolean {
+    public needsRehash (hashedValue: string, options = {} as HashConfiguration['bcrypt']): boolean {
         const match = hashedValue.match(/^\$2[aby]?\$(\d+)\$/)
         if (!match) return true
 
@@ -130,7 +131,7 @@ export class BcryptHasher extends AbstractHasher {
      * @param  options
      * @return int
      */
-    protected cost (options = {} as Configuration['bcrypt']) {
+    protected cost (options = {} as HashConfiguration['bcrypt']) {
         return options.rounds ?? this.rounds
     }
 }

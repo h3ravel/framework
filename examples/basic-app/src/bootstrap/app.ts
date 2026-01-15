@@ -6,7 +6,7 @@ import providers from 'src/bootstrap/providers'
 
 export default class {
     async bootstrap () {
-        const app = await h3ravel(providers, process.cwd(), { autoload: true, initialize: false }, async () => undefined)
+        const app = await h3ravel(providers, process.cwd(), { autoload: true, initialize: false })
         this.configure(app)
         return await app.fire()
     }
@@ -16,9 +16,9 @@ export default class {
             .withRouting({
                 web: path.join(process.cwd(), 'src/routes/web.ts'),
                 api: path.join(process.cwd(), 'src/routes/api.ts'),
-                commands: path.join(process.cwd(), 'src/routes/console.ts'),
-                channels: path.join(process.cwd(), 'src/routes/channels.ts'),
-                health: '/up',
+                // commands: path.join(process.cwd(), 'src/routes/console.ts'),
+                // channels: path.join(process.cwd(), 'src/routes/channels.ts'),
+                // health: '/up',
             })
             .withExceptions((exceptions) => {
                 return exceptions

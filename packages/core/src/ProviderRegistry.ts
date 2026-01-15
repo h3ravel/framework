@@ -227,7 +227,6 @@ export class ProviderRegistry {
         if (autoRegister) {
             for (const manifestPath of manifests) {
                 const pkg = this.getManifest(path.resolve(manifestPath))
-
                 if (pkg.h3ravel?.providers) {
                     providers.push(...await Promise.all(
                         pkg.h3ravel.providers.map(

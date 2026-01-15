@@ -1,18 +1,23 @@
 import { Arr, DateTime, InvalidArgumentException } from '@h3ravel/support'
-import { ConcreteConstructor, IApplication, IBootstraper, IExceptionHandler, IKernel, IMiddleware, IRequest, IResponse, IRouter, MiddlewareIdentifier, MiddlewareList } from '@h3ravel/contracts'
+import { ConcreteConstructor, IApplication, IBootstraper, IExceptionHandler, IKernel, IMiddleware } from '@h3ravel/contracts'
+import { IRequest, IResponse, IRouter, MiddlewareIdentifier, MiddlewareList } from '@h3ravel/contracts'
+import { mix, use } from '@h3ravel/shared'
 
 import { Facades } from '@h3ravel/support/facades'
 import { Injectable } from '..'
+import { InteractsWithTime } from '@h3ravel/support/traits'
 import { RegisterFacades } from '../Bootstrapers/RegisterFacades'
+import { RegisterHelpers } from '../Bootstrapers/RegisterHelpers'
 import { RequestHandled } from './Events/RequestHandled'
 import { Terminating } from '../Core/Events/Terminating'
 
 @Injectable()
-export class Kernel extends IKernel {
+export class Kernel extends mix(IKernel, use(InteractsWithTime)) {
     /**
      * The bootstrap classes for the application.
      */
     #bootstrappers: ConcreteConstructor<IBootstraper>[] = [
+        RegisterHelpers,
         RegisterFacades
     ]
 
@@ -145,7 +150,7 @@ export class Kernel extends IKernel {
 
         this.terminateMiddleware(request, response)
 
-        // this.app.terminate();
+        this.app.terminate()
 
         if (!this.#requestStartedAt) return
 
@@ -170,6 +175,7 @@ export class Kernel extends IKernel {
             }
         }
 
+        response.reset()
         this.#requestStartedAt = undefined
     }
 
@@ -207,15 +213,14 @@ export class Kernel extends IKernel {
      */
     public whenRequestLifecycleIsLongerThan (threshold: number | DateTime, handler: (...args: any[]) => any) {
         //TODO: Pay attention to these
+        threshold = threshold instanceof DateTime
+            ? this.secondsUntil(threshold) * 1000
+            : threshold
 
-        // threshold = threshold instanceof DateTime
-        //     ? this.secondsUntil(threshold) * 1000
-        //     : threshold
-
-        // this.requestLifecycleDurationHandlers = {
-        //     'threshold': threshold,
-        //     'handler': handler,
-        // }
+        this.requestLifecycleDurationHandlers.push({
+            threshold,
+            handler,
+        })
     }
 
     /**
@@ -230,10 +235,10 @@ export class Kernel extends IKernel {
      */
     protected gatherRouteMiddleware (request: IRequest) {
         // TODO: Pay attention to this
-        // const route = request.route()
-        // if (route) {
-        //     return this.router.gatherRouteMiddleware(route)
-        // }
+        const route = request.route()
+        if (route) {
+            return this.router.gatherRouteMiddleware(route)
+        }
 
         return []
     }
@@ -432,6 +437,7 @@ export class Kernel extends IKernel {
             this.router.middlewareGroup(key, middleware)
         }
 
+        // TODO: Pay Attention to these
         for (const [key, middleware] of Object.entries(this.middlewareAliases)) {
             // this.router.aliasMiddleware(key, middleware)
             // console.log(key, middleware, 'key, middleware')

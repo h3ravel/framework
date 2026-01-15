@@ -8,6 +8,7 @@ import { IServerBag } from './IServerBag'
 import { IUrl } from '../Url/IUrl'
 import { InputBag } from './IInputBag'
 import { RequestMethod } from '../Utilities/Utilities'
+import { RouteParams } from '../Url/Utils'
 
 export abstract class IHttpRequest {
     /**
@@ -30,7 +31,7 @@ export abstract class IHttpRequest {
     /**
      * Query string parameters (GET).
      */
-    abstract _query: InputBag
+    abstract _query: RouteParams
     /**
      * Server and execution environment parameters
      */
@@ -63,7 +64,7 @@ export abstract class IHttpRequest {
      * @param server     The SERVER parameters
      * @param content    The raw body data
      */
-    abstract initialize (): Promise<void>;
+    abstract initialize (): void;
     /**
      * Gets a list of content types acceptable by the client browser in preferable order.
      * @returns {string[]}

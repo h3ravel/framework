@@ -1,10 +1,9 @@
-import { ClassicRouteDefinition, RouteMethod } from '@h3ravel/contracts'
+import { ClassicRouteDefinition, IApplication, RouteMethod } from '@h3ravel/contracts'
 import { Logger, LoggerChalk } from '@h3ravel/shared'
 
-import { Application } from '@h3ravel/core'
 import { Command } from '@h3ravel/musket'
 
-export class RouteListCommand extends Command<Application> {
+export class RouteListCommand extends Command<IApplication> {
 
     /**
      * The name and signature of the console command.

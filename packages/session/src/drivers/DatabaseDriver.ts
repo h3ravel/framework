@@ -3,7 +3,7 @@ import { safeDot, setNested } from '@h3ravel/support'
 import { DB } from '@h3ravel/database'
 import { Driver } from './Driver'
 import { FlashBag } from '../FlashBag'
-import { SessionDriver } from '../Contracts/SessionContract'
+import { ISessionDriver } from '@h3ravel/contracts'
 
 /**
  * DatabaseDriver
@@ -11,14 +11,13 @@ import { SessionDriver } from '../Contracts/SessionContract'
  * Stores sessions in a database table. Each session ID maps to a row.
  * The `payload` column contains all session key/value pairs as JSON.
  */
-export class DatabaseDriver extends Driver implements SessionDriver {
-    constructor(
-        /**
-         * The current session ID
-         */
-        protected sessionId: string,
-        private table: string = 'sessions'
-    ) {
+export class DatabaseDriver extends Driver implements ISessionDriver {
+    /**
+     * 
+     * @param sessionId The current session ID
+     * @param table 
+     */
+    constructor(protected sessionId: string, private table: string = 'sessions') {
         super()
     }
 

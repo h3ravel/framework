@@ -23,11 +23,11 @@ export class UserController extends Controller {
 
     @Injectable()
     async show (response: Response, user: User) {
-        console.log(response, user, 'response, user')
-        // return response
-        //     .setCache({ max_age: 50011, private: false })
-        //     .setStatusCode(202)
-        //     .setContent(JSON.stringify({ id: user.id, name: user.name, created_at: user.created_at }))
+
+        return response
+            .setCache({ max_age: 50011, private: false })
+            .setStatusCode(202)
+            .setContent(user)
     }
 
     async update ({ request, response }: HttpContext) {

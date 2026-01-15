@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'fs'
 
 import { Driver } from './Driver'
 import { FlashBag } from '../FlashBag'
-import { SessionDriver } from '../Contracts/SessionContract'
+import { ISessionDriver } from '@h3ravel/contracts'
 import path from 'path'
 
 /**
@@ -12,7 +12,7 @@ import path from 'path'
  * Each session is stored in its own file named after the session ID.
  * Ideal for local development or low-scale deployments.
  */
-export class FileDriver extends Driver implements SessionDriver {
+export class FileDriver extends Driver implements ISessionDriver {
     constructor(
         protected sessionId: string,
         private sessionDir: string = path.resolve('.sessions'),

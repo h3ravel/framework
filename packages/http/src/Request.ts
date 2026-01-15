@@ -64,10 +64,7 @@ export class Request<
     ) {
         const instance = new Request(event, app)
         await instance.setBody()
-        await instance.initialize()
-        globalThis.old = (...args: any[]) => instance.old(args?.[0], args?.[1]) as never
-        globalThis.request = () => instance
-        globalThis.session = (...args: any[]) => instance.session(...args)
+        instance.initialize()
         return instance
     }
 
@@ -88,10 +85,6 @@ export class Request<
         instance.content = event.req.body
         instance.body = instance.content
         instance.buildRequirements()
-        instance.sessionManagerClass = {} as never
-        globalThis.old = (...args: any[]) => instance.old(args?.[0], args?.[1]) as never
-        globalThis.request = () => instance
-        globalThis.session = (...args: any[]) => instance.session(...args)
         return instance
     }
 
@@ -427,18 +420,7 @@ export class Request<
         ? ISessionManager
         : K extends string
         ? any : void | Promise<void> {
-        this.sessionManager ??= new this.sessionManagerClass(
-            this.context,
-            config('session.driver', 'file'),
-            {
-                cwd: config('session.files'),
-                sessionDir: '/',
-                dir: '/',
-                table: config('session.table'),
-                prefix: config('database.connections.redis.options.prefix'),
-                client: config(`database.connections.${config('session.driver', 'file')}.client`),
-            }
-        )
+        this.sessionManager ??= this.app.make('session')
 
         if (typeof key === 'string') {
             return this.sessionManager.get(key, defaultValue)
@@ -661,7 +643,6 @@ export class Request<
      */
     setRouteResolver (callback: () => IRoute) {
         this.routeResolver = callback
-
         return this
     }
 

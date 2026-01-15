@@ -1,4 +1,4 @@
-import { DriverBuilder, DriverOption } from './Contracts/SessionContract'
+import { SessionDriverBuilder, SessionDriverOption } from '@h3ravel/contracts'
 
 import { DatabaseDriver } from './drivers/DatabaseDriver'
 import { FileDriver } from './drivers/FileDriver'
@@ -9,7 +9,7 @@ import { RedisDriver } from './drivers/RedisDriver'
  * FileDriver builder
  * constructor(sessionId: string, sessionDir?: string, cwd?: string)
  */
-export const fileBuilder: DriverBuilder = (sessionId, options: DriverOption = {}) => {
+export const fileBuilder: SessionDriverBuilder = (sessionId, options: SessionDriverOption = {}) => {
     const sessionDir = options.sessionDir ?? options.dir ?? './storage/sessions'
     const cwd = options.cwd ?? process.cwd()
     return new FileDriver(sessionId, sessionDir, cwd)
@@ -19,7 +19,7 @@ export const fileBuilder: DriverBuilder = (sessionId, options: DriverOption = {}
  * DatabaseDriver builder
  * constructor(sessionId: string, table?: string)
  */
-export const dbBuilder: DriverBuilder = (sessionId, options: DriverOption = {}) => {
+export const dbBuilder: SessionDriverBuilder = (sessionId, options: SessionDriverOption = {}) => {
     const table = options.table ?? 'sessions'
     return new DatabaseDriver(options.sessionId ?? sessionId, table)
 }
@@ -28,7 +28,7 @@ export const dbBuilder: DriverBuilder = (sessionId, options: DriverOption = {}) 
  * MemoryDriver builder
  * constructor(sessionId: string)
  */
-export const memoryBuilder: DriverBuilder = (sessionId) => {
+export const memoryBuilder: SessionDriverBuilder = (sessionId) => {
     return new MemoryDriver(sessionId)
 }
 
@@ -36,7 +36,7 @@ export const memoryBuilder: DriverBuilder = (sessionId) => {
  * RedisDriver builder
  * constructor(sessionId: string, redisClient?: RedisClient, prefix?: string)
  */
-export const redisBuilder: DriverBuilder = (sessionId, options: DriverOption = {}) => {
+export const redisBuilder: SessionDriverBuilder = (sessionId, options: SessionDriverOption = {}) => {
     const client = options.client // optional client instance
     const prefix = options.prefix ?? 'h3ravel:sessions:'
     return new RedisDriver(sessionId, client, prefix)

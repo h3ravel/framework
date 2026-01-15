@@ -1,5 +1,3 @@
-/// <reference path="../../../core/src/app.globals.d.ts" />
-
 import { HttpContext, Request, Response } from '..'
 import { IApplication, IHttpContext, IRequest, IResponse } from '@h3ravel/contracts'
 

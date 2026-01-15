@@ -1,6 +1,6 @@
+import { HashAlgorithm, HashConfiguration, IBaseHashManager } from '@h3ravel/contracts'
 import { type SnakeToTitleCase, Str, InvalidArgumentException } from '@h3ravel/support'
 
-import type { Configuration, HashAlgorithm } from '../Contracts/ManagerContract'
 import { BcryptHasher } from '../Drivers/BcryptHasher'
 import { ArgonHasher } from '../Drivers/ArgonHasher'
 import { Argon2idHasher } from '../Drivers/Argon2idHasher'
@@ -10,8 +10,10 @@ import { ConfigException } from '@h3ravel/foundation'
 
 type CreateMethodName = `create${SnakeToTitleCase<HashAlgorithm>}Driver`
 
-export abstract class Manager {
-    constructor(public config = {} as Configuration) { }
+export abstract class Manager extends IBaseHashManager {
+    constructor(public config = {} as HashConfiguration) {
+        super()
+    }
 
     public abstract driver (): BcryptHasher | ArgonHasher | Argon2idHasher
     public createBcryptDriver?(): BcryptHasher

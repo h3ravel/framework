@@ -78,7 +78,7 @@ export abstract class IRequest<
      * @param server     The SERVER parameters
      * @param content    The raw body data
      */
-    abstract initialize (): Promise<void>;
+    abstract initialize (): void;
     /**
      * Retrieve all data from the instance (query + body).
      */

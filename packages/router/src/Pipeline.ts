@@ -1,9 +1,8 @@
-import { CallableConstructor, IRequest } from '@h3ravel/contracts'
-import { Container, ContainerResolver } from '@h3ravel/core'
+import { CallableConstructor, IContainer, IRequest } from '@h3ravel/contracts'
+import { RuntimeException, isCallable } from '@h3ravel/support'
 
 import { Logger } from '@h3ravel/shared'
 import { Pipe } from './Contracts/Utilities'
-import { RuntimeException } from '@h3ravel/support'
 
 export class Pipeline<XP = any> {
     /**
@@ -19,7 +18,7 @@ export class Pipeline<XP = any> {
     /**
      * The container implementation.
      */
-    protected container?: Container
+    protected container?: IContainer
 
     /**
      * The object being passed through the pipeline.
@@ -36,7 +35,7 @@ export class Pipeline<XP = any> {
      */
     protected method = 'handle'
 
-    constructor(app?: Container) {
+    constructor(app?: IContainer) {
         this.container = app
     }
 
@@ -108,7 +107,7 @@ export class Pipeline<XP = any> {
             return async (passable: XP) => {
                 try {
                     // pipe is a callable middleware fn
-                    if (typeof pipe === 'function' && ContainerResolver.isCallable(pipe)) {
+                    if (typeof pipe === 'function' && isCallable(pipe)) {
                         return await pipe(passable, stack)
                     }
 
@@ -136,7 +135,6 @@ export class Pipeline<XP = any> {
                     }
 
                     const handler: CallableConstructor = instance[this.method as never] ?? instance
-                    // const result = 'await handler.apply(instance, parameters)'
                     const result = Reflect.apply(handler, instance, parameters)
 
                     return await this.handleCarry(result)
@@ -198,7 +196,7 @@ export class Pipeline<XP = any> {
      *
      * @param  container
      */
-    setContainer (container: Container) {
+    setContainer (container: IContainer) {
         this.container = container
 
         return this

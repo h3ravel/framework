@@ -182,9 +182,8 @@ export class HttpRequest {
      * @param server     The SERVER parameters
      * @param content    The raw body data
      */
-    public async initialize (): Promise<void> {
+    public initialize (): void {
         this.buildRequirements()
-        this.sessionManagerClass = (await import(('@h3ravel/session'))).SessionManager
     }
 
     protected buildRequirements () {

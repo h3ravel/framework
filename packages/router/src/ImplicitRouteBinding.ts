@@ -1,7 +1,5 @@
-import { GenericObject, IModel, UrlRoutable } from '@h3ravel/contracts'
+import { GenericObject, IApplication, IModel, UrlRoutable } from '@h3ravel/contracts'
 
-import { Application } from '@h3ravel/core'
-import { Logger } from '@h3ravel/shared'
 import { ModelNotFoundException } from '@h3ravel/foundation'
 import { Route } from './Route'
 import { Str } from '@h3ravel/support'
@@ -13,7 +11,7 @@ export class ImplicitRouteBinding {
      * @param container 
      * @param route 
      */
-    public static async resolveForRoute (container: Application, route: Route): Promise<void> {
+    public static async resolveForRoute (container: IApplication, route: Route): Promise<void> {
         const parameters = route.getParameters()
 
         // Iterate only through parameters that are hinted as Models (UrlRoutable)

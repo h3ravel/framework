@@ -1,15 +1,16 @@
-import { Info } from '../Contracts/ManagerContract'
+import { HashInfo, IAbstractHasher } from '@h3ravel/contracts'
+
 import { ParseInfo } from '../Utils/ParseInfo'
 
-export abstract class AbstractHasher {
+export class AbstractHasher extends IAbstractHasher {
     /**
      * Get information about the given hashed value.
      *
      * @param  hashedValue
      * @returns
      */
-    public info (hashedValue: string): Info {
-        let algoName = 'unknown' as Info['algoName']
+    public info (hashedValue: string): HashInfo {
+        let algoName = 'unknown' as HashInfo['algoName']
 
         if (hashedValue.startsWith('$2')) algoName = 'bcrypt'
         if (hashedValue.startsWith('$argon2id$')) algoName = 'argon2id'

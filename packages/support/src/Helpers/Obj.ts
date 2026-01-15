@@ -420,7 +420,7 @@ export function data_forget (
  * @param allowArray
  * @returns 
  */
-export function isPlainObject<P = any> (value: P, allowArray?: boolean): value is P {
+export function isPlainObject<P extends Record<string, unknown>> (value: unknown, allowArray?: boolean): value is P {
     return (
         value !== null &&
         typeof value === 'object' &&
@@ -596,12 +596,32 @@ export class Obj {
     }
 
     /**
+     * Checks if an object is not empty
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static isNotEmpty<T extends Record<string, unknown>> (obj: T): obj is T {
+        return Object.keys(obj).length >= 1
+    }
+
+    /**
+     * Checks if an object is empty
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static isEmpty<T extends Record<string, unknown>> (obj: T) {
+        return !this.isNotEmpty(obj)
+    }
+
+    /**
      * Check if an object is associative (has at least one non-numeric key).
      * 
      * @param obj 
      * @returns 
      */
-    static isAssoc (obj: unknown): obj is Record<string, any> {
+    static isAssoc<T extends Record<string, unknown>> (obj: unknown): obj is T {
         if (!Obj.accessible(obj)) return false
         return Object.keys(obj).some(k => isNaN(Number(k)))
     }
@@ -613,8 +633,52 @@ export class Obj {
      * @param allowArray 
      * @returns 
      */
-    static isPlainObject<P = any> (value: P, allowArray?: boolean): value is P {
+    static isPlainObject<T extends Record<string, unknown>> (value: unknown, allowArray?: boolean): value is T {
         return isPlainObject(value, allowArray)
+    }
+
+    /**
+     * Removes the last element from an object and returns it. 
+     * If the object is empty, undefined is returned and the object is not modified.
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static pop<T extends Record<string, any>> (
+        obj: T
+    ): T[keyof T] | undefined {
+        const keys = Object.keys(obj) as Array<keyof T>
+
+        if (!keys.length) return undefined
+
+        const lastKey = keys[keys.length - 1]
+        const value = obj[lastKey]
+
+        delete obj[lastKey]
+
+        return value
+    }
+
+    /**
+     * Removes the first element from an array and returns it. 
+     * If the array is empty, undefined is returned and the array is not modified.
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static shift<T extends Record<string, any>> (
+        obj: T
+    ): T[keyof T] | undefined {
+        const keys = Object.keys(obj) as Array<keyof T>
+
+        if (!keys.length) return undefined
+
+        const firstKey = keys[0]
+        const value = obj[firstKey]
+
+        delete obj[firstKey]
+
+        return value
     }
 
     /**
@@ -660,6 +724,21 @@ export class Obj {
     }
 
     /**
+     * If the given value is not an associative object, wrap it in one.
+     * 
+     * @param value 
+     */
+    static wrap<N = any> (value: N | Record<string, N> | N[]): Record<string, N> {
+        value = typeof value === 'string' || typeof value === 'number' ? this.arrayWrap(value) : value
+
+        if (Array.isArray(value)) {
+            value = Object.fromEntries(value.map((e, i) => [i, e]))
+        }
+
+        return value as Record<string, N>
+    }
+
+    /**
      * undot
      *
      * Convert a dot-notated object back into nested structure.
@@ -670,7 +749,20 @@ export class Obj {
      * @param obj 
      * @returns 
      */
-    undot (obj: Record<string, any>): Record<string, any> {
+    static undot (obj: Record<string, any>): Record<string, any> {
         return undot(obj)
+    }
+
+    /**
+     * If the given value is not an array and not null, wrap it in one.
+     * 
+     * Non-array values become [value]; null/undefined becomes [].
+     * 
+     * @param value 
+     * @returns 
+     */
+    private static arrayWrap<T = any> (value: T | T[] | null | undefined): T[] {
+        if (value === null || value === undefined) return []
+        return Array.isArray(value) ? value : [value]
     }
 }

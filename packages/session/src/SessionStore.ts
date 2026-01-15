@@ -1,4 +1,4 @@
-import { DriverBuilder, DriverOption } from './Contracts/SessionContract'
+import { SessionDriverBuilder, SessionDriverOption } from '@h3ravel/contracts'
 
 /**
  * SessionStore (Driver registry)
@@ -7,12 +7,12 @@ import { DriverBuilder, DriverOption } from './Contracts/SessionContract'
  *   SessionStore.make('file', sessionId, options)
  */
 export class SessionStore {
-    private static registry: Map<string, DriverBuilder> = new Map()
+    private static registry: Map<string, SessionDriverBuilder> = new Map()
 
     /**
      * Register a driver builder under a key (e.g. 'file', 'database', 'memory').
      */
-    public static register (name: 'file' | 'memory' | 'database' | 'redis', builder: DriverBuilder) {
+    public static register (name: 'file' | 'memory' | 'database' | 'redis', builder: SessionDriverBuilder) {
         this.registry.set(name, builder)
     }
 
@@ -21,7 +21,7 @@ export class SessionStore {
      *
      * If driver not found, throws. Options is a simple key/value bag passed to the builder.
      */
-    public static make (name: 'file' | 'memory' | 'database' | 'redis', sessionId: string, options: DriverOption = {}) {
+    public static make (name: 'file' | 'memory' | 'database' | 'redis', sessionId: string, options: SessionDriverOption = {}) {
         const builder = this.registry.get(name)
         if (!builder) throw new Error(`Session driver "${name}" is not registered`)
         return builder(sessionId, options)

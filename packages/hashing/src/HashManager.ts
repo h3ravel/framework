@@ -1,12 +1,13 @@
-import { Configuration, HashAlgorithm, Options } from './Contracts/ManagerContract'
+import { HashAlgorithm, HashConfiguration, HashOptions, IHashManager } from '@h3ravel/contracts'
 
 import { Argon2idHasher } from './Drivers/Argon2idHasher'
 import { ArgonHasher } from './Drivers/ArgonHasher'
 import { BcryptHasher } from './Drivers/BcryptHasher'
 import { InvalidArgumentException } from '@h3ravel/support'
 import { Manager } from './Utils/Manager'
+import { mix } from '@h3ravel/shared'
 
-export class HashManager extends Manager {
+export class HashManager extends mix(Manager, IHashManager) {
     private drivers: { [name: string]: BcryptHasher | ArgonHasher | Argon2idHasher } = {}
 
     /**
@@ -44,7 +45,7 @@ export class HashManager extends Manager {
      * 
      * @returns
      */
-    public make (value: string, options: Options = {}) {
+    public make (value: string, options: HashOptions = {}) {
         return this.driver().make(value, options as never)
     }
 
@@ -66,7 +67,7 @@ export class HashManager extends Manager {
      * @param options
      * @returns
      */
-    public check (value: string, hashedValue?: string, options: Options = {}) {
+    public check (value: string, hashedValue?: string, options: HashOptions = {}) {
         return this.driver().check(value, hashedValue, options as never)
     }
 
@@ -77,7 +78,7 @@ export class HashManager extends Manager {
      * @param options
      * @returns
      */
-    public needsRehash (hashedValue: string, options: Options = {}) {
+    public needsRehash (hashedValue: string, options: HashOptions = {}) {
         return this.driver().needsRehash(hashedValue, options as never)
     }
 
@@ -132,6 +133,6 @@ export class HashManager extends Manager {
     }
 }
 
-export const defineConfig = (config: Configuration) => {
+export const defineConfig = (config: HashConfiguration) => {
     return config
 }

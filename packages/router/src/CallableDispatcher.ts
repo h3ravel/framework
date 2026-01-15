@@ -1,6 +1,5 @@
-import { CallableConstructor, ICallableDispatcher } from '@h3ravel/contracts'
+import { CallableConstructor, IApplication, ICallableDispatcher } from '@h3ravel/contracts'
 
-import { Application } from '@h3ravel/core'
 import { Route } from './Route'
 import { RouteDependencyResolver } from './Traits/RouteDependencyResolver'
 import { mix } from '@h3ravel/shared'
@@ -11,7 +10,7 @@ export class CallableDispatcher extends mix(ICallableDispatcher, RouteDependency
      * 
      * @param container The container instance.
      */
-    public constructor(protected container: Application) {
+    public constructor(protected container: IApplication) {
         super(container)
     }
 

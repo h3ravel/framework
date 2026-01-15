@@ -323,11 +323,14 @@ export class Middleware {
 
         const middleware: Record<string, MiddlewareList> = {
             'web': [
+                'LogRequests',
                 'SubstituteBindings',
+                'FlashDataMiddleware',
                 this.authenticatedSessions ? 'auth.session' : null,
             ].filter(e => e !== null),
 
             'api': [
+                'LogRequests',
                 'SubstituteBindings',
                 this.apiLimiter ? 'throttle:' + this.apiLimiter : null,
             ].filter(e => e !== null),

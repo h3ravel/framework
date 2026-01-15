@@ -1,4 +1,5 @@
-import { IRequest } from '@h3ravel/contracts'
+import { IHttpResponse, IRequest } from '@h3ravel/contracts'
+
 import { MessageBag } from './utilities/MessageBag'
 import { Str } from '@h3ravel/support'
 import { UnprocessableEntityHttpException } from '@h3ravel/foundation'
@@ -18,7 +19,6 @@ export class ValidationException extends UnprocessableEntityHttpException {
         this.validator = validator
         this.response = response
         this.errorBag = errorBag
-
         Object.setPrototypeOf(this, ValidationException.prototype)
     }
 

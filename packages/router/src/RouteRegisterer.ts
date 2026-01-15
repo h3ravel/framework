@@ -4,7 +4,7 @@ import { UseMagic, trait, use } from '@h3ravel/shared'
 
 import { CreatesRegularExpressionRouteConstraints } from './Traits/CreatesRegularExpressionRouteConstraints'
 import { FRoute } from '@h3ravel/support/facades'
-import { Injectable } from '@h3ravel/core'
+import { Injectable } from '@h3ravel/foundation'
 import { Router } from './Router'
 
 const Inference = trait(e => class extends e { } as {

@@ -1,5 +1,4 @@
-import { DriverOption, SessionDriver } from './Contracts/SessionContract'
-import type { IHttpContext, IRequest, ISessionManager } from '@h3ravel/contracts'
+import { IApplication, IHttpContext, IRequest, ISessionDriver, ISessionManager, SessionDriverOption } from '@h3ravel/contracts'
 import { createHash, createHmac, randomBytes } from 'crypto'
 import { getCookie, setCookie } from 'h3'
 
@@ -12,8 +11,10 @@ import { SessionStore } from './SessionStore'
  * Handles session initialization, ID generation, and encryption.
  * Each request gets a unique session namespace tied to its ID.
  */
-export class SessionManager implements ISessionManager {
-    private driver: SessionDriver
+export class SessionManager extends ISessionManager {
+    private app: IApplication
+    private ctx: IHttpContext
+    private driver: ISessionDriver
     private appKey: string
     private sessionId: string
     private request: IRequest
@@ -24,15 +25,49 @@ export class SessionManager implements ISessionManager {
      * @param driverName - registered driver key ('file' | 'database' | 'memory' | 'redis')
      * @param driverOptions - optional bag for driver-specific options
      */
-    constructor(private ctx: IHttpContext, driverName: 'file' | 'memory' | 'database' | 'redis' = 'file', driverOptions: DriverOption = {}) {
+    constructor(app?: IApplication, driverName?: 'file' | 'memory' | 'database' | 'redis', driverOptions?: SessionDriverOption)
+    constructor(app?: IHttpContext | IApplication, driverName?: 'file' | 'memory' | 'database' | 'redis', driverOptions?: SessionDriverOption)
+    constructor(app?: IHttpContext | IApplication, driverName: 'file' | 'memory' | 'database' | 'redis' = 'file', driverOptions: SessionDriverOption = {}) {
+        super()
         this.appKey = process.env.APP_KEY!
-        this.request = ctx.request
+
+        if (app instanceof IHttpContext) {
+            this.request = app.request
+            this.ctx = app
+            this.app = app.app
+        } else {
+            this.app = app!
+            this.ctx = app!.make('http.context')
+            this.request = this.ctx.request
+        }
 
         this.sessionId = this.resolveSessionId()
 
         // Then instantiate the driver through the registry so different constructors are supported
         this.driver = SessionStore.make(driverName, driverOptions.sessionId ?? this.sessionId, driverOptions)
+        // @ts-expect-error caused by dist/src import missmatch
         this.flashBag = this.driver.flashBag
+    }
+
+    /**
+     * Initialize the Session Manager
+     * 
+     * @param ctx 
+     * @returns 
+     */
+    static init (app: IApplication) {
+        return new SessionManager(
+            app,
+            config('session.driver', 'file'),
+            {
+                cwd: config('session.files'),
+                sessionDir: '/',
+                dir: '/',
+                table: config('session.table'),
+                prefix: config('database.connections.redis.options.prefix'),
+                client: config(`database.connections.${config('session.driver', 'file')}.client`),
+            }
+        )
     }
 
     /**
@@ -53,13 +88,13 @@ export class SessionManager implements ISessionManager {
      * Resolve the session ID from cookie, header, or create a new one.
      */
     private resolveSessionId (): string {
-        const cookieSession = getCookie(this.ctx.event, 'h3ravel_session')
+        const cookieSession = getCookie(this.ctx!.event, 'h3ravel_session')
 
         if (cookieSession) return cookieSession
 
         const newId = this.generateSessionId()
 
-        setCookie(this.ctx.event, 'h3ravel_session', newId, {
+        setCookie(this.ctx!.event, 'h3ravel_session', newId, {
             httpOnly: true,
             secure: true,
             sameSite: 'lax',
@@ -71,8 +106,15 @@ export class SessionManager implements ISessionManager {
     /**
      * Access the current session ID.
      */
-    public id (): string {
+    id (): string {
         return this.sessionId
+    }
+
+    /**
+     * Get the current session driver
+     */
+    getDriver (): ISessionDriver {
+        return this.driver
     }
 
     /**

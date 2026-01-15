@@ -3,11 +3,17 @@ import { CallableConstructor, IMiddleware, ConcreteConstructor, type IBinding } 
 import { ExtractClassMethods, IContainer, type UseKey, ClassConstructor, type Bindings } from '@h3ravel/contracts'
 import { MiddlewareHandler } from '@h3ravel/foundation'
 import { ContainerResolver } from './Manager/ContainerResolver'
+import { Application } from '.'
 
 export class Container extends IContainer {
     public bindings = new Map<IBinding, () => unknown>()
     public singletons = new Map<IBinding, unknown>()
     public middlewareHandler?: MiddlewareHandler
+    /**
+     * The current globally available container (if any).
+     */
+    protected static instance?: Application
+
     /**
      * All of the before resolving callbacks by class type.
      */
@@ -19,7 +25,7 @@ export class Container extends IContainer {
     /**
      * All of the registered rebound callbacks.
      */
-    protected reboundCallbacks: Record<string, ((...args: any[]) => any)[]> = {}
+    protected reboundCallbacks = new Map<IBinding | string, ((...args: any[]) => any)[]>()
     /**
      * The container's shared instances.
      */
@@ -40,6 +46,11 @@ export class Container extends IContainer {
      * The registered aliases keyed by the abstract name.
      */
     protected middlewares = new Map<string | IMiddleware, IMiddleware>()
+
+    /**
+     * The extension closures for services.
+     */
+    protected extenders = new Map<string | IBinding, CallableConstructor[]>()
 
     /**
      * Check if the target has any decorators
@@ -191,6 +202,39 @@ export class Container extends IContainer {
     }
 
     /**
+     * Read reflected param types, resolve dependencies from the container and return the result
+     * 
+     * @param instance 
+     * @param method 
+     */
+    resolveParams<X extends InstanceType<ClassConstructor>, M extends ExtractClassMethods<X>> (
+        instance: X,
+        method: M,
+    ): any[] {
+        /**
+         * Get param types for the instance method
+         */
+        const paramTypes: any[] = Reflect.getMetadata('design:paramtypes', instance as never, method as string) || []
+
+        /**
+         * Resolve and return the bound dependencies
+         */
+        return paramTypes.filter(e => !!e).map(abstract => {
+            // if (
+            //     !abstract || abstract.name === 'Function' ||
+            //     abstract.constructor.name === 'AsyncFunction' ||
+            //     abstract.constructor.name === 'Function' || typeof abstract === 'object'
+            // ) return abstract
+
+            if (typeof abstract === 'function' && abstract.toString().startsWith('function Function')) {
+                return abstract
+            }
+
+            return this.make(abstract)
+        })
+    }
+
+    /**
      * Resolve the gevein service from the container
      * 
      * @param key 
@@ -236,6 +280,15 @@ export class Container extends IContainer {
             throw new Error(
                 `No binding found for key: ${typeof abstract === 'string' ? abstract : (abstract as any)?.name}`
             )
+        }
+
+        /**
+         * If we defined any extenders for this type, we'll need to spin through them
+         * and apply them to the object being built. This allows for the extension
+         * of services, such as changing configuration or decorating the object.
+         */
+        for (const extender of this.getExtenders(abstract)) {
+            resolved = extender(resolved, this)
         }
 
         if (raiseEvents)
@@ -323,6 +376,10 @@ export class Container extends IContainer {
             dependencies = paramTypes.map((dep) => this.make(dep))
         }
 
+        if (dependencies.length === 0) {
+            dependencies = [this]
+        }
+
         return new ClassType(...dependencies)
     }
 
@@ -351,6 +408,24 @@ export class Container extends IContainer {
     }
 
     /**
+     * Get the extender callbacks for a given type.
+     *
+     * @param  abstract
+     */
+    protected getExtenders (abstract: string | IBinding) {
+        return this.extenders.get(this.getAlias(abstract)) ?? []
+    }
+
+    /**
+     * Remove all of the extender callbacks for a given type.
+     *
+     * @param  abstract
+     */
+    forgetExtenders (abstract: string | IBinding) {
+        this.extenders.delete(this.getAlias(abstract))
+    }
+
+    /**
      * Set the alias for an abstract.
      * 
      * @param token 
@@ -366,6 +441,27 @@ export class Container extends IContainer {
             this.aliases.set(key, target)
 
         return this
+    }
+
+    /**
+     * Bind a new callback to an abstract's rebind event.
+     *
+     * @param  abstract
+     * @param  callback
+     */
+    rebinding<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T]), callback: (app: this, inst: Bindings[T]) => Bindings[T] | void): void
+    rebinding<T extends UseKey> (key: T | (abstract new (...args: any[]) => Bindings[T]), callback: (app: this, inst: Bindings[T]) => Bindings[T] | void): void
+    rebinding<T extends UseKey> (
+        abstract: T,
+        callback: any
+    ) {
+        abstract = this.getAlias(abstract)
+
+        this.reboundCallbacks.set(abstract, this.reboundCallbacks.get(abstract)?.concat(callback) ?? [callback])
+
+        if (this.bound(abstract)) {
+            return this.make(abstract)
+        }
     }
 
     /**
@@ -408,6 +504,35 @@ export class Container extends IContainer {
     }
 
     /**
+     * "Extend" an abstract type in the container.
+     *
+     * @param  abstract
+     * @param  closure
+     *
+     * @throws {InvalidArgumentException}
+     */
+    extend<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T]), closure: (inst: Bindings[T], app: this) => Bindings[T]): void
+    extend<T extends UseKey> (key: T | (abstract new (...args: any[]) => Bindings[T]), closure: (inst: Bindings[T], app: this) => Bindings[T]): void
+    extend<T extends UseKey> (
+        abstract: T | (new (...args: any[]) => Bindings[T]),
+        closure: any
+    ): void {
+        abstract = this.getAlias(abstract)
+
+        if (this.instances.has(abstract)) {
+            this.instances.set(abstract, closure(this.instances.get(abstract), this))
+
+            this.rebound(abstract)
+        } else {
+            this.extenders.set(abstract, this.extenders.get(abstract)?.concat(closure) ?? [closure])
+
+            if (this.resolved(abstract)) {
+                this.rebound(abstract)
+            }
+        }
+    }
+
+    /**
      * Register an existing instance as shared in the container.
      *
      * @param  abstract
@@ -445,7 +570,8 @@ export class Container extends IContainer {
         if (ContainerResolver.isClass(callback)) {
             return this.make(callback)
         }
-        return callback()
+
+        return callback(this)
     }
 
     /**
@@ -473,7 +599,7 @@ export class Container extends IContainer {
      * @param abstract
      */
     protected getReboundCallbacks (abstract: any) {
-        return this.reboundCallbacks[abstract] ?? []
+        return this.reboundCallbacks.get(abstract) ?? []
     }
 
     /**
@@ -495,5 +621,21 @@ export class Container extends IContainer {
                 this.abstractAliases.delete(abstract)
             }
         }
+    }
+
+    /**
+     * Get the globally available instance of the container.
+     */
+    static getInstance (): Application {
+        return this.instance ??= new Application(process.cwd(), 'h3ravel')
+    }
+
+    /**
+     * Set the shared instance of the container.
+     * 
+     * @param container 
+     */
+    static setInstance (container?: Application): Application | undefined {
+        return Container.instance = container
     }
 }

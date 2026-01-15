@@ -1,21 +1,18 @@
-import { safeDot, setNested } from 'packages/support/dist'
+import { safeDot, setNested } from '@h3ravel/support'
 
 import { Encryption } from '../Encryption'
 import { FlashBag } from '../FlashBag'
-import { SessionDriver } from '../Contracts/SessionContract'
+import { ISessionDriver } from '@h3ravel/contracts'
 
 /**
  * Driver
  *
  * Base Session driver.
  */
-export abstract class Driver implements SessionDriver {
+export abstract class Driver extends ISessionDriver {
     protected encryptor = new Encryption()
     protected sessionId!: string
     public flashBag: FlashBag = new FlashBag()
-
-    constructor() {
-    }
 
     /** 
      * Invalidate session completely and regenerate empty session. 

@@ -1,9 +1,7 @@
-import { ActionInput, CallableConstructor, ClassConstructor, GenericObject, IController, IControllerDispatcher } from '@h3ravel/contracts'
-import { Application, Container } from '@h3ravel/core'
+import { ActionInput, CallableConstructor, ClassConstructor, GenericObject, IApplication, ICallableDispatcher, IController, IControllerDispatcher } from '@h3ravel/contracts'
 import { Arr, Obj, Str, isClass } from '@h3ravel/support'
 import { IRoute, MiddlewareList, ResourceMethod, ResponsableType, RouteActions, RouteMethod } from '@h3ravel/contracts'
 
-import { CallableDispatcher } from './CallableDispatcher'
 import { CompiledRoute } from './CompiledRoute'
 import { ControllerDispatcher } from './ControllerDispatcher'
 import { H3 } from 'h3'
@@ -60,7 +58,7 @@ export class Route extends IRoute {
     /**
      * The container instance used by the route.
      */
-    protected container!: Application
+    protected container!: IApplication
 
     /**
      * The fields that implicit binding should use for a given parameter.
@@ -145,7 +143,7 @@ export class Route extends IRoute {
      *
      * @param container
      */
-    setContainer (container: Application) {
+    setContainer (container: IApplication) {
         this.container = container
 
         return this
@@ -443,7 +441,11 @@ export class Route extends IRoute {
      * Run the route action and return the response.
      */
     async run (): Promise<ResponsableType> {
-        this.container ??= new Container() as never
+        if (!this.container) {
+            const { Container } = await import('@h3ravel/core')
+
+            this.container = new Container() as never
+        }
 
         try {
             if (this.isControllerAction()) {
@@ -837,7 +839,7 @@ export class Route extends IRoute {
     protected async runCallable () {
         const callable = this.action.uses
 
-        return new CallableDispatcher(this.container).dispatch(this, callable)
+        return this.container.make(ICallableDispatcher).dispatch(this, callable)
     }
 
     /**

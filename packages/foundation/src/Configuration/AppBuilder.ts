@@ -2,7 +2,7 @@ import { CKernel, CallableConstructor, IApplication, IExceptionHandler, IKernel,
 import { ConsoleKernel, ExceptionHandler, Exceptions, Kernel, Middleware } from '..'
 
 import { Route } from '@h3ravel/support/facades'
-import { Collection, isClass, RouteServiceProvider } from '@h3ravel/support'
+import { Collection, isClass, RouteServiceProvider, AssetsServiceProvider } from '@h3ravel/support'
 import { existsSync, statSync } from 'node:fs'
 import { Command } from '@h3ravel/musket'
 
@@ -65,7 +65,7 @@ export class AppBuilder {
         this.app.afterResolving(IKernel, (kernel) => {
             const middleware = new Middleware(this.app)
                 // TODO: Implement the route() method and use here
-                .redirectGuestsTo(() => 'route(\'login\')')
+                .redirectGuestsTo(() => route('login'))
 
             if (callback && typeof callback === 'function') {
                 callback(middleware)
@@ -127,7 +127,7 @@ export class AppBuilder {
         RouteServiceProvider.loadRoutesUsing(using)
 
         this.app.booting((app) => {
-            app.registerProviders([RouteServiceProvider])
+            app.registerProviders([RouteServiceProvider, AssetsServiceProvider])
         })
 
         if (typeof commands === 'string' && existsSync(commands) !== false) {

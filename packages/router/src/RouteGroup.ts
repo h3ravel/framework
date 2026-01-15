@@ -1,6 +1,6 @@
 import { Arr, Obj, Str } from '@h3ravel/support'
 
-import { RouteActions } from '@h3ravel/shared'
+import { RouteActions } from '@h3ravel/contracts'
 
 export class RouteGroup {
     /**

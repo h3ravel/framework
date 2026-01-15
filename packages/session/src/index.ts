@@ -1,6 +1,5 @@
 export * from './adapters'
 export * from './Commands/MakeSessionTableCommand'
-export * from './Contracts/SessionContract'
 export * from './drivers/DatabaseDriver'
 export * from './drivers/Driver'
 export * from './drivers/FileDriver'

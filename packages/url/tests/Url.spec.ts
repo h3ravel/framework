@@ -49,8 +49,8 @@ describe('Url', () => {
         app = await h3ravel([EventsServiceProvider, HttpServiceProvider, RouteServiceProvider, UrlServiceProvider], process.cwd())
         Object.assign(mockApp, app)
         Object.assign(globalThis, globalThat)
-        app.make('router').get('path', () => ({ success: true }), 'path')
-        app.make('router').get('path/index', [ExampleController, 'index'], 'path.index')
+        app.make('router').get('path', () => ({ success: true })).name('path')
+        app.make('router').get('path/index', [ExampleController, 'index']).name('path.index')
         app.fire()
     })
 

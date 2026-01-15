@@ -1,6 +1,6 @@
 import { Driver } from './Driver'
 import { FlashBag } from '../FlashBag'
-import { SessionDriver } from '../Contracts/SessionContract'
+import { ISessionDriver } from '@h3ravel/contracts'
 import crypto from 'crypto'
 
 /**
@@ -9,7 +9,7 @@ import crypto from 'crypto'
  * Lightweight, ephemeral session storage.
  * Intended for tests, local development, or short-lived apps.
  */
-export class MemoryDriver extends Driver implements SessionDriver {
+export class MemoryDriver extends Driver implements ISessionDriver {
     private static store: Record<string, Record<string, any>> = {}
 
     constructor(protected sessionId: string) {
@@ -25,11 +25,11 @@ export class MemoryDriver extends Driver implements SessionDriver {
      * 
      * @returns Decrypted and usable payload
      */
-    protected fetchPayload (): Record<string, any> {
+    protected fetchPayload<T extends Record<string, any>> (): T {
         const payload = { ...MemoryDriver.store[this.sessionId] }
 
         // Merge flash data with payload
-        return payload
+        return payload as T
     }
 
     /**

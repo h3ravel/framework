@@ -1,6 +1,7 @@
-import type { ConcreteConstructor, IPathName } from '../Utilities/Utilities'
+import type { ConcreteConstructor, GenericObject, IPathName } from '../Utilities/Utilities'
 import type { H3, H3Event } from 'h3'
 
+import { EntryConfig } from '@h3ravel/core'
 import { IAppBuilder } from '../Configuration/IAppBuilder'
 import { IBootstraper } from '../Foundation/IBootstraper'
 import { IContainer } from './IContainer'
@@ -11,8 +12,8 @@ import type { PathLoader } from '../Utilities/PathLoader'
 
 export abstract class IApplication extends IContainer {
     abstract paths: PathLoader
-    context?: (event: H3Event) => Promise<IHttpContext>
-    h3Event?: H3Event
+    abstract context?: (event: H3Event) => Promise<IHttpContext>
+    abstract h3Event?: H3Event
     /**
      * List of registered console commands
      */
@@ -98,11 +99,35 @@ export abstract class IApplication extends IContainer {
     abstract booted (callback: (app: this) => void): void
 
     /**
+     * Throw an HttpException with the given data.
+     *
+     * @param  code
+     * @param  message
+     * @param  headers
+     *
+     * @throws {HttpException}
+     * @throws {NotFoundHttpException}
+     */
+    abstract abort (code: number, message: string, headers: GenericObject): void
+
+    /**
+     * Register a terminating callback with the application.
+     *
+     * @param  callback
+     */
+    abstract terminating (callback: (app: this) => void): this
+
+    /**
+     * Terminate the application.
+     */
+    abstract terminate (): void
+
+    /**
      * Handle the incoming HTTP request and send the response to the browser.
      *
      * @param  request
      */
-    abstract handleRequest (event: H3Event): Promise<void>
+    abstract handleRequest (config?: EntryConfig): Promise<void>
 
     /**
      * Get the URI resolver callback.
@@ -168,6 +193,14 @@ export abstract class IApplication extends IContainer {
     abstract hasBeenBootstrapped (): boolean
 
     /**
+     * Build the http context
+     * 
+     * @param event 
+     * @param config 
+     */
+    abstract buildContext (event: H3Event, config?: EntryConfig, fresh?: boolean): Promise<IHttpContext>
+
+    /**
      * Save the curretn H3 instance for possible future use.
      *
      * @param h3App The current H3 app instance
@@ -186,6 +219,18 @@ export abstract class IApplication extends IContainer {
      * Get the HttpContext.
      */
     abstract getHttpContext (): IHttpContext | undefined
+
+    /**
+     * @param key 
+     */
+    abstract getHttpContext<K extends keyof IHttpContext> (key: K): IHttpContext[K]
+
+    /**
+     * Get the application namespace.
+     *
+     * @throws {RuntimeException}
+     */
+    abstract getNamespace (): string
 
     /**
      * Get the base path of the app

@@ -4,6 +4,14 @@
   "description": "Example H3ravel App.",
   "type": "module",
   "private": true,
+  "autoload": {
+    "namespaces": {
+      "App/": "app/",
+      "Database/Factories/": "database/factories/",
+      "Database/Seeders/": "database/seeders/"
+    },
+    "files": []
+  },
   "scripts": {
     "build": "NODE_ENV=production tsdown --config-loader unconfig -c tsdown.default.config.ts",
     "serve": "tsx watch ./src/server.ts",

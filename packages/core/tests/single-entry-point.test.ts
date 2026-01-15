@@ -1,6 +1,7 @@
-import { Application, ConfigException } from '@h3ravel/core'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
+import { Application } from '@h3ravel/core'
+import { ConfigException } from '@h3ravel/foundation'
 import { h3ravel } from '@h3ravel/core'
 
 let app: Application
@@ -33,7 +34,7 @@ describe('Single Entry Point with @h3ravel/http installed', async () => {
     })
 
     it('can load routes before server is fired', () => {
-        app.make('router').get('path', () => ({ success: true }), 'path')
+        app.make('router').get('path', () => ({ success: true })).name('path')
         expect(app.bindings.get('app.routes')?.()).toMatchObject([{ name: 'path' }])
         expect(app.bindings.get('app.routes')?.()).toMatchObject([{ path: 'path' }])
         expect(app.bindings.get('app.routes')?.()).toMatchObject([{ method: 'get' }])

@@ -5,11 +5,6 @@ export { }
 
 declare global {
     /**
-     * Create a URL from a named route
-     */
-    function route (name: string, params?: Record<string, any>): string;
-
-    /**
      * Create a URL from a controller action
      */
     function action<C extends new (...args: any) => any> (

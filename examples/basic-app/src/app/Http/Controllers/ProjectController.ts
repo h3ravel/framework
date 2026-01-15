@@ -5,8 +5,9 @@ import { Project } from 'src/app/Models/project'
 import { User } from 'App/Models/user'
 
 export class ProjectController extends Controller {
+    @Injectable()
     index (user: User) {
-        return user.toJSON()
+        return user.getRelated('projects')
     }
 
     @Injectable()
@@ -15,30 +16,30 @@ export class ProjectController extends Controller {
             name: ['required', 'string'],
         })
 
-        console.log(validate)
+        console.log(validate, user)
 
         return response
             .setStatusCode(202)
-            .json({ message: `User ${request.input('name')} created` })
+            .json({ message: `Project ${request.input('name')} created` })
     }
 
     @Injectable()
-    async show (response: Response, user: User, project: Project) {
-        console.log(project.user_id, 'response, user')
-        // console.log(response, user, project.getRelation('user'), 'response, user')
-        // return response
-        //     .setCache({ max_age: 50011, private: false })
-        //     .setStatusCode(202)
-        //     .setContent(JSON.stringify({ id: user.id, name: user.name, created_at: user.created_at }))
+    async show (user: User, project: Project) {
+        return response()
+            .setCache({ max_age: 50011, private: false })
+            .setStatusCode(202)
+            .json({ user, project })
     }
 
+    @Injectable()
     async update ({ request, response }: HttpContext, user: User, project: Project) {
         return response
             .setStatusCode(201)
-            .json({ message: `User ${request.input('name')} updated`, user, project })
+            .json({ message: `Project ${request.input('name')} updated`, user, project })
     }
 
+    @Injectable()
     destroy ({ request }: HttpContext, user: User, project: Project) {
-        return { message: `User ${request.input('id')} deleted`, user, project }
+        return { message: `Project ${request.input('id')} deleted`, user, project }
     }
 }

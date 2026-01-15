@@ -4,7 +4,7 @@ import { MiddlewareList } from '../Foundation/MiddlewareContract'
 import type { IHttpContext } from '../Http/IHttpContext'
 
 
-export type IPathName = 'views' | 'routes' | 'assets' | 'base' | 'public' | 'storage' | 'config' | 'database' | 'commands'
+export type IPathName = 'app' | 'src' | 'views' | 'routes' | 'assets' | 'base' | 'public' | 'storage' | 'config' | 'database' | 'commands'
 export type RouterEnd = 'get' | 'delete' | 'put' | 'post' | 'patch' | 'apiResource' | 'group' | 'route' | 'any';
 export type RouteMethod = 'GET' | 'HEAD' | 'PUT' | 'PATCH' | 'POST' | 'DELETE' | 'OPTIONS';
 export type RequestMethod = 'HEAD' | 'GET' | 'PUT' | 'DELETE' | 'TRACE' | 'OPTIONS' | 'PURGE' | 'POST' | 'CONNECT' | 'PATCH';

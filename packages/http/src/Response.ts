@@ -10,6 +10,14 @@ import { ResponseCodes } from '@h3ravel/foundation'
 export class Response extends HttpResponse implements IResponse {
     static codes = ResponseCodes
 
+    private initializationData = {} as {
+        app: IApplication
+        content?: string
+        event: string | H3Event
+        status: ResponseCodes
+        headers: Record<string, string | (string | null)[]>
+    }
+
     /**
      * The current Http Context
      */
@@ -27,7 +35,7 @@ export class Response extends HttpResponse implements IResponse {
     constructor(public app: IApplication, event?: H3Event | string, status: ResponseCodes = 200, headers: Record<string, (string | null)[] | string> = {}) {
         const hasHeaders = Object.entries(headers).length > 0
         const content = !(event instanceof H3Event) ? event : ''
-        event = event instanceof H3Event ? event : app.make('http.context')?.event
+        event = event instanceof H3Event ? event : app.getHttpContext('event')
 
         super(event)
 
@@ -39,7 +47,7 @@ export class Response extends HttpResponse implements IResponse {
                 this.withHeaders(headers)
         }
 
-        globalThis.response = () => this
+        this.initializationData = { app, event, status, headers, content }
     }
 
     /**
@@ -200,5 +208,17 @@ export class Response extends HttpResponse implements IResponse {
     getEvent<K extends DotNestedKeys<H3Event>> (key: K): DotNestedValue<H3Event, K>
     getEvent<K extends DotNestedKeys<H3Event>> (key?: K): any {
         return safeDot(this.event, key)
+    }
+
+    /**
+     * Reset the response class to it's defautl
+     */
+    reset () {
+        // const { status, headers, content } = this.initializationData
+        // return this.setStatusCode(200)
+        //     .setContent('')
+        //     .withHeaders({})
+        //     .expire()
+        return this
     }
 }

@@ -84,6 +84,11 @@ export abstract class IResponse extends IHttpResponse {
      */
     abstract getEvent (): H3Event;
     abstract getEvent<K extends DotNestedKeys<H3Event>> (key: K): DotNestedValue<H3Event, K>;
+
+    /**
+     * Reset the response class to it's defautl
+     */
+    abstract reset (): void
 }
 
 export abstract class IResponsable extends HTTPResponse {

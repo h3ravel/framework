@@ -2,13 +2,13 @@ import { Application, h3ravel } from '@h3ravel/core'
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import { existsSync, readFileSync } from 'node:fs'
 
-import { HttpContext } from '@h3ravel/shared'
+import { IHttpContext } from '@h3ravel/contracts'
 import { SessionManager } from '../src/SessionManager'
 import { SessionServiceProvider } from '../src/Providers/SessionServiceProvider'
 import path from 'node:path'
 import { rmdir } from 'node:fs/promises'
 
-let ctx: HttpContext
+let ctx: IHttpContext
 let app: Application
 let event: any
 const appKey = 'base64:dnZm+Ei7ExEHzhj/wO/3YKUckMQtpLjRVk1VLYiV/es='

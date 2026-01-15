@@ -162,7 +162,15 @@
     },
     {
       "name": "index.ts",
-      "root": "packages/support/src/facades",
+      "root": "packages/support/src/Facades",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/support/src/Traits",
       "exclude": [
         "**/*.test.ts",
         "**/*.d.ts"
@@ -174,6 +182,7 @@
       "exclude": [
         "**/*.test.ts",
         "**/*.d.ts",
+        "**/Traits/*.*",
         "**/Facades/*.*"
       ],
       "exports": {

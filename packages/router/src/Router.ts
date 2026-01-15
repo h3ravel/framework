@@ -1,9 +1,8 @@
 import 'reflect-metadata'
 import { Middleware, MiddlewareOptions, type H3 } from 'h3'
-import { Application } from '@h3ravel/core'
 import { Request, Response, JsonResponse } from '@h3ravel/http'
 import { Arr, Collection, isClass, MacroableClass, Str, Stringable, tap } from '@h3ravel/support'
-import { IDispatcher } from '@h3ravel/contracts'
+import { IDispatcher, IApplication } from '@h3ravel/contracts'
 import { Magic, mix } from '@h3ravel/shared'
 import { IMiddleware, IRequest, IResponse, IRouter, RouteActions, ActionInput, MiddlewareList, ResponsableType } from '@h3ravel/contracts'
 import type { EventHandler, IController, GenericObject, ResourceOptions, ResourceMethod, CallableConstructor, MiddlewareIdentifier } from '@h3ravel/contracts'
@@ -71,14 +70,14 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
     /**
      * The registered custom implicit binding callback.
      */
-    protected implicitBindingCallback?: (container: Application, route: Route, defaultFn: CallableConstructor) => any
+    protected implicitBindingCallback?: (container: IApplication, route: Route, defaultFn: CallableConstructor) => any
 
     /**
      * All of the verbs supported by the router.
      */
     static verbs: RouteMethod[] = ['GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
 
-    constructor(protected h3App: H3, private app: Application) {
+    constructor(protected h3App: H3, private app: IApplication) {
         super()
         this.events = app.has('app.events') ? app.make('app.events') : undefined
         this.routes = new RouteCollection()

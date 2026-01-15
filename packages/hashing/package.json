@@ -66,6 +66,7 @@
   "peerDependencies": {
     "@h3ravel/core": "workspace:^",
     "@h3ravel/foundation": "workspace:^",
+    "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^"
   },
   "peerDependenciesMeta": {
@@ -75,6 +76,7 @@
   },
   "dependencies": {
     "argon2": "catalog:",
+    "@h3ravel/contracts": "workspace:^",
     "@h3ravel/foundation": "workspace:^"
   }
 }

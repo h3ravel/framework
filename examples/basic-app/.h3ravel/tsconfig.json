@@ -4,12 +4,24 @@
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
-      "src/*": ["./../src/*"],
-      "App/*": ["./../src/app/*"],
-      "root/*": ["./../*"],
-      "routes/*": ["./../src/routes/*"],
-      "config/*": ["./../src/config/*"],
-      "resources/*": ["./../src/resources/*"]
+      "src/*": [
+        "./../src/*"
+      ],
+      "App/*": [
+        "./../src/app/*"
+      ],
+      "root/*": [
+        "./../*"
+      ],
+      "routes/*": [
+        "./../src/routes/*"
+      ],
+      "config/*": [
+        "./../src/config/*"
+      ],
+      "resources/*": [
+        "./../src/resources/*"
+      ]
     },
     "target": "es2022",
     "module": "es2022",
@@ -23,7 +35,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["./**/*.d.ts", "./../**/*"],
+  "include": [
+    "./**/*.d.ts",
+    "./../**/*"
+  ],
   "exclude": [
     ".",
     "./../**/console/bin",

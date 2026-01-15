@@ -1,12 +1,11 @@
 import 'reflect-metadata'
 
-import { IController, ResourceMethod } from '@h3ravel/contracts'
+import { IApplication, IController, ResourceMethod } from '@h3ravel/contracts'
 
-import { Application } from '@h3ravel/core'
 import { RuntimeException } from '@h3ravel/support'
 
 export class RouteDependencyResolver {
-    constructor(protected container: Application) { }
+    constructor(protected container: IApplication) { }
 
     /**
      * Resolve the object method's type-hinted dependencies.

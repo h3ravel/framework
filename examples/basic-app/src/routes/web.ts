@@ -4,7 +4,8 @@ import { MailController } from 'App/Http/Controllers/MailController'
 import { Route } from '@h3ravel/support/facades'
 import { UrlExampleController } from 'App/Http/Controllers/UrlExampleController'
 
-// Route.get('/', [HomeController, 'index'])
+Route.get('/', [HomeController, 'index'])
+Route.get('.well-known/{k1?}/{k2?}', (_, ee, ii) => { console.log(ee, ii) })
 Route.get('/mail', [MailController, 'send'])
 // URL examples
 Route.get('/url-examples/{id?}', [UrlExampleController, 'index']).name('url.examples')
@@ -32,7 +33,7 @@ Route.get('/form', async function () {
     return await view('test.form')
 })
 
-Route.put('/validation', async ({ request, response }: HttpContext) => {
+Route.match(['PUT', 'POST'], '/validation', async ({ request, response }: HttpContext) => {
     const data = await request.validate({
         name: ['required', 'string'],
         age: ['required', 'integer'],
@@ -45,6 +46,3 @@ Route.put('/validation', async ({ request, response }: HttpContext) => {
             data,
         })
 })
-
-
-// console.log(Route.getRoutes())//.getRoutesByMethod()['GET'])

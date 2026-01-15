@@ -19,4 +19,11 @@ export declare class PathLoader {
      * @param base - The base path to include to the path
      */
     setPath (name: IPathName, path: string, base?: string): void
+
+    /**
+     * 
+     * @param path 
+     * @param skipExt 
+     */
+    distPath (path: string, skipExt?: boolean): string
 }

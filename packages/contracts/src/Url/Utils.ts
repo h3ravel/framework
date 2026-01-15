@@ -1,1 +1,1 @@
-export type RouteParams<N = any> = Record<string, N>
+export type RouteParams<N = string | number> = Record<string, N> | N[] | N

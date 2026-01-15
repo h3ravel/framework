@@ -35,8 +35,7 @@ export class ConfigRepository {
         if (!this.loaded) {
 
             const configPath = this.app.getPath('config')
-
-            globalThis.env = this.app.make('env')
+            globalThis.env ??= this.app.make('env')
             Registerer.register(this.app as never)
 
             const files = (await readdir(configPath)).filter((e) => {

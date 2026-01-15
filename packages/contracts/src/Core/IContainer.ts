@@ -133,6 +133,15 @@ export abstract class IContainer {
     abstract alias (key: string | ClassConstructor, target: any): this
 
     /**
+     * Bind a new callback to an abstract's rebind event.
+     *
+     * @param  abstract
+     * @param  callback
+     */
+    abstract rebinding<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T]), callback: (app: this, inst: Bindings[T]) => Bindings[T] | void): void
+    abstract rebinding<T extends UseKey> (key: T | (abstract new (...args: any[]) => Bindings[T]), callback: (app: this, inst: Bindings[T]) => Bindings[T] | void): void
+
+    /**
      * Determine if the given abstract type has been bound.
      *
      * @param  string  $abstract
@@ -158,6 +167,17 @@ export abstract class IContainer {
      * @param abstract
      */
     abstract resolved (abstract: IBinding | string): boolean
+
+    /**
+     * "Extend" an abstract type in the container.
+     *
+     * @param  abstract
+     * @param  closure
+     *
+     * @throws {InvalidArgumentException}
+     */
+    abstract extend<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T]), closure: (inst: Bindings[T], app: this) => Bindings[T]): void
+    abstract extend<T extends UseKey> (key: T | (abstract new (...args: any[]) => Bindings[T]), closure: (inst: Bindings[T], app: this) => Bindings[T]): void
 
     /**
      * Register an existing instance as shared in the container.

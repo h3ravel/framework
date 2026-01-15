@@ -1,9 +1,9 @@
 import { beforeEach, describe, it } from 'vitest'
 
-import { Application } from '@h3ravel/core'
+import { IApplication } from '@h3ravel/contracts'
 import { h3ravel } from '@h3ravel/core'
 
-let app: Application
+let app: IApplication
 
 class Cont {
     index () { }
@@ -29,10 +29,10 @@ describe('Router', async () => {
     it('can load routes before server is fired', async () => {
         const router = app.make('router')
 
-        router.match(['get'], 'path/{user}/{name}', [Cont, 'index']).name('path')
-        router.match(['get'], 'path3/{user:name}/{name}', [Cont, 'show']).name('path.3').prefix('---john')
-        router.match(['put'], 'path4/{user}/{name?}', () => { }).name('path.4')
-        router.match(['post'], 'path5/{user:name}/{name}', () => { })
+        router.match(['GET'], 'path/{user}/{name}', [Cont, 'index']).name('path')
+        router.match(['GET'], 'path3/{user:name}/{name}', [Cont, 'show']).name('path.3').prefix('---john')
+        router.match(['PUT'], 'path4/{user}/{name?}', () => { }).name('path.4')
+        router.match(['POST'], 'path5/{user:name}/{name}', () => { })
 
         router.getRoutes().refreshActionLookups()
         router.getRoutes().refreshNameLookups()

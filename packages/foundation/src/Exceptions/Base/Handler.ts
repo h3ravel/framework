@@ -1,5 +1,3 @@
-/// <reference path="../../../../http/src/app.globals.d.ts" />
-
 import type { ExceptionConditionCallback, ExceptionConstructor, IHttpContext, IRequest, IResponse, RateLimiterAdapter, LimitSpec } from '@h3ravel/contracts'
 import { IExceptionHandler, type RenderExceptionCallback, type ReportExceptionCallback, type ThrottleExceptionCallback } from '@h3ravel/contracts'
 

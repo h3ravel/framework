@@ -2,12 +2,12 @@ import { Application, h3ravel } from '@h3ravel/core'
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
 
 import { Encryption } from '../src/Encryption'
-import { HttpContext } from '@h3ravel/shared'
+import { IHttpContext } from '@h3ravel/contracts'
 import { SessionManager } from '../src/SessionManager'
 import { SessionServiceProvider } from '../src/Providers/SessionServiceProvider'
 import path from 'node:path'
 
-let ctx: HttpContext
+let ctx: IHttpContext
 let app: Application
 let event: any
 const appKey = 'base64:dnZm+Ei7ExEHzhj/wO/3YKUckMQtpLjRVk1VLYiV/es='

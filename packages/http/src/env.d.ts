@@ -1,0 +1,1 @@
+/// <reference path="../../foundation/src/app.globals.d.ts" /> 

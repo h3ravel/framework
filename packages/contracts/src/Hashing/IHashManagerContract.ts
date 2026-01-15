@@ -1,6 +1,6 @@
 export type HashAlgorithm = 'bcrypt' | 'argon' | 'argon2id' //| 'argon2i' | 'argon2' | 'unknown'
 
-export interface Configuration {
+export interface HashConfiguration {
     [key: string]: any;
     /**
      * Default Hash Driver
@@ -39,7 +39,7 @@ export interface Configuration {
     },
 }
 
-export type Options = Partial<Configuration['bcrypt'] & Configuration['argon']>
+export type HashOptions = Partial<HashConfiguration['bcrypt'] & HashConfiguration['argon']>
 
 export interface BcryptOptions {
     cost: number
@@ -51,11 +51,11 @@ export interface Argon2Options {
     threads: number
 }
 
-export interface UnknownOptions {
+export interface UnknownHashOptions {
     [key: string]: any
 }
 
-export interface Info {
+export interface HashInfo {
     algo: number;
 
     algoName: HashAlgorithm;

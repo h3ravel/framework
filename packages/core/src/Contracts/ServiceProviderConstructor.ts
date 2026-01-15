@@ -1,4 +1,4 @@
-/// <reference path="../app.globals.d.ts" />
+/// <reference path="../../../foundation/src/app.globals.d.ts" />
 
 import type { Application, ServiceProvider } from '..'
 

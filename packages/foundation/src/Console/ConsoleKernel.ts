@@ -10,6 +10,7 @@ import { Injectable } from '..'
 import { KeyGenerateCommand } from './Commands/KeyGenerateCommand'
 import { MakeCommand } from './Commands/MakeCommand'
 import { PostinstallCommand } from './Commands/PostinstallCommand'
+import { RegisterHelpers } from '../Bootstrapers/RegisterHelpers'
 import { Terminating } from '../Core/Events/Terminating'
 import { altLogo } from './logo'
 import { createRequire } from 'module'
@@ -27,6 +28,7 @@ export class ConsoleKernel extends CKernel {
      * The bootstrap classes for the application.
      */
     #bootstrappers: ConcreteConstructor<IBootstraper>[] = [
+        RegisterHelpers,
         RegisterFacades,
         BootProviders
     ]

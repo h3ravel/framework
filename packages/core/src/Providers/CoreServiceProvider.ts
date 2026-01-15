@@ -26,10 +26,5 @@ export class CoreServiceProvider extends ServiceProvider {
     }
 
     boot (): void | Promise<void> {
-        try {
-            Object.assign(globalThis, {
-                asset: this.app.make('asset'),
-            })
-        } catch {/** */ }
     }
 }

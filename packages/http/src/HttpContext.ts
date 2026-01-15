@@ -1,12 +1,14 @@
 import { IApplication, IHttpContext, IRequest, IResponse } from '@h3ravel/contracts'
 
+import { FlashDataMiddleware } from './Middleware/FlashDataMiddleware'
 import type { H3Event } from 'h3'
+import { LogRequests } from './Middleware/LogRequests'
 
 /**
  * Represents the HTTP context for a single request lifecycle.
  * Encapsulates the application instance, request, and response objects.
  */
-export class HttpContext implements IHttpContext {
+export class HttpContext extends IHttpContext {
     private static contexts = new WeakMap<any, HttpContext>()
     public event!: H3Event
 
@@ -14,7 +16,11 @@ export class HttpContext implements IHttpContext {
         public app: IApplication,
         public request: IRequest,
         public response: IResponse
-    ) { }
+    ) {
+        super()
+        this.app.bindMiddleware('LogRequests', LogRequests)
+        this.app.bindMiddleware('FlashDataMiddleware', FlashDataMiddleware)
+    }
 
     /**
      * Factory method to create a new HttpContext instance from a context object.

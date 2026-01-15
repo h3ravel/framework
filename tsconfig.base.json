@@ -17,6 +17,7 @@
       "@h3ravel/shared": ["packages/shared/src/index.ts"],
       "@h3ravel/support": ["packages/support/src/index.ts"],
       "@h3ravel/support/facades": ["packages/support/src/Facades/index.ts"],
+      "@h3ravel/support/traits": ["packages/support/src/Traits/index.ts"],
       "@h3ravel/url": ["packages/url/src/index.ts"],
       "@h3ravel/view": ["packages/view/src/index.ts"],
       "@h3ravel/session": ["packages/session/src/index.ts"],

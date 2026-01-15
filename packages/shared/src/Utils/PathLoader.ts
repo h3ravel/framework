@@ -2,7 +2,9 @@ import { IPathName } from '@h3ravel/contracts'
 import nodepath from 'path'
 
 export class PathLoader {
-    private paths = {
+    private paths: Record<IPathName, string> = {
+        app: '/src/app',
+        src: '/src/',
         base: '',
         views: '/src/resources/views',
         assets: '/public/assets',
@@ -11,7 +13,7 @@ export class PathLoader {
         public: '/public',
         storage: '/storage',
         database: '/src/database',
-        commands: '/src/App/Console/Commands/'
+        commands: '/src/app/Console/Commands'
     }
 
     /**
@@ -35,7 +37,7 @@ export class PathLoader {
         if (name === 'public') {
             path = path.replace('/public', nodepath.join('/', process.env.DIST_DIR ?? '.h3ravel/serve'))
         } else {
-            path = path.replace('/src/', `/${process.env.DIST_DIR ?? 'src'}/`.replace(/([^:]\/)\/+/g, '$1'))
+            path = path.replace('/src/', `/${process.env.DIST_DIR ?? '.h3ravel/serve'}/`)
         }
 
         return nodepath.normalize(path)

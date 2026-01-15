@@ -3,10 +3,11 @@ import 'reflect-metadata'
 import { FileSystem, Logger, PathLoader } from '@h3ravel/shared'
 import { H3, serve, type H3Event } from 'h3'
 
-import { CKernel, ConcreteConstructor, IBootstraper, IKernel, IUrl, type IApplication, type IHttpContext, type IPathName, type IServiceProvider } from '@h3ravel/contracts'
-import { InvalidArgumentException, Str } from '@h3ravel/support'
+import { IResponse, IUrl, type IApplication, type IHttpContext, type IPathName, type IServiceProvider } from '@h3ravel/contracts'
+import { CKernel, ConcreteConstructor, GenericObject, IBootstraper, IKernel, IResponsable } from '@h3ravel/contracts'
+import { data_get, InvalidArgumentException, RuntimeException, Str } from '@h3ravel/support'
 
-import { AppBuilder, ConfigException } from '@h3ravel/foundation'
+import { AppBuilder, ConfigException, HttpException, NotFoundHttpException, ResponseCodes } from '@h3ravel/foundation'
 import { Container } from './Container'
 import { ContainerResolver } from './Manager/ContainerResolver'
 import { ProviderRegistry } from './ProviderRegistry'
@@ -18,6 +19,8 @@ import path from 'node:path'
 import { readFile } from 'node:fs/promises'
 import semver from 'semver'
 import { CoreServiceProvider } from './Providers/CoreServiceProvider'
+import { EntryConfig } from './Contracts/H3ravelContract'
+import { createRequire } from 'node:module'
 
 export class Application extends Container implements IApplication {
     /**
@@ -30,6 +33,7 @@ export class Application extends Container implements IApplication {
     private tries: number = 0
     private basePath: string
     private versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
+    private namespace?: string
     private static versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
 
     private h3App?: H3
@@ -57,6 +61,11 @@ export class Application extends Container implements IApplication {
      * The array of booting callbacks.
      */
     protected bootingCallbacks: Array<(app: this) => void> = []
+
+    /**
+     * The array of terminating callbacks.
+     */
+    protected terminatingCallbacks: Array<(app: this) => void> = []
 
     /**
      * Indicates if the application has been bootstrapped before.
@@ -88,6 +97,7 @@ export class Application extends Container implements IApplication {
      * Register core bindings into the container
      */
     protected registerBaseBindings () {
+        Application.setInstance(this)
         this.bind(Application, () => this)
         this.bind('path.base', () => this.basePath)
         this.bind('load.paths', () => this.paths)
@@ -348,6 +358,48 @@ export class Application extends Container implements IApplication {
     }
 
     /**
+     * Throw an HttpException with the given data.
+     *
+     * @param  code
+     * @param  message
+     * @param  headers
+     *
+     * @throws {HttpException}
+     * @throws {NotFoundHttpException}
+     */
+    abort (code: ResponseCodes, message = '', headers: GenericObject = {}): void {
+        if (code == 404) {
+            throw new NotFoundHttpException(message, undefined, 0, headers)
+        }
+
+        throw new HttpException(code, message, undefined, headers)
+    }
+
+    /**
+     * Register a terminating callback with the application.
+     *
+     * @param  callback
+     */
+    terminating (callback: (app: this) => void): this {
+        this.terminatingCallbacks.push(callback)
+
+        return this
+    }
+
+    /**
+     * Terminate the application.
+     */
+    terminate (): void {
+        let index = 0
+
+        while (index < this.terminatingCallbacks.length) {
+            this.call(this.terminatingCallbacks[index])
+
+            index++
+        }
+    }
+
+    /**
      * Call the booting callbacks for the application.
      *
      * @param  callbacks
@@ -365,36 +417,66 @@ export class Application extends Container implements IApplication {
     /**
      * Handle the incoming HTTP request and send the response to the browser.
      *
-     * @param  request
+     * @param  config  Configuration option to pass to the initializer
      */
-    async handleRequest (): Promise<void> {
+    async handleRequest (config?: EntryConfig): Promise<void> {
         this.h3App?.all('/**', async (event) => {
+            // Define app context factory
+            this.context = (event) => this.buildContext(event, config)
+
+            this.h3Event = event
+
             const context = await this.context!(event)
 
             const kernel = this.make(IKernel)
 
-            if (!this.bound('http.context'))
-                this.bind('http.context', () => context)
-
-            if (!this.bound('http.request'))
-                this.bind('http.request', () => context.request)
-
-            if (!this.bound('http.response'))
-                this.bind('http.response', () => context.response)
+            this.bind('http.context', () => context)
+            this.bind('http.request', () => context.request)
+            this.bind('http.response', () => context.response)
 
             const response = await kernel.handle(context.request)
 
-            if (response)
-                this.bind('http.response', () => response)
+            if (response) this.bind('http.response', () => response)
 
             kernel.terminate(context.request, response!)
 
+            let finalResponse: IResponse | IResponsable | undefined
+
             if (response && ['Response', 'JsonResponse'].includes(response.constructor.name)) {
-                return response.prepare(context.request).send()
+                finalResponse = response.prepare(context.request).send()
             } else {
-                return response
+                finalResponse = response
             }
+
+            return finalResponse
         })
+    }
+
+    /**
+     * Build the http context
+     * 
+     * @param event 
+     * @param config 
+     * @returns 
+     */
+    async buildContext (event: H3Event, config?: EntryConfig, fresh = false): Promise<IHttpContext> {
+        const { HttpContext, Request, Response } = await import('@h3ravel/http')
+
+        event = config?.h3Event ?? event
+
+        // If we’ve already attached the context to this event, reuse it
+        if (!fresh && (event as any)._h3ravelContext)
+            return (event as any)._h3ravelContext
+
+        Request.enableHttpMethodParameterOverride()
+        const ctx = HttpContext.init({
+            app: this,
+            request: await Request.create(event, this),
+            response: new Response(this, event),
+        }, event);
+
+        (event as any)._h3ravelContext = ctx
+        return ctx
     }
 
     /**
@@ -582,8 +664,45 @@ export class Application extends Container implements IApplication {
     /**
      * Get the HttpContext.
      */
-    getHttpContext (): IHttpContext | undefined {
-        return this.httpContext
+    getHttpContext (): IHttpContext | undefined
+    /**
+     * @param key 
+     */
+    getHttpContext<K extends keyof IHttpContext> (key: K): IHttpContext[K]
+    getHttpContext (key?: keyof IHttpContext): any {
+        return key ? this.httpContext?.[key] : this.httpContext
+    }
+
+    /**
+     * Get the application namespace.
+     *
+     * @throws {RuntimeException}
+     */
+    getNamespace (): string {
+        if (this.namespace != null) {
+            return this.namespace
+        }
+
+        const require = createRequire(import.meta.url)
+
+        const pkg = require(path.join(process.cwd(), 'package.json'))
+        for (const [namespace, pathChoice] of Object.entries(data_get(pkg, 'autoload.namespaces'))) {
+
+            if (this.getPath('app', '/') === this.getPath('src', pathChoice as never)) {
+                return this.namespace = namespace
+            }
+        }
+
+        throw new RuntimeException('Unable to detect application namespace.')
+    }
+
+    /**
+     * Get the path of the app dir
+     * 
+     * @returns 
+     */
+    path (): string {
+        return this.getPath('app')
     }
 
     /**

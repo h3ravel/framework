@@ -6,6 +6,7 @@ export default defineConfig({
     clean: true,
     entry: {
         index: 'src/index.ts',
+        traits: 'src/Traits/index.ts',
         facades: 'src/Facades/index.ts',
     },
 })
