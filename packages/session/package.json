@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/session",
-  "version": "0.1.0-alpha.7",
+  "version": "0.1.0-alpha.8",
   "description": "Provides a unified session management layer for h3ravel, with secure encryption, consistent API design, and optional adapters (memory, file, redis, db).",
   "h3ravel": {
     "providers": [
@@ -58,12 +58,12 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/database": "workspace:^11.5.0-alpha.7",
-    "@h3ravel/foundation": "workspace:^0.1.0-alpha.7",
-    "@h3ravel/shared": "workspace:^0.29.0-alpha.7"
+    "@h3ravel/database": "workspace:^11.5.0-alpha.8",
+    "@h3ravel/foundation": "workspace:^0.1.0-alpha.8",
+    "@h3ravel/shared": "workspace:^0.29.0-alpha.8"
   },
   "devDependencies": {
-    "@h3ravel/contracts": "workspace:^0.29.0-alpha.7",
+    "@h3ravel/contracts": "workspace:^0.29.0-alpha.8",
     "typescript": "^5.4.0"
   }
 }

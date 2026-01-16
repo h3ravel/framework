@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/config",
-  "version": "1.5.0-alpha.7",
+  "version": "1.5.0-alpha.8",
   "description": "Environment/config loading and management system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -56,14 +56,14 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
-    "@h3ravel/shared": "workspace:^0.29.0-alpha.7",
-    "@h3ravel/support": "workspace:^0.17.0-alpha.7",
+    "@h3ravel/shared": "workspace:^0.29.0-alpha.8",
+    "@h3ravel/support": "workspace:^0.17.0-alpha.8",
     "@h3ravel/musket": "catalog:prod"
   },
   "devDependencies": {
     "tsx": "catalog:",
-    "@h3ravel/core": "workspace:^1.22.0-alpha.7",
-    "@h3ravel/contracts": "workspace:^0.29.0-alpha.7",
+    "@h3ravel/core": "workspace:^1.22.0-alpha.8",
+    "@h3ravel/contracts": "workspace:^0.29.0-alpha.8",
     "typescript": "^5.9.2"
   }
 }

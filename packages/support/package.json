@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/support",
-  "version": "0.17.0-alpha.7",
+  "version": "0.17.0-alpha.8",
   "description": "Shared helpers, facades and utilities for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -52,13 +52,13 @@
     "version-patch": "pnpm version patch"
   },
   "devDependencies": {
-    "@h3ravel/shared": "workspace:^0.29.0-alpha.7",
+    "@h3ravel/shared": "workspace:^0.29.0-alpha.8",
     "@types/luxon": "catalog:",
     "typescript": "^5.4.0"
   },
   "dependencies": {
     "@h3ravel/collect.js": "catalog:prod",
-    "@h3ravel/contracts": "workspace:^0.29.0-alpha.7",
+    "@h3ravel/contracts": "workspace:^0.29.0-alpha.8",
     "dayjs": "catalog:",
     "luxon": "catalog:"
   }
