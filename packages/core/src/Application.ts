@@ -619,8 +619,6 @@ export class Application extends Container implements IApplication {
      * @param bootstrappers
      */
     async bootstrapWith (bootstrappers: ConcreteConstructor<IBootstraper>[]): Promise<void> {
-        this.bootstrapped = true
-
         for (const bootstrapper of bootstrappers) {
             if (this.has('app.events'))
                 this.make('app.events').dispatch('bootstrapping: ' + bootstrapper.name, [this])
@@ -630,6 +628,8 @@ export class Application extends Container implements IApplication {
             if (this.has('app.events'))
                 this.make('app.events').dispatch('bootstrapped: ' + bootstrapper.name, [this])
         }
+
+        this.bootstrapped = true
     }
 
     /**

@@ -109,7 +109,7 @@ export abstract class IUrlGenerator {
 
     abstract hasValidSignature (request: IRequest): boolean;
 
-    abstract route (name: string, parameters?: GenericObject, absolute?: boolean): string;
+    abstract route (name: string, parameters?: RouteParams, absolute?: boolean): string;
 
     /**
      * Get the URL for a given route instance.
@@ -118,7 +118,7 @@ export abstract class IUrlGenerator {
      * @param  parameters
      * @param  absolute
      */
-    abstract toRoute (route: IRoute, parameters?: GenericObject, absolute?: boolean): string;
+    abstract toRoute (route: IRoute, parameters?: RouteParams, absolute?: boolean): string;
 
     /**
      * Combine root and path into a final URL.

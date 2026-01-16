@@ -59,7 +59,7 @@ export class PathLoader {
     }
 
     distPath (path: string, skipExt = false) {
-        path = path.replace('/src/', `/${process.env.DIST_DIR ?? 'src'}/`.replace(/([^:]\/)\/+/g, '$1'))
+        path = path.replace('/src/', `/${process.env.DIST_DIR ?? '.h3ravel/serve'}/`.replace(/([^:]\/)\/+/g, '$1'))
 
         if (!skipExt) {
             path = path.replace(/\.(ts|tsx|mts|cts)$/, '.js')

@@ -149,8 +149,8 @@ catalogs:
       specifier: ^5.3.3
       version: 5.3.3
     '@h3ravel/musket':
-      specifier: ^0.6.9
-      version: 0.6.9
+      specifier: ^0.6.10
+      version: 0.6.10
     h3:
       specifier: 2.0.1-rc.5
       version: 2.0.1-rc.5
@@ -308,7 +308,7 @@ importers:
         version: link:../../packages/mail
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@packages+support)(@types/node@24.9.2)
+        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.9.2)
       '@h3ravel/queue':
         specifier: workspace:^
         version: link:../../packages/queue
@@ -382,7 +382,7 @@ importers:
     dependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -413,7 +413,7 @@ importers:
         version: link:../foundation
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@0.15.6)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@0.15.6)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -463,7 +463,7 @@ importers:
     devDependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@0.16.1)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@0.16.1)(@types/node@24.10.0)
       edge.js:
         specifier: 'catalog:'
         version: 6.3.0
@@ -539,7 +539,7 @@ importers:
         version: link:../filesystem
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -571,7 +571,7 @@ importers:
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -587,7 +587,7 @@ importers:
     dependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -646,7 +646,7 @@ importers:
         version: link:../foundation
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/session':
         specifier: workspace:^
         version: link:../session
@@ -721,7 +721,7 @@ importers:
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:^
         version: link:../shared
@@ -873,7 +873,7 @@ importers:
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.9(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:*
         version: link:../shared
@@ -1644,8 +1644,8 @@ packages:
   '@h3ravel/contracts@0.28.1':
     resolution: {integrity: sha512-Ub2+5rvabNjMvcxDkVWfBBucXLpVDqCX8/rl3QQwbDpcNilZfcnzw1aHfSuk5XpNUBw4zmxYJGlQkuNS3St+TQ==}
 
-  '@h3ravel/musket@0.6.9':
-    resolution: {integrity: sha512-eD4BkSlLuI8EWBAPYIIcGsNxoqZQOPh0pE9b+9ldgfZd75BdDeTUFW80JErPGziALjSwnr0KBIXjcL8x78zRcw==}
+  '@h3ravel/musket@0.6.10':
+    resolution: {integrity: sha512-+An+HX3fM853f8ZCVE2CBwJ0oM+2jH/xUimx0EW7l05fNo8F9ltxrrl5997DLtCzn+GWsf6em++iHxDHkOiQDA==}
     engines: {node: ^20.19.0 || >=22.12.0}
     peerDependencies:
       '@h3ravel/support': ^0.16.1
@@ -7127,7 +7127,7 @@ snapshots:
     transitivePeerDependencies:
       - crossws
 
-  '@h3ravel/musket@0.6.9(@h3ravel/support@0.15.6)(@types/node@24.10.0)':
+  '@h3ravel/musket@0.6.10(@h3ravel/support@0.15.6)(@types/node@24.10.0)':
     dependencies:
       '@h3ravel/shared': 0.28.4(@types/node@24.10.0)
       '@h3ravel/support': 0.15.6
@@ -7144,7 +7144,7 @@ snapshots:
       - '@types/node'
       - crossws
 
-  '@h3ravel/musket@0.6.9(@h3ravel/support@0.16.1)(@types/node@24.10.0)':
+  '@h3ravel/musket@0.6.10(@h3ravel/support@0.16.1)(@types/node@24.10.0)':
     dependencies:
       '@h3ravel/shared': 0.28.4(@types/node@24.10.0)
       '@h3ravel/support': 0.16.1
@@ -7161,7 +7161,7 @@ snapshots:
       - '@types/node'
       - crossws
 
-  '@h3ravel/musket@0.6.9(@h3ravel/support@packages+support)(@types/node@24.10.0)':
+  '@h3ravel/musket@0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)':
     dependencies:
       '@h3ravel/shared': 0.28.4(@types/node@24.10.0)
       '@h3ravel/support': link:packages/support
@@ -7178,7 +7178,7 @@ snapshots:
       - '@types/node'
       - crossws
 
-  '@h3ravel/musket@0.6.9(@h3ravel/support@packages+support)(@types/node@24.9.2)':
+  '@h3ravel/musket@0.6.10(@h3ravel/support@packages+support)(@types/node@24.9.2)':
     dependencies:
       '@h3ravel/shared': 0.28.4(@types/node@24.9.2)
       '@h3ravel/support': link:packages/support

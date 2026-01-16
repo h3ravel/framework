@@ -1,5 +1,3 @@
-/// <reference path="../../../foundation/src/app.globals.d.ts" />
-
 import type { Application, ServiceProvider } from '..'
 
 import { IServiceProvider } from '@h3ravel/contracts'

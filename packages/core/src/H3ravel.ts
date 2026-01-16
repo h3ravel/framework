@@ -3,6 +3,7 @@ import { Application, OServiceProvider } from '.'
 import { EntryConfig } from './Contracts/H3ravelContract'
 import { Facades } from '@h3ravel/support/facades'
 import { H3 } from 'h3'
+import { Helpers } from '@h3ravel/foundation'
 import { IApplication } from '@h3ravel/contracts'
 
 /**
@@ -49,9 +50,8 @@ export const h3ravel = async (
         app.setH3App(h3App)
 
         app.singleton(IApplication, () => app)
-        if (!Facades.getApplication()) {
-            Facades.setApplication(app)
-        }
+        if (!Facades.getApplication()) Facades.setApplication(app)
+        if (!Helpers.isLoaded()) Helpers.load(app)
 
         await app.handleRequest(config)
     } catch {

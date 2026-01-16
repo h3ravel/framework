@@ -262,7 +262,7 @@ export class UrlGenerator extends IUrlGenerator {
      * @param absolute 
      * @returns 
      */
-    route (name: string, parameters: GenericObject = {}, absolute = true): string {
+    route (name: string, parameters: RouteParams = {}, absolute = true): string {
         const route = this.routes.getByName(name)
 
         if (route != null) {
@@ -284,7 +284,7 @@ export class UrlGenerator extends IUrlGenerator {
      * @param  parameters
      * @param  absolute
      */
-    toRoute (route: IRoute, parameters: GenericObject = {}, absolute: boolean = true) {
+    toRoute (route: IRoute, parameters: RouteParams = {}, absolute: boolean = true) {
         return this.routeUrl().to(
             route,
             parameters,
@@ -510,6 +510,8 @@ export class UrlGenerator extends IUrlGenerator {
      * Get the previous URL from the session if possible.
      */
     protected getPreviousUrlFromSession () {
-        return this.getSession()?.previousUrl()
+        // TODO: Implement session features to get previous URL
+        // return this.getSession()?.previousUrl()
+        return ''
     }
 }

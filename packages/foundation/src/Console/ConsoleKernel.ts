@@ -10,7 +10,6 @@ import { Injectable } from '..'
 import { KeyGenerateCommand } from './Commands/KeyGenerateCommand'
 import { MakeCommand } from './Commands/MakeCommand'
 import { PostinstallCommand } from './Commands/PostinstallCommand'
-import { RegisterHelpers } from '../Bootstrapers/RegisterHelpers'
 import { Terminating } from '../Core/Events/Terminating'
 import { altLogo } from './logo'
 import { createRequire } from 'module'
@@ -28,7 +27,6 @@ export class ConsoleKernel extends CKernel {
      * The bootstrap classes for the application.
      */
     #bootstrappers: ConcreteConstructor<IBootstraper>[] = [
-        RegisterHelpers,
         RegisterFacades,
         BootProviders
     ]
@@ -111,10 +109,9 @@ export class ConsoleKernel extends CKernel {
      */
     async handle () {
         this.commandStartedAt = DateTime.now()
+        await this.bootstrap()
 
         try {
-            await this.bootstrap()
-
             const status = await this.getConsole().run(true);
 
             ['SIGINT', 'SIGTERM', 'SIGTSTP'].forEach(sig => process.on(sig, () => {
@@ -251,6 +248,10 @@ export class ConsoleKernel extends CKernel {
                     hideMusketInfo: true,
                     // discoveryPaths is commented out so we can rely on the console kernel to provide it
                     // discoveryPaths: [app_path('Console/Commands/*.js').replace('/src/', this.DIST_DIR)],
+                    exceptionHandler: (e) => {
+                        this.reportException(e)
+                        this.renderException(e)
+                    }
                 })
                 .setPackages([
                     { name: '@h3ravel/core', alias: 'H3ravel Framework' },

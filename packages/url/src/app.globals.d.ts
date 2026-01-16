@@ -1,5 +1,4 @@
 import { ExtractClassMethods } from '@h3ravel/shared'
-import { RequestAwareHelpers } from '.'
 
 export { }
 
@@ -11,10 +10,4 @@ declare global {
         controller: string | [C, methodName: ExtractClassMethods<InstanceType<C>>],
         params?: Record<string, any>
     ): string;
-
-    /**
-     * Get request-aware URL helpers
-     */
-    function url (): RequestAwareHelpers;
-    function url (path: string): string;
 }

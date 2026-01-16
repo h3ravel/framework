@@ -7,7 +7,6 @@ import { Facades } from '@h3ravel/support/facades'
 import { Injectable } from '..'
 import { InteractsWithTime } from '@h3ravel/support/traits'
 import { RegisterFacades } from '../Bootstrapers/RegisterFacades'
-import { RegisterHelpers } from '../Bootstrapers/RegisterHelpers'
 import { RequestHandled } from './Events/RequestHandled'
 import { Terminating } from '../Core/Events/Terminating'
 
@@ -17,7 +16,6 @@ export class Kernel extends mix(IKernel, use(InteractsWithTime)) {
      * The bootstrap classes for the application.
      */
     #bootstrappers: ConcreteConstructor<IBootstraper>[] = [
-        RegisterHelpers,
         RegisterFacades
     ]
 

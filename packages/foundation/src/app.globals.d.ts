@@ -42,19 +42,38 @@ declare global {
 
     /**
      * Global env variable
-     * 
-     * @param path 
      */
     function env (): NodeJS.ProcessEnv;
-    function env<T extends string> (key: T, def?: any): any;
+    /**
+     * Global env variable
+     * 
+     * @param key 
+     * @param defaultValue 
+     */
+    function env<T extends string> (key: T, defaultValue?: any): any;
 
     /**
-     * Load config option
+     * Load config options
      */
     function config<X extends Record<string, any>> (): X;
-    function config<X extends Record<string, any>, T extends Extract<keyof X, string>> (key: T, def?: any): X[T];
+    /**
+     * Load config option 
+     * 
+     * @param key 
+     * @param defaultValue 
+     */
+    function config<X extends Record<string, any>, T extends Extract<keyof X, string>> (key: T, defaultValue?: any): X[T];
+    /**
+     * Load config option  
+     * 
+     * @param key 
+     */
     function config<T extends Record<string, any>> (key: T): void;
 
+    /**
+     * Generate a URL instance.
+     */
+    function url (): IUrlGenerator;
     /**
      * Generate a URL for the current application instance.
      * 
@@ -62,7 +81,7 @@ declare global {
      * @param parameters 
      * @param secure 
      */
-    function url (path?: string, parameters: (string | number)[] = [], secure?: boolean): IUrlGenerator | string
+    function url (path?: string, parameters: (string | number)[] = [], secure?: boolean): string;
 
     /**
      * Get the URL to a named route.
@@ -86,9 +105,9 @@ declare global {
      * Get static asset
      * 
      * @param asset Name of the asset to serve
-     * @param def Default asset to serve if asset does not exist 
+     * @param defaultValue Default asset to serve if asset does not exist 
      */
-    function asset (asset: string, def: string): string
+    function asset (asset: string, defaultValue?: string): string
 
     /**
      * Get an instance of the Request class

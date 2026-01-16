@@ -86,20 +86,8 @@ export class Url {
             throw new Error('Application instance required for route generation')
         }
 
-        // Use (app as any).make to avoid TS error if make is not typed on Application
-        const router = app.make('router')
-        if (!router) {
-            throw new Error('Router not available or does not support route generation')
-        }
+        const routeUrl = app.make('url').route(name, params)
 
-        if (typeof router.getRoutes !== 'function') {
-            throw new Error('Router does not support route generation')
-        }
-
-        const routeUrl = router.getRoutes().getByName(name)?.uri()
-        // TODO: Provide route params
-        // const routeUrl = router.route(name, params)
-        void params
         if (!routeUrl) {
             throw new Error(`Route "${name}" not found`)
         }
@@ -115,8 +103,7 @@ export class Url {
         params: TParams = {} as TParams,
         app?: IApplication
     ): Url {
-        const url = Url.route<TName, TParams>(name, params, app)
-        return url.withSignature(app)
+        return Url.route<TName, TParams>(name, params, app).withSignature(app)
     }
 
     /**
@@ -128,8 +115,7 @@ export class Url {
         expiration: number,
         app?: IApplication
     ): Url {
-        const url = Url.route<TName, TParams>(name, params, app)
-        return url.withSignature(app, expiration)
+        return Url.route<TName, TParams>(name, params, app).withSignature(app, expiration)
     }
 
     /**

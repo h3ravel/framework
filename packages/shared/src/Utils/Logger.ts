@@ -78,11 +78,11 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static split (name: string, value: string, status?: 'success' | 'info' | 'error', exit = false, preserveCol = false) {
+    static split (name: string, value: string, status?: 'success' | 'info' | 'error', exit = false, preserveCol = false, spacer = '.') {
         status ??= 'info'
         const color = { success: chalk.bgGreen, info: chalk.bgBlue, error: chalk.bgRed }
 
-        const [_name, dots, val] = this.twoColumnDetail(name, value, false)
+        const [_name, dots, val] = this.twoColumnDetail(name, value, false, spacer)
 
         console.log(this.textFormat(_name, color[status], preserveCol), dots, val)
 

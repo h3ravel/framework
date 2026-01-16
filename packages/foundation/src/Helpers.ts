@@ -1,11 +1,16 @@
-import { IApplication, IUrlGenerator } from '@h3ravel/contracts'
+import { IApplication, IUrlGenerator, RouteParams } from '@h3ravel/contracts'
 
 export class Helpers {
-    static app: IApplication
+    private static app: IApplication
+    private static helpersLoaded: boolean
 
     static load (app: IApplication) {
         this.app = app
         this.loadHelpers()
+    }
+
+    static isLoaded () {
+        return this.helpersLoaded
     }
 
     /**
@@ -104,7 +109,7 @@ export class Helpers {
      * @param  absolute
      */
     private static route () {
-        return (name: string, parameters?: (string | number)[], absolute = true) => {
+        return (name: string, parameters?: RouteParams, absolute = true) => {
             return this.app.make('url').route(name, parameters, absolute)
         }
     }
@@ -124,7 +129,7 @@ export class Helpers {
     }
 
     private static url () {
-        return (path?: string, parameters: (string | number)[] = [], secure?: boolean): IUrlGenerator | string => {
+        return (path?: string, parameters: (string | number)[] = [], secure?: boolean): any => {
             if (!path) {
                 return this.app.make(IUrlGenerator)
             }

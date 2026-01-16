@@ -35,7 +35,6 @@ export class UrlExampleController extends Controller {
             currentUrl: url().current(),
             fullUrl: url().full(),
             previousUrl: url().previous(),
-            queryParams: url().query(),
 
             // Route-based URLs (demonstrating with existing routes)
             routeUrl: route('url.examples'),

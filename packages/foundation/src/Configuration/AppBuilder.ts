@@ -151,7 +151,7 @@ export class AppBuilder {
      * @param  apiPrefix
      * @param  then
      */
-    protected buildRoutingCallback ({ web, api, health, apiPrefix, then }: {
+    protected buildRoutingCallback ({ web, api, apiPrefix, then }: {
         web?: string | string[];
         api?: string | string[];
         health?: string;

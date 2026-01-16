@@ -8,7 +8,6 @@ import { IServerBag } from './IServerBag'
 import { IUrl } from '../Url/IUrl'
 import { InputBag } from './IInputBag'
 import { RequestMethod } from '../Utilities/Utilities'
-import { RouteParams } from '../Url/Utils'
 
 export abstract class IHttpRequest {
     /**
@@ -31,7 +30,7 @@ export abstract class IHttpRequest {
     /**
      * Query string parameters (GET).
      */
-    abstract _query: RouteParams
+    abstract _query: InputBag
     /**
      * Server and execution environment parameters
      */
