@@ -34,7 +34,7 @@ describe('Response', () => {
     beforeEach(() => {
         event = makeEvent()
         app = new Application()
-        iResponse = new Response(event, app)
+        iResponse = new Response(app, event)
     })
 
     it('stores the app and event', () => {
@@ -85,12 +85,12 @@ describe('Response', () => {
     })
 
     it('getEvent with key returns nested value', () => {
-        const r = new Response(makeEvent({ url: '/foo' }), app)
+        const r = new Response(app, makeEvent({ url: '/foo' }))
         expect(r.getEvent('req.url')).toBe('/foo')
     })
 
     it('returns Response class instance from global response helper', async () => {
-        const res = new Response(makeEvent({ url: '/foo' }), app)
+        const res = new Response(app, makeEvent({ url: '/foo' }))
 
         expect(response()).toBe(res)
         expect(response()).toBeInstanceOf(Response)

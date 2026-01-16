@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/config",
-  "version": "1.4.18",
+  "version": "1.5.0",
   "description": "Environment/config loading and management system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -63,6 +63,7 @@
   "devDependencies": {
     "tsx": "catalog:",
     "@h3ravel/core": "workspace:^",
+    "@h3ravel/contracts": "workspace:^",
     "typescript": "^5.9.2"
   }
 }

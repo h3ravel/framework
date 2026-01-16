@@ -1,5 +1,6 @@
 import chalk, { type ChalkInstance } from 'chalk'
 import { LoggerChalk, LoggerLog, LoggerParseSignature } from '../Contracts/Utils'
+import { Console } from './Console'
 
 export class Logger {
     /**
@@ -77,11 +78,11 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static split (name: string, value: string, status?: 'success' | 'info' | 'error', exit = false, preserveCol = false) {
+    static split (name: string, value: string, status?: 'success' | 'info' | 'error', exit = false, preserveCol = false, spacer = '.') {
         status ??= 'info'
         const color = { success: chalk.bgGreen, info: chalk.bgBlue, error: chalk.bgRed }
 
-        const [_name, dots, val] = this.twoColumnDetail(name, value, false)
+        const [_name, dots, val] = this.twoColumnDetail(name, value, false, spacer)
 
         console.log(this.textFormat(_name, color[status], preserveCol), dots, val)
 
@@ -97,10 +98,37 @@ export class Logger {
      * @returns 
      */
     static textFormat (
-        txt: unknown,
-        color: (txt: string) => string,
+        txt: unknown | unknown[],
+        color: (...text: unknown[]) => string,
         preserveCol = false
     ): string {
+        if (txt instanceof Error) {
+            const err: Error & { code?: number, statusCode?: number } = txt
+            const code = err.code ?? err.statusCode ? ` (${err.code ?? err.statusCode})` : ''
+            const output: string[] = []
+
+            if (err.message) {
+                output.push(this.textFormat(`${err.constructor.name}${code}: ${err.message}`, chalk.bgRed, preserveCol))
+            }
+
+            if (err.stack) {
+                output.push('    ' + chalk.white(err.stack.replace(`${err.name}: ${err.message}`, '').trim()))
+            }
+            return output.join('\n')
+        }
+
+        if (Array.isArray(txt)) {
+            return txt.map(e => this.textFormat(e, color, preserveCol)).join('\n')
+        }
+
+        if (typeof txt === 'object') {
+            return this.textFormat(Object.values(txt!), color, preserveCol)
+        }
+
+        if (typeof txt !== 'string') {
+            return color(txt)
+        }
+
         const str = String(txt)
 
         if (preserveCol) return str
@@ -146,13 +174,13 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static error (msg: string | string[] | Error & { detail?: string }, exit = true, preserveCol = false) {
+    static error (msg: any, exit = true, preserveCol = false) {
         if (!this.shouldSuppressOutput('error')) {
             if (msg instanceof Error) {
                 if (msg.message) {
                     console.error(chalk.red('✖'), this.textFormat('ERROR:' + msg.message, chalk.bgRed, preserveCol))
                 }
-                console.error(chalk.red(`${msg.detail ? `${msg.detail}\n` : ''}${msg.stack}`))
+                console.error(chalk.red(`${(msg as any).detail ? `${(msg as any).detail}\n` : ''}${msg.stack}`))
             }
             else {
                 console.error(chalk.red('✖'), this.textFormat(msg, chalk.bgRed, preserveCol))
@@ -251,14 +279,25 @@ export class Logger {
      * 
      * @returns 
      */
-    public static log: LoggerLog = ((config, joiner, log: boolean = true, sc) => {
+    static log: LoggerLog = ((config, joiner, log: boolean = true, sc) => {
         if (typeof config === 'string') {
             const conf = [[config, joiner]] as [string, keyof ChalkInstance][]
             return this.parse(conf, '', log as false, sc)
-        } else if (config) {
+        } else if (Array.isArray(config)) {
             return this.parse(config, String(joiner), log as false, sc)
+        } else if (log && !this.shouldSuppressOutput('line')) {
+            return console.log(this.textFormat(config, Logger.chalker(['blue'])))
         }
 
         return this
     }) as LoggerLog
+
+    /**
+     * A simple console like output logger
+     * 
+     * @returns 
+     */
+    static console () {
+        return Console
+    }
 }

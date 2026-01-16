@@ -712,9 +712,14 @@ export class Arr {
      */
     static whereNotNull<T> (
         array: T[],
-        key: keyof T
+        key?: keyof T
     ): T[] {
-        if (!Array.isArray(array)) return []
+        if (!Array.isArray(array))
+            return []
+
+        if (!key)
+            return array.filter((item) => item !== null && item !== undefined)
+
         return array.filter(item => (item[key] !== null && item[key] !== undefined))
     }
 
@@ -726,7 +731,7 @@ export class Arr {
      * @param value 
      * @returns 
      */
-    static wrap<T> (value: T | T[] | null | undefined): T[] {
+    static wrap<T = any> (value: T | T[] | null | undefined): T[] {
         if (value === null || value === undefined) return []
         return Array.isArray(value) ? value : [value]
     }
@@ -877,5 +882,15 @@ export class Arr {
     static range (size: number, startAt: number = 0): number[] {
         if (size <= 0 || !Number.isFinite(size)) return []
         return Array.from({ length: size }, (_, i) => startAt + i)
+    }
+
+    /**
+     * Filters an array and returns only unique values
+     * 
+     * @param items 
+     * @returns 
+     */
+    static unique<T = any> (items: T[]) {
+        return items.filter((value, index, self) => self.indexOf(value) === index)
     }
 }

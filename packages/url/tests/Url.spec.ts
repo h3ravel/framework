@@ -5,11 +5,6 @@ import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 import { EnvLoader } from '@h3ravel/config'
 import { Url } from '../src/Url'
 
-const HttpServiceProvider = (await import(String('@h3ravel/http'))).HttpServiceProvider
-const RouteServiceProvider = (await import(String('@h3ravel/router'))).RouteServiceProvider
-
-console.log = vi.fn(() => 0)
-
 const globalThat = {
     config: vi.fn((key: string) => {
         if (key === 'app.url') return 'https://example.com'
@@ -45,13 +40,17 @@ describe('Url', () => {
 
     beforeAll(async () => {
 
+        const { EventsServiceProvider } = await import(('@h3ravel/events'))
+        const { HttpServiceProvider } = await import(String('@h3ravel/http'))
+        const { RouteServiceProvider } = await import(String('@h3ravel/router'))
+
         globalThis.env = new EnvLoader().get
         console.info()
-        app = await h3ravel([HttpServiceProvider, RouteServiceProvider, UrlServiceProvider], process.cwd())
+        app = await h3ravel([EventsServiceProvider, HttpServiceProvider, RouteServiceProvider, UrlServiceProvider], process.cwd())
         Object.assign(mockApp, app)
         Object.assign(globalThis, globalThat)
-        app.make('router').get('path', () => ({ success: true }), 'path')
-        app.make('router').get('path/index', [ExampleController, 'index'], 'path.index')
+        app.make('router').get('path', () => ({ success: true })).name('path')
+        app.make('router').get('path/index', [ExampleController, 'index']).name('path.index')
         app.fire()
     })
 

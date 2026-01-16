@@ -1,7 +1,8 @@
-import { Application, Registerer } from '@h3ravel/core'
 import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 import { safeDot, setNested } from '@h3ravel/support'
 
+import { IApplication } from '@h3ravel/contracts'
+import { Registerer } from '@h3ravel/core'
 import path from 'node:path'
 import { readdir } from 'node:fs/promises'
 
@@ -9,7 +10,7 @@ export class ConfigRepository {
     private loaded: boolean = false
     private configs: Record<string, Record<string, any>> = {}
 
-    constructor(protected app: Application) { }
+    constructor(protected app: IApplication) { }
 
     // get<X extends Record<string, any>> (): X
     // get<X extends Record<string, any>, T extends Extract<keyof X, string>> (key: T): X[T]
@@ -34,9 +35,8 @@ export class ConfigRepository {
         if (!this.loaded) {
 
             const configPath = this.app.getPath('config')
-
-            globalThis.env = this.app.make('env')
-            Registerer.register(this.app)
+            globalThis.env ??= this.app.make('env')
+            Registerer.register(this.app as never)
 
             const files = (await readdir(configPath)).filter((e) => {
                 return !e.includes('.d.ts') && !e.includes('.d.cts') && !e.includes('.map')

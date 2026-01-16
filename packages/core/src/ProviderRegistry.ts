@@ -1,13 +1,13 @@
+import { ConcreteConstructor, IServiceProvider } from '@h3ravel/contracts'
+
 import type { Application } from './Application'
-import { ContainerResolver } from '../src/Di/ContainerResolver'
-import { ServiceProvider } from './ServiceProvider'
+import { ContainerResolver } from '../src/Manager/ContainerResolver'
+import { createRequire } from 'module'
 import fg from 'fast-glob'
 import path from 'node:path'
 
-type ProviderCtor = (new (_app: Application) => ServiceProvider) & Partial<ServiceProvider>
-
 export class ProviderRegistry {
-    private static providers = new Map<string, ProviderCtor>()
+    private static providers = new Map<string, ConcreteConstructor<IServiceProvider, false>>()
     private static priorityMap = new Map<string, number>()
     private static filteredProviders: string[] = []
     private static sortable = true
@@ -27,7 +27,7 @@ export class ProviderRegistry {
      * @param provider 
      * @returns 
      */
-    private static getKey (provider: ProviderCtor): string {
+    private static getKey (provider: ConcreteConstructor<IServiceProvider, false>): string {
         // If provider has a declared static uid/id → prefer that
         const anyProvider = provider as any
         if (typeof anyProvider.uid === 'string') {
@@ -49,7 +49,7 @@ export class ProviderRegistry {
      * @param providers 
      * @returns 
      */
-    static register (...providers: ProviderCtor[]): void {
+    static register (...providers: ConcreteConstructor<IServiceProvider, false>[]): void {
         const list = this.sortable
             ? this.sort(providers.concat(...this.providers.values()))
             : providers.concat(...this.providers.values())
@@ -66,7 +66,7 @@ export class ProviderRegistry {
      * @param providers 
      * @returns 
      */
-    static registerMany (providers: ProviderCtor[]): void {
+    static registerMany (providers: ConcreteConstructor<IServiceProvider, false>[]): void {
         const list = this.sortable
             ? this.sort(providers.concat(...this.providers.values()))
             : providers.concat(...this.providers.values())
@@ -92,7 +92,7 @@ export class ProviderRegistry {
      * @param app 
      * @returns 
      */
-    static async resolve (app: Application, useServiceContainer: boolean = false): Promise<ServiceProvider[]> {
+    static async resolve (app: Application, useServiceContainer: boolean = false): Promise<IServiceProvider[]> {
 
         // Remove all filtered service providers 
         const providers = Array.from(this.providers.values()).filter(e => {
@@ -116,51 +116,50 @@ export class ProviderRegistry {
      * @param providers 
      * @returns 
      */
-    static sort (providers: ProviderCtor[]) {
-        /**
-         * Base priority (default 0)
-         */
-        providers.forEach((Provider) => {
-            const key = this.getKey(Provider)
-            this.priorityMap.set(`${Provider.name}::${key}`, (Provider as any).priority ?? 0)
-        })
+    static sort (providers: ConcreteConstructor<IServiceProvider, false>[]) {
+        const makeKey = (Provider: ConcreteConstructor<IServiceProvider, false>) => `${Provider.name}::${this.getKey(Provider)}`
 
-        /**
-         * Handle before/after adjustments
-         */
+        // Step 1: Sort purely by priority (descending)
+        providers.sort((A, B) => ((B as any).priority ?? 0) - ((A as any).priority ?? 0))
+
+        // Step 2: Apply order overrides ("before:" / "after:")
+        const findIndex = (target: string) => {
+            if (target.includes('::')) {
+                return providers.findIndex(p => makeKey(p) === target)
+            }
+            return providers.findIndex(p => p.name === target)
+        }
+
         providers.forEach((Provider) => {
             const order = (Provider as any).order
             if (!order) return
 
-            const [direction, target] = order.split(':')
-            const targetPriority = this.priorityMap.get(target) ?? 0
-            const key = this.getKey(Provider)
+            const [direction, rawTarget] = order.split(':')
+            const targetIndex = findIndex(rawTarget)
+            if (targetIndex === -1) return
 
-            if (direction === 'before') {
-                this.priorityMap.set(`${Provider.name}::${key}`, targetPriority - 1)
-            } else if (direction === 'after') {
-                this.priorityMap.set(`${Provider.name}::${key}`, targetPriority + 1)
-            }
+            const currentIndex = providers.indexOf(Provider)
+            if (currentIndex === -1) return
+
+            // Remove and reinsert at correct spot
+            providers.splice(currentIndex, 1)
+            const insertIndex = direction === 'before'
+                ? targetIndex
+                : targetIndex + 1
+
+            providers.splice(insertIndex, 0, Provider)
         })
 
-        /**
-         * Return service providers sorted based on thier name and priority
-         */
-        return providers.sort(
-            (A, B) => {
-                const keyA = this.getKey(A)
-                const keyB = this.getKey(B)
-                return (this.priorityMap.get(`${B.name}::${keyB}`) ?? 0) - (this.priorityMap.get(`${A.name}::${keyA}`) ?? 0)
-            }
-        )
+        return providers
     }
+
 
     /**
      * Sort service providers
      */
     static doSort () {
         const raw = this.sort(Array.from(this.providers.values()))
-        const providers = new Map<string, ProviderCtor>()
+        const providers = new Map<string, ConcreteConstructor<IServiceProvider, false>>()
 
         for (const provider of raw) {
             const key = this.getKey(provider)
@@ -175,7 +174,9 @@ export class ProviderRegistry {
      * 
      * @param priorityMap 
      */
-    static log<P extends ServiceProvider> (providers?: Array<P> | Map<string, P>) {
+    static log<P extends IServiceProvider> (providers?: Array<P> | Map<string, P>, enabled = true) {
+        if (!enabled) return
+
         const sorted = Array.from(((providers as unknown as P[]) ?? this.providers).values())
 
         console.table(
@@ -194,7 +195,7 @@ export class ProviderRegistry {
      *  
      * @returns 
      */
-    static all (): ProviderCtor[] {
+    static all (): ConcreteConstructor<IServiceProvider, false>[] {
         return Array.from(this.providers.values())
     }
 
@@ -204,7 +205,7 @@ export class ProviderRegistry {
      * @param provider 
      * @returns 
      */
-    static has (provider: ProviderCtor): boolean {
+    static has (provider: ConcreteConstructor<IServiceProvider, false>): boolean {
         return this.providers.has(this.getKey(provider))
     }
 
@@ -221,12 +222,11 @@ export class ProviderRegistry {
             'node_modules/h3ravel-*/package.json',
         ])
 
-        const providers: ProviderCtor[] = []
+        const providers: ConcreteConstructor<IServiceProvider, false>[] = []
 
         if (autoRegister) {
             for (const manifestPath of manifests) {
-                const pkg = await this.getManifest(path.resolve(manifestPath))
-
+                const pkg = this.getManifest(path.resolve(manifestPath))
                 if (pkg.h3ravel?.providers) {
                     providers.push(...await Promise.all(
                         pkg.h3ravel.providers.map(
@@ -235,7 +235,7 @@ export class ProviderRegistry {
                 }
             }
 
-            for (const provider of providers) {
+            for (const provider of providers.filter(e => typeof e !== 'undefined')) {
                 const key = this.getKey(provider)
                 this.providers.set(key, provider)
             }
@@ -250,15 +250,8 @@ export class ProviderRegistry {
      * @param manifestPath 
      * @returns 
      */
-    private static async getManifest (manifestPath: string) {
-        let pkg: any
-        try {
-            pkg = (await import(manifestPath)).default
-        } catch {
-            const { createRequire } = await import('module')
-            const require = createRequire(import.meta.url)
-            pkg = require(manifestPath)
-        }
-        return pkg
+    private static getManifest (manifestPath: string) {
+        const require = createRequire(import.meta.url)
+        return require(manifestPath)
     }
 }

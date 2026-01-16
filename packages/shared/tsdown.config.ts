@@ -6,12 +6,12 @@ export default defineConfig([
     ...baseConfig,
     exports: {
       customExports (exports) {
-        return Object.assign({}, exports, { './tsconfig.json': './tsconfig.json' })
+        return Object.assign({}, exports, { './tsconfig.base.json': './tsconfig.base.json' })
       },
     },
     format: ['esm', 'cjs'],
     entry: ['src/index.ts'],
-    sourcemap: true,
+    sourcemap: false,
     target: 'node22',
     platform: 'node',
   },

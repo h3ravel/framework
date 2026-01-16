@@ -1,19 +1,14 @@
 import { Application } from '.'
-import { IController } from '@h3ravel/shared'
+import { IController } from '@h3ravel/contracts'
 
 /**
  * Base controller class
  */
-export abstract class Controller implements IController {
+export abstract class Controller extends IController {
     protected app: Application
 
-    constructor(app: Application) {
-        this.app = app
+    constructor(app?: Application) {
+        super()
+        this.app = app!
     }
-
-    public show?(..._ctx: any[]): any
-    public index?(..._ctx: any[]): any
-    public store?(..._ctx: any[]): any
-    public update?(..._ctx: any[]): any
-    public destroy?(..._ctx: any[]): any
 }

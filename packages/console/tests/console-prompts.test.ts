@@ -3,8 +3,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { Application } from '@h3ravel/core'
 
-console.log = vi.fn(() => 0)
-
 vi.mock('@h3ravel/shared', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@h3ravel/shared')>()
 

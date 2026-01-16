@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/core",
-  "version": "1.21.7",
+  "version": "1.22.0",
   "description": "Core application container, lifecycle management and service providers for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -61,6 +61,7 @@
   "dependencies": {
     "@h3ravel/shared": "workspace:^",
     "@h3ravel/support": "workspace:^",
+    "@h3ravel/foundation": "workspace:^",
     "chalk": "^5.6.2",
     "commander": "^14.0.1",
     "detect-port": "catalog:",
@@ -74,6 +75,7 @@
     "tslib": "catalog:"
   },
   "devDependencies": {
+    "@h3ravel/contracts": "workspace:^",
     "@types/semver": "catalog:",
     "typescript": "^5.9.2"
   }

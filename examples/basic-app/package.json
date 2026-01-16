@@ -4,6 +4,14 @@
   "description": "Example H3ravel App.",
   "type": "module",
   "private": true,
+  "autoload": {
+    "namespaces": {
+      "App/": "app/",
+      "Database/Factories/": "database/factories/",
+      "Database/Seeders/": "database/seeders/"
+    },
+    "files": []
+  },
   "scripts": {
     "build": "NODE_ENV=production tsdown --config-loader unconfig -c tsdown.default.config.ts",
     "serve": "tsx watch ./src/server.ts",
@@ -31,6 +39,10 @@
     "@h3ravel/support": "workspace:^",
     "@h3ravel/url": "workspace:^",
     "@h3ravel/view": "workspace:^",
+    "@h3ravel/validation": "workspace:^",
+    "@h3ravel/foundation": "workspace:^",
+    "@h3ravel/session": "workspace:^",
+    "@h3ravel/events": "workspace:^",
     "cross-env": "catalog:",
     "h3": "catalog:prod",
     "reflect-metadata": "catalog:",
@@ -41,7 +53,7 @@
     "@rollup/plugin-run": "catalog:",
     "@swc/core": "catalog:",
     "@types/node": "^24.9.2",
-    "tsdown": "^0.15.12",
+    "tsdown": "catalog:",
     "tsx": "catalog:",
     "typescript": "^5.9.3"
   }

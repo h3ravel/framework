@@ -1,4 +1,6 @@
-import { Options } from './Contracts/ManagerContract'
+import { HashOptions, IHashManager } from '@h3ravel/contracts'
+
+import { Hash as HashFacade } from '@h3ravel/support/facades'
 import { RuntimeException } from '@h3ravel/support'
 
 export class Hash {
@@ -10,7 +12,7 @@ export class Hash {
      * 
      * @returns
      */
-    public static make (value: string, options: Options = {}) {
+    public static make (value: string, options: HashOptions = {}) {
         return this.driver().make(value, options)
     }
 
@@ -32,7 +34,7 @@ export class Hash {
      * @param options
      * @returns
      */
-    public static check (value: string, hashedValue?: string, options: Options = {}) {
+    public static check (value: string, hashedValue?: string, options: HashOptions = {}) {
         return this.driver().check(value, hashedValue, options)
     }
 
@@ -43,7 +45,7 @@ export class Hash {
      * @param options
      * @returns
      */
-    public static needsRehash (hashedValue: string, options: Options = {}) {
+    public static needsRehash (hashedValue: string, options: HashOptions = {}) {
         return this.driver().needsRehash(hashedValue, options)
     }
 
@@ -76,12 +78,12 @@ export class Hash {
      * 
      * @returns
      *
-     * @throws InvalidArgumentException
+     * @throws {RuntimeException}
      */
-    public static driver () {
-        if (typeof globalThis.Hash === 'undefined') {
+    public static driver (): IHashManager {
+        if (typeof Hash === 'undefined') {
             throw new RuntimeException('The Hash helper is only available on H3ravel, use the HashManager class instead.')
         }
-        return globalThis.Hash
+        return HashFacade
     }
 }

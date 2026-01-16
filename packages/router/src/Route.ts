@@ -1,462 +1,953 @@
-import 'reflect-metadata'
-import { H3Event, Middleware, MiddlewareOptions, type H3 } from 'h3'
-import { Application, Container, Kernel } from '@h3ravel/core'
-import { Request, Response, HttpContext } from '@h3ravel/http'
-import { Str } from '@h3ravel/support'
-import { Resolver, RouteEventHandler } from '@h3ravel/shared'
-import type { EventHandler, ExtractControllerMethods, IController, IMiddleware, IRouter, RouterEnd } from '@h3ravel/shared'
-import { Helpers } from './Helpers'
-import { Model } from '@h3ravel/database'
-import { RouteDefinition, RouteMethod } from '@h3ravel/shared'
+import { ActionInput, CallableConstructor, ClassConstructor, GenericObject, IApplication, ICallableDispatcher, IController, IControllerDispatcher } from '@h3ravel/contracts'
+import { Arr, Obj, Str, isClass } from '@h3ravel/support'
+import { IRoute, MiddlewareList, ResourceMethod, ResponsableType, RouteActions, RouteMethod } from '@h3ravel/contracts'
 
-export class Router implements IRouter {
-    private routes: RouteDefinition[] = []
-    private nameMap: string[] = []
-    private groupPrefix = ''
-    private middlewareMap: IMiddleware[] = []
-    private groupMiddleware: EventHandler[] = []
+import { CompiledRoute } from './CompiledRoute'
+import { ControllerDispatcher } from './ControllerDispatcher'
+import { H3 } from 'h3'
+import { HostValidator } from './Matchers/HostValidator'
+import { IRouteValidator } from './Contracts/IRouteValidator'
+import { LogicException } from '@h3ravel/foundation'
+import { MethodValidator } from './Matchers/MethodValidator'
+import { Request } from '@h3ravel/http'
+import { RouteAction } from './RouteAction'
+import { RouteActionConditions } from './Contracts/Utilities'
+import { RouteParameterBinder } from './RouteParameterBinder'
+import { RouteSignatureParameters } from './RouteSignatureParameters'
+import { RouteUri } from './RouteUri'
+import { Router } from './Router'
+import { SchemeValidator } from './Matchers/SchemeValidator'
+import { UriValidator } from './Matchers/UriValidator'
 
-    constructor(protected h3App: H3, private app: Application) { }
+export class Route extends IRoute {
+    /**
+     * The URI pattern the route responds to.
+     */
+    #uri: string
 
     /**
-     * Route Resolver
-     * 
-     * @param handler 
-     * @param middleware 
-     * @returns 
+     * The the matched parameters' original values object.
      */
-    private resolveHandler (handler: EventHandler, middleware: IMiddleware[] = []) {
-        return async (event: H3Event) => {
-            this.app.context ??= async (event) => {
-                // If we’ve already attached the context to this event, reuse it
-                if ((event as any)._h3ravelContext)
-                    return (event as any)._h3ravelContext
-
-                Request.enableHttpMethodParameterOverride()
-                const ctx = HttpContext.init({
-                    app: this.app,
-                    request: await Request.create(event, this.app),
-                    response: new Response(event, this.app),
-                });
-
-                (event as any)._h3ravelContext = ctx
-                return ctx
-            }
-
-            // Initialize the Application Kernel
-            const kernel = new Kernel(this.app.context, middleware)
-
-            return kernel.handle(event, (ctx) => new Promise((resolve) => {
-                if (Resolver.isAsyncFunction(handler)) {
-                    handler(ctx).then((response: any) => {
-                        if (response instanceof Response) {
-                            resolve(response.prepare(ctx.request as Request).send())
-                        } else {
-                            resolve(response)
-                        }
-                    })
-                } else {
-                    resolve(handler(ctx))
-                }
-            }))
-        }
-    }
+    #originalParameters?: Record<string, any>
 
     /**
-     * Add a route to the stack
-     * 
-     * @param method
-     * @param path
-     * @param handler
-     * @param name
-     * @param middleware
+     * The parameter names for the route.
      */
-    private addRoute (
-        method: RouteMethod,
-        path: string,
-        handler: EventHandler,
-        name?: string,
-        middleware: IMiddleware[] = [],
-        signature: RouteDefinition['signature'] = ['', '']
+    #parameterNames?: string[]
+
+    /**
+     * The default values for the route.
+     */
+    _defaults: Record<string, any> = {}
+
+    /**
+     * The router instance used by the route.
+     */
+    protected router!: Router
+
+    /**
+     * The compiled version of the route.
+     */
+    compiled?: CompiledRoute = undefined
+
+    /**
+     * The matched parameters object.
+     */
+    parameters?: Record<string, any>
+
+    /**
+     * The container instance used by the route.
+     */
+    protected container!: IApplication
+
+    /**
+     * The fields that implicit binding should use for a given parameter.
+     */
+    protected bindingFields!: GenericObject<string>
+
+    /**
+     * Indicates "trashed" models can be retrieved when resolving implicit model bindings for this route.
+     */
+    protected withTrashedBindings = false
+
+    /**
+     * Indicates whether the route is a fallback route.
+     */
+    isFallback: boolean = false
+
+    /**
+     * The route action array.
+     */
+    action: RouteActions
+
+    /**
+     * The HTTP methods the route responds to.
+     */
+    methods: RouteMethod[]
+
+    /**
+     * The route path that can be handled by H3.
+     */
+    path: string = ''
+
+    /**
+     * The computed gathered middleware.
+     */
+    computedMiddleware?: MiddlewareList
+
+    /**
+     * The controller instance.
+     */
+    controller?: Required<IController>
+
+    /**
+     * The validators used by the routes.
+     */
+    static validators: IRouteValidator[]
+
+    /**
+     * 
+     * @param methods The HTTP methods the route responds to.
+     * @param uri The URI pattern the route responds to.
+     */
+    constructor(
+        methods: RouteMethod | RouteMethod[],
+        uri: string,
+        action: ActionInput
     ) {
-        /**
-         * Join all defined route names to make a single route name
-         */
-        if (this.nameMap.length > 0) {
-            name = this.nameMap.join('.')
+        super()
+        this.#uri = uri
+        this.methods = Arr.wrap(methods)
+        this.action = Arr.except(this.parseAction(action), ['prefix'])
+
+        if (this.methods.includes('GET') && !this.methods.includes('HEAD')) {
+            this.methods.push('HEAD')
         }
 
-        /**
-         * Join all defined middlewares
-         */
-        if (this.middlewareMap.length > 0) {
-            middleware = this.middlewareMap
-        }
-
-        const fullPath = `${this.groupPrefix}${path}`.replace(/\/+/g, '/')
-        this.routes.push({ method, path: fullPath, name, handler, signature })
-        this.h3App[method as 'get'](fullPath, this.resolveHandler(handler, middleware))
-        this.app.singleton('app.routes', () => this.routes)
+        this.prefix(Obj.isPlainObject(action) ? Obj.get(action as any, 'prefix') : '')
     }
 
     /**
-     * Resolves a route handler definition into an executable EventHandler.
+     * Set the router instance on the route.
      *
-     * A handler can be:
-     *   - A function matching the EventHandler signature
-     *   - A controller class (optionally decorated for IoC resolution)
-     *
-     * If it’s a controller class, this method will:
-     *   - Instantiate it (via IoC or manually)
-     *   - Call the specified method (defaults to `index`)
-     *
-     * @param handler     Event handler function OR controller class
-     * @param methodName  Method to invoke on the controller (defaults to 'index')
+     * @param router
      */
-    private resolveControllerOrHandler<C extends new (...args: any) => any> (
-        handler: EventHandler | C,
-        methodName?: string,
-        path?: string,
-    ): EventHandler {
-        /**
-         * Checks if the handler is a function (either a plain function or a class constructor)
-         */
-        if (typeof handler === 'function' && typeof (handler as any).prototype !== 'undefined') {
-            return async (ctx) => {
-                let controller: IController
-                if (Container.hasAnyDecorator(handler as any)) {
-                    /**
-                     * If the controller is decorated use the IoC container
-                     */
-                    controller = this.app.make(handler as C)
-                } else {
-                    /**
-                     * Otherwise instantiate manually so that we can at least
-                     * pass the app instance
-                     */
-                    controller = new (handler as C)(this.app)
-                }
+    setRouter (router: Router): this {
+        this.router = router
 
-                /**
-                 * The method to execute (defaults to 'index')
-                 */
-                const action = (methodName || 'index') as keyof IController
+        return this
+    }
 
-                /**
-                 * Ensure the method exists on the controller
-                 */
-                if (typeof controller[action] !== 'function') {
-                    throw new Error(`Method "${String(action)}" not found on controller ${handler.name}`)
-                }
+    /**
+     * Set the container instance on the route.
+     *
+     * @param container
+     */
+    setContainer (container: IApplication) {
+        this.container = container
 
-                /**
-                 * Get param types for the controller method
-                 */
-                const paramTypes: [] = Reflect.getMetadata('design:paramtypes', controller, action) || []
+        return this
+    }
 
-                /**
-                 * Resolve the bound dependencies
-                 */
-                let args = await Promise.all(
-                    paramTypes.map(async (paramType: any) => {
-                        switch (paramType?.name) {
-                            case 'Application':
-                                return this.app
-                            case 'Request':
-                                return ctx.request
-                            case 'Response':
-                                return ctx.response
-                            case 'HttpContext':
-                                return ctx
-                            default: {
-                                const inst = this.app.make(paramType)
-                                if (inst instanceof Model) {
-                                    // Route model binding returns a Promise
-                                    return await Helpers.resolveRouteModelBinding(path ?? '', ctx, inst)
-                                }
-                                return inst
-                            }
-                        }
-                    })
-                )
+    /**
+     * Set the URI that the route responds to.
+     *
+     * @param uri
+     */
+    setUri (uri: string) {
+        this.#uri = this.parseUri(uri)
+        this.path = this.#uri
+            .replace(/\{([^}]+)\}/g, ':$1')
+            .replace(/:([^/]+)\?\s*$/, '*')
+            .replace(/:([^/]+)\?(?=\/|$)/g, ':$1')
+        return this
+    }
 
-                /**
-                 * Ensure that the HttpContext is always available
-                 */
-                if (args.length < 1) {
-                    args = [ctx]
-                }
+    /**
+     * Parse the route URI and normalize / store any implicit binding fields.
+     *
+     * @param uri
+     */
+    protected parseUri (uri: string): string {
+        this.bindingFields = {}
 
-                /**
-                 * Call the controller method, passing all resolved dependencies
-                 */
-                return await controller[action](...args)
+        const parsed = RouteUri.parse(uri)
+
+        this.bindingFields = parsed.bindingFields
+
+        return parsed.uri
+    }
+
+    /**
+     * Get the URI associated with the route.
+     */
+    uri () {
+        return this.#uri
+    }
+
+    /**
+     * Add a prefix to the route URI.
+     *
+     * @param prefix
+     */
+    prefix (prefix: string) {
+        prefix ??= ''
+
+        this.updatePrefixOnAction(prefix)
+
+        const uri = Str.rtrim(prefix, '/') + '/' + Str.ltrim(this.#uri, '/')
+
+        return this.setUri(uri !== '/' ? Str.trim(uri, '/') : uri)
+    }
+
+    /**
+     * Update the "prefix" attribute on the action array.
+     *
+     * @param prefix
+     */
+    protected updatePrefixOnAction (prefix: string) {
+        const newPrefix = Str.trim(Str.rtrim(prefix, '/') + '/' + Str.ltrim(this.action.prefix ?? '', '/'), '/')
+
+        if (newPrefix) {
+            this.action.prefix = newPrefix
+        }
+    }
+
+    /**
+     * Get the name of the route instance.
+     */
+    getName () {
+        return this.action.as ?? undefined
+    }
+
+    /**
+     * Add or change the route name.
+     *
+     * @param  name
+     *
+     * @throws {InvalidArgumentException}
+     */
+    name (name: string): this {
+        this.action.as = this.action.as ? this.action.as + name : name
+        return this
+    }
+
+    /**
+     * Determine whether the route's name matches the given patterns.
+     *
+     * @param patterns
+     */
+    named (...patterns: string[]) {
+        const routeName = this.getName()
+
+        if (!routeName) return false
+
+        for (const pattern of patterns)
+            if (Str.is(pattern, routeName)) return true
+
+        return false
+    }
+
+    /**
+     * Get the action name for the route.
+     */
+    getActionName () {
+        return this.action.handler ?? 'Closure'
+    }
+
+    /**
+     * Get the method name of the route action.
+     *
+     * @return string
+     */
+    getActionMethod () {
+        const name = this.getActionName()
+        return typeof name === 'string' ? Arr.last(name.split('@')) : name.name
+    }
+
+    /**
+     * Get the action array or one of its properties for the route.
+     * @param key
+     */
+    getAction (key?: string) {
+        if (!key) return this.action
+
+        return Obj.get(this.action, key)
+    }
+
+    /**
+     * Mark this route as a fallback route.
+     */
+    fallback () {
+        this.isFallback = true
+
+        return this
+    }
+
+    /**
+     * Set the fallback value.
+     *
+     * @param  sFallback
+     */
+    setFallback (isFallback: boolean) {
+        this.isFallback = isFallback
+
+        return this
+    }
+
+    /**
+     * Get the HTTP verbs the route responds to.
+     */
+    getMethods () {
+        return this.methods
+    }
+
+    /**
+     * Determine if the route only responds to HTTP requests.
+     */
+    httpOnly () {
+        return Obj.has(this.action, 'http')
+    }
+
+    /**
+     * Determine if the route only responds to HTTPS requests.
+     */
+    httpsOnly () {
+        return this.secure()
+    }
+
+    /**
+     * Get or set the middlewares attached to the route.
+     *
+     * @param  middleware
+     */
+    middleware (): any[];
+    middleware (middleware?: string | string[]): this;
+    middleware<X extends any | undefined = undefined> (middleware?: X | X[]): any[] | this {
+        if (!middleware)
+            return Arr.wrap(this.action.middleware ?? []) as never
+
+        if (!Array.isArray(middleware))
+            middleware = Arr.wrap(middleware)
+
+        // This makes absolutely no sense
+        // for (let index = 0; index < middleware.length; index++) {
+        //     const value = middleware[index]
+        //     middleware[index] = value
+        // }
+
+        this.action.middleware = [...Arr.wrap(this.action.middleware ?? []), ...middleware] as never
+
+        return this
+    }
+
+    /**
+     * Specify that the "Authorize" / "can" middleware should be applied to the route with the given options.
+     *
+     * @param  ability
+     * @param  models
+     */
+    can (ability: string, models: string | string[] = []) {
+        return !models
+            ? this.middleware(['can:' + ability])
+            : this.middleware(['can:' + ability + ',' + Arr.wrap(models).join(',')])
+    }
+
+    /**
+     * Set the action array for the route.
+     *
+     * @param action
+     */
+    setAction (action: RouteActions) {
+        this.action = action
+
+        if (this.action.domain) {
+            this.domain(this.action.domain)
+        }
+
+        if (this.action.can) {
+            for (const can of this.action.can) {
+                this.can(can[0], can[1] ?? [])
             }
         }
 
-        return handler as EventHandler
-    }
-
-    /**
-     * Registers a route that responds to HTTP GET requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
-     */
-    get<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
-        name?: string,
-        middleware: IMiddleware[] = []
-    ): Omit<this, RouterEnd> {
-
-        const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
-
-        // Add the route to the route stack
-        this.addRoute(
-            'get',
-            path,
-            this.resolveControllerOrHandler(handler, methodName, path),
-            name,
-            middleware,
-            [handler.name, methodName]
-        )
-
         return this
     }
 
     /**
-     * Registers a route that responds to HTTP POST requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
+     * Determine if the route only responds to HTTPS requests.
      */
-    post<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
-        name?: string,
-        middleware: IMiddleware[] = []
-    ): Omit<this, RouterEnd> {
-
-        const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
-
-        // Add the route to the route stack
-        this.addRoute(
-            'post',
-            path,
-            this.resolveControllerOrHandler(handler, methodName, path),
-            name,
-            middleware,
-            [handler.name, methodName]
-        )
-
-        return this
+    secure () {
+        return this.action.https === true
     }
 
     /**
-     * Registers a route that responds to HTTP PUT requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
-     */
-    put<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
-        name?: string,
-        middleware: IMiddleware[] = []
-    ): Omit<this, RouterEnd> {
-
-        const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
-
-        // Add the route to the route stack
-        this.addRoute(
-            'put',
-            path,
-            this.resolveControllerOrHandler(handler, methodName, path),
-            name,
-            middleware,
-            [handler.name, methodName]
-        )
-        return this
-    }
-
-    /**
-     * Registers a route that responds to HTTP PATCH requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
-     */
-    patch<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
-        name?: string,
-        middleware: IMiddleware[] = []
-    ): Omit<this, RouterEnd> {
-
-        const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
-
-        // Add the route to the route stack
-        this.addRoute(
-            'patch',
-            path,
-            this.resolveControllerOrHandler(handler, methodName, path),
-            name,
-            middleware,
-            [handler.name, methodName]
-        )
-
-        return this
-    }
-
-    /**
-     * Registers a route that responds to HTTP DELETE requests.
-     *
-     * @param path        The URL pattern to match (can include parameters, e.g., '/users/:id').
-     * @param definition  Either:
-     *                      - An EventHandler function
-     *                      - A tuple: [ControllerClass, methodName]
-     * @param name        Optional route name (for URL generation or referencing).
-     * @param middleware  Optional array of middleware functions to execute before the handler.
-     */
-    delete<C extends new (...args: any) => any> (
-        path: string,
-        definition: RouteEventHandler | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
-        name?: string,
-        middleware: IMiddleware[] = []
-    ): Omit<this, RouterEnd> {
-
-        const handler = Array.isArray(definition) ? definition[0] : definition
-        const methodName = Array.isArray(definition) ? <string>definition[1] : undefined
-
-        // Add the route to the route stack
-        this.addRoute(
-            'delete',
-            path,
-            this.resolveControllerOrHandler(handler, methodName, path),
-            name,
-            middleware,
-            [handler.name, methodName]
-        )
-
-        return this
-    }
-
-    /**
-     * API Resource support  
+     * Sync the current route with H3
      * 
-     * @param path 
-     * @param controller 
+     * @param h3App 
      */
-    apiResource<C extends new (...args: any) => any> (
-        path: string,
-        Controller: C,
-        middleware: IMiddleware[] = []
-    ): Omit<this, RouterEnd | 'name'> {
-        path = path.replace(/\//g, '/')
-
-        const basePath = `/${path}`.replace(/\/+$/, '').replace(/(\/)+/g, '$1')
-        const name = basePath.substring(basePath.lastIndexOf('/') + 1).replaceAll(/\/|:/g, '') || ''
-        const param = Str.singular(name)
-
-        this.get(basePath, [Controller, <never>'index'], `${name}.index`, middleware)
-        this.post(basePath, [Controller, <never>'store'], `${name}.store`, middleware)
-        this.get(`${basePath}/:${param}`, [Controller, <never>'show'], `${name}.show`, middleware)
-        this.put(`${basePath}/:${param}`, [Controller, <never>'update'], `${name}.update`, middleware)
-        this.patch(`${basePath}/:${param}`, [Controller, <never>'update'], `${name}.update`, middleware)
-        this.delete(`${basePath}/:${param}`, [Controller, <never>'destroy'], `${name}.destroy`, middleware)
-
-        return this
-    }
-
-    /**
-     * Named route URL generator
-     * 
-     * @param name 
-     * @param params 
-     * @returns 
-     */
-    route (name: string, params: Record<string, string> = {}): string | undefined {
-        const found = this.routes.find(r => r.name === name)
-        if (!found) return undefined
-
-        let url = found.path
-        for (const [key, value] of Object.entries(params)) {
-            url = url.replace(`:${key}`, value)
+    sync (h3App: H3) {
+        for (const method of this.methods) {
+            h3App[method.toLowerCase() as Lowercase<RouteMethod>](this.getPath(), () => response)
         }
-        return url
     }
 
     /**
-     * Grouping
-     * 
-     * @param options 
-     * @param callback 
+     * Bind the route to a given request for execution.
+     *
+     * @param request
      */
-    group (options: { prefix?: string; middleware?: EventHandler[] }, callback: (_e: this) => void) {
-        const prevPrefix = this.groupPrefix
-        const prevMiddleware = [...this.groupMiddleware]
+    bind (request: Request) {
+        this.compileRoute()
 
-        this.groupPrefix += options.prefix || ''
-        this.groupMiddleware.push(...(options.middleware || []))
+        this.parameters = (new RouteParameterBinder(this)).parameters(request)
 
-        callback(this)
+        this.#originalParameters = this.parameters
 
-        /**
-         * Restore state after group
-         */
-        this.groupPrefix = prevPrefix
-        this.groupMiddleware = prevMiddleware
         return this
     }
 
     /**
-     * Set the name of the current route
-     * 
-     * @param name 
+     * Get or set the domain for the route.
+     *
+     * @param domain
+     *
+     * @throws {InvalidArgumentException}
      */
-    name (name: string) {
-        this.nameMap.push(name)
+    domain<D extends string | undefined = undefined> (domain?: D): D extends undefined ? string : this {
+        if (!domain) return this.getDomain() as never
+
+        const parsed = RouteUri.parse(domain)
+
+        this.action.domain = parsed.uri ?? ''
+
+        this.bindingFields = Object.assign({}, this.bindingFields, parsed.bindingFields)
+
+        return this as never
+    }
+
+    /**
+     * Parse the route action into a standard array.
+     *
+     * @param action
+     *
+     * @throws {UnexpectedValueException}
+     */
+    protected parseAction (action: ActionInput) {
+        return RouteAction.parse(this.#uri, action)
+    }
+
+    /**
+     * Run the route action and return the response.
+     */
+    async run (): Promise<ResponsableType> {
+        if (!this.container) {
+            const { Container } = await import('@h3ravel/core')
+
+            this.container = new Container() as never
+        }
+
+        try {
+            if (this.isControllerAction()) {
+                return await this.runController()
+            }
+
+            return this.runCallable()
+        } catch (e: any) {
+            if (typeof e.getResponse !== 'undefined') {
+                return e.getResponse()
+            }
+            throw e
+            // return response()
+            //     .setCharset('utf-8')
+            //     .setStatusCode(e.code ?? e.statusCode ?? e.status ?? 500)
+            //     .setContent(e.message)
+        }
+    }
+
+    /**
+     * Get the key / value list of parameters without empty values.
+     */
+    parametersWithoutNulls () {
+        return Object.fromEntries(Object.entries(this.getParameters()).filter(e => !!e))
+    }
+
+    /**
+     * Get the key / value list of original parameters for the route.
+     *
+     * @throws {LogicException}
+     */
+    originalParameters () {
+        if (this.#originalParameters) {
+            return this.#originalParameters
+        }
+
+        throw new LogicException('Route is not bound.')
+    }
+
+    /**
+     * Get the matched parameters object.
+     */
+    getParameters () {
+        if (typeof this.parameters !== 'undefined') {
+            return this.parameters
+        }
+
+        throw new LogicException('Route is not bound.')
+    }
+
+    /**
+     * Get a given parameter from the route.
+     *
+     * @param  name
+     * @param  defaultParam
+     */
+    parameter (name: string, defaultParam?: any) {
+        return Obj.get(this.getParameters(), name, defaultParam)
+    }
+
+    /**
+     * Get the domain defined for the route.
+     */
+    getDomain (): string | undefined {
+        if (this.action && this.action.domain) {
+            return this.action.domain.replace(/https?:\/\//, '')
+        }
+
+        return ''
+    }
+
+    /**
+     * Get the compiled version of the route.
+     */
+    getCompiled () {
+        return this.compiled
+    }
+
+    /**
+     * Get the binding field for the given parameter.
+     *
+     * @param  parameter
+     */
+    bindingFieldFor (parameter: string | number): string | undefined {
+        if (typeof parameter === 'number') {
+            return Object.values(this.bindingFields)[parameter]
+        }
+
+        return this.bindingFields[parameter]
+    }
+
+    /**
+     * Get the binding fields for the route.
+     */
+    getBindingFields (): GenericObject<string> {
+        return this.bindingFields ?? {}
+    }
+
+    /**
+     * Set the binding fields for the route.
+     *
+     * @param  bindingFields
+     */
+    setBindingFields (bindingFields: GenericObject<string>): this {
+        this.bindingFields = bindingFields
+
         return this
     }
 
     /**
-     * Registers middleware for a specific path.
-     * @param path - The path to apply the middleware.
-     * @param handler - The middleware handler.
-     * @param opts - Optional middleware options.
+     * Get the parent parameter of the given parameter.
+     *
+     * @param parameter
      */
-    middleware (path: string | IMiddleware[] | Middleware, handler: Middleware | MiddlewareOptions, opts?: MiddlewareOptions) {
-        opts = typeof handler === 'object' ? handler : (typeof opts === 'function' ? opts : {})
-        handler = typeof path === 'function' ? path : (typeof handler === 'function' ? handler : () => { })
+    parentOfParameter (parameter: string): any {
+        const key = Object.keys(this.getParameters()).findIndex(e => e == parameter)
 
-        if (Array.isArray(path)) {
-            this.middlewareMap.concat(path)
-        } else if (typeof path === 'function') {
-            this.h3App.use('/', () => { }).use(path)
+        if (!key || key === 0) {
+            return
+        }
+
+        return Object.values(this.getParameters())[key - 1]
+    }
+
+    /**
+     * Determines if the route allows "trashed" models to be retrieved when resolving implicit model bindings. 
+     */
+    allowsTrashedBindings (): boolean {
+        return this.withTrashedBindings
+    }
+
+    /**
+     * Set a default value for the route.
+     *
+     * @param  key
+     * @param  value
+     */
+    defaults (key: string, value: any) {
+        this._defaults[key] = value
+
+        return this
+    }
+
+    /**
+     * Set the default values for the route.
+     *
+     * @param  defaults
+     */
+    setDefaults (defaults: Record<string, any>) {
+        this._defaults = defaults
+
+        return this
+    }
+
+    /**
+     * Get the optional parameter names for the route.
+     */
+    getOptionalParameterNames (): Record<string, null> {
+        const pattern = /\{([\w]+)(?:[:][\w]+)?(\?)?\}/g
+        const matches = [...this.uri().matchAll(pattern)]
+
+        const result: Record<string, null> = {}
+
+        for (const match of matches) {
+            const paramName = match[1]
+            const isOptional = !!match[2] // true if '?' exists
+            if (isOptional) {
+                result[paramName] = null
+            }
+        }
+
+        return result
+    }
+
+    /**
+     * Get all of the parameter names for the route.
+     */
+    parameterNames () {
+        if (this.#parameterNames) {
+            return this.#parameterNames
+        }
+
+        return this.#parameterNames = this.compileParameterNames()
+    }
+
+    /**
+     * Checks whether the route's action is a controller.
+     */
+    protected isControllerAction () {
+        return !!this.action.uses && isClass(this.action.uses)
+    }
+
+    protected compileParameterNames (): string[] {
+        const pattern = /\{([\w]+)(?:[:][\w]+)?\??\}/g
+        const fullUri = (this.getDomain() ?? '') + this.uri()
+        const matches = [...fullUri.matchAll(pattern)]
+
+        return matches.map(m => m[1])
+    }
+
+    /**
+     * Get the parameters that are listed in the route / controller signature.
+     *
+     * @param  conditions
+     */
+    signatureParameters (conditions: ClassConstructor | RouteActionConditions) {
+        if (isClass(conditions)) {
+            conditions = { subClass: conditions }
+        }
+
+        return RouteSignatureParameters
+            .setRequirements(this.container, this)
+            .fromAction(this.action, conditions as RouteActionConditions)
+    }
+
+    /**
+     * Compile the route once, cache the result, return compiled data
+     */
+    compileRoute (): CompiledRoute {
+        if (!this.compiled) {
+            const optionalParams = this.getOptionalParameterNames()
+
+            this.compiled = new CompiledRoute(this.uri(), optionalParams)
+        }
+
+        return this.compiled
+    }
+
+    /**
+     * Set a parameter to the given value.
+     *
+     * @param  name
+     * @param  value
+     */
+    setParameter (name: string, value?: string | GenericObject): void {
+        this.getParameters()
+
+        this.parameters![name] = value
+    }
+
+    /**
+     * Unset a parameter on the route if it is set.
+     *
+     * @param  name
+     */
+    forgetParameter (name: string): void {
+        this.getParameters()
+
+        delete this.parameters![name]
+    }
+
+    /**
+     * Get the value of the action that should be taken on a missing model exception.
+     */
+    getMissing (): CallableConstructor | undefined {
+        return this.action['missing'] ?? undefined
+    }
+
+    /**
+     * The route path that can be handled by H3.
+     */
+    getPath (): string {
+        return this.path
+    }
+
+    /**
+     * Define the callable that should be invoked on a missing model exception.
+     *
+     * @param  missing
+     */
+    missing (missing: CallableConstructor): this {
+        this.action['missing'] = missing
+
+        return this
+    }
+
+    /**
+     * Specify middleware that should be removed from the given route.
+     *
+     * @param  middleware
+     */
+    withoutMiddleware (middleware: any): this {
+        this.action.excluded_middleware = Object.assign({},
+            this.action.excluded_middleware ?? {},
+            Arr.wrap(middleware)
+        )
+
+        return this
+    }
+
+    /**
+     * Get the middleware that should be removed from the route.
+     */
+    excludedMiddleware (): MiddlewareList {
+        return this.action.excluded_middleware ?? {}
+    }
+
+    /**
+     * Get all middleware, including the ones from the controller.
+     */
+    gatherMiddleware (): MiddlewareList {
+        if (this.computedMiddleware) {
+            return this.computedMiddleware
+        }
+
+        this.computedMiddleware = Router.uniqueMiddleware([...this.middleware(), ...this.controllerMiddleware()])
+
+        return this.computedMiddleware
+    }
+
+    /**
+     * Indicate that the route should enforce scoping of multiple implicit Eloquent bindings.
+     */
+    scopeBindings () {
+        this.action['scope_bindings'] = true
+
+        return this
+    }
+
+    /**
+     * Indicate that the route should not enforce scoping of multiple implicit Eloquent bindings.
+     */
+    withoutScopedBindings (): this {
+        this.action['scope_bindings'] = false
+
+        return this
+    }
+
+    /**
+     * Determine if the route should enforce scoping of multiple implicit Eloquent bindings.
+     */
+    enforcesScopedBindings (): boolean {
+        return this.action['scope_bindings'] ?? false
+    }
+
+    /**
+     * Determine if the route should prevent scoping of multiple implicit Eloquent bindings.
+     */
+    preventsScopedBindings (): boolean {
+        return typeof this.action['scope_bindings'] !== 'undefined' && this.action['scope_bindings'] === false
+    }
+
+    /**
+     * Get the dispatcher for the route's controller.
+     *
+     * @throws {BindingResolutionException}
+     */
+    controllerDispatcher () {
+        if (this.container.bound(IControllerDispatcher)) {
+            return this.container.make(IControllerDispatcher)
+        }
+
+        return new ControllerDispatcher(this.container)
+    }
+
+    /**
+     * Get the route validators for the instance.
+     *
+     * @return array
+     */
+    static getValidators () {
+        if (typeof this.validators !== 'undefined') {
+            return this.validators
+        }
+
+        // To match the route, we will use a chain of responsibility pattern with the
+        // validator implementations. We will spin through each one making sure it
+        // passes and then we will know if the route as a whole matches request.
+        return this.validators = [
+            new UriValidator(),
+            new MethodValidator(),
+            new SchemeValidator(),
+            new HostValidator(),
+        ]
+    }
+
+    /**
+     * Run the route action and return the response.
+     *
+     * @return mixed
+     * @throws  {NotFoundHttpException}
+     */
+    protected async runController () {
+        return await this.controllerDispatcher().dispatch(
+            this,
+            this.getController()!,
+            this.getControllerMethod()
+        )
+    }
+
+    protected async runCallable () {
+        const callable = this.action.uses
+
+        return this.container.make(ICallableDispatcher).dispatch(this, callable)
+    }
+
+    /**
+     * Get the controller instance for the route.
+     *
+     * @return mixed
+     *
+     * @throws {BindingResolutionException}
+     */
+    getController () {
+        if (!this.isControllerAction()) {
+            return undefined
+        }
+
+        if (!this.controller) {
+            const instance = this.getControllerClass()
+
+            this.controller = this.container.make(instance)
+        }
+
+        return this.controller
+    }
+
+    /**
+     * Flush the cached container instance on the route.
+     */
+    flushController () {
+        this.computedMiddleware = undefined
+        this.controller = undefined
+    }
+
+    /**
+     * Determine if the route matches a given request.
+     * 
+     * @param request 
+     * @param includingMethod 
+     */
+    matches (request: Request, includingMethod = true): boolean {
+        this.compileRoute()
+
+        for (const validator of Route.getValidators()) {
+
+            if (!includingMethod && validator instanceof MethodValidator) {
+                continue
+            }
+
+            if (!validator.matches(this, request)) {
+                return false
+            }
+        }
+
+        return true
+    }
+
+    /**
+     * Get the controller class used for the route.
+     */
+    getControllerClass () {
+        return this.isControllerAction() ? this.action.uses : undefined
+    }
+
+    /**
+     * Get the controller method used for the route.
+     */
+    getControllerMethod (): ResourceMethod {
+        const holder = isClass(this.action.uses) && typeof this.action.controller === 'string' ? this.action.controller : 'index'
+        return Str.parseCallback(holder).at(1) as ResourceMethod
+    }
+
+    /**
+     * Get the middleware for the route's controller.
+     *
+     * @return array
+     */
+    controllerMiddleware () {
+        let controllerClass: string | undefined, ResourceMethod: string | undefined
+
+        if (!this.isControllerAction()) {
+            return []
+        }
+
+        if (typeof this.action.uses === 'string') {
+            [controllerClass, ResourceMethod] = [
+                this.getControllerClass(),
+                this.getControllerMethod(),
+            ]
+            void controllerClass
+            void ResourceMethod
         } else {
-            this.h3App.use(path, handler, opts)
+            //
         }
 
-        return this
+        // console.log(controllerClass, ResourceMethod, this.action, 'controllerMiddleware')
+        // TODO: Let's finish the below
+        // if (is_a(controllerClass, HasMiddleware.lass, true)) {
+        //     return this.staticallyProvidedControllerMiddleware(
+        //         controllerClass,
+        //         ResourceMethod
+        //     )
+        // }
+
+        // if (method_exists(Object.prototype.hasOwnProperty.call(controllerClass, 'getMiddleware')) {
+        //     return this.controllerDispatcher().getMiddleware(
+        //         this.getController(),
+        //         ResourceMethod
+        //     )
+        // }
+
+        return []
     }
 }

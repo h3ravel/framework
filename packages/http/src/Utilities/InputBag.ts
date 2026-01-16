@@ -2,7 +2,7 @@ import { BadRequestException } from '../Exceptions/BadRequestException'
 import { H3Event } from 'h3'
 import { Obj } from '@h3ravel/support'
 import { ParamBag } from './ParamBag'
-import { RequestObject } from '@h3ravel/shared'
+import { RequestObject } from '@h3ravel/contracts'
 
 /**
  * InputBag is a container for user input values
@@ -29,7 +29,7 @@ export class InputBag extends ParamBag {
      * @throws BadRequestException if the input contains a non-scalar value
      * @returns 
      */
-    public get<T extends string | number | boolean | null> (
+    get<T extends string | number | boolean | null> (
         key: string,
         defaultValue: T | null = null
     ): T | string | number | boolean | null {
@@ -66,7 +66,7 @@ export class InputBag extends ParamBag {
      * @param inputs 
      * @returns
      */
-    public replace (inputs: RequestObject = {}): void {
+    replace (inputs: RequestObject = {}): void {
         this.parameters = {}
         this.add(inputs)
     }
@@ -77,7 +77,7 @@ export class InputBag extends ParamBag {
      * @param inputs 
      * @returns
      */
-    public add (inputs: RequestObject = {}): void {
+    add (inputs: RequestObject = {}): void {
         Object.entries(inputs).forEach(([key, value]) => this.set(key, value))
     }
 
@@ -89,7 +89,7 @@ export class InputBag extends ParamBag {
      * @throws TypeError if value is not scalar or array
      * @returns
      */
-    public set (key: string, value: any): void {
+    set (key: string, value: any): void {
         if (
             value !== null &&
             typeof value !== 'string' &&
@@ -112,7 +112,7 @@ export class InputBag extends ParamBag {
      * @param key 
      * @returns
      */
-    public has (key: string): boolean {
+    has (key: string): boolean {
         return Object.prototype.hasOwnProperty.call(this.parameters, key)
     }
 
@@ -121,7 +121,7 @@ export class InputBag extends ParamBag {
      * 
      * @returns
      */
-    public all (): RequestObject {
+    all (): RequestObject {
         return { ...this.parameters }
     }
 
@@ -133,7 +133,7 @@ export class InputBag extends ParamBag {
      * @throws BadRequestException if input contains a non-scalar value
      * @returns
      */
-    public getString (key: string, defaultValue = ''): string {
+    getString (key: string, defaultValue = ''): string {
         const value = this.get(key, defaultValue)
         return String(value ?? '')
     }
@@ -148,7 +148,7 @@ export class InputBag extends ParamBag {
      * @throws BadRequestException if validation fails
      * @returns 
      */
-    public filter<T = any> (
+    filter<T = any> (
         key: string,
         defaultValue: T | null = null,
         filterFn?: (value: any) => boolean
@@ -179,7 +179,7 @@ export class InputBag extends ParamBag {
      * @throws BadRequestException if conversion fails
      * @returns 
      */
-    public getEnum<T extends Record<string, string | number>> (
+    getEnum<T extends Record<string, string | number>> (
         key: string,
         EnumClass: T,
         defaultValue: T[keyof T] | null = null
@@ -202,7 +202,7 @@ export class InputBag extends ParamBag {
      *
      * @param key 
      */
-    public remove (key: string): void {
+    remove (key: string): void {
         delete this.parameters[key]
     }
 
@@ -211,7 +211,7 @@ export class InputBag extends ParamBag {
      * 
      * @returns
      */
-    public keys (): string[] {
+    keys (): string[] {
         return Object.keys(this.parameters)
     }
 
@@ -220,7 +220,7 @@ export class InputBag extends ParamBag {
      * 
      * @returns
      */
-    public count (): number {
+    count (): number {
         return this.keys().length
     }
 }

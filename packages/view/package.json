@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/view",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "View rendering system for H3ravel framework",
   "h3ravel": {
     "providers": [
@@ -69,6 +69,7 @@
     "vitest": "^2.0.0"
   },
   "peerDependencies": {
-    "@h3ravel/shared": "workspace:*"
+    "@h3ravel/shared": "workspace:*",
+    "@h3ravel/support": "workspace:*"
   }
 }

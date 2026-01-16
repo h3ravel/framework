@@ -12,8 +12,6 @@ let tempPath: string
 let kernel: Kernel
 let app: Application
 
-console.log = vi.fn(() => 0)
-
 beforeAll(async () => {
     tempPath = await mkdtemp(path.join(tmpdir(), '@h3ravel-console'))
     globalThis.base_path = (file?: string) => path.join(tempPath, file ?? '')

@@ -1,8 +1,8 @@
 /**
- * Custom error for invalid type coercion
+ * Exception thrown if an error which can only be found on runtime occurs.
  */
 export class RuntimeException extends Error {
-    constructor(message: string) {
+    constructor(message: string = '') {
         super(message)
         this.name = 'RuntimeException'
     }

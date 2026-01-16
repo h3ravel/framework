@@ -1,21 +1,16 @@
-import { Application, ConfigException } from '@h3ravel/core'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
-import { FileSystem } from '@h3ravel/shared'
+import { Application } from '@h3ravel/core'
+import { ConfigException } from '@h3ravel/foundation'
 import { h3ravel } from '@h3ravel/core'
 
 let app: Application
-let HttpProvider: any
-let RouteProvider: any
-const httpPath = FileSystem.findModulePkg('@h3ravel/http', process.cwd()) ?? ''
-const routePath = FileSystem.findModulePkg('@h3ravel/router', process.cwd()) ?? ''
-
-console.log = vi.fn(() => 0)
 
 describe('Single Entry Point without @h3ravel/http installed', async () => {
     beforeEach(async () => {
-        RouteProvider = (await import(routePath)).RouteServiceProvider
-        app = await h3ravel([RouteProvider])
+        const { EventsServiceProvider } = await import(('@h3ravel/events'))
+        const { RouteServiceProvider } = await import(('@h3ravel/router'))
+        app = await h3ravel([EventsServiceProvider, RouteServiceProvider])
     })
 
     it('returns the fully configured Application instance', async () => {
@@ -23,15 +18,15 @@ describe('Single Entry Point without @h3ravel/http installed', async () => {
     })
 
     it('will throw ConfigException when an H3 app instance is not provided and fire() is called', async () => {
-        expect(app.fire).toThrowError(new ConfigException('Provide a H3 app instance in the config or install @h3ravel/http'))
+        await expect(app.fire()).rejects.toThrowError(new ConfigException('[Provide a H3 app instance in the config or install @h3ravel/http]'))
     })
 })
 
 describe('Single Entry Point with @h3ravel/http installed', async () => {
     beforeEach(async () => {
-        HttpProvider = (await import(httpPath)).HttpServiceProvider
-        RouteProvider = (await import(routePath)).RouteServiceProvider
-        app = await h3ravel([HttpProvider, RouteProvider])
+        const { HttpServiceProvider } = await import(('@h3ravel/http'))
+        const { RouteServiceProvider } = await import(('@h3ravel/router'))
+        app = await h3ravel([HttpServiceProvider, RouteServiceProvider])
     })
 
     it('returns the fully configured Application instance', async () => {
@@ -39,7 +34,7 @@ describe('Single Entry Point with @h3ravel/http installed', async () => {
     })
 
     it('can load routes before server is fired', () => {
-        app.make('router').get('path', () => ({ success: true }), 'path')
+        app.make('router').get('path', () => ({ success: true })).name('path')
         expect(app.bindings.get('app.routes')?.()).toMatchObject([{ name: 'path' }])
         expect(app.bindings.get('app.routes')?.()).toMatchObject([{ path: 'path' }])
         expect(app.bindings.get('app.routes')?.()).toMatchObject([{ method: 'get' }])

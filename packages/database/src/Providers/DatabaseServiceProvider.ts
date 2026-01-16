@@ -1,7 +1,7 @@
 import { MakeCommand } from '../Commands/MakeCommand'
 import { MigrateCommand } from '../Commands/MigrateCommand'
 import { SeedCommand } from '../Commands/SeedCommand'
-import { ServiceProvider } from '@h3ravel/core'
+import { ServiceProvider } from '@h3ravel/support'
 import { arquebus } from '@h3ravel/arquebus'
 import { arquebusConfig } from '../Configuration'
 
@@ -26,6 +26,8 @@ export class DatabaseServiceProvider extends ServiceProvider {
         if (connection) {
             arquebus.addConnection(connection)
         }
+
+        this.app.singleton('db', () => arquebus.fire())
 
         /** Register Musket Commands */
         this.registerCommands([MigrateCommand, MakeCommand, SeedCommand])

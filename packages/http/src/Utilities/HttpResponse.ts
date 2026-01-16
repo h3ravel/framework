@@ -1,16 +1,14 @@
+import { CacheOptions, IHttpResponse, IRequest, ResponseObject } from '@h3ravel/contracts'
 import { DateTime, InvalidArgumentException } from '@h3ravel/support'
-import { HTTP_RESPONSE_CACHE_CONTROL_DIRECTIVES, statusTexts } from '../Utilities/ResponseUtilities'
+import { HTTP_RESPONSE_CACHE_CONTROL_DIRECTIVES, statusTexts } from '@h3ravel/foundation'
 
-import { CacheOptions } from '../Contracts/HttpContract'
 import { Cookie } from './Cookie'
 import type { H3Event } from 'h3'
 import { HeaderBag } from '../Utilities/HeaderBag'
 import { HttpResponseException } from '../Exceptions/HttpResponseException'
-import { Request } from '..'
 import { ResponseHeaderBag } from '../Utilities/ResponseHeaderBag'
-import type { ResponseObject } from '@h3ravel/shared'
 
-export class HttpResponse {
+export class HttpResponse extends IHttpResponse {
     protected statusCode: number = 200
     protected headers: ResponseHeaderBag
     protected content!: any
@@ -50,6 +48,7 @@ export class HttpResponse {
          */
         protected readonly event: H3Event,
     ) {
+        super()
         this.headers = new ResponseHeaderBag(this.event)
         this.setContent()
         this.setProtocolVersion('1.0')
@@ -692,7 +691,7 @@ export class HttpResponse {
      * compliant with RFC 2616. Most of the changes are based on 
      * the Request that is "associated" with this Response.
      **/
-    public prepare (request: Request): this {
+    public prepare (request: IRequest): this {
         const isInformational = this.isInformational()
         const isEmpty = this.isEmpty()
 
@@ -743,7 +742,7 @@ export class HttpResponse {
         }
 
         // 6. Fix protocol
-        const protocol = request.server?.get('SERVER_PROTOCOL') || 'HTTP/1.1'
+        const protocol = request._server?.get('SERVER_PROTOCOL') || 'HTTP/1.1'
         if (protocol !== 'HTTP/1.0') {
             this.setProtocolVersion('1.1')
         }
@@ -775,7 +774,7 @@ export class HttpResponse {
      *
      * @see http://support.microsoft.com/kb/323308
      */
-    protected ensureIEOverSSLCompatibility (request: Request) {
+    protected ensureIEOverSSLCompatibility (request: IRequest) {
         const contentDisposition = this.headers.get('Content-Disposition') || ''
         const userAgent = request.headers.get('user-agent') || ''
 

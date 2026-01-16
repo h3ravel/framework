@@ -1,5 +1,5 @@
 /// <reference path="../app.globals.d.ts" />
-import { ServiceProvider } from '@h3ravel/core'
+import { ServiceProvider } from '@h3ravel/support'
 import { Url } from '../Url'
 import { createUrlHelper } from '../RequestAwareHelpers'
 import { createUrlHelpers } from '../Helpers'
@@ -14,6 +14,7 @@ export class UrlServiceProvider extends ServiceProvider {
      * Register URL services in the container
      */
     register (): void {
+        this.app.setUriResolver(() => Url)
     }
 
     /**
@@ -28,7 +29,6 @@ export class UrlServiceProvider extends ServiceProvider {
         // Register bound URL helpers
         this.app.singleton('app.url.helpers', () => createUrlHelpers(this.app))
 
-        // Make url() globally available
         if (typeof globalThis !== 'undefined') {
             const helpers = createUrlHelpers(this.app)
 

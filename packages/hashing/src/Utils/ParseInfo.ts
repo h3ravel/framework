@@ -1,4 +1,4 @@
-import { HashAlgorithm, Info } from '../Contracts/ManagerContract'
+import { HashAlgorithm, HashInfo } from '@h3ravel/contracts'
 
 export class ParseInfo {
 
@@ -11,7 +11,7 @@ export class ParseInfo {
     }
 
     public static argon2 (hashed: string) {
-        const info: Info['options'] = {}
+        const info: HashInfo['options'] = {}
         // Example: $argon2id$v=19$m=65536,t=4,p=1$...
         const parts = hashed.split('$')
         const params = parts[3] // "m=65536,t=4,p=1"
@@ -32,7 +32,7 @@ export class ParseInfo {
         return info
     }
 
-    public static bcrypt (hashed: string): Info['options'] {
+    public static bcrypt (hashed: string): HashInfo['options'] {
         const match = hashed.match(/^\$2[aby]?\$(\d+)\$/)
         return {
             cost: match ? parseInt(match[1], 10) : undefined,

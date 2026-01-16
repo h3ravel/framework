@@ -1,6 +1,4 @@
-import type { Application } from '@h3ravel/core'
-import type { IRequest } from '@h3ravel/shared'
-import { RouteParams } from './Contracts/UrlContract'
+import { IApplication, IRequest, RouteParams } from '@h3ravel/contracts'
 
 /**
  * Request-aware URL helper class
@@ -8,7 +6,7 @@ import { RouteParams } from './Contracts/UrlContract'
 export class RequestAwareHelpers {
     private readonly baseUrl: string = ''
 
-    constructor(private app: Application) {
+    constructor(private app: IApplication) {
         try {
             this.baseUrl = config('app.url', 'http://localhost:3000')
         } catch {/** */ }
@@ -96,13 +94,13 @@ export class RequestAwareHelpers {
      */
     query (): RouteParams {
         const request = this.getCurrentRequest()
-        return request.query || {}
+        return request._query || {}
     }
 }
 
 /**
  * Global helper function factory
  */
-export function createUrlHelper (app: Application): () => RequestAwareHelpers {
+export function createUrlHelper (app: IApplication): () => RequestAwareHelpers {
     return () => new RequestAwareHelpers(app)
 }

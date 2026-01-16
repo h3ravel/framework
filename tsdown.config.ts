@@ -1,5 +1,6 @@
 import { type UserConfig, defineConfig } from 'tsdown'
-import { copyFile, glob, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { copyFile, mkdir, readFile, writeFile } from 'node:fs/promises'
+import { glob } from 'glob'
 
 import path from 'node:path'
 import { exists, findUpConfig } from './utils/fs'
@@ -8,6 +9,7 @@ export const baseConfig: UserConfig = {
     dts: true,
     clean: true,
     shims: true,
+    unbundle: false,
     entry: ['src/index.ts'],
     format: ['esm', 'cjs'],
     sourcemap: false,
@@ -31,7 +33,7 @@ export const baseConfig: UserConfig = {
                 // Make globale stubs partern
                 const stubs = base.replace('package.json', 'packages/**/src/**/*.stub')
 
-                for await (const entry of glob([gdts, stubs])) {
+                for await (const entry of glob.stream([gdts, stubs])) {
                     const target = entry.replace('src', 'dist')
                     // Ensure the target dir exists
                     if (await exists(entry) && !await exists(path.dirname(target)))
@@ -40,8 +42,8 @@ export const baseConfig: UserConfig = {
                     if (await exists(entry) && entry.includes(ctx.options.cwd))
                         copyFile(entry, target)
                     // Augment the d.ts file to the index.d.ts
-                    if (entry.includes('.d.ts')) {
-                        for await (const indexFile of glob(path.join(outDir, 'index.d.*ts'))) {
+                    if (entry.includes('.d.ts') && !entry.includes('node_modules') && !entry.includes('env.d.ts')) {
+                        for await (const indexFile of glob.stream(path.join(outDir, 'index.d.*ts'))) {
                             const reference = `/// <reference path="./${path.basename(entry)}" />\n`
                             if (await exists(indexFile)) {
                                 let content = await readFile(indexFile, 'utf8')

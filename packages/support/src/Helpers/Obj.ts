@@ -6,7 +6,7 @@ import type { DotPath, KeysToSnakeCase } from '../Contracts/ObjContract'
  * with dot-separated keys.
  *
  * Example:
- * doter({
+ * dot({
  *   user: { name: "John", address: { city: "NY" } },
  *   active: true
  * })
@@ -126,12 +126,16 @@ export const modObj = <T extends object, R> (
     ) as Record<string, R>
 }
 
-
-export function safeDot<T extends Record<string, any>> (_data: T): T
+/**
+ * Safely convert an object to dot notation
+ * 
+ * @param data 
+ */
+export function safeDot<T extends Record<string, any>> (data: T): T
 export function safeDot<
     T extends Record<string, any>,
     K extends DotNestedKeys<T>
-> (_data: T, _key?: K): DotNestedValue<T, K>
+> (data: T, key?: K): DotNestedValue<T, K>
 export function safeDot<
     T extends Record<string, any>,
     K extends DotNestedKeys<T>
@@ -227,6 +231,9 @@ export const slugifyKeys = <T extends object> (
  * - Arrays: included if truthy
  * - Objects: keys included if value is truthy
  * - Strings: included as-is
+ * 
+ * @param input 
+ * @returns 
  */
 export function toCssClasses<T extends string | Record<string, boolean> | Array<string | false | null | undefined>> (
     input: T
@@ -256,6 +263,9 @@ export function toCssClasses<T extends string | Record<string, boolean> | Array<
  *
  * Convert object input into CSS style string.
  * - Only includes truthy values (ignores null/undefined/false)
+ * 
+ * @param styles 
+ * @returns 
  */
 export function toCssStyles<T extends Record<string, string | number | boolean | null | undefined>> (styles: T): string {
     const parts: string[] = []
@@ -273,6 +283,9 @@ export function toCssStyles<T extends Record<string, string | number | boolean |
  *
  * Example:
  * undot({ 'a.b': 1, 'c.0': 2 }) -> { a: { b: 1 }, c: [2] }
+ * 
+ * @param obj 
+ * @returns 
  */
 export function undot (obj: Record<string, any>): Record<string, any> {
     const result: Record<string, any> = {}
@@ -306,6 +319,11 @@ export function undot (obj: Record<string, any>): Record<string, any> {
  * data_get
  *
  * Get a value from an object using dot notation.
+ * 
+ * @param obj 
+ * @param path 
+ * @param defaultValue 
+ * @returns 
  */
 export function data_get<
     T extends object,
@@ -326,6 +344,10 @@ export function data_get<
  * data_set
  *
  * Set a value in an object using dot notation. Mutates the object.
+ * 
+ * @param obj 
+ * @param path 
+ * @param value 
  */
 export function data_set<
     T extends Record<string, any>,
@@ -351,6 +373,10 @@ export function data_set<
  * data_fill
  *
  * Like data_set, but only sets the value if the key does NOT exist.
+ * 
+ * @param obj 
+ * @param path 
+ * @param value 
  */
 export function data_fill (
     obj: Record<string, any>,
@@ -366,6 +392,9 @@ export function data_fill (
  * data_forget
  *
  * Remove a key from an object using dot notation.
+ * 
+ * @param obj 
+ * @param path 
  */
 export function data_forget (
     obj: Record<string, any>,
@@ -388,13 +417,14 @@ export function data_forget (
  * Checks if a value is a plain object (not array, function, etc.)
  * 
  * @param value 
+ * @param allowArray
  * @returns 
  */
-export function isPlainObject (value: any): value is Record<string, any> {
+export function isPlainObject<P extends Record<string, unknown>> (value: unknown, allowArray?: boolean): value is P {
     return (
         value !== null &&
         typeof value === 'object' &&
-        !Array.isArray(value) &&
+        (Array.isArray(value) === false || allowArray === true) &&
         Object.prototype.toString.call(value) === '[object Object]'
     )
 }
@@ -402,6 +432,9 @@ export function isPlainObject (value: any): value is Record<string, any> {
 export class Obj {
     /**
      * Check if the value is a non-null object (associative/accessible).
+     * 
+     * @param value 
+     * @returns 
      */
     static accessible (value: unknown): value is Record<string, any> {
         return value !== null && typeof value === 'object'
@@ -411,6 +444,11 @@ export class Obj {
      * Add a key-value pair to an object only if the key does not already exist.
      *
      * Returns a new object (does not mutate original).
+     * 
+     * @param obj 
+     * @param key 
+     * @param value 
+     * @returns 
      */
     static add<T extends Record<string, any>, K extends string, V> (
         obj: T,
@@ -456,6 +494,9 @@ export class Obj {
 
     /**
      * Split object into [keys, values]
+     * 
+     * @param obj 
+     * @returns 
      */
     static divide<T extends Record<string, any>> (obj: T): [string[], any[]] {
         const keys = Object.keys(obj)
@@ -464,7 +505,36 @@ export class Obj {
     }
 
     /**
+     * Flattens a nested object into a single-level object
+     * with dot-separated keys.
+     *
+     * Example:
+     * dot({
+     *   user: { name: "John", address: { city: "NY" } },
+     *   active: true
+     * })
+     * 
+     * Output:
+     * {
+     *   "user.name": "John",
+     *   "user.address.city": "NY",
+     *   "active": true
+     * }
+     *
+     * @template T - The type of the input object
+     * @param obj - The nested object to flatten
+     * @returns A flattened object with dotted keys and inferred types
+     */
+    static dot<T extends Record<string, any>> (obj: T): DotFlatten<T> {
+        return dot(obj)
+    }
+
+    /**
      * Check if a key exists in the object.
+     * 
+     * @param obj 
+     * @param key 
+     * @returns 
      */
     static exists<T extends Record<string, any>> (obj: T, key: string | number): boolean {
         return Object.prototype.hasOwnProperty.call(obj, key)
@@ -475,6 +545,11 @@ export class Obj {
      *
      * Example:
      * Obj.get({a:{b:1}}, 'a.b') -> 1
+     * 
+     * @param obj 
+     * @param path 
+     * @param defaultValue 
+     * @returns 
      */
     static get<
         T extends object,
@@ -497,6 +572,10 @@ export class Obj {
 
     /**
      * Check if the object has a given key or keys (dot notation supported).
+     * 
+     * @param obj 
+     * @param keys 
+     * @returns 
      */
     static has<T extends object, P extends DotPath<T>> (
         obj: T,
@@ -517,15 +596,97 @@ export class Obj {
     }
 
     /**
-     * Check if an object is associative (has at least one non-numeric key).
+     * Checks if an object is not empty
+     * 
+     * @param obj 
+     * @returns 
      */
-    static isAssoc (obj: unknown): obj is Record<string, any> {
+    static isNotEmpty<T extends Record<string, unknown>> (obj: T): obj is T {
+        return Object.keys(obj).length >= 1
+    }
+
+    /**
+     * Checks if an object is empty
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static isEmpty<T extends Record<string, unknown>> (obj: T) {
+        return !this.isNotEmpty(obj)
+    }
+
+    /**
+     * Check if an object is associative (has at least one non-numeric key).
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static isAssoc<T extends Record<string, unknown>> (obj: unknown): obj is T {
         if (!Obj.accessible(obj)) return false
         return Object.keys(obj).some(k => isNaN(Number(k)))
     }
 
     /**
+     * Checks if a value is a plain object (not array, function, etc.)
+     * 
+     * @param value 
+     * @param allowArray 
+     * @returns 
+     */
+    static isPlainObject<T extends Record<string, unknown>> (value: unknown, allowArray?: boolean): value is T {
+        return isPlainObject(value, allowArray)
+    }
+
+    /**
+     * Removes the last element from an object and returns it. 
+     * If the object is empty, undefined is returned and the object is not modified.
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static pop<T extends Record<string, any>> (
+        obj: T
+    ): T[keyof T] | undefined {
+        const keys = Object.keys(obj) as Array<keyof T>
+
+        if (!keys.length) return undefined
+
+        const lastKey = keys[keys.length - 1]
+        const value = obj[lastKey]
+
+        delete obj[lastKey]
+
+        return value
+    }
+
+    /**
+     * Removes the first element from an array and returns it. 
+     * If the array is empty, undefined is returned and the array is not modified.
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static shift<T extends Record<string, any>> (
+        obj: T
+    ): T[keyof T] | undefined {
+        const keys = Object.keys(obj) as Array<keyof T>
+
+        if (!keys.length) return undefined
+
+        const firstKey = keys[0]
+        const value = obj[firstKey]
+
+        delete obj[firstKey]
+
+        return value
+    }
+
+    /**
      * Add a prefix to all keys of the object.
+     * 
+     * @param obj 
+     * @param prefix 
+     * @returns 
      */
     static prependKeysWith<T extends Record<string, any>> (obj: T, prefix: string): Record<string, any> {
         if (!Obj.accessible(obj)) return {}
@@ -540,6 +701,9 @@ export class Obj {
      * Convert an object into a URL query string.
      *
      * Nested objects/arrays are flattened using bracket notation.
+     * 
+     * @param obj 
+     * @returns 
      */
     static query (obj: Record<string, any>): string {
         const encode = encodeURIComponent
@@ -557,5 +721,48 @@ export class Obj {
 
         Object.entries(obj).forEach(([k, v]) => build(k, v))
         return parts.join('&')
+    }
+
+    /**
+     * If the given value is not an associative object, wrap it in one.
+     * 
+     * @param value 
+     */
+    static wrap<N = any> (value: N | Record<string, N> | N[]): Record<string, N> {
+        value = typeof value === 'string' || typeof value === 'number' ? this.arrayWrap(value) : value
+
+        if (Array.isArray(value)) {
+            value = Object.fromEntries(value.map((e, i) => [i, e]))
+        }
+
+        return value as Record<string, N>
+    }
+
+    /**
+     * undot
+     *
+     * Convert a dot-notated object back into nested structure.
+     *
+     * Example:
+     * undot({ 'a.b': 1, 'c.0': 2 }) -> { a: { b: 1 }, c: [2] }
+     * 
+     * @param obj 
+     * @returns 
+     */
+    static undot (obj: Record<string, any>): Record<string, any> {
+        return undot(obj)
+    }
+
+    /**
+     * If the given value is not an array and not null, wrap it in one.
+     * 
+     * Non-array values become [value]; null/undefined becomes [].
+     * 
+     * @param value 
+     * @returns 
+     */
+    private static arrayWrap<T = any> (value: T | T[] | null | undefined): T[] {
+        if (value === null || value === undefined) return []
+        return Array.isArray(value) ? value : [value]
     }
 }

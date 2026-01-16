@@ -1,0 +1,1 @@
+export type RouteParams<N = string | number> = Record<string, N> | N[] | N

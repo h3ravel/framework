@@ -10,6 +10,12 @@ export class UserController extends Controller {
 
     @Injectable()
     async store (request: Request, response: Response) {
+        const validate = await request.validate({
+            name: ['required', 'string'],
+        })
+
+        console.log(validate)
+
         return response
             .setStatusCode(202)
             .json({ message: `User ${request.input('name')} created` })
@@ -17,10 +23,11 @@ export class UserController extends Controller {
 
     @Injectable()
     async show (response: Response, user: User) {
+
         return response
             .setCache({ max_age: 50011, private: false })
             .setStatusCode(202)
-            .setContent(JSON.stringify({ id: user.id, name: user.name, created_at: user.created_at }))
+            .setContent(user)
     }
 
     async update ({ request, response }: HttpContext) {

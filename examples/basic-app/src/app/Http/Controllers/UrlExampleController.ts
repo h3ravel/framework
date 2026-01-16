@@ -1,5 +1,7 @@
-import { Controller } from '@h3ravel/core'
+import { Controller, Injectable } from '@h3ravel/core'
+
 import { HttpContext } from '@h3ravel/http'
+// import { Route } from '@h3ravel/support/facades'
 import { Url } from '@h3ravel/url'
 
 /**
@@ -9,7 +11,9 @@ export class UrlExampleController extends Controller {
     /**
      * Demonstrate various URL creation methods
      */
+    @Injectable()
     async index (ctx: HttpContext) {
+        // console.log(Route.middleware('web'))
         const examples = {
             // Static URL creation
             fromString: Url.of('https://example.com/path?param=value#section').toString(),
@@ -31,7 +35,6 @@ export class UrlExampleController extends Controller {
             currentUrl: url().current(),
             fullUrl: url().full(),
             previousUrl: url().previous(),
-            queryParams: url().query(),
 
             // Route-based URLs (demonstrating with existing routes)
             routeUrl: route('url.examples'),

@@ -1,4 +1,3 @@
-export * from './Contracts/ManagerContract'
 export * from './Drivers/AbstractHasher'
 export * from './Drivers/Argon2idHasher'
 export * from './Drivers/ArgonHasher'

@@ -1,16 +1,18 @@
 import { getRequestIP, type H3Event } from 'h3'
 import { Arr, data_get, data_set, Obj, safeDot, Str } from '@h3ravel/support'
-import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
-import { IRequest } from '@h3ravel/shared'
-import { Application } from '@h3ravel/core'
-import { RequestMethod, RequestObject } from '@h3ravel/shared'
+import type { DotNestedKeys, DotNestedValue, ISessionManager, IRequest, IRoute, RulesForData, MessagesForRules } from '@h3ravel/contracts'
+import { IApplication } from '@h3ravel/contracts'
+import { RequestMethod, RequestObject, IUrl } from '@h3ravel/contracts'
 import { InputBag } from './Utilities/InputBag'
 import { UploadedFile } from './UploadedFile'
 import { FormRequest } from './FormRequest'
-import { Url } from '@h3ravel/url'
 import { HttpRequest } from './Utilities/HttpRequest'
 
-export class Request extends HttpRequest implements IRequest {
+export class Request<
+    D extends Record<string, any> = Record<string, any>,
+    R extends RulesForData<D> = RulesForData<D>,
+    U extends Record<string, any> = Record<string, any>
+> extends HttpRequest implements IRequest<D, R> {
     /**
      * The decoded JSON content for the request.
      */
@@ -21,6 +23,16 @@ export class Request extends HttpRequest implements IRequest {
      */
     protected convertedFiles?: Record<string, UploadedFile | UploadedFile[]>
 
+    /**
+     * The route resolver callback.
+     */
+    protected routeResolver?: () => IRoute
+
+    /**
+     * The user resolver callback.
+     */
+    protected userResolver?: (guard?: string) => U
+
     constructor(
         /**
          * The current H3 H3Event instance
@@ -29,7 +41,7 @@ export class Request extends HttpRequest implements IRequest {
         /**
          * The current app instance
          */
-        app: Application
+        app: IApplication
     ) {
         if (Request.httpMethodParameterOverride) {
             HttpRequest.enableHttpMethodParameterOverride()
@@ -48,12 +60,31 @@ export class Request extends HttpRequest implements IRequest {
         /**
          * The current app instance
          */
-        app: Application
+        app: IApplication
     ) {
         const instance = new Request(event, app)
         await instance.setBody()
-        await instance.initialize()
-        globalThis.request = () => instance
+        instance.initialize()
+        return instance
+    }
+
+    /**
+     * Factory method to create a syncronous Request instance from an H3Event.
+     */
+    static createSync (
+        /**
+         * The current H3 H3Event instance
+         */
+        event: H3Event,
+        /**
+         * The current app instance
+         */
+        app: IApplication
+    ) {
+        const instance = new Request(event, app)
+        instance.content = event.req.body
+        instance.body = instance.content
+        instance.buildRequirements()
         return instance
     }
 
@@ -101,9 +132,27 @@ export class Request extends HttpRequest implements IRequest {
     }
 
     /**
+     * Validate the incoming request data
+     * 
+     * @param data 
+     * @param rules 
+     * @param messages 
+     */
+    async validate (
+        rules: R,
+        messages: Partial<Record<MessagesForRules<R>, string>> = {}
+    ): Promise<D> {
+        const { Validator } = await import('@h3ravel/validation')
+
+        const validator = new Validator(this.all(), rules, messages)
+
+        return await validator.validate() as D
+    }
+
+    /**
      * Retrieve all data from the instance (query + body).
      */
-    public all<T = Record<string, any>> (keys?: string | string[]): T {
+    all<T = Record<string, any>> (keys?: string | string[]): T {
         const input = Obj.deepMerge({}, this.input(), this.allFiles())
 
         if (!keys) {
@@ -127,11 +176,11 @@ export class Request extends HttpRequest implements IRequest {
      * @param defaultValue 
      * @returns 
      */
-    public input<K extends string | undefined> (
+    input<K extends string | undefined> (
         key?: K,
         defaultValue?: any
     ): K extends undefined ? RequestObject : any {
-        const source = { ...this.getInputSource().all(), ...this.query.all() }
+        const source = { ...this.getInputSource().all(), ...this._query.all() }
 
         return key ? data_get(source, key, defaultValue) : Arr.except(source, ['_method'])
     }
@@ -149,13 +198,11 @@ export class Request extends HttpRequest implements IRequest {
      * @param expectArray set to true to return an `UploadedFile[]` array.
      * @returns
      */
-    public file<K extends string | undefined = undefined, E extends boolean | undefined = undefined> (
-        key?: K,
-        defaultValue?: any,
-        expectArray?: E
-    ): K extends undefined
-        ? Record<string, E extends true ? UploadedFile[] : UploadedFile>
-        : E extends true ? UploadedFile[] : UploadedFile {
+    file (): Record<string, UploadedFile>;
+    file (key?: undefined, defaultValue?: any, expectArray?: true): Record<string, UploadedFile[]>;
+    file (key: string, defaultValue?: any, expectArray?: false | undefined): UploadedFile;
+    file (key: string, defaultValue?: any, expectArray?: true): UploadedFile[];
+    file<K extends string | undefined = undefined, E extends boolean | undefined = undefined> (key?: K, defaultValue?: any, expectArray?: E) {
         const files = data_get(this.allFiles(), key!, defaultValue)
 
         if (!files) return defaultValue
@@ -171,12 +218,39 @@ export class Request extends HttpRequest implements IRequest {
     }
 
     /**
+     * Get the user making the request.
+     *
+     * @param  guard
+     */
+    user (guard?: string): U | undefined {
+        return Reflect.apply(this.getUserResolver(), this, [guard])
+    }
+
+    /**
+     * Get the route handling the request.
+     *
+     * @param  param
+     * @param  defaultRoute
+     */
+    route (): IRoute
+    route (param?: string, defaultParam?: any): any
+    route (param?: string, defaultParam?: any) {
+        const route = Reflect.apply(this.getRouteResolver(), this, [])
+
+        if (typeof route === 'undefined' || !param) {
+            return route
+        }
+
+        return route.parameter(param, defaultParam)
+    }
+
+    /**
      * Determine if the uploaded data contains a file.
      *
      * @param  key
      * @return boolean
      */
-    public hasFile (key: string): boolean {
+    hasFile (key: string): boolean {
         let files = this.file(key, undefined, true)
 
         if (!Array.isArray(files)) {
@@ -198,7 +272,7 @@ export class Request extends HttpRequest implements IRequest {
     /**
      * Get an object with all the files on the request.
      */
-    public allFiles () {
+    allFiles () {
         if (this.convertedFiles) return this.convertedFiles
 
         const entries = Object
@@ -213,7 +287,7 @@ export class Request extends HttpRequest implements IRequest {
     /**
        * Extract and convert uploaded files from FormData.
        */
-    public convertUploadedFiles (
+    convertUploadedFiles (
         files: Record<string, UploadedFile | UploadedFile[]>
     ): Record<string, UploadedFile | UploadedFile[]> {
         if (!this.formData)
@@ -241,19 +315,30 @@ export class Request extends HttpRequest implements IRequest {
     }
 
     /**
+     * Get the current decoded path info for the request.
+     */
+    decodedPath () {
+        try {
+            return decodeURIComponent(this.path())
+        } catch {
+            return this.path()
+        }
+    }
+
+    /**
      * Determine if the data contains a given key.
      * 
      * @param keys 
      * @returns 
      */
-    public has (keys: string[] | string): boolean {
+    has (keys: string[] | string): boolean {
         return Obj.has(this.all(), keys)
     }
 
     /**
      * Determine if the instance is missing a given key.
      */
-    public missing (key: string | string[]) {
+    missing (key: string | string[]) {
         const keys = Array.isArray(key) ? key : [key]
 
         return !this.has(keys)
@@ -265,10 +350,17 @@ export class Request extends HttpRequest implements IRequest {
      * @param keys 
      * @returns 
      */
-    public only<T = Record<string, any>> (keys: string[]): T {
+    only<T = Record<string, any>> (keys: string[]): T {
         const data = Object.entries(this.all<Record<string, T>>()).filter(([key]) => keys.includes(key))
 
         return Object.fromEntries(data) as T
+    }
+
+    /**
+     * Determine if the request is over HTTPS.
+     */
+    secure () {
+        return this.isSecure()
     }
 
     /**
@@ -277,7 +369,7 @@ export class Request extends HttpRequest implements IRequest {
      * @param keys 
      * @returns 
      */
-    public except<T = Record<string, any>> (keys: string[]): T {
+    except<T = Record<string, any>> (keys: string[]): T {
         const data = Object.entries(this.all<Record<string, T>>()).filter(([key]) => !keys.includes(key))
 
         return Object.fromEntries(data) as T
@@ -289,7 +381,7 @@ export class Request extends HttpRequest implements IRequest {
      * @param input - An object containing key-value pairs to merge.
      * @returns this - For fluent chaining.
      */
-    public merge (input: Record<string, any>): this {
+    merge (input: Record<string, any>): this {
         const source = this.getInputSource()
 
         for (const [key, value] of Object.entries(input)) {
@@ -304,7 +396,7 @@ export class Request extends HttpRequest implements IRequest {
      *
      * @param input
      */
-    public mergeIfMissing (input: Record<string, any>) {
+    mergeIfMissing (input: Record<string, any>) {
         return this.merge(
             Object.fromEntries(Object.entries(input).filter(([key]) => this.missing(key)))
         )
@@ -313,8 +405,54 @@ export class Request extends HttpRequest implements IRequest {
     /**
      * Get the keys for all of the input and files.
      */
-    public keys (): string[] {
+    keys (): string[] {
         return [...Object.keys(this.input()), ...this.files.keys()]
+    }
+
+    /**
+     * Get an instance of the current session manager
+     * 
+     * @param key 
+     * @param defaultValue 
+     * @returns a global instance of the current session manager.
+     */
+    session<K extends string | Record<string, any> | undefined = undefined> (key?: K, defaultValue?: any): K extends undefined
+        ? ISessionManager
+        : K extends string
+        ? any : void | Promise<void> {
+        this.sessionManager ??= this.app.make('session')
+
+        if (typeof key === 'string') {
+            return this.sessionManager.get(key, defaultValue)
+        } else if (typeof key === 'object') {
+            for (const [k, val] of Object.entries(key)) {
+                this.sessionManager.put(k, val)
+            }
+            return undefined as any
+        }
+
+        return this.sessionManager as any
+    }
+
+    /**
+     * Get the host name.
+     */
+    host () {
+        return this.getHost()
+    }
+
+    /**
+     * Get the HTTP host being requested.
+     */
+    httpHost () {
+        return this.getHttpHost()
+    }
+
+    /**
+     * Get the scheme and HTTP host.
+     */
+    schemeAndHttpHost () {
+        return this.getSchemeAndHttpHost()
     }
 
     /**
@@ -322,7 +460,7 @@ export class Request extends HttpRequest implements IRequest {
      *
      * @return bool
      */
-    public isJson () {
+    isJson () {
         return Str.contains(this.getHeader('CONTENT_TYPE') ?? '', ['/json', '+json'])
     }
 
@@ -331,7 +469,7 @@ export class Request extends HttpRequest implements IRequest {
      * 
      * @returns 
      */
-    public expectsJson (): boolean {
+    expectsJson (): boolean {
         return Str.contains(this.getHeader('Accept') ?? '', 'application/json')
 
     }
@@ -341,7 +479,7 @@ export class Request extends HttpRequest implements IRequest {
      * 
      * @returns 
      */
-    public wantsJson (): boolean {
+    wantsJson (): boolean {
         const acceptable = this.getAcceptableContentTypes()
 
         return !!acceptable[0] && Str.contains(acceptable[0].toLowerCase(), ['/json', '+json'])
@@ -352,7 +490,7 @@ export class Request extends HttpRequest implements IRequest {
      *
      * @return bool
      */
-    public pjax () {
+    pjax () {
         return this.headers.get<boolean>('X-PJAX') == true
     }
 
@@ -362,42 +500,87 @@ export class Request extends HttpRequest implements IRequest {
      * @alias isXmlHttpRequest()
      * @returns {boolean}
      */
-    public ajax (): boolean {
+    ajax (): boolean {
         return this.isXmlHttpRequest()
     }
 
     /**
      * Get the client IP address.
      */
-    public ip (): string | undefined {
+    ip (): string | undefined {
         return getRequestIP(this.event)
+    }
+
+    /**
+     * Get the flashed input from previous request
+     * 
+     * @param key 
+     * @param defaultValue 
+     * @returns 
+     */
+    async old (): Promise<Record<string, any>>
+    async old (key: string, defaultValue?: any): Promise<any>
+    async old (key?: string, defaultValue?: any): Promise<any> {
+        const payload = await this.session().get('_old', {})
+
+        if (key) return safeDot(payload, key) || defaultValue
+        return payload
+        // new MessageBag(instance.errors().all())
     }
 
     /**
      * Get a URI instance for the request.
      */
-    public uri (): Url {
-        return this.getUriInstance()
+    uri (): IUrl {
+        const Url = Reflect.apply(this.app.getUriResolver(), this, [])!
+
+        return Url.of(this.fullUrl(), this.app)
+    }
+
+    /**
+     * Get the root URL for the application.
+     *
+     * @return string
+     */
+    root (): string {
+        return Str.rtrim(this.getSchemeAndHttpHost() + this.getBaseUrl(), '/')
+    }
+
+    /**
+     * Get the URL (no query string) for the request.
+     *
+     * @return string
+     */
+    url (): string {
+        return Str.rtrim(this.uri().toString().replace(/\?.*/, ''), '/')
     }
 
     /**
      * Get the full URL for the request. 
      */
-    public fullUrl (): string {
+    fullUrl (): string {
         return this.event.req.url
+    }
+
+    /**
+     * Get the current path info for the request.
+     */
+    path (): string {
+        const pattern = (this.getPathInfo() ?? '').replace(/^\/+|\/+$/g, '')
+        return pattern === '' ? '/' : pattern
     }
 
     /**
      * Return the Request instance.
      */
-    public instance (): this {
+    instance (): this {
         return this
     }
 
     /**
      * Get the request method.
      */
-    public method (): RequestMethod {
+    method (): RequestMethod {
         return this.getMethod()
     }
 
@@ -408,7 +591,7 @@ export class Request extends HttpRequest implements IRequest {
      * @param  defaultValue
      * @return {InputBag}
      */
-    public json<K extends string | undefined = undefined> (
+    json<K extends string | undefined = undefined> (
         key?: string,
         defaultValue?: any
     ): K extends undefined ? InputBag : any {
@@ -429,6 +612,140 @@ export class Request extends HttpRequest implements IRequest {
     }
 
     /**
+     * Get the user resolver callback.
+     */
+    getUserResolver (): ((gaurd?: string) => U | undefined) {
+        return this.userResolver ?? (() => undefined)
+    }
+
+    /**
+     * Set the user resolver callback.
+     *
+     * @param  callback
+     */
+    setUserResolver (callback: (gaurd?: string) => U) {
+        this.userResolver = callback
+
+        return this
+    }
+
+    /**
+     * Get the route resolver callback.
+     */
+    getRouteResolver (): () => IRoute | undefined {
+        return this.routeResolver ?? (() => undefined)
+    }
+
+    /**
+     * Set the route resolver callback.
+     *
+     * @param  callback
+     */
+    setRouteResolver (callback: () => IRoute) {
+        this.routeResolver = callback
+        return this
+    }
+
+    /**
+     * Get the bearer token from the request headers.
+     */
+    bearerToken (): string | undefined {
+        let header = this.header('Authorization', '')
+
+        const position = header.toLowerCase().lastIndexOf('bearer ')
+
+        if (position !== -1) {
+            header = header.slice(position + 7)
+
+            const commaIndex = header.indexOf(',')
+
+            return commaIndex !== -1
+                ? header.slice(0, commaIndex)
+                : header
+        }
+
+        return undefined
+    }
+
+    /**
+     * Retrieve data from the instance.
+     *
+     * @param  key
+     * @param  defaultValue
+     */
+    protected data (key?: string, defaultValue?: any) {
+        return this.input(key, defaultValue)
+    }
+
+    /**
+     * Retrieve a request payload item from the request.
+     * 
+     * @param  key
+     * @param  default
+     */
+    post (key?: string, defaultValue?: any) {
+        return this.retrieveItem('request', key, defaultValue)
+    }
+
+    /**
+     * Determine if a header is set on the request.
+     *
+     * @param  key
+     */
+    hasHeader (key: string) {
+        return this.header(key) != null
+    }
+
+    /**
+     * Retrieve a header from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    header (key?: string, defaultValue?: any) {
+        return this.retrieveItem('headers', key, defaultValue)
+    }
+
+    /**
+     * Determine if a cookie is set on the request.
+     *
+     * @param  string  $key
+     */
+    hasCookie (key: string) {
+        return this.cookie(key) != null
+    }
+
+    /**
+     * Retrieve a cookie from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    cookie (key?: string, defaultValue?: any) {
+        return this.retrieveItem('cookies', key, defaultValue)
+    }
+
+    /**
+     * Retrieve a query string item from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    query (key?: string, defaultValue?: any) {
+        return this.retrieveItem('_query', key, defaultValue)
+    }
+
+    /**
+     * Retrieve a server variable from the request.
+     *
+     * @param  key
+     * @param  default
+     */
+    server (key?: string, defaultValue?: any) {
+        return this.retrieveItem('_server', key, defaultValue)
+    }
+
+    /**
      * Get the input source for the request.
      *
      * @return {InputBag}
@@ -438,7 +755,30 @@ export class Request extends HttpRequest implements IRequest {
             return this.json()
         }
 
-        return ['GET', 'HEAD'].includes(this.getRealMethod()) ? this.query : this.request
+        return ['GET', 'HEAD'].includes(this.getRealMethod()) ? this._query : this.request
+    }
+
+    /**
+     * Retrieve a parameter item from a given source.
+     *
+     * @param  source
+     * @param  key
+     * @param  defaultValue
+     */
+    protected retrieveItem (
+        source: 'cookies' | '_server' | 'request' | '_query' | 'headers' | 'files' | 'attributes',
+        key?: string,
+        defaultValue?: any
+    ) {
+        if (key == null) {
+            return this[source].all()
+        }
+
+        if (this[source] instanceof InputBag) {
+            return this[source].all()[key] ?? defaultValue
+        }
+
+        return this[source].get(key, defaultValue)
     }
 
     /**
@@ -446,7 +786,7 @@ export class Request extends HttpRequest implements IRequest {
      *
      * @param  keys
      */
-    public dump (...keys: any[]): this {
+    dump (...keys: any[]): this {
         if (keys.length > 0) this.only(keys).then(dump)
         else this.all().then(dump)
 

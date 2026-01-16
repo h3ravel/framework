@@ -1,6 +1,7 @@
 import type { Callback, ExcerptOptions, Fallback, Function, HtmlStringType, Value } from '../Contracts/StrContract'
 
 import { dot } from './Obj'
+import { isIP } from 'node:net'
 
 export enum Mode {
     MB_CASE_UPPER = 0,
@@ -294,19 +295,6 @@ export class Str {
     }
 
     /**
-     * Determine if a given string doesn't contain a given substring.
-     *
-     * @param { string } haystack
-     * @param { string | string[] } needles
-     * @param { boolean } ignoreCase
-     *
-     * @return { boolean }
-     */
-    static doesntContain (haystack: string, needles: string | string[], ignoreCase: boolean = false): boolean {
-        return !this.contains(haystack, needles, ignoreCase)
-    }
-
-    /**
      * Convert the case of a string.
      *
      * @param { string } string
@@ -359,6 +347,62 @@ export class Str {
         }
 
         return string
+    }
+
+    /**
+     * Detect content type
+     * 
+     * @param content 
+     * @returns 
+     */
+    static detectContentType (content: any) {
+        if (typeof content !== 'string') {
+            return 'json'
+        }
+
+        const trimmed = content.trim()
+
+        /**
+         * JSON check 
+         */
+        if (/^[[{]/.test(trimmed)) {
+            try {
+                JSON.parse(trimmed)
+                return 'json'
+            } catch {/** */ }
+        }
+
+        /**
+         * XML check 
+         */
+        if (/^<\?xml/i.test(trimmed) || /^<[A-Za-z]+[^>]*>/.test(trimmed)) {
+            // If it looks like XML but not HTML
+            if (!/^<!DOCTYPE html>/i.test(trimmed) && !/<html[\s>]/i.test(trimmed)) {
+                return 'xml'
+            }
+        }
+
+        /**
+         * HTML check 
+         */
+        if (/<(html|head|body|div|span|p|!DOCTYPE)/i.test(trimmed)) {
+            return 'html'
+        }
+
+        return 'text'
+    }
+
+    /**
+     * Determine if a given string doesn't contain a given substring.
+     *
+     * @param { string } haystack
+     * @param { string | string[] } needles
+     * @param { boolean } ignoreCase
+     *
+     * @return { boolean }
+     */
+    static doesntContain (haystack: string, needles: string | string[], ignoreCase: boolean = false): boolean {
+        return !this.contains(haystack, needles, ignoreCase)
     }
 
     /**
@@ -551,7 +595,9 @@ export class Str {
                 return true
             }
 
-            pattern = pattern.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&').replace(/\\\*/g, '.*')
+            pattern = pattern
+                .replace(/[\\^$*+?.()|[\]{}]/g, '\\$&')
+                .replace(/\\\*/g, '.*')
 
             const regex: RegExp = new RegExp('^' + pattern + '$', ignoreCase ? 'iu' : 'u')
 
@@ -722,6 +768,27 @@ export class Str {
      */
     static lower (value: string): string {
         return value.toLowerCase()
+    }
+
+    /**
+     * Parse a Class[@]method style callback into class and method.
+     *
+     * @param callback
+     * @param defaultValue
+     */
+    static parseCallback (callback: string, defaultValue?: string) {
+        if (this.contains(callback, 'anonymous')) {
+            if (this.substrCount(callback, '@') > 1) {
+                return [
+                    this.beforeLast(callback, '@'),
+                    this.afterLast(callback, '@'),
+                ]
+            }
+
+            return [callback, defaultValue]
+        }
+
+        return this.contains(callback, '@') ? callback.split('@', 2) : [callback, defaultValue]
     }
 
     /**
@@ -2585,23 +2652,31 @@ export class Str {
      * @return { string }
      */
     static trim (value: string, characters: string | null = null): string {
+        // Default whitespace trim
         if (characters === null) {
             return value.trim()
         }
 
+        // Nothing to trim
         if (characters === '') {
             return value
         }
 
-        if (characters === ' ') {
-            return value.replaceAll(' ', '')
+        // Trim start
+        for (const char of characters) {
+            while (value.startsWith(char)) {
+                value = value.substring(char.length)
+            }
         }
 
-        characters = characters.split('').join('|')
+        // Trim end
+        for (const char of characters) {
+            while (value.endsWith(char)) {
+                value = value.substring(0, value.length - char.length)
+            }
+        }
 
-        const regex: RegExp = new RegExp(`${characters}+`, 'g')
-
-        return value.replace(regex, '') ?? value
+        return value
     }
 
     /**
@@ -2613,19 +2688,22 @@ export class Str {
      * @return { string }
      */
     static ltrim (value: string, characters: string | null = null): string {
+        // Trim default whitespace if no custom characters are provided
         if (characters === null) {
             return value.trimStart()
         }
 
+        // No characters to trim
         if (characters === '') {
             return value
         }
 
-        if (characters === ' ') {
-            return this.replaceStart(' ', '', value)
+        // Loop through each character and strip it ONLY from the start
+        for (const char of characters) {
+            while (value.startsWith(char)) {
+                value = value.substring(char.length)
+            }
         }
-
-        characters.split('').forEach((character: string): string => value = this.replaceStart(character, '', value))
 
         return value
     }
@@ -2639,22 +2717,26 @@ export class Str {
      * @return { string }
      */
     static rtrim (value: string, characters: string | null = null): string {
+        // Trim default whitespace if no custom characters are provided
         if (characters === null) {
             return value.trimEnd()
         }
 
+        // No characters to trim
         if (characters === '') {
             return value
         }
 
-        if (characters === ' ') {
-            return this.replaceEnd(' ', '', value)
+        // Loop through each character and strip it ONLY from the end
+        for (const char of characters) {
+            while (value.endsWith(char)) {
+                value = value.substring(0, value.length - char.length)
+            }
         }
-
-        characters.split('').forEach((character: string): string => value = this.replaceEnd(character, '', value))
 
         return value
     }
+
 
     /**
      * Remove all "extra" blank space from the given string.
@@ -3088,6 +3170,28 @@ export class Str {
         }
 
         return result
+    }
+
+    /**
+     * Validate an IP address
+     * 
+     * @param host 
+     * @param type 
+     * 
+     * @return { boolean }
+     */
+    static validateIp (host: string, type?: 'ipv4' | 'ipv6'): boolean {
+        const code = {
+            ipv4: 4,
+            ipv6: 6,
+        } as const
+
+        const result = isIP(host)
+
+        if (type)
+            return result === code[type]
+
+        return result > 0
     }
 
     /**
@@ -3554,6 +3658,17 @@ export class Stringable {
     }
 
     /**
+     * Convert the case of a string.
+     *
+     * @param { Mode | number } mode
+     *
+     * @return { Stringable }
+     */
+    convertCase (mode: Mode | number = Mode.MB_CASE_FOLD): Stringable {
+        return new Stringable(Str.convertCase(this.#value, mode))
+    }
+
+    /**
      * Determine if a given string doesn't contain a given substring.
      *
      * @param  { string | string[] } needles
@@ -3566,14 +3681,13 @@ export class Stringable {
     }
 
     /**
-     * Convert the case of a string.
-     *
-     * @param { Mode | number } mode
-     *
-     * @return { Stringable }
+     * Detect content type
+     * 
+     * @param content 
+     * @returns 
      */
-    convertCase (mode: Mode | number = Mode.MB_CASE_FOLD): Stringable {
-        return new Stringable(Str.convertCase(this.#value, mode))
+    static detectContentType (content: any) {
+        return Str.detectContentType(content)
     }
 
     /**
@@ -4503,6 +4617,17 @@ export class Stringable {
         }
 
         return this
+    }
+
+    /**
+     * Validate an IP address
+     * 
+     * @param host 
+     * @param type 
+     * @returns 
+     */
+    public validateIp (type: 'ipv4' | 'ipv6' = 'ipv4') {
+        return Str.validateIp(this.#value, type)
     }
 
     /**

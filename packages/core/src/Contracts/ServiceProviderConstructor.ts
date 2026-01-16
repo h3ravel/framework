@@ -1,8 +1,6 @@
-/// <reference path="../app.globals.d.ts" />
-
 import type { Application, ServiceProvider } from '..'
 
-import { IServiceProvider } from '@h3ravel/shared'
+import { IServiceProvider } from '@h3ravel/contracts'
 
 export type ServiceProviderConstructor = (new (app: Application) => ServiceProvider) & IServiceProvider;
 

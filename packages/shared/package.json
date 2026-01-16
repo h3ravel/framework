@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/shared",
-  "version": "0.27.7",
+  "version": "0.29.0",
   "description": "Shared Utilities.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -12,7 +12,7 @@
       "require": "./dist/index.cjs"
     },
     "./package.json": "./package.json",
-    "./tsconfig.json": "./tsconfig.json"
+    "./tsconfig.base.json": "./tsconfig.base.json"
   },
   "typesVersions": {
     "*": {
@@ -23,7 +23,7 @@
   },
   "files": [
     "dist",
-    "tsconfig.json"
+    "tsconfig.base.json"
   ],
   "publishConfig": {
     "access": "public",
@@ -70,6 +70,7 @@
     "preferred-pm": "catalog:"
   },
   "devDependencies": {
+    "@h3ravel/contracts": "workspace:^",
     "fetchdts": "^0.1.6",
     "pnpm": "^10.14.0"
   }

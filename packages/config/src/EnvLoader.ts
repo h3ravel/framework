@@ -1,11 +1,11 @@
 import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
 
-import { Application } from '@h3ravel/core'
 import { EnvParser } from '@h3ravel/shared'
+import { IApplication } from '@h3ravel/contracts'
 import { safeDot } from '@h3ravel/support'
 
 export class EnvLoader {
-    constructor(protected app?: Application) { }
+    constructor(protected app?: IApplication) { }
 
     /**
      * Get the defined environment vars

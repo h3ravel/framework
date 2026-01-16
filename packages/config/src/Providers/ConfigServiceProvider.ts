@@ -1,10 +1,9 @@
-/// <reference path="../../../core/src/app.globals.d.ts" />
+/// <reference path="../../../foundation/src/app.globals.d.ts" />
 
 import { ConfigRepository, EnvLoader } from '..'
 
-import { Bindings } from '@h3ravel/shared'
 import { ConfigPublishCommand } from '../Commands/ConfigPublishCommand'
-import { ServiceProvider } from '@h3ravel/core'
+import { ServiceProvider } from '@h3ravel/support'
 
 /**
  * Loads configuration and environment files.
@@ -24,7 +23,7 @@ export class ConfigServiceProvider extends ServiceProvider {
          */
         this.app.singleton('env', () => {
             const env = new EnvLoader(this.app).get
-            globalThis.env = env
+            globalThis.env ??= env
             return env
         })
 
@@ -38,22 +37,7 @@ export class ConfigServiceProvider extends ServiceProvider {
          * Create singleton to load configurations
          */
         this.app.singleton('config', () => {
-            const config = {
-                get: (key, def) => repo.get(key as any, def),
-                set: repo.set
-            } as Bindings['config']
-
-            globalThis.config = ((key: string | Record<string, any>, def: any) => {
-                if (!key || typeof key === 'string') {
-                    return config.get(key, def)
-                }
-
-                Object.entries(key).forEach(([key, value]) => {
-                    config.set(key, value)
-                })
-            }) as never
-
-            return config
+            return repo
         })
 
         this.app.make('http.app').use(e => {

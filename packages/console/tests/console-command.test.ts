@@ -5,8 +5,6 @@ import { Application } from '@h3ravel/core'
 import { Command as ICommand } from 'commander'
 import { Logger } from '@h3ravel/shared'
 
-console.log = vi.fn(() => 0)
-
 // Mock the Logger to capture calls
 const originalInfo = Logger.info
 const originalSuccess = Logger.success

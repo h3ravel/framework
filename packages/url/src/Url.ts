@@ -1,8 +1,7 @@
-import { ConfigException, type Application } from '@h3ravel/core'
-import { RouteParams } from './Contracts/UrlContract'
+import { ConfigException } from '@h3ravel/foundation'
 import { hmac } from '@h3ravel/support'
-import { RouteDefinition, ExtractControllerMethods } from '@h3ravel/shared'
 import path from 'node:path'
+import { ClassicRouteDefinition, ExtractClassMethods, IApplication, RouteParams } from '@h3ravel/contracts'
 
 /**
  * URL builder class with fluent API and request-aware helpers
@@ -14,10 +13,10 @@ export class Url {
     private readonly _path: string
     private readonly _query: Record<string, unknown>
     private readonly _fragment?: string
-    private readonly app?: Application
+    private readonly app?: IApplication
 
     private constructor(
-        app?: Application,
+        app?: IApplication,
         scheme?: string,
         host?: string,
         port?: number,
@@ -37,7 +36,7 @@ export class Url {
     /**
      * Create a URL from a full URL string
      */
-    static of (url: string, app?: Application): Url {
+    static of (url: string, app?: IApplication): Url {
         try {
             const parsed = new URL(url)
             const query: Record<string, unknown> = {}
@@ -64,7 +63,7 @@ export class Url {
     /**
      * Create a URL from a path relative to the app URL
      */
-    static to (path: string, app?: Application): Url {
+    static to (path: string, app?: IApplication): Url {
         let baseUrl = ''
         try {
             baseUrl = config('app.url', 'http://localhost:3000')
@@ -78,27 +77,17 @@ export class Url {
     /**
      * Create a URL from a named route
      */
-    // Route parameter map (declaration-mergeable by consumers)
     static route<TName extends string = string, TParams extends RouteParams = RouteParams> (
         name: TName,
         params: TParams = {} as TParams,
-        app?: Application
+        app?: IApplication
     ): Url {
         if (!app) {
             throw new Error('Application instance required for route generation')
         }
 
-        // Use (app as any).make to avoid TS error if make is not typed on Application
-        const router = app.make('router')
-        if (!router || typeof router.route !== 'function') {
-            throw new Error('Router not available or does not support route generation')
-        }
+        const routeUrl = app.make('url').route(name, params)
 
-        if (typeof router.route !== 'function') {
-            throw new Error('Router does not support route generation')
-        }
-
-        const routeUrl = router.route(name, params)
         if (!routeUrl) {
             throw new Error(`Route "${name}" not found`)
         }
@@ -112,10 +101,9 @@ export class Url {
     static signedRoute<TName extends string = string, TParams extends RouteParams = RouteParams> (
         name: TName,
         params: TParams = {} as TParams,
-        app?: Application
+        app?: IApplication
     ): Url {
-        const url = Url.route<TName, TParams>(name, params, app)
-        return url.withSignature(app)
+        return Url.route<TName, TParams>(name, params, app).withSignature(app)
     }
 
     /**
@@ -125,19 +113,18 @@ export class Url {
         name: TName,
         params: TParams = {} as TParams,
         expiration: number,
-        app?: Application
+        app?: IApplication
     ): Url {
-        const url = Url.route<TName, TParams>(name, params, app)
-        return url.withSignature(app, expiration)
+        return Url.route<TName, TParams>(name, params, app).withSignature(app, expiration)
     }
 
     /**
      * Create a URL from a controller action
      */
     static action<C extends new (...args: any) => any> (
-        controller: string | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
+        controller: string | [C, methodName: ExtractClassMethods<InstanceType<C>>],
         params?: Record<string, any>,
-        app?: Application
+        app?: IApplication
     ): Url {
         if (!app) throw new Error('Application instance required for action URL generation')
 
@@ -147,7 +134,7 @@ export class Url {
 
         const cname = typeof controllerName === 'string' ? controllerName : controllerName.name
 
-        const routes: RouteDefinition[] = app.make('app.routes')
+        const routes: ClassicRouteDefinition[] = app.make('app.routes')
 
         if (!Array.isArray(routes)) {
             // Backward-compatible message expected by existing tests
@@ -281,7 +268,7 @@ export class Url {
     /**
      * Add a signature to the URL for security
      */
-    withSignature (app?: Application, expiration?: number): Url {
+    withSignature (app?: IApplication, expiration?: number): Url {
         const appInstance = app || this.app
         if (!appInstance) {
             throw new Error('Application instance required for URL signing')
@@ -316,7 +303,7 @@ export class Url {
     /**
      * Verify if a URL signature is valid
      */
-    hasValidSignature (app?: Application): boolean {
+    hasValidSignature (app?: IApplication): boolean {
         const appInstance = app || this.app
         if (!appInstance) {
             return false

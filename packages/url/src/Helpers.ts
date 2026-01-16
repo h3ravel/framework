@@ -1,8 +1,6 @@
-import { Application } from '@h3ravel/core'
-import { HelpersContract } from './Contracts/UrlContract'
 import { RequestAwareHelpers } from './RequestAwareHelpers'
 import { Url } from './Url'
-import { ExtractControllerMethods } from '@h3ravel/shared'
+import { ExtractClassMethods, IApplication, IUrlHelpers } from '@h3ravel/contracts'
 
 /**
  * Global helper functions for URL manipulation
@@ -13,7 +11,7 @@ import { ExtractControllerMethods } from '@h3ravel/shared'
  */
 export function to (
     path: string,
-    app?: Application
+    app?: IApplication
 ): Url {
     return Url.to(path, app)
 }
@@ -24,7 +22,7 @@ export function to (
 export function route<TName extends string, TParams extends Record<string, string> = Record<string, string>> (
     name: TName,
     params: TParams = {} as TParams,
-    app?: Application
+    app?: IApplication
 ): Url {
     return Url.route<TName, TParams>(name, params, app)
 }
@@ -35,7 +33,7 @@ export function route<TName extends string, TParams extends Record<string, strin
 export function signedRoute<TName extends string, TParams extends Record<string, string> = Record<string, string>> (
     name: TName,
     params: TParams = {} as TParams,
-    app?: Application
+    app?: IApplication
 ): Url {
     return Url.signedRoute<TName, TParams>(name, params, app)
 }
@@ -47,7 +45,7 @@ export function temporarySignedRoute (
     name: string,
     params: Record<string, string> = {},
     expiration: number,
-    app?: Application
+    app?: IApplication
 ): Url {
     return Url.temporarySignedRoute(name, params, expiration, app)
 }
@@ -57,7 +55,7 @@ export function temporarySignedRoute (
  */
 export function action (
     controller: string,
-    app?: Application
+    app?: IApplication
 ): Url {
     return Url.action(controller, app)
 }
@@ -65,7 +63,7 @@ export function action (
 /**
  * Get request-aware URL helpers
  */
-export function url (app?: Application): RequestAwareHelpers {
+export function url (app?: IApplication): RequestAwareHelpers {
     if (!app) throw new Error('Application instance required for request-aware URL helpers')
     return new RequestAwareHelpers(app)
 }
@@ -73,7 +71,7 @@ export function url (app?: Application): RequestAwareHelpers {
 /**
  * Create URL helpers that are bound to an application instance
  */
-export function createUrlHelpers (app: Application): HelpersContract {
+export function createUrlHelpers (app: IApplication): IUrlHelpers {
     return {
         /**
          * Create a URL from a path relative to the app URL
@@ -109,7 +107,7 @@ export function createUrlHelpers (app: Application): HelpersContract {
          * Create a URL from a controller action
          */
         action: <C extends new (...args: any) => any> (
-            controller: string | [C, methodName: ExtractControllerMethods<InstanceType<C>>],
+            controller: string | [C, methodName: ExtractClassMethods<InstanceType<C>>],
             params?: Record<string, any>
         ) => Url.action(controller, params, app).toString(),
 

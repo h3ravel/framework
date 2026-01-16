@@ -85,6 +85,14 @@
     },
     {
       "name": "index.ts",
+      "root": "packages/events/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
       "root": "packages/router/src",
       "exclude": [
         "**/*.test.ts",
@@ -127,10 +135,55 @@
     },
     {
       "name": "index.ts",
-      "root": "packages/support/src",
+      "root": "packages/validation/src",
       "exclude": [
         "**/*.test.ts",
         "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/session/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/foundation/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ],
+      "order": [
+        "Exceptions/HttpException"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/support/src/Facades",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/support/src/Traits",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/support/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts",
+        "**/Traits/*.*",
+        "**/Facades/*.*"
       ],
       "exports": {
         "**/Arr.ts": [
@@ -161,6 +214,14 @@
           "/^(?!default$)(.+)/ as $1"
         ]
       }
+    },
+    {
+      "name": "index.ts",
+      "root": "packages/contracts/src",
+      "exclude": [
+        "**/*.test.ts",
+        "**/*.d.ts"
+      ]
     }
   ]
 }
