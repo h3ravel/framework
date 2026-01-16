@@ -4,9 +4,9 @@ import { IHttpContext } from '@h3ravel/contracts'
 import { RequestException } from './RequestException'
 
 export class ExceptionHandler extends Handler {
-    public async handle (error: Error, ctx: IHttpContext) {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const e = this.mapException(error)
+    public async handle (e: Error, ctx: IHttpContext) {
+
+        let error = this.mapException(e)
 
         try {
             /**

@@ -173,7 +173,7 @@ export class Kernel extends mix(IKernel, use(InteractsWithTime)) {
             }
         }
 
-        response.reset()
+        if (response.reset) response.reset()
         this.#requestStartedAt = undefined
     }
 

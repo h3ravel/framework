@@ -354,7 +354,7 @@ export abstract class Handler extends IExceptionHandler {
      * @param error 
      * @returns 
      */
-    protected mapException (error: any): any {
+    protected mapException<E extends Error & { getInnerException?: () => any }> (error: E): E {
         /* unwrap common inner pattern */
         if (error && typeof error.getInnerException === 'function') {
             try {

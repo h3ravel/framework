@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/mail",
-  "version": "11.0.17-alpha.6",
+  "version": "11.0.17-alpha.7",
   "description": "Mail drivers and templates system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -46,7 +46,7 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^1.22.0-alpha.6"
+    "@h3ravel/core": "workspace:^1.22.0-alpha.7"
   },
   "devDependencies": {
     "@types/nodemailer": "catalog:",

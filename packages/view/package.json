@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/view",
-  "version": "0.1.14-alpha.6",
+  "version": "0.1.14-alpha.7",
   "description": "View rendering system for H3ravel framework",
   "h3ravel": {
     "providers": [
@@ -60,8 +60,8 @@
   },
   "dependencies": {
     "@h3ravel/musket": "catalog:prod",
-    "@h3ravel/core": "workspace:^1.22.0-alpha.6",
-    "@h3ravel/http": "workspace:^11.8.0-alpha.6",
+    "@h3ravel/core": "workspace:^1.22.0-alpha.7",
+    "@h3ravel/http": "workspace:^11.8.0-alpha.7",
     "edge.js": "catalog:"
   },
   "devDependencies": {
@@ -69,7 +69,7 @@
     "vitest": "^2.0.0"
   },
   "peerDependencies": {
-    "@h3ravel/shared": "workspace:^0.29.0-alpha.6",
-    "@h3ravel/support": "workspace:^0.17.0-alpha.6"
+    "@h3ravel/shared": "workspace:^0.29.0-alpha.7",
+    "@h3ravel/support": "workspace:^0.17.0-alpha.7"
   }
 }
