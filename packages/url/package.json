@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/url",
-  "version": "1.1.0-alpha.5",
+  "version": "1.1.0-alpha.6",
   "description": "Request-aware URI builder and URL manipulation utilities for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -59,10 +59,10 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
-    "@h3ravel/support": "workspace:^0.17.0-alpha.5",
-    "@h3ravel/contracts": "workspace:^0.29.0-alpha.5",
-    "@h3ravel/foundation": "workspace:^0.1.0-alpha.5",
-    "@h3ravel/shared": "workspace:^0.29.0-alpha.5"
+    "@h3ravel/support": "workspace:^0.17.0-alpha.6",
+    "@h3ravel/contracts": "workspace:^0.29.0-alpha.6",
+    "@h3ravel/foundation": "workspace:^0.1.0-alpha.6",
+    "@h3ravel/shared": "workspace:^0.29.0-alpha.6"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

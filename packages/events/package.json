@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/events",
-  "version": "0.1.0-alpha.5",
+  "version": "0.1.0-alpha.6",
   "description": "Events package for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -57,7 +57,7 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^1.22.0-alpha.5"
+    "@h3ravel/core": "workspace:^1.22.0-alpha.6"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
