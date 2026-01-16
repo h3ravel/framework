@@ -102,4 +102,11 @@ export abstract class AbstractRouteCollection implements IAbstractRouteCollectio
          */
         return path === route.uri()
     }
+
+    /**
+     * Count the number of items in the collection.
+     */
+    count (): number {
+        return this.getRoutes().length
+    }
 }

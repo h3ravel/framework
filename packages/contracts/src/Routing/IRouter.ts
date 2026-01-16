@@ -298,4 +298,9 @@ export abstract class IRouter {
      * @param  callback
      */
     abstract substituteImplicitBindingsUsing (callback: CallableConstructor): this
+
+    /**
+     * Count the number of items in the collection.
+     */
+    abstract count (): number
 }

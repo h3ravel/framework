@@ -6,4 +6,5 @@ export declare abstract class IAbstractRouteCollection {
     abstract get (): IRoute[];
     abstract get (method: string): Record<string, IRoute>;
     abstract getRoutes (): IRoute[];
+    abstract count (): number
 }
