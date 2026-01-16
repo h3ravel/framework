@@ -146,8 +146,8 @@ catalogs:
       specifier: ^5.3.3
       version: 5.3.3
     '@h3ravel/musket':
-      specifier: ^0.6.10
-      version: 0.6.10
+      specifier: ^0.6.11
+      version: 0.6.11
     h3:
       specifier: 2.0.1-rc.5
       version: 2.0.1-rc.5
@@ -268,64 +268,64 @@ importers:
         specifier: catalog:prod
         version: 0.7.6(@types/node@24.9.2)(sqlite3@5.1.7)
       '@h3ravel/cache':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/cache
       '@h3ravel/config':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/config
       '@h3ravel/console':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/console
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/core
       '@h3ravel/database':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/database
       '@h3ravel/events':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/events
       '@h3ravel/filesystem':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/filesystem
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/foundation
       '@h3ravel/hashing':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/hashing
       '@h3ravel/http':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/http
       '@h3ravel/mail':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/mail
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.9.2)
+        version: 0.6.11(@types/node@24.9.2)
       '@h3ravel/queue':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/queue
       '@h3ravel/router':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/router
       '@h3ravel/session':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/session
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/support
       '@h3ravel/url':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/url
       '@h3ravel/validation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/validation
       '@h3ravel/view':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../../packages/view
       cross-env:
         specifier: 'catalog:'
@@ -365,7 +365,7 @@ importers:
   packages/cache:
     dependencies:
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.16.1-alpha.2
         version: link:../support
     devDependencies:
       typescript:
@@ -376,19 +376,19 @@ importers:
     dependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
       tsx:
         specifier: 'catalog:'
@@ -400,20 +400,20 @@ importers:
   packages/console:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../foundation
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@0.15.6)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
-        version: 0.15.6
+        specifier: workspace:^0.1.0-alpha.2
+        version: link:../support
       chalk:
         specifier: ^5.6.2
         version: 5.6.2
@@ -443,7 +443,7 @@ importers:
         version: 4.20.6
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       typescript:
         specifier: ^5.9.2
@@ -457,7 +457,7 @@ importers:
     devDependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@0.16.1)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       edge.js:
         specifier: 'catalog:'
         version: 6.3.0
@@ -468,13 +468,13 @@ importers:
   packages/core:
     dependencies:
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
       chalk:
         specifier: ^5.6.2
@@ -511,7 +511,7 @@ importers:
         version: 2.8.1
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@types/semver':
         specifier: 'catalog:'
@@ -526,19 +526,19 @@ importers:
         specifier: catalog:prod
         version: 0.7.6(@types/node@24.10.0)(sqlite3@5.1.7)
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
       '@h3ravel/filesystem':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../filesystem
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
       sqlite3:
         specifier: 'catalog:'
@@ -551,7 +551,7 @@ importers:
   packages/events:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
     devDependencies:
       typescript:
@@ -561,16 +561,16 @@ importers:
   packages/filesystem:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
     devDependencies:
       typescript:
@@ -581,19 +581,19 @@ importers:
     dependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
       h3:
         specifier: catalog:prod
         version: 2.0.1-rc.5
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@types/supertest':
         specifier: ^6.0.3
@@ -605,19 +605,19 @@ importers:
   packages/hashing:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
       argon2:
         specifier: 'catalog:'
@@ -633,25 +633,25 @@ importers:
   packages/http:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../foundation
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       '@h3ravel/session':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../session
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
       '@h3ravel/validation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../validation
       h3:
         specifier: catalog:prod
@@ -670,7 +670,7 @@ importers:
         specifier: ^3.864.0
         version: 3.864.0
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
       nodemailer:
         specifier: ^7.0.5
@@ -686,10 +686,10 @@ importers:
   packages/queue:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
     devDependencies:
       typescript:
@@ -699,28 +699,28 @@ importers:
   packages/router:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@h3ravel/database':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../database
       '@h3ravel/events':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../events
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../foundation
       '@h3ravel/http':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
       h3:
         specifier: catalog:prod
@@ -732,17 +732,17 @@ importers:
   packages/session:
     dependencies:
       '@h3ravel/database':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../database
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       typescript:
         specifier: ^5.4.0
@@ -773,7 +773,7 @@ importers:
         version: 4.1.1
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       fetchdts:
         specifier: ^0.1.6
@@ -785,7 +785,7 @@ importers:
   packages/support:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       dayjs:
         specifier: 'catalog:'
@@ -798,7 +798,7 @@ importers:
         specifier: catalog:prod
         version: 5.3.3
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@types/luxon':
         specifier: 'catalog:'
@@ -810,16 +810,16 @@ importers:
   packages/url:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
     devDependencies:
       typescript:
@@ -829,25 +829,25 @@ importers:
   packages/validation:
     dependencies:
       '@h3ravel/config':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../config
       '@h3ravel/contracts':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../contracts
       '@h3ravel/core':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../core
       '@h3ravel/database':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../database
       '@h3ravel/foundation':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^
+        specifier: workspace:^0.1.0-alpha.2
         version: link:../support
       simple-body-validator:
         specifier: 'catalog:'
@@ -867,7 +867,7 @@ importers:
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)
+        version: 0.6.11(@types/node@24.10.0)
       '@h3ravel/shared':
         specifier: workspace:*
         version: link:../shared
@@ -1638,11 +1638,9 @@ packages:
   '@h3ravel/contracts@0.28.1':
     resolution: {integrity: sha512-Ub2+5rvabNjMvcxDkVWfBBucXLpVDqCX8/rl3QQwbDpcNilZfcnzw1aHfSuk5XpNUBw4zmxYJGlQkuNS3St+TQ==}
 
-  '@h3ravel/musket@0.6.10':
-    resolution: {integrity: sha512-+An+HX3fM853f8ZCVE2CBwJ0oM+2jH/xUimx0EW7l05fNo8F9ltxrrl5997DLtCzn+GWsf6em++iHxDHkOiQDA==}
+  '@h3ravel/musket@0.6.11':
+    resolution: {integrity: sha512-FaL4JOe9dDXv6GBxOVtDyt44AkDwhxbornY5uWwOUUSPn4uuLJnVK2o643TZkb1edWwfxweQFjMQgDmCipMLNQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
-    peerDependencies:
-      '@h3ravel/support': ^0.16.1
 
   '@h3ravel/shared@0.27.7':
     resolution: {integrity: sha512-vuH/VlpWNoJHvkrvqz6OxObWyMtOwYmz2fDK4HvV9MREGkVEnKjFRUp96Gr/wplVLTAbvKxKaL6QeUZokulw8Q==}
@@ -3494,9 +3492,6 @@ packages:
   err-code@2.0.3:
     resolution: {integrity: sha512-2bmlRpNKBxT/CRmPOlyISQpNj+qSeYvcym/uT0Jx2bMOlKLtSy1ZmLuVxSEKKyor/N5yhvp/ZiG1oE3DEYMSFA==}
 
-  error-ex@1.3.4:
-    resolution: {integrity: sha512-sqQamAnR14VgCr1A618A3sGrygcpK+HEbenA/HiEAkkUwcZIIB/tgWqHFxWgOyDh4nB4JCRimh79dR5Ywc9MDQ==}
-
   es-define-property@1.0.1:
     resolution: {integrity: sha512-e3nRfgfUZ4rNGL232gUgX06QNyyez04KdjFrF+LTRoOXmrOgFKDg4BCdsjW8EnT69eqdYGmRpJwiPVYNrCaW3g==}
     engines: {node: '>= 0.4'}
@@ -5022,10 +5017,6 @@ packages:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
 
-  signale@1.4.0:
-    resolution: {integrity: sha512-iuh+gPf28RkltuJC7W5MRi6XAjTDCAPC/prJUpQoG4vIP3MJZ+GTydVnodXA7pwvTKb2cA0m9OFZW/cdWy/I/w==}
-    engines: {node: '>=6'}
-
   simple-body-validator@1.3.9:
     resolution: {integrity: sha512-zruc+5Y+L16lHTX+z/aSp8payiGGk1GM7UC9rs8j+lKOwxikfm+/RACsrjh461FCyyOcwAbu7s0UnKRKy9nUyQ==}
 
@@ -5193,10 +5184,6 @@ packages:
   supertest@7.1.4:
     resolution: {integrity: sha512-tjLPs7dVyqgItVFirHYqe2T+MfWc2VOBQ8QFKKbWTA3PU7liZR8zoSpAi/C1k1ilm9RsXIKYf197oap9wXGVYg==}
     engines: {node: '>=14.18.0'}
-
-  supports-color@5.5.0:
-    resolution: {integrity: sha512-QjVjwdXIt408MIiAqCX4oUKsgU2EqAGzs2Ppkm4aQYbjm+ZEWEcW4SfFNTr4uMNZma0ey4f5lgLrkB0aX0QMow==}
-    engines: {node: '>=4'}
 
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -7018,24 +7005,7 @@ snapshots:
     transitivePeerDependencies:
       - crossws
 
-  '@h3ravel/musket@0.6.10(@h3ravel/support@0.15.6)(@types/node@24.10.0)':
-    dependencies:
-      '@h3ravel/shared': 0.28.4(@types/node@24.10.0)
-      '@h3ravel/support': 0.15.6
-      chalk: 5.6.2
-      commander: 14.0.2
-      dayjs: 1.11.19
-      execa: 9.6.0
-      glob: 11.0.3
-      preferred-pm: 4.1.1
-      radashi: 12.7.0
-      resolve-from: 5.0.0
-      tsx: 4.20.6
-    transitivePeerDependencies:
-      - '@types/node'
-      - crossws
-
-  '@h3ravel/musket@0.6.10(@h3ravel/support@0.16.1)(@types/node@24.10.0)':
+  '@h3ravel/musket@0.6.11(@types/node@24.10.0)':
     dependencies:
       '@h3ravel/shared': 0.28.4(@types/node@24.10.0)
       '@h3ravel/support': 0.16.1
@@ -7052,27 +7022,10 @@ snapshots:
       - '@types/node'
       - crossws
 
-  '@h3ravel/musket@0.6.10(@h3ravel/support@packages+support)(@types/node@24.10.0)':
-    dependencies:
-      '@h3ravel/shared': 0.28.4(@types/node@24.10.0)
-      '@h3ravel/support': link:packages/support
-      chalk: 5.6.2
-      commander: 14.0.2
-      dayjs: 1.11.19
-      execa: 9.6.0
-      glob: 11.0.3
-      preferred-pm: 4.1.1
-      radashi: 12.7.0
-      resolve-from: 5.0.0
-      tsx: 4.20.6
-    transitivePeerDependencies:
-      - '@types/node'
-      - crossws
-
-  '@h3ravel/musket@0.6.10(@h3ravel/support@packages+support)(@types/node@24.9.2)':
+  '@h3ravel/musket@0.6.11(@types/node@24.9.2)':
     dependencies:
       '@h3ravel/shared': 0.28.4(@types/node@24.9.2)
-      '@h3ravel/support': link:packages/support
+      '@h3ravel/support': 0.16.1
       chalk: 5.6.2
       commander: 14.0.2
       dayjs: 1.11.19
@@ -9221,10 +9174,6 @@ snapshots:
   err-code@2.0.3:
     optional: true
 
-  error-ex@1.3.4:
-    dependencies:
-      is-arrayish: 0.2.1
-
   es-define-property@1.0.1: {}
 
   es-errors@1.3.0: {}
@@ -10854,12 +10803,6 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
-  signale@1.4.0:
-    dependencies:
-      chalk: 2.4.2
-      figures: 2.0.0
-      pkg-conf: 2.1.0
-
   simple-body-validator@1.3.9: {}
 
   simple-concat@1.0.1: {}
@@ -11041,10 +10984,6 @@ snapshots:
       superagent: 10.2.3
     transitivePeerDependencies:
       - supports-color
-
-  supports-color@5.5.0:
-    dependencies:
-      has-flag: 3.0.0
 
   supports-color@7.2.0:
     dependencies:

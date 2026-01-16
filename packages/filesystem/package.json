@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/filesystem",
-  "version": "0.4.15-alpha.1",
+  "version": "0.4.15-alpha.2",
   "description": "Filesystem manager for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -58,11 +58,11 @@
   },
   "dependencies": {
     "@h3ravel/musket": "catalog:prod",
-    "@h3ravel/shared": "workspace:^",
-    "@h3ravel/support": "workspace:^"
+    "@h3ravel/shared": "workspace:^0.1.0-alpha.2",
+    "@h3ravel/support": "workspace:^0.1.0-alpha.2"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^"
+    "@h3ravel/core": "workspace:^0.1.0-alpha.2"
   },
   "devDependencies": {
     "typescript": "^5.4.0"
