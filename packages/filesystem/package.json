@@ -49,7 +49,6 @@
     "filesystem"
   ],
   "scripts": {
-    "barrel": "barrelsby --directory src --delete --singleQuotes",
     "build": "tsdown --config-loader unconfig",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
