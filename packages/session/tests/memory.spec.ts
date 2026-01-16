@@ -47,7 +47,7 @@ describe('@h3ravel/session MemoryDriver', () => {
 
     beforeEach(async () => {
         event = makeEvent()
-        const { Request, Response, HttpContext } = (await import(('@h3ravel/http')))
+        const { Request, Response, HttpContext } = await import('@h3ravel/http')
 
         ctx = HttpContext.init({
             app,
