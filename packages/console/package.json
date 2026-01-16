@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/console",
-  "version": "11.14.10",
+  "version": "11.15.0",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",
