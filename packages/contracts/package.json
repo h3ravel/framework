@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/contracts",
-  "version": "0.29.0-alpha.4",
+  "version": "0.29.0-alpha.5",
   "description": "H3ravel Contracts.",
   "type": "module",
   "main": "./dist/index.cjs",

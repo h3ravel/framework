@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/shared",
-  "version": "0.29.0-alpha.4",
+  "version": "0.29.0-alpha.5",
   "description": "Shared Utilities.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -70,7 +70,7 @@
     "preferred-pm": "catalog:"
   },
   "devDependencies": {
-    "@h3ravel/contracts": "workspace:^0.29.0-alpha.4",
+    "@h3ravel/contracts": "workspace:^0.29.0-alpha.5",
     "fetchdts": "^0.1.6",
     "pnpm": "^10.14.0"
   }

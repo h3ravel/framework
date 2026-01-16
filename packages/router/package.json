@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/router",
-  "version": "1.15.0-alpha.4",
+  "version": "1.15.0-alpha.5",
   "description": "Route facade, decorators and controller system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -56,17 +56,17 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/database": "workspace:^11.5.0-alpha.4"
+    "@h3ravel/database": "workspace:^11.5.0-alpha.5"
   },
   "dependencies": {
     "h3": "catalog:prod",
-    "@h3ravel/contracts": "workspace:^0.29.0-alpha.4",
-    "@h3ravel/events": "workspace:^0.1.0-alpha.4",
+    "@h3ravel/contracts": "workspace:^0.29.0-alpha.5",
+    "@h3ravel/events": "workspace:^0.1.0-alpha.5",
     "@h3ravel/musket": "catalog:prod",
-    "@h3ravel/http": "workspace:^11.8.0-alpha.4",
-    "@h3ravel/shared": "workspace:^0.29.0-alpha.4",
-    "@h3ravel/support": "workspace:^0.17.0-alpha.4",
-    "@h3ravel/foundation": "workspace:^0.1.0-alpha.4",
+    "@h3ravel/http": "workspace:^11.8.0-alpha.5",
+    "@h3ravel/shared": "workspace:^0.29.0-alpha.5",
+    "@h3ravel/support": "workspace:^0.17.0-alpha.5",
+    "@h3ravel/foundation": "workspace:^0.1.0-alpha.5",
     "reflect-metadata": "catalog:"
   }
 }
