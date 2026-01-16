@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/validation",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "description": "Lightweight validation library providing expressive rule-based validation for requests, data objects, and custom logic for H3ravel applications.",
   "h3ravel": {
     "providers": [

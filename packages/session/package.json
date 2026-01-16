@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/session",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "description": "Provides a unified session management layer for h3ravel, with secure encryption, consistent API design, and optional adapters (memory, file, redis, db).",
   "h3ravel": {
     "providers": [

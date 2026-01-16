@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/events",
-  "version": "0.1.0",
+  "version": "0.1.0-alpha.1",
   "description": "Events package for H3ravel.",
   "h3ravel": {
     "providers": [

@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/url",
-  "version": "1.1.0",
+  "version": "1.1.0-alpha.1",
   "description": "Request-aware URI builder and URL manipulation utilities for H3ravel.",
   "h3ravel": {
     "providers": [

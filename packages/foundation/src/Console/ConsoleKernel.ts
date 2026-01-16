@@ -139,7 +139,10 @@ export class ConsoleKernel extends CKernel {
     /**
      * Get all the registered commands.
      */
-    async all () {
+    // @ts-expect-error TS2322 -- Ignore --
+    async all (): Promise<{
+        new(app: IApplication, kernel: Kernel<IApplication>): Command<IApplication>;
+    }[]> {
         await this.bootstrap()
 
         return this.getConsole().getRegisteredCommands()
@@ -229,6 +232,7 @@ export class ConsoleKernel extends CKernel {
     /**
      * Get the Musket application instance.
      */
+    // @ts-expect-error TS2322 -- Ignore --
     getConsole (): Kernel<IApplication> {
         if (this.console == null) {
             const baseCommands = [BuildCommand, MakeCommand, PostinstallCommand, KeyGenerateCommand] as any[]
