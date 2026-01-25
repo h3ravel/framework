@@ -67,6 +67,7 @@
     "escalade": "catalog:",
     "h3": "catalog:prod",
     "inquirer-autocomplete-standalone": "^0.8.1",
+    "ora": "^9.1.0",
     "preferred-pm": "catalog:"
   },
   "devDependencies": {

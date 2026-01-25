@@ -1,5 +1,6 @@
 import autocomplete, { ChoiceOrSeparatorArray } from 'inquirer-autocomplete-standalone'
-import { confirm, input, password, select } from '@inquirer/prompts'
+import { checkbox, confirm, editor, input, password, select } from '@inquirer/prompts'
+import ora, { Options as oraOptions } from 'ora'
 
 import { Choices } from '../Contracts/PromptsContract'
 import { Logger } from '..'
@@ -7,25 +8,24 @@ import { Logger } from '..'
 export class Prompts extends Logger {
     /**
      * Allows users to pick from a predefined set of choices when asked a question.
+     * 
+     * @param message      Message to display
+     * @param choices      The choices available to the user
+     * @param defaultIndex Item index front of which the cursor will initially appear
+     * @param pageSize     The number of items to show per page
+     * @returns
      */
     public static async choice (
-        /**
-         * Message to dislpay
-         */
         message: string,
-        /**
-         * The choices available to the user
-         */
         choices: Choices,
-        /**
-         * Item index front of which the cursor will initially appear
-         */
         defaultIndex?: number,
+        pageSize?: number,
     ) {
         return select({
             message,
             choices,
-            default: defaultIndex ? choices.at(defaultIndex) : undefined
+            default: defaultIndex ? choices.at(defaultIndex) : undefined,
+            pageSize
         })
     }
 
@@ -34,40 +34,35 @@ export class Prompts extends Logger {
      * Ask the user for a simple "yes or no" confirmation. 
      * By default, this method returns `false`. However, if the user enters y or yes 
      * in response to the prompt, the method would return `true`.
+     * 
+     * @param message      Message to display
+     * @param defaultValue The default value
      */
     public static async confirm (
-        /**
-         * Message to dislpay
-         */
         message: string,
-        /**
-         * The default value
-         */
-        def?: boolean | undefined,
+        defaultValue?: boolean | undefined,
     ) {
         return confirm({
             message,
-            default: def
+            default: defaultValue
         })
     }
 
     /**
      * Prompt the user with the given question, accept their input, 
      * and then return the user's input back to your command.
+     * 
+     * @param message      Message to display
+     * @param defaultValue The default value
+     * @returns 
      */
     public static async ask (
-        /**
-         * Message to dislpay
-         */
         message: string,
-        /**
-         * The default value
-         */
-        def?: string | undefined,
+        defaultValue?: string | undefined,
     ) {
         return input({
             message,
-            default: def
+            default: defaultValue
         })
     }
 
@@ -75,17 +70,13 @@ export class Prompts extends Logger {
      * Prompt the user with the given question, accept their input which 
      * will not be visible to them as they type in the console, 
      * and then return the user's input back to your command.
+     * 
+     * @param message Message to display
+     * @param mask    Mask the user input
+     * @returns 
      */
     public static async secret (
-        /**
-         * Message to dislpay
-         */
         message: string,
-        /**
-         * Mask the user input
-         * 
-         * @default true
-         */
         mask?: string | boolean,
     ) {
         return password({
@@ -98,19 +89,19 @@ export class Prompts extends Logger {
      * Provide auto-completion for possible choices. 
      * The user can still provide any answer, regardless of the auto-completion hints.
      */
+    /**
+     * 
+     * @param message      Message to dislpay
+     * @param source       The source of completions
+     * @param defaultValue Set a default value
+     * @param pageSize     The number of items to show per page
+     * @returns 
+     */
     public static async anticipate (
-        /**
-         * Message to dislpay
-         */
         message: string,
-        /**
-         * The source of completions
-         */
         source: string[] | ((input?: string | undefined) => Promise<ChoiceOrSeparatorArray<any>>),
-        /**
-         * Set a default value
-         */
-        def?: string,
+        defaultValue?: string,
+        pageSize?: number,
     ) {
         return autocomplete({
             message,
@@ -118,7 +109,67 @@ export class Prompts extends Logger {
                 return (term ? source.filter(e => e.includes(term)) : source).map(e => ({ value: e }))
             } : source,
             suggestOnly: true,
-            default: def
+            default: defaultValue,
+            pageSize
+        })
+    }
+
+    /**
+     * Display a spinner while performing a long task
+     * 
+     * @param options The spinner options
+     * @returns 
+     */
+    public static spinner (options?: string | oraOptions | undefined) {
+        return ora(options)
+    }
+
+    /**
+     * Allows users to select multiple options from a predefined list of choices.
+     * 
+     * @param message  Message to display
+     * @param choices  The choices available to the user
+     * @param required Whether at least one choice is required
+     * @param prefix   Prefix to display before the message
+     * @param pageSize The number of items to show per page
+     * @returns
+     */
+    public static async checkbox (
+        message: string,
+        choices: Choices,
+        required?: boolean,
+        prefix?: string,
+        pageSize?: number,
+    ) {
+        return await checkbox({
+            message,
+            choices,
+            required,
+            prefix,
+            pageSize
+        })
+    }
+
+    /**
+     * Open the user's default text editor to accept multi-line input.
+     * 
+     * @param message  Message to display
+     * @param postfix  The postfix of the file being edited [e.g., '.txt', '.md']
+     * @param defaultValue The default value to pre-fill in the editor
+     * @param validate A function to validate the input text
+     * @returns
+     */
+    public static async editor (
+        message?: string,
+        postfix?: string,
+        defaultValue?: string,
+        validate?: (text: string) => boolean | string
+    ) {
+        return await editor({
+            message: message ?? 'Please provide your input in the editor below:',
+            postfix,
+            default: defaultValue,
+            validate
         })
     }
 }
