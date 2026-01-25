@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/core",
-  "version": "1.21.7",
+  "version": "1.21.10",
   "description": "Core application container, lifecycle management and service providers for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -60,8 +60,8 @@
     "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump core package version\" && pnpm publish --tag latest"
   },
   "dependencies": {
-    "@h3ravel/shared": "workspace:^",
-    "@h3ravel/support": "workspace:^",
+    "@h3ravel/shared": "workspace:~",
+    "@h3ravel/support": "workspace:~",
     "chalk": "^5.6.2",
     "commander": "^14.0.1",
     "detect-port": "catalog:",

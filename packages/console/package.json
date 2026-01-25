@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/console",
-  "version": "11.14.10",
+  "version": "11.14.13",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -67,14 +67,14 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^",
-    "@h3ravel/support": "workspace:^"
+    "@h3ravel/core": "workspace:~",
+    "@h3ravel/support": "workspace:~"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@h3ravel/shared": "workspace:^",
+    "@h3ravel/shared": "workspace:~",
     "chalk": "^5.6.2",
     "commander": "^14.0.1",
     "dayjs": "catalog:",

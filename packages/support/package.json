@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/support",
-  "version": "0.15.6",
+  "version": "0.15.9",
   "description": "Shared helpers, facades and utilities for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -52,7 +52,7 @@
     "version-patch": "pnpm version patch"
   },
   "devDependencies": {
-    "@h3ravel/shared": "workspace:^",
+    "@h3ravel/shared": "workspace:~",
     "@types/luxon": "catalog:",
     "typescript": "^5.4.0"
   },

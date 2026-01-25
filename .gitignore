@@ -7,6 +7,8 @@ yarn-error.log*
 lerna-debug.log*
 .DS_Store
 
+examples/basic-app/storage/framework/sessions/*
+
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 

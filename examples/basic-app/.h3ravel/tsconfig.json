@@ -1,34 +1,31 @@
 {
-  "extends": "@h3ravel/shared/tsconfig.json",
+  "extends": "@h3ravel/shared/tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
     "paths": {
-      "src/*": ["./../src/*"],
-      "App/*": ["./../src/app/*"],
-      "root/*": ["./../*"],
-      "routes/*": ["./../src/routes/*"],
-      "config/*": ["./../src/config/*"],
-      "resources/*": ["./../src/resources/*"],
-      "@h3ravel/cache": ["./../../../packages/cache/src/index.ts"],
-      "@h3ravel/config": ["./../../../packages/config/src/index.ts"],
-      "@h3ravel/console": ["./../../../packages/console/src/index.ts"],
-      "@h3ravel/core": ["./../../../packages/core/src/index.ts"],
-      "@h3ravel/database": ["./../../../packages/database/src/index.ts"],
-      "@h3ravel/filesystem": ["./../../../packages/filesystem/src/index.ts"],
-      "@h3ravel/hashing": ["./../../../packages/hashing/src/index.ts"],
-      "@h3ravel/http": ["./../../../packages/http/src/index.ts"],
-      "@h3ravel/mail": ["./../../../packages/mail/src/index.ts"],
-      "@h3ravel/queue": ["./../../../packages/queue/src/index.ts"],
-      "@h3ravel/router": ["./../../../packages/router/src/index.ts"],
-      "@h3ravel/shared": ["./../../../packages/shared/src/index.ts"],
-      "@h3ravel/support": ["./../../../packages/support/src/index.ts"],
-      "@h3ravel/url": ["./../../../packages/url/src/index.ts"],
-      "@h3ravel/view": ["./../../../packages/view/src/index.ts"]
+      "src/*": [
+        "./../src/*"
+      ],
+      "App/*": [
+        "./../src/app/*"
+      ],
+      "root/*": [
+        "./../*"
+      ],
+      "routes/*": [
+        "./../src/routes/*"
+      ],
+      "config/*": [
+        "./../src/config/*"
+      ],
+      "resources/*": [
+        "./../src/resources/*"
+      ]
     },
     "target": "es2022",
     "module": "es2022",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "strict": true,
     "allowJs": true,
@@ -38,7 +35,10 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["./**/*.d.ts", "./../**/*"],
+  "include": [
+    "./**/*.d.ts",
+    "./../**/*"
+  ],
   "exclude": [
     ".",
     "./../**/console/bin",

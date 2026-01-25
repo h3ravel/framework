@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/cache",
-  "version": "11.0.16",
+  "version": "11.0.19",
   "description": "Cache system with multiple drivers for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -57,7 +57,7 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^"
+    "@h3ravel/core": "workspace:~"
   },
   "devDependencies": {
     "typescript": "^5.4.0"

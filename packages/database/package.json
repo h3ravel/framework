@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/database",
-  "version": "11.4.11",
+  "version": "11.4.14",
   "description": "Modeling data and migration system for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -62,10 +62,10 @@
     "sqlite3": "catalog:"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^",
-    "@h3ravel/shared": "workspace:^",
-    "@h3ravel/filesystem": "workspace:^",
-    "@h3ravel/support": "workspace:^"
+    "@h3ravel/core": "workspace:~",
+    "@h3ravel/shared": "workspace:~",
+    "@h3ravel/filesystem": "workspace:~",
+    "@h3ravel/support": "workspace:~"
   },
   "devDependencies": {
     "typescript": "^5.9.2"
