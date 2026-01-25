@@ -1,8 +1,8 @@
+import { Choices, Spinner } from '../Contracts/PromptsContract'
 import autocomplete, { ChoiceOrSeparatorArray } from 'inquirer-autocomplete-standalone'
 import { checkbox, confirm, editor, input, password, select } from '@inquirer/prompts'
 import ora, { Options as oraOptions } from 'ora'
 
-import { Choices } from '../Contracts/PromptsContract'
 import { Logger } from '..'
 
 export class Prompts extends Logger {
@@ -120,7 +120,7 @@ export class Prompts extends Logger {
      * @param options The spinner options
      * @returns 
      */
-    public static spinner (options?: string | oraOptions | undefined) {
+    public static spinner (options?: string | oraOptions | undefined): Spinner {
         return ora(options)
     }
 

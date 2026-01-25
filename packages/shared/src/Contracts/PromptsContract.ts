@@ -1,3 +1,4 @@
+import { Ora } from 'ora'
 import { Separator } from '@inquirer/prompts'
 export type { ChoiceOrSeparatorArray } from 'inquirer-autocomplete-standalone'
 
@@ -13,3 +14,5 @@ export type Choice<Value> = {
 export type ISeparator = Separator
 
 export type Choices = readonly (string | Separator)[] | readonly (Separator | Choice<string>)[]
+
+export type Spinner = Ora

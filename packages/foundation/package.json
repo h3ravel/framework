@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/foundation",
-  "version": "0.1.0-alpha.8",
+  "version": "0.1.0-alpha.9",
   "description": "H3ravel Foundation for shared and reuseable services.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -63,13 +63,13 @@
   },
   "devDependencies": {
     "@types/supertest": "^6.0.3",
-    "@h3ravel/contracts": "workspace:^0.29.0-alpha.8",
+    "@h3ravel/contracts": "workspace:^0.29.0-alpha.9",
     "supertest": "^7.1.4"
   },
   "dependencies": {
     "h3": "catalog:prod",
-    "@h3ravel/shared": "workspace:^0.29.0-alpha.8",
+    "@h3ravel/shared": "workspace:^0.29.0-alpha.9",
     "@h3ravel/musket": "catalog:prod",
-    "@h3ravel/support": "workspace:^0.17.0-alpha.8"
+    "@h3ravel/support": "workspace:^0.17.0-alpha.9"
   }
 }
