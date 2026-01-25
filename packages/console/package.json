@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/console",
-  "version": "11.15.0-alpha.9",
+  "version": "11.15.0-alpha.10",
   "description": "CLI utilities for scaffolding, running migrations, tasks and for H3ravel.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -66,17 +66,17 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^1.22.0-alpha.9",
-    "@h3ravel/support": "workspace:^0.17.0-alpha.9"
+    "@h3ravel/core": "workspace:^1.22.0-alpha.10",
+    "@h3ravel/support": "workspace:^0.17.0-alpha.10"
   },
   "devDependencies": {
-    "@h3ravel/contracts": "workspace:^0.29.0-alpha.9",
+    "@h3ravel/contracts": "workspace:^0.29.0-alpha.10",
     "typescript": "^5.9.2"
   },
   "dependencies": {
     "@h3ravel/musket": "catalog:prod",
-    "@h3ravel/shared": "workspace:^0.29.0-alpha.9",
-    "@h3ravel/foundation": "workspace:^0.1.0-alpha.9",
+    "@h3ravel/shared": "workspace:^0.29.0-alpha.10",
+    "@h3ravel/foundation": "workspace:^0.1.0-alpha.10",
     "chalk": "^5.6.2",
     "commander": "^14.0.1",
     "dayjs": "catalog:",
