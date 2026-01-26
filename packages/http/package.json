@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/http",
-  "version": "11.7.11",
+  "version": "11.7.12",
   "description": "HTTP kernel, middleware pipeline, request/response classes for H3ravel.",
   "h3ravel": {
     "providers": [

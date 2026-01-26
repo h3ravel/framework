@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/cache",
-  "version": "11.0.20",
+  "version": "11.0.21",
   "description": "Cache system with multiple drivers for H3ravel.",
   "h3ravel": {
     "providers": [

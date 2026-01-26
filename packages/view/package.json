@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/view",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "View rendering system for H3ravel framework",
   "h3ravel": {
     "providers": [
