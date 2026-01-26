@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/mail",
-  "version": "11.0.19",
+  "version": "11.0.20",
   "description": "Mail drivers and templates system for H3ravel.",
   "h3ravel": {
     "providers": [
