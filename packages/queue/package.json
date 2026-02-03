@@ -59,10 +59,6 @@
     "@h3ravel/core": "workspace:^1.22.0-alpha.10",
     "@h3ravel/contracts": "workspace:^0.29.0-alpha.10"
   },
-  "dependencies": {
-    "bullmq": "^5.0.0",
-    "ioredis": "^5.3.2"
-  },
   "devDependencies": {
     "typescript": "^5.4.0"
   }
