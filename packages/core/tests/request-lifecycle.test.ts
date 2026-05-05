@@ -17,8 +17,16 @@ describe('HTTP request lifecycle isolation', () => {
     })
 
     it('resolves the latest response after http.response is rebound for a new request', () => {
-        const first = { status: 200, headers: new Headers() }
-        const second = { status: 200, headers: new Headers() }
+        const first = {
+            status: 200,
+            headers: new Headers(),
+            getStatusCode: () => 200
+        }
+        const second = {
+            status: 200,
+            headers: new Headers(),
+            getStatusCode: () => 200
+        }
 
         container.bind('http.response', () => first as never)
         expect(container.make('http.response')).toBe(first)
@@ -31,8 +39,16 @@ describe('HTTP request lifecycle isolation', () => {
     })
 
     it('does not keep redirect response state after request bindings are rebound', () => {
-        const first = { status: 302, headers: new Headers({ location: '/form' }) }
-        const second = { status: 200, headers: new Headers() }
+        const first = {
+            status: 302,
+            headers: new Headers({ location: '/form' }),
+            getStatusCode: () => 302
+        }
+        const second = {
+            status: 200,
+            headers: new Headers(),
+            getStatusCode: () => 200
+        }
 
         container.bind('http.response', () => first as never)
         expect(container.make('http.response')).toBe(first)
