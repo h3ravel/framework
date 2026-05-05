@@ -86,7 +86,15 @@ export class Container extends IContainer {
         key: T,
         factory: () => Bindings[T] | T
     ) {
-        this.bindings.set(key, factory)
+        const abstract = this.getAlias(key)
+
+        this.resolvedInstances.delete(abstract)
+        this.singletons.delete(abstract)
+        this.bindings.set(abstract, factory)
+
+        if (this.reboundCallbacks.has(abstract)) {
+            this.rebound(abstract)
+        }
     }
 
     /**
@@ -122,12 +130,18 @@ export class Container extends IContainer {
     unbind<T extends UseKey> (key: T | T[]) {
         if (Array.isArray(key)) {
             for (let i = 0; i < key.length; i++) {
-                this.bindings.delete(key[i])
-                this.singletons.delete(key[i])
+                const abstract = this.getAlias(key[i])
+                this.bindings.delete(abstract)
+                this.singletons.delete(abstract)
+                this.instances.delete(abstract)
+                this.resolvedInstances.delete(abstract)
             }
         } else {
-            this.bindings.delete(key)
-            this.singletons.delete(key)
+            const abstract = this.getAlias(key)
+            this.bindings.delete(abstract)
+            this.singletons.delete(abstract)
+            this.instances.delete(abstract)
+            this.resolvedInstances.delete(abstract)
         }
     }
 
@@ -541,11 +555,13 @@ export class Container extends IContainer {
     instance<X = any> (key: string, instance: X): X
     instance<K extends abstract new (...args: any[]) => any, X = any> (abstract: K, instance: X): X
     instance (abstract: any, instance: any) {
+        abstract = this.getAlias(abstract)
         this.removeAbstractAlias(abstract)
 
         const isBound = this.bound(abstract)
 
         this.aliases.delete(abstract)
+        this.resolvedInstances.delete(abstract)
 
         // We'll check to determine if this type has been bound before, and if it has
         // we will fire the rebound callbacks registered with the container and it

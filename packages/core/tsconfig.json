@@ -1,7 +1,11 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "outDir": "dist"
+    "outDir": "dist",
+    "rootDir": "..",
+    "paths": {
+      "@h3ravel/core": ["./src/index.ts"]
+    }
   },
   "exclude": ["dist", "node_modules"]
 }
