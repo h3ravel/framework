@@ -1,4 +1,4 @@
-import { IPathName } from '@h3ravel/contracts'
+import type { IPathName } from '@h3ravel/contracts'
 import nodepath from 'path'
 
 export class PathLoader {

@@ -1,4 +1,4 @@
-import { ClassConstructor } from '@h3ravel/contracts'
+import type { ClassConstructor } from '@h3ravel/contracts'
 
 /**
  * Helper to convert a Union (A | B) into an Intersection (A & B)

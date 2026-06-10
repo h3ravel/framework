@@ -426,7 +426,7 @@ export class Application extends Container implements IApplication {
 
             this.h3Event = event
 
-            const context = await this.context!(event)
+            const context = await this.buildContext(event, config, true)
 
             const kernel = this.make(IKernel)
 
@@ -434,21 +434,33 @@ export class Application extends Container implements IApplication {
             this.bind('http.request', () => context.request)
             this.bind('http.response', () => context.response)
 
-            const response = await kernel.handle(context.request)
+            let response: IResponse | undefined
 
-            if (response) this.bind('http.response', () => response)
+            try {
+                response = await kernel.handle(context.request)
 
-            kernel.terminate(context.request, response!)
+                const handledResponse = response ?? context.response
 
-            let finalResponse: IResponse | IResponsable | undefined
+                this.bind('http.response', () => handledResponse)
 
-            if (response && ['Response', 'JsonResponse'].includes(response.constructor.name)) {
-                finalResponse = response.prepare(context.request).send()
-            } else {
-                finalResponse = response
+                kernel.terminate(context.request, handledResponse)
+
+                let finalResponse: IResponse | IResponsable | undefined
+
+                if (response && ['Response', 'JsonResponse'].includes(response.constructor.name)) {
+                    finalResponse = response.prepare(context.request).send()
+                } else {
+                    finalResponse = response
+                }
+
+                return finalResponse
+            } finally {
+                const { HttpContext } = await import('@h3ravel/http')
+
+                HttpContext.forget(context.event)
+                delete (context.event as any)._h3ravelContext
+                this.unbind(['http.context', 'http.request', 'http.response'])
             }
-
-            return finalResponse
         })
     }
 
