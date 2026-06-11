@@ -1,4 +1,6 @@
+import { IStorage } from '@h3ravel/foundation'
 import { ServiceProvider } from '@h3ravel/core'
+import { Storage } from '../Storage'
 import { StorageLinkCommand } from '../Commands/StorageLinkCommand'
 
 /**
@@ -10,5 +12,10 @@ export class FilesystemProvider extends ServiceProvider {
 
     register () {
         this.registerCommands([StorageLinkCommand])
+        this.app.singleton('storage', () => new Storage(this.app))
+        this.app.alias([
+            [Storage, 'storage'],
+            [IStorage, 'storage'],
+        ])
     }
 }

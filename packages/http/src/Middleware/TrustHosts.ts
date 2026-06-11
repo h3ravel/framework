@@ -76,15 +76,15 @@ export class TrustHosts extends Middleware {
      * @return bool
      */
     protected shouldSpecifyTrustedHosts () {
-        return !this.app.environment('local') &&
-            !this.app.runningUnitTests()
+        return !this.app?.environment('local') &&
+            !this.app?.runningUnitTests()
     }
 
     /**
      * Get a regular expression matching the application URL and all of its subdomains.
      */
     protected allSubdomainsOfApplicationUrl (): string | undefined {
-        const appUrl = this.app.make('config').get('app.url')
+        const appUrl = this.app?.make('config').get('app.url')
         const host = new URL(appUrl).host
 
 

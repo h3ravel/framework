@@ -51,6 +51,7 @@ export default defineConfig(
           'varsIgnorePattern': '^I[A-Z]|^_',
         }
       ],
+      '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/triple-slash-reference': ['error', {
         'path': 'always'

@@ -42,11 +42,11 @@
     "access": "restricted"
   },
   "devDependencies": {
-    "@aws-sdk/client-sesv2": "^3.925.0",
+    "@aws-sdk/client-sesv2": "^3.1066.0",
     "@changesets/cli": "catalog:",
     "@eslint/js": "catalog:",
     "@swc/core": "catalog:",
-    "@types/node": "^24.10.0",
+    "@types/node": "^25.9.3",
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@typescript-eslint/parser": "catalog:",
     "@vitest/coverage-v8": "catalog:",
@@ -76,7 +76,7 @@
     "typescript-eslint": "catalog:",
     "utility-types": "catalog:",
     "vite-tsconfig-paths": "catalog:",
-    "vitest": "^3.2.4"
+    "vitest": "catalog:"
   },
   "packageManager": "pnpm@10.19.0"
 }

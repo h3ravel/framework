@@ -24,7 +24,8 @@ export class RouteServiceProvider extends ServiceProvider {
     protected static alwaysLoadRoutesUsing?: CallableConstructor
 
     async register () {
-        const { RouteListCommand, Router, SubstituteBindings } = await import('@h3ravel/router')
+        const { RouteListCommand, Router, SubstituteBindings } =
+            await import('@h3ravel/router')
 
         this.app.bindMiddleware('SubstituteBindings', SubstituteBindings)
 

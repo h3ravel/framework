@@ -14,7 +14,73 @@
 
 # About H3ravel/filesystem
 
-This is the filesystem manager for the [H3ravel](https://h3ravel.toneflix.net) framework.
+This is the filesystem manager for the [H3ravel](https://h3ravel.toneflix.net) framework, providing shared file storage and filesystem utitlities for the framework.
+
+## Custom Drivers
+
+@h3ravel/filesystem allows you to configure and use custom storage drivers.
+
+**CloudinaryFileDriver.ts**
+
+```ts
+import type { DriverContract, ObjectVisibility } from 'flydrive/types';
+import type { CustomDiskConfig } from '@h3ravel/filesystem';
+
+export class CloudinaryFileDriver implements DriverContract {
+  constructor(private config?: CustomDiskConfig) {}
+  async exists(key: string) {}
+  async get(key: string) {}
+  async getStream(key: string) {}
+  async getBytes(key: string) {}
+  async getMetaData(key: string) {}
+  async getVisibility(): Promise<ObjectVisibility> {}
+  async getUrl(key: string) {}
+  async getSignedUrl(key: string) {}
+  async getSignedUploadUrl(key: string) {}
+  async setVisibility() {}
+  async put() {}
+  async putStream() {}
+  async copy() {}
+  async move() {}
+  async delete() {}
+  async deleteAll() {}
+  async listAll() {}
+  async bucket() {}
+}
+```
+
+**src/config/filesystem.ts**
+
+```ts
+import { CloudinaryFileDriver } from '../CloudinaryFileDriver';
+export default () => {
+  return {
+    default: 'images',
+    disks: {
+      images: {
+        //...Other Disks Here
+        driver: 'cloudinary',
+      },
+    },
+    links: {},
+    custom_drivers: {
+      cloudinary: CloudinaryFileDriver,
+    },
+  };
+};
+```
+
+To improve type safety and auto complete, you may augment the `CustomDiskDriverRegistry`
+
+**env.d.ts**
+
+```ts
+declare module '@h3ravel/filesystem' {
+  interface CustomDiskDriverRegistry {
+    cloudinary: { cloud_name: string; api_key: string; api_secret: string };
+  }
+}
+```
 
 ## Contributing
 
