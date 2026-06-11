@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { mkdtemp, readFile, rmdir, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 
 import { Application } from '@h3ravel/core'
 import { Kernel } from '@h3ravel/musket'
@@ -23,7 +23,7 @@ beforeAll(async () => {
 })
 
 afterAll(async () => {
-    await rmdir(tempPath, { recursive: true })
+    await rm(tempPath, { recursive: true })
 })
 
 describe('key:generate command', () => {

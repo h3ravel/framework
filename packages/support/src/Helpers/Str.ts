@@ -3332,7 +3332,8 @@ export class Str {
         function generateRandomNumber (): number {
             const buffer: Uint8Array = new Uint8Array(1)
 
-            crypto.getRandomValues(buffer)
+            // TODO: Remove never and ensure the correct value is used here
+            crypto.getRandomValues(buffer as never)
 
             return (buffer[0] as number) / 0xff
         }

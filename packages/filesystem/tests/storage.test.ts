@@ -1,56 +1,141 @@
-// import { afterAll, beforeAll } from 'vitest'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { mkdtempSync, rmSync } from 'node:fs'
+import { join } from 'node:path'
+import { tmpdir } from 'node:os'
 
-// import { Driver } from '../src/Driver'
-import { Storage } from '../src/Facades'
-// import dotenv from 'dotenv'
+import { Driver } from '../src/Driver'
+import { Storage } from '../src/Storage'
 import { driver } from './helpers'
 
-// import { dirname, resolve } from 'node:path'
+type TestConfig = Record<string, any>
 
-// import { fileURLToPath } from 'node:url'
+function getConfigValue (values: TestConfig, key?: string, defaultValue?: any) {
+    if (!key) return values
 
-// import { h3ravel } from '@h3ravel/core'
+    const value = key.split('.').reduce<any>((current, segment) => {
+        return current?.[segment]
+    }, values)
 
-// const __dirname = dirname(fileURLToPath(import.meta.url))
+    return value ?? defaultValue
+}
 
-describe.skip('Filesystem Storage', () => {
-    // beforeAll(async () => {
-    //     dotenv.populate(process.env, { CONFIG_PATH: resolve(__dirname, './config') })
-    //     h3ravel.setRootDir(resolve(__dirname, './'))
-    // })
+describe('Filesystem Storage', () => {
+    let root: string
+    let originalConfig: typeof globalThis.config | undefined
+    let values: TestConfig
 
-    // afterAll(() => {
-    //     dotenv.populate(process.env, { CONFIG_PATH: undefined })
-    // })
+    beforeEach(() => {
+        root = mkdtempSync(join(tmpdir(), 'h3ravel-filesystem-'))
+        originalConfig = globalThis.config
+        values = {
+            filesystem: {
+                default: 'local',
+                disks: {
+                    local: {
+                        driver: 'local',
+                        location: join(root, 'local'),
+                        visibility: 'public',
+                    },
+                    public: {
+                        driver: 'local',
+                        location: join(root, 'public'),
+                        visibility: 'public',
+                    },
+                },
+                links: {},
+            },
+        }
 
-    describe('Storage System', () => {
-        it('should set the configured disk and driver', () => {
-            const file = Storage.disk('public')
+        globalThis.config = ((key?: string | TestConfig, defaultValue?: any) => {
+            if (typeof key === 'object') {
+                values = key
+                return
+            }
 
-            expect(file.getDiskName()).toBe('public')
-            expect(file.getDriverName()).toBe('local')
-        })
+            return getConfigValue(values, key, defaultValue)
+        }) as typeof globalThis.config
     })
 
-    describe('Custom Driver', () => {
-        // it('should resolve a registered custom disk driver', () => {
+    afterEach(() => {
+        Driver.removeDriver('memory')
+        rmSync(root, { recursive: true, force: true })
 
-        //     Driver.registerDriver('memory', driver)
+        if (originalConfig) {
+            globalThis.config = originalConfig
+        } else {
+            delete (globalThis as any).config
+        }
+    })
 
-        //     expect(Driver.make({ driver: 'memory' } as never)).toBe(driver)
+    function makeStorage () {
+        const app = {
+            make (key: string) {
+                if (key !== 'config') throw new Error(`Unexpected binding: ${key}`)
 
-        //     Driver.removeDriver('memory')
-        // })
+                return {
+                    get (name: string) {
+                        if (name === 'app.url') {
+                            return (path: string) => `http://localhost/storage/${path}`
+                        }
 
-        it('should resolve a configured custom disk driver', async () => {
-            config({
-                'filesystem.default': 'memory',
-                'filesystem.custom_drivers.memory': driver,
-                'filesystem.disks.memory': { driver: 'memory' },
-            } as never)
+                        return getConfigValue(values, name)
+                    },
+                }
+            },
+        }
 
-            expect(await Storage.get('demo.jpg')).toBe('custom driver contentdemo.jpg')
-        })
+        return new Storage(app as never)
+    }
+
+    it('uses the configured default disk and switches between configured disks', () => {
+        const storage = makeStorage()
+
+        expect(storage.getDiskName()).toBe('local')
+        expect(storage.getDriverName()).toBe('local')
+
+        expect(storage.disk('public')).toBe(storage)
+        expect(storage.getDiskName()).toBe('public')
+        expect(storage.getDriverName()).toBe('local')
+    })
+
+    it('performs common file operations consistently on the local driver', async () => {
+        const storage = makeStorage()
+
+        await storage.put('documents/original.txt', 'hello flydrive')
+
+        expect(await storage.exists('documents/original.txt')).toBe(true)
+        expect(await storage.get('documents/original.txt')).toBe('hello flydrive')
+
+        await storage.copy('documents/original.txt', 'documents/copy.txt')
+        expect(await storage.get('documents/copy.txt')).toBe('hello flydrive')
+
+        await storage.move('documents/copy.txt', 'archive/moved.txt')
+        expect(await storage.exists('documents/copy.txt')).toBe(false)
+        expect(await storage.get('archive/moved.txt')).toBe('hello flydrive')
+
+        await storage.delete('documents/original.txt')
+        expect(await storage.exists('documents/original.txt')).toBe(false)
+    })
+
+    it('keeps files isolated between local disks', async () => {
+        const storage = makeStorage()
+
+        await storage.put('shared-name.txt', 'local contents')
+        await storage.disk('public').put('shared-name.txt', 'public contents')
+
+        expect(await storage.get('shared-name.txt')).toBe('public contents')
+        expect(await storage.disk('local').get('shared-name.txt')).toBe('local contents')
+    })
+
+    it('resolves configured custom drivers through the same manager API', async () => {
+        values.filesystem.default = 'memory'
+        values.filesystem.disks.memory = { driver: 'memory' }
+        values.filesystem.custom_drivers = { memory: driver }
+
+        const storage = makeStorage()
+
+        expect(storage.getDiskName()).toBe('memory')
+        expect(storage.getDriverName()).toBe('memory')
+        expect(await storage.get('demo.jpg')).toBe('custom driver contentdemo.jpg')
     })
 })
