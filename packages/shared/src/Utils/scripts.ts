@@ -1,8 +1,6 @@
 export const mainTsconfig = {
   extends: '@h3ravel/shared/tsconfig.base.json',
   compilerOptions: {
-    baseUrl: '.',
-    outDir: 'dist',
     paths: {
       'src/*': ['./../src/*'],
       'App/*': ['./../src/app/*'],
@@ -48,8 +46,8 @@ export const baseTsconfig = {
 }
 
 export const packageJsonScript = {
-  build: 'NODE_ENV=production tsdown --config-loader unconfig -c tsdown.default.config.ts',
-  dev: 'NODE_ENV=development pnpm tsdown --config-loader unconfig -c tsdown.default.config.ts',
+  build: 'NODE_ENV=production tsdown --config-loader unrun -c tsdown.default.config.ts',
+  dev: 'NODE_ENV=development pnpm tsdown --config-loader unrun -c tsdown.default.config.ts',
   start: 'DIST_DIR=dist node -r source-map-support/register dist/server.js',
   lint: 'eslint . --ext .ts',
   test: 'NODE_NO_WARNINGS=1 NODE_ENV=testing jest --passWithNoTests',

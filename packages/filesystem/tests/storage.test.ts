@@ -10,7 +10,7 @@ import { driver } from './helpers'
 
 // import { fileURLToPath } from 'node:url'
 
-// import { h3ravel } from '@h3ravel/contract'
+// import { h3ravel } from '@h3ravel/core'
 
 // const __dirname = dirname(fileURLToPath(import.meta.url))
 

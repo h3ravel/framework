@@ -3735,7 +3735,7 @@ export class Stringable {
         if (isValidDirname && hasValidLevels) {
             dirname = '\\'
         }
-
+        void parts
         return new Stringable(dirname)
     }
 

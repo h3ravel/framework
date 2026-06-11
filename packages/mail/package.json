@@ -38,7 +38,7 @@
     "directory": "packages/mail"
   },
   "scripts": {
-    "build": "tsdown --config-loader unconfig",
+    "build": "tsdown --config-loader unrun",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
@@ -50,7 +50,7 @@
   },
   "devDependencies": {
     "@types/nodemailer": "catalog:",
-    "typescript": "^5.4.0"
+    "typescript": "catalog:"
   },
   "dependencies": {
     "@aws-sdk/client-sesv2": "^3.894.0",

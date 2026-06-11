@@ -6,7 +6,7 @@ import { ResourceRegistrar } from './ResourceRegistrar'
 import { RouteCollection } from './RouteCollection'
 import { Router } from './Router'
 import { use } from '@h3ravel/shared'
-import variadic from 'packages/support/src/Helpers'
+import { variadic } from '@h3ravel/support'
 
 export class PendingResourceRegistration extends use(
     CreatesRegularExpressionRouteConstraints,

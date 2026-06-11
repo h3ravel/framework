@@ -1,4 +1,4 @@
-import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { mkdtemp, readFile, rmdir, writeFile } from 'node:fs/promises'
 
 import { Application } from '@h3ravel/core'

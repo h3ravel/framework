@@ -8,9 +8,7 @@
     ]
   },
   "type": "module",
-  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
   "exports": {
     ".": "./dist/index.js",
     "./commands": "./dist/commands.js",
@@ -54,7 +52,7 @@
     "flydrive"
   ],
   "scripts": {
-    "build": "tsdown --config-loader unconfig",
+    "build": "tsdown --config-loader unrun",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
@@ -74,7 +72,7 @@
     "@h3ravel/core": "workspace:^1.22.0-alpha.10"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
+    "typescript": "catalog:",
     "@types/ssh2-sftp-client": "^9.0.6"
   }
 }

@@ -48,7 +48,7 @@
     "laravel"
   ],
   "scripts": {
-    "build": "tsdown --config-loader unconfig",
+    "build": "tsdown --config-loader unrun",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
@@ -67,6 +67,6 @@
     "@h3ravel/support": "workspace:^0.17.0-alpha.10"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "catalog:"
   }
 }

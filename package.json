@@ -37,7 +37,7 @@
     "release": "pnpm version:packages",
     "publish": "pnpm patch-all && pnpm -r publish --access public --tag alpha",
     "patch-all": "pnpm build && pnpm version:packages patch",
-    "version:packages": "node packages/scripts/version-packages.mjs"
+    "version:packages": "node scripts/version-packages.mjs"
   },
   "publishConfig": {
     "access": "restricted"
@@ -60,10 +60,10 @@
     "escalade": "catalog:",
     "eslint": "catalog:",
     "fetchdts": "^0.1.7",
+    "globals": "^17.6.0",
     "husky": "catalog:",
     "knex": "catalog:",
     "mysql2": "catalog:",
-    "madge": "^8.0.0",
     "nodemailer": "^7.0.10",
     "path": "catalog:",
     "pnpm": "^10.20.0",
@@ -73,10 +73,9 @@
     "ts-node": "catalog:",
     "tsconfig-paths": "catalog:",
     "tsdown": "catalog:",
-    "typescript": "^5.9.3",
+    "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "utility-types": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
     "vitest": "catalog:"
   },
   "packageManager": "pnpm@10.19.0"

@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 
-import { execFileSync } from 'node:child_process'
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
+
+import { execFileSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 const BUMP_TYPES = new Set(['major', 'minor', 'patch', 'alpha'])
@@ -258,7 +259,7 @@ export function run (argv = process.argv.slice(2)) {
 
     if (!bump || !BUMP_TYPES.has(bump)) {
         throw new Error(
-            'Usage: node packages/scripts/version-packages.mjs <major|minor|patch|alpha> [--dry-run] [--no-lockfile]'
+            'Usage: node scripts/version-packages.mjs <major|minor|patch|alpha> [--dry-run] [--no-lockfile]'
         )
     }
 

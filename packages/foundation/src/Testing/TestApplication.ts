@@ -1,31 +1,18 @@
 import { Application, h3ravel } from '@h3ravel/core'
 
-import { UnprocessableEntityHttpException } from '@h3ravel/foundation'
+import { UnprocessableEntityHttpException } from '../Exceptions/UnprocessableEntityHttpException'
 import path from 'node:path'
-import providers from 'src/bootstrap/providers'
 
-export default class {
-    /**
-     * Initialize the app then fire up the dev server
-     * 
-     * @returns 
-     */
-    async bootstrap () {
-        const app = await h3ravel(providers, process.cwd(), { autoload: true, initialize: false })
-        this.configure(app)
-        // Fire up the developement server using the user provided arguments
-        return await app.fire()
-    }
-
+export class TestApplication {
     /**
      * Initialize the app without firing up the dev server
      * 
      * @returns 
      */
-    async init () {
+    async init (cwd?: string) {
+        const providers = await import(path.join(cwd ?? process.cwd(), 'src/bootstrap/providers'))
         const app = await h3ravel(providers, process.cwd(), { autoload: true, initialize: false })
         this.configure(app)
-        // Boot the application service providers and other requirements
         return await app.boot()
     }
 
@@ -43,8 +30,7 @@ export default class {
                     /**
                      * Register global reporters here
                      */
-                    .report((error) => {
-                        console.error('Unhandled Exception:', error.message, '(Reported at src/bootstrap/app.ts)')
+                    .report((_error) => {
                     })
                     /**
                      * Prevent some exceptions from being reported
@@ -57,8 +43,6 @@ export default class {
                      */
                     .truncateRequestExceptionsAt(200)
             })
-            .withMiddleware(() => {
-                console.log('-=withMiddleware=-')
-            })
+            .withMiddleware(() => { })
     }
 }

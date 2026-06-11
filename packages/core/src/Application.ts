@@ -550,11 +550,14 @@ export class Application extends Container implements IApplication {
      * 
      * Port will be auto assigned if provided one is not available
      * 
-     * @param h3App The current H3 app instance
-     * @param preferedPort If provided, this will overide the port set in the evironment
      * @alias serve
      */
     async fire (): Promise<this>
+    /**
+     * 
+     * @param h3App The current H3 app instance
+     * @param preferedPort If provided, this will overide the port set in the evironment
+     */
     async fire (h3App: H3, preferredPort?: number): Promise<this>
     async fire (h3App?: H3, preferredPort?: number): Promise<this> {
 
@@ -652,7 +655,7 @@ export class Application extends Container implements IApplication {
     }
 
     /**
-     * Save the curretn H3 instance for possible future use.
+     * Save the current H3 app instance for possible future use.
      *
      * @param h3App The current H3 app instance
      * @returns 
@@ -660,6 +663,15 @@ export class Application extends Container implements IApplication {
     setH3App (h3App?: H3) {
         this.h3App = h3App
         return this
+    }
+
+    /**
+     * Get the current H3 app instance.
+     *
+     * @returns 
+     */
+    getH3App (): H3 | undefined {
+        return this.h3App
     }
 
     /**
