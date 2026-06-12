@@ -32,7 +32,7 @@ export default () => {
 
             sqlite: {
                 driver: 'sqlite3', //better-sqlite3
-                database: `h3ravel-validation-${process.pid}.sqlite3`,
+                database: ':memory:',
                 prefix: '',
                 foreign_key_constraints: env('DB_FOREIGN_KEYS', true),
                 flags: [],

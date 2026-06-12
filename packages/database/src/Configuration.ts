@@ -62,11 +62,15 @@ export type TConfig = TBaseConfig & ({
 })
 
 export const arquebusConfig = (config: any) => {
+    const sqliteDatabase = config.connections.sqlite.database
+
     return {
         sqlite: {
             client: config.connections.sqlite.driver,
             connection: <Knex.Sqlite3ConnectionConfig>{
-                filename: database_path(config.connections.sqlite.database),
+                filename: sqliteDatabase === ':memory:'
+                    ? sqliteDatabase
+                    : database_path(sqliteDatabase),
                 debug: config.connections.sqlite.debug,
                 flags: config.connections.sqlite.flags,
                 options: config.connections.sqlite.options,
