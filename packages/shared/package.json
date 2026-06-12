@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/shared",
-  "version": "1.30.0-alpha.16",
+  "version": "2.0.0-alpha.16",
   "description": "Shared Utilities.",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -67,7 +67,7 @@
     "preferred-pm": "catalog:"
   },
   "devDependencies": {
-    "@h3ravel/contracts": "workspace:^1.30.0-alpha.16",
+    "@h3ravel/contracts": "workspace:^2.0.0-alpha.16",
     "fetchdts": "^0.1.6",
     "pnpm": "^10.14.0"
   }
