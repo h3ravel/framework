@@ -2,8 +2,11 @@ import type { H3Event } from 'h3'
 import type { IApplication } from '../Core/IApplication'
 import type { IRequest } from './IRequest'
 import type { IResponse } from './IResponse'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 export abstract class IHttpContext {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Http.IHttpContext')
+
     abstract app: IApplication
     abstract event: H3Event
     abstract request: IRequest

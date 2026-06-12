@@ -45,9 +45,6 @@ catalogs:
     bcryptjs:
       specifier: 3.0.3
       version: 3.0.3
-    cross-env:
-      specifier: ^10.1.0
-      version: 10.1.0
     dayjs:
       specifier: ^1.11.18
       version: 1.11.19
@@ -129,9 +126,6 @@ catalogs:
     tslib:
       specifier: ^2.8.1
       version: 2.8.1
-    tsx:
-      specifier: ^4.20.6
-      version: 4.20.6
     typescript:
       specifier: ^6.0.0
       version: 6.0.3
@@ -330,9 +324,6 @@ importers:
       '@h3ravel/view':
         specifier: workspace:^0.1.14-alpha.10
         version: link:../../packages/view
-      cross-env:
-        specifier: 'catalog:'
-        version: 10.1.0
       h3:
         specifier: catalog:prod
         version: 2.0.1-rc.5
@@ -358,9 +349,6 @@ importers:
       tsdown:
         specifier: 'catalog:'
         version: 0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0))
-      tsx:
-        specifier: 'catalog:'
-        version: 4.20.6
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -393,9 +381,6 @@ importers:
       '@h3ravel/core':
         specifier: workspace:^1.29.0-alpha.16
         version: link:../core
-      tsx:
-        specifier: 'catalog:'
-        version: 4.20.6
       typescript:
         specifier: 'catalog:'
         version: 6.0.3
@@ -441,9 +426,6 @@ importers:
       resolve-from:
         specifier: 'catalog:'
         version: 5.0.0
-      tsx:
-        specifier: 'catalog:'
-        version: 4.20.6
     devDependencies:
       '@h3ravel/contracts':
         specifier: workspace:^1.29.0-alpha.16

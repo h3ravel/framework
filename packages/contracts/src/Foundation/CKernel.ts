@@ -1,8 +1,11 @@
 import type { Command, Kernel as ConsoleKernel } from '@h3ravel/musket'
 
 import { IApplication } from '../Core/IApplication'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 export abstract class CKernel {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Foundation.CKernel')
+
     /**
      * Run the console application.
      */

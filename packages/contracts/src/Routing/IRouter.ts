@@ -10,11 +10,14 @@ import { IRequest } from '../Http/IRequest'
 import type { IRoute } from './IRoute'
 import type { IRouteCollection } from './IRouteCollection'
 import { MiddlewareList } from '../Foundation/MiddlewareContract'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 /**
  * Interface for the Router contract, defining methods for HTTP routing.
  */
 export abstract class IRouter {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Routing.IRouter')
+
     /**
      * The priority-sorted list of middleware.
      *

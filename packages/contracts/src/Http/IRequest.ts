@@ -11,6 +11,7 @@ import type { ISessionManager } from '../Session/ISessionManager'
 import type { IUploadedFile } from './IUploadedFile'
 import { IUrl } from '../Url/IUrl'
 import type { RequestMethod } from '../Utilities/Utilities'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 type RequestObject = Record<string, any>;
 
@@ -22,6 +23,8 @@ export abstract class IRequest<
     R extends Record<string, any> = Record<string, any>,
     U extends Record<string, any> = Record<string, any>
 > extends IHttpRequest {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Http.IRequest')
+
     /**
      * The current app instance
      */

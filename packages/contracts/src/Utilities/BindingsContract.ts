@@ -57,4 +57,4 @@ export interface Bindings {
 
 export type UseKey<X extends Record<string, any> = Record<string, any>> = keyof RemoveIndexSignature<Bindings & X>
 
-export type IBinding = UseKey | (new (...args: any[]) => unknown)
+export type IBinding = UseKey | symbol | (new (...args: any[]) => unknown)

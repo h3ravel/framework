@@ -56,12 +56,12 @@
   ],
   "scripts": {
     "build": "tsdown --config-loader unrun",
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsdown --watch --config-loader unrun",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests",
-    "musket": "cross-env TEST=true APP_DEBUG=false tsx --experimental-specifier-resolution=node src/musket",
-    "musket:watch": "cross-env TEST=true APP_DEBUG=false tsx watch --experimental-specifier-resolution=node src/musket",
+    "musket": "pnpm build && node bin/fire.js",
+    "musket:watch": "tsdown --watch --config-loader unrun --on-success \"node bin/fire.js\"",
     "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump console package version\" && pnpm publish --tag latest",
     "version-patch": "pnpm version patch"
   },
@@ -84,7 +84,6 @@
     "execa": "catalog:",
     "preferred-pm": "catalog:",
     "radashi": "^12.6.2",
-    "resolve-from": "catalog:",
-    "tsx": "catalog:"
+    "resolve-from": "catalog:"
   }
 }

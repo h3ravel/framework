@@ -3,10 +3,13 @@ import { DriveDirectory, DriveFile, DriveManager } from 'flydrive'
 import { DriverContract, ObjectMetaData, ObjectVisibility, SignedURLOptions, WriteOptions } from 'flydrive/types'
 
 import { Readable } from 'node:stream'
+import { CONTAINER_TOKEN, createContainerToken } from '@h3ravel/contracts'
 
 export abstract class IFilesystemManager<
     D extends keyof KnownDisks | keyof CustomDiskDriverRegistry = keyof KnownDisks | keyof CustomDiskDriverRegistry
 > implements DriverContract {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Foundation.IFilesystemManager')
+
     abstract driver: DriveManager<any>
     abstract services: Record<string, () => DriverContract>
     abstract diskName: D

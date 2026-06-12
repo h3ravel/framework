@@ -6,6 +6,8 @@ import { ContainerResolver } from './Manager/ContainerResolver'
 import { Application } from '.'
 
 export class Container extends IContainer {
+    private static readonly containerToken = Symbol.for('@h3ravel/contracts/container-token')
+
     public bindings = new Map<IBinding, () => unknown>()
     public singletons = new Map<IBinding, unknown>()
     public middlewareHandler?: MiddlewareHandler
@@ -37,11 +39,11 @@ export class Container extends IContainer {
     /**
      * The registered type alias.
      */
-    protected aliases = new Map<string | ClassConstructor, any>()
+    protected aliases = new Map<IBinding, any>()
     /**
      * The registered aliases keyed by the abstract name.
      */
-    protected abstractAliases = new Map<string | ClassConstructor, any[]>()
+    protected abstractAliases = new Map<IBinding, any[]>()
     /**
      * The registered aliases keyed by the abstract name.
      */
@@ -159,6 +161,7 @@ export class Container extends IContainer {
         key: T | (new (...args: any[]) => Bindings[T]),
         factory: any
     ): void {
+        key = this.getAlias(key)
 
         this.bindings.set(key, () => {
             if (!this.singletons.has(key)) {
@@ -322,6 +325,7 @@ export class Container extends IContainer {
     afterResolving<T extends UseKey> (key: T, callback: (resolved: Bindings[T], app: this) => void): void
     afterResolving<T extends abstract new (...args: any[]) => any> (key: T, callback: (resolved: InstanceType<T>, app: this) => void): void
     afterResolving (key: any, callback: (resolved: any, app: this) => void) {
+        key = this.getAlias(key)
         const existing = this.afterResolvingCallbacks.get(key) || []
         existing.push(callback)
         this.afterResolvingCallbacks.set(key, existing)
@@ -336,6 +340,7 @@ export class Container extends IContainer {
     beforeResolving<T extends UseKey> (key: T, callback: (app: this) => void): void
     beforeResolving<T extends abstract new (...args: any[]) => any> (key: T, callback: (app: this) => void): void
     beforeResolving (key: any, callback: (app: this) => void) {
+        key = this.getAlias(key)
         const existing = this.beforeResolvingCallbacks.get(key) || []
         existing.push(callback)
         this.beforeResolvingCallbacks.set(key, existing)
@@ -403,6 +408,7 @@ export class Container extends IContainer {
      * @param name
      */
     isAlias (name: IBinding | string) {
+        name = this.normalizeKey(name)
         return this.aliases.has(name) && typeof this.aliases.get(name) !== 'undefined'
     }
 
@@ -412,13 +418,32 @@ export class Container extends IContainer {
      * @param  abstract
      */
     getAlias (abstract: any): any {
-        if (typeof abstract === 'string' && this.aliases.has(abstract))
+        abstract = this.normalizeKey(abstract)
+
+        if (this.aliases.has(abstract))
             return this.getAlias(this.aliases.get(abstract))
 
         if (abstract == null)
             return abstract
 
         return this.aliases.get(abstract) ?? abstract
+    }
+
+    /**
+     * Convert contract constructors to stable keys shared across module loaders.
+     *
+     * @param key
+     * @returns
+     */
+    private normalizeKey (key: any): any {
+        if (
+            key != null &&
+            Object.prototype.hasOwnProperty.call(key, Container.containerToken)
+        ) {
+            return key[Container.containerToken]
+        }
+
+        return key
     }
 
     /**
@@ -450,9 +475,9 @@ export class Container extends IContainer {
     alias (key: string | ClassConstructor | [string | ClassConstructor, any][], target?: any) {
         if (Array.isArray(key))
             for (const [tokn, targ] of key)
-                this.aliases.set(tokn, targ)
+                this.aliases.set(this.normalizeKey(tokn), this.normalizeKey(targ))
         else
-            this.aliases.set(key, target)
+            this.aliases.set(this.normalizeKey(key), this.normalizeKey(target))
 
         return this
     }
@@ -488,6 +513,7 @@ export class Container extends IContainer {
     bound<C extends abstract new (...args: any[]) => any> (abstract: C): boolean
     bound<F extends (...args: any[]) => any> (abstract: F): boolean
     bound (abstract: any): boolean {
+        abstract = this.getAlias(abstract)
         return this.bindings.has(abstract) || !!this.instances.get(abstract) || this.isAlias(abstract)
     }
 
@@ -510,9 +536,7 @@ export class Container extends IContainer {
      * @param abstract
      */
     resolved (abstract: IBinding | string): boolean {
-        if (this.isAlias(abstract)) {
-            abstract = this.getAlias(abstract)
-        }
+        abstract = this.getAlias(abstract)
 
         return this.resolvedInstances.has(abstract) || this.instances.has(abstract)
     }

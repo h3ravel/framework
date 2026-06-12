@@ -82,12 +82,20 @@ export const importFile: FileImporter = async <T = unknown> (
 ): Promise<T> => {
     const resolvedPath = resolve(filePath)
     const parentUrl = pathToFileURL(resolvedPath).href
+    const extension = path.extname(resolvedPath).toLowerCase()
+
+    if (['.js', '.mjs', '.cjs'].includes(extension)) {
+        return await import(parentUrl) as T
+    }
+
     let jiti
 
     try {
         jiti = createJiti(parentUrl, {
             ...userOptions,
             interopDefault: false,
+            tryNative: userOptions?.tryNative ?? true,
+            sourceMaps: userOptions?.sourceMaps ?? true,
             nativeModules: [
                 ...frameworkModules,
                 ...(userOptions?.nativeModules ?? []),
@@ -103,6 +111,8 @@ export const importFile: FileImporter = async <T = unknown> (
                 ...userOptions?.alias,
             },
             interopDefault: false,
+            tryNative: userOptions?.tryNative ?? true,
+            sourceMaps: userOptions?.sourceMaps ?? true,
             nativeModules: [
                 ...frameworkModules,
                 ...(userOptions?.nativeModules ?? []),

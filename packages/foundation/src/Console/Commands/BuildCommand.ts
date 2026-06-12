@@ -76,7 +76,7 @@ export class BuildCommand extends Command {
         if (mute) {
             return await execa(
                 pm,
-                ['tsdown', silent, '--config-loader', 'unrun', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
+                ['tsdown', silent, '--config-loader', 'native', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
                 { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
             )
         }
@@ -88,7 +88,7 @@ export class BuildCommand extends Command {
             async () => {
                 await execa(
                     pm,
-                    ['tsdown', silent, '--config-loader', 'unrun', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
+                    ['tsdown', silent, '--config-loader', 'native', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
                     { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
                 )
             }

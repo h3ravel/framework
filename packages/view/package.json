@@ -50,7 +50,7 @@
   },
   "homepage": "https://h3ravel.toneflix.net",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "tsdown --watch --config-loader unrun",
     "typecheck": "tsc --noEmit",
     "build": "tsdown --config-loader unrun",
     "start": "node dist/index.js",

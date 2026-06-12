@@ -2,7 +2,6 @@ import { BootProviders, ExceptionHandler, RegisterFacades } from '..'
 import { CKernel, CallableConstructor, ConcreteConstructor, IApplication, IBootstraper } from '@h3ravel/contracts'
 import { Command, Kernel } from '@h3ravel/musket'
 import { existsSync, statSync } from 'node:fs'
-import { importFile } from '@h3ravel/shared'
 
 import { BuildCommand } from './Commands/BuildCommand'
 import { ContainerResolver } from '@h3ravel/core'
@@ -13,6 +12,7 @@ import { MakeCommand } from './Commands/MakeCommand'
 import { PostinstallCommand } from './Commands/PostinstallCommand'
 import { Terminating } from '../Core/Events/Terminating'
 import { altLogo } from './logo'
+import { importFile } from '@h3ravel/shared'
 import tsDownConfig from './TsdownConfig'
 
 /**
@@ -201,7 +201,7 @@ export class ConsoleKernel extends CKernel {
                 const route = await importFile<{ default?: CallableConstructor }>(path)
 
                 class RouteCommand extends Command<IApplication> {
-                    handle = route.default
+                    handle = route.default!
                 }
 
                 this.getConsole().registerCommands([RouteCommand])

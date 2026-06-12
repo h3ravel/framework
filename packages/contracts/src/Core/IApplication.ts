@@ -9,8 +9,11 @@ import type { IHttpContext } from '../Http/IHttpContext'
 import type { IServiceProvider } from './IServiceProvider'
 import { IUrl } from '../Url/IUrl'
 import type { PathLoader } from '../Utilities/PathLoader'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 export abstract class IApplication extends IContainer {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Core.IApplication')
+
     abstract paths: PathLoader
     abstract context?: (event: H3Event) => Promise<IHttpContext>
     abstract h3Event?: H3Event

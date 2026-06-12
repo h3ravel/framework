@@ -40,6 +40,19 @@ describe('application file imports', () => {
         expect(module.default.runtime).toBe('typescript')
     })
 
+    it('uses the native module cache for JavaScript files', async () => {
+        const directory = await mkdtemp(path.join(tmpdir(), 'h3ravel-native-import-'))
+        temporaryDirectories.push(directory)
+
+        const sourceFile = path.join(directory, 'contract.mjs')
+        await writeFile(sourceFile, 'export class Contract {}')
+
+        const nativeModule = await import(sourceFile)
+        const importedModule = await importFile<{ Contract: new () => unknown }>(sourceFile)
+
+        expect(importedModule.Contract).toBe(nativeModule.Contract)
+    })
+
     it('resolves conventional application aliases without a tsconfig', async () => {
         const directory = await mkdtemp(path.join(tmpdir(), 'h3ravel-alias-'))
         temporaryDirectories.push(directory)

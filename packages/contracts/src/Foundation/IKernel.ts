@@ -3,8 +3,11 @@ import { IMiddleware } from '../Routing/IMiddleware'
 import { IRequest } from '../Http/IRequest'
 import { IResponse } from '../Http/IResponse'
 import { MiddlewareList } from './MiddlewareContract'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 export abstract class IKernel {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Foundation.IKernel')
+
     /**
      * Handle an incoming HTTP request.
      *

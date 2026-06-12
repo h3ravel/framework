@@ -58,6 +58,29 @@ describe('HTTP request lifecycle isolation', () => {
         const resolved = container.make('http.response')
         expect(resolved).toBe(second)
         expect(resolved.getStatusCode()).toBe(200)
-        expect(resolved.headers.get('location')).toBeNull()
+        expect((resolved as any).headers.get('location')).toBeNull()
+    })
+
+    it('resolves contract copies through their canonical container token', () => {
+        const containerToken = Symbol.for('@h3ravel/contracts/container-token')
+        const token = Symbol.for('@h3ravel/contracts/Tests.DuplicatedContract')
+
+        abstract class FirstContract {
+            static readonly [containerToken] = token
+        }
+
+        abstract class SecondContract {
+            static readonly [containerToken] = Symbol.for('@h3ravel/contracts/Tests.DuplicatedContract')
+        }
+
+        class ConcreteImplementation extends FirstContract { }
+
+        const implementation = { dispatch: vi.fn() }
+
+        container.singleton(FirstContract, () => implementation)
+
+        expect(container.bound(SecondContract)).toBe(true)
+        expect(container.make(SecondContract)).toBe(implementation)
+        expect(container.make(ConcreteImplementation)).toBeInstanceOf(ConcreteImplementation)
     })
 })

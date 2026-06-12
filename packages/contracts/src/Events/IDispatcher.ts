@@ -1,8 +1,11 @@
 import { AppEvent, AppListener } from '../Utilities/Utilities'
 
 import { JobPayload } from '../Queue/Utils'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 export abstract class IDispatcher {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Events.IDispatcher')
+
     /**
      * Register an event listener with the dispatcher.
      *

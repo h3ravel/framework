@@ -6,11 +6,14 @@ import { IApplication } from '../Core/IApplication'
 import { IHttpContext } from './IHttpContext'
 import { IHttpResponse } from './IHttpResponse'
 import { IRequest } from './IRequest'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 /**
  * Interface for the Response contract, defining methods for handling HTTP responses.
  */
 export abstract class IResponse extends IHttpResponse {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Http.IResponse')
+
     /**
      * The current app instance
      */

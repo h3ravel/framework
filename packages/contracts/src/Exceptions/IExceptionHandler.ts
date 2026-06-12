@@ -1,4 +1,5 @@
 import { IHttpContext, IRequest, IResponse, LimitSpec, RateLimiterAdapter, Unlimited } from '..'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 export type ExceptionConstructor<T = any> = new (...args: any[]) => T
 export type ExceptionConditionCallback = (error: any) => boolean;
@@ -7,6 +8,8 @@ export type ReportExceptionCallback = (error: any) => boolean | void | Promise<b
 export type ThrottleExceptionCallback = (error: any) => LimitSpec | Unlimited | null | undefined;
 
 export abstract class IExceptionHandler {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Exceptions.IExceptionHandler')
+
     /**
      * The exception handler method
      *

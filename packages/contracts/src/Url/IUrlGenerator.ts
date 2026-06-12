@@ -5,8 +5,11 @@ import { IRoute } from '../Routing/IRoute'
 import { IRouteCollection } from '../Routing/IRouteCollection'
 import { RouteParams } from './Utils'
 import { UrlRoutable } from '../Routing/Traits/UrlRoutable'
+import { CONTAINER_TOKEN, createContainerToken } from '../Utilities/ContainerToken'
 
 export abstract class IUrlGenerator {
+    static readonly [CONTAINER_TOKEN] = createContainerToken('Url.IUrlGenerator')
+
     /**
      * The named parameter defaults.
      */
