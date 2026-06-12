@@ -59,11 +59,11 @@ export class FireCommand extends Command {
             LOG_LEVEL: LOG_LEVELS[verbose],
         }
 
-        const silent = ENV_VARS.LOG_LEVEL === 'silent' ? '--silent' : null
+        const silent = ENV_VARS.LOG_LEVEL === 'silent' ? ['--log-level', 'silent'] : []
 
         await execa(
             pm,
-            ['tsdown', silent, '--config-loader', 'unrun', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
+            ['tsdown', ...silent, '--config-loader', 'native', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
             { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
         )
     }

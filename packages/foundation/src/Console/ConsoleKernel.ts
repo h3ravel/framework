@@ -6,7 +6,6 @@ import { existsSync, statSync } from 'node:fs'
 import { BuildCommand } from './Commands/BuildCommand'
 import { ContainerResolver } from '@h3ravel/core'
 import { DateTime } from '@h3ravel/support'
-import { DevCommand } from './Commands/DevCommand'
 import { Injectable } from '..'
 import { KeyGenerateCommand } from './Commands/KeyGenerateCommand'
 import { MakeCommand } from './Commands/MakeCommand'
@@ -243,7 +242,7 @@ export class ConsoleKernel extends CKernel {
      */
     getConsole (): Kernel<IApplication> {
         if (this.console == null) {
-            const baseCommands = [BuildCommand, DevCommand, MakeCommand, PostinstallCommand, KeyGenerateCommand] as any[]
+            const baseCommands = [BuildCommand, MakeCommand, PostinstallCommand, KeyGenerateCommand] as any[]
 
             this.console = new Kernel(this.app)
                 .setCwd(process.cwd())
