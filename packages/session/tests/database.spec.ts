@@ -6,6 +6,7 @@ import { Encryption } from '../src/Encryption'
 import { SessionServiceProvider } from '../src/Providers/SessionServiceProvider'
 import { h3ravel } from '@h3ravel/core'
 import path from 'node:path'
+import { tmpdir } from 'node:os'
 
 const appKey = 'base64:dnZm+Ei7ExEHzhj/wO/3YKUckMQtpLjRVk1VLYiV/es='
 
@@ -17,6 +18,7 @@ describe('@h3ravel/session Database Driver', () => {
     const sessionId = 'test-session-123'
 
     beforeAll(async () => {
+        const basePath = path.join(process.cwd(), 'packages/session/tests')
         const { DatabaseServiceProvider } = (await import(('@h3ravel/database')))
         const { HttpServiceProvider } = (await import(('@h3ravel/http')))
         const { ConfigServiceProvider } = (await import(('@h3ravel/config')))
@@ -24,11 +26,12 @@ describe('@h3ravel/session Database Driver', () => {
 
         const app = await h3ravel(
             [HttpServiceProvider, DatabaseServiceProvider, ConfigServiceProvider, RouteServiceProvider, SessionServiceProvider],
-            path.join(process.cwd(), 'packages/session/tests'),
+            basePath,
             {
                 autoload: false,
                 customPaths: {
                     config: 'config',
+                    database: path.relative(basePath, tmpdir()),
                     routes: 'routes',
                 }
             })

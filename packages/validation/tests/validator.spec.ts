@@ -5,6 +5,7 @@ import { ValidationException } from '../src/ValidationException'
 import { Validator } from '../src/Validator'
 import { h3ravel } from '@h3ravel/core'
 import path from 'node:path'
+import { tmpdir } from 'node:os'
 
 describe('Validator', () => {
     describe('basic rules', () => {
@@ -189,16 +190,18 @@ describe('Validator', () => {
 
     describe('extended rules', () => {
         beforeAll(async () => {
+            const basePath = path.join(process.cwd(), 'packages/validation/tests')
             const { DatabaseServiceProvider, DB, Model } = (await import('@h3ravel/database'))
             const { HttpServiceProvider } = (await import(('@h3ravel/http')))
             const { ConfigServiceProvider } = (await import(('@h3ravel/config')))
             const app = await h3ravel(
                 [HttpServiceProvider, DatabaseServiceProvider, ConfigServiceProvider, ValidationServiceProvider],
-                path.join(process.cwd(), 'packages/validation/tests'),
+                basePath,
                 {
                     autoload: false,
                     customPaths: {
-                        config: 'config'
+                        config: 'config',
+                        database: path.relative(basePath, tmpdir()),
                     }
                 })
             await app.boot()

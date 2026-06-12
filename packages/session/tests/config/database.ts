@@ -12,7 +12,7 @@ export default () => {
         |
         */
 
-        default: 'mysql',
+        default: 'sqlite',
 
         aws_db_host: env('AWS_DB_HOST'),
         rds_secret_name: env('AWS_RDS_SECRET_NAME'),
@@ -32,8 +32,7 @@ export default () => {
 
             sqlite: {
                 driver: 'sqlite3', //better-sqlite3
-                database: ':memory:',
-                // database: base_path('config/db.sqlite3'),
+                database: `h3ravel-session-${process.pid}.sqlite3`,
                 prefix: '',
                 foreign_key_constraints: env('DB_FOREIGN_KEYS', true),
                 flags: [],
