@@ -11,7 +11,6 @@ import { HeaderUtility } from './HeaderUtility'
 import { IpUtils } from './IpUtils'
 import { ConflictingHeadersException } from '../Exceptions/ConflictingHeadersException'
 import { Str } from '@h3ravel/support'
-import path from 'node:path'
 import { IHttpContext, IUrl, ISessionManager, RequestMethod } from '@h3ravel/contracts'
 
 export class HttpRequest {
@@ -286,9 +285,6 @@ export class HttpRequest {
      *
      * The base URL never ends with a /.
      *
-     * This is similar to getBasePath(), except that it also includes the
-     * script filename (e.g. index.php) if one exists.
-     *
      * @return string The raw URL (i.e. not urldecoded)
      */
     public getBaseUrl (): string {
@@ -324,25 +320,6 @@ export class HttpRequest {
      * Prepares the base URL.
      */
     protected prepareBaseUrl (): string {
-        const requestUri = this.getRequestUri() ?? ''
-        const scriptName = path.basename(__filename) // current script filename
-        const baseUrl = '/' + scriptName
-
-        // ensure requestUri starts with /
-        const normalizedRequestUri = requestUri.startsWith('/') ? requestUri : '/' + requestUri
-
-        // check if full baseUrl matches start of requestUri
-        if (normalizedRequestUri.startsWith(baseUrl)) {
-            return baseUrl
-        }
-
-        // fallback: use directory of script
-        const dirBase = path.dirname(baseUrl)
-        if (normalizedRequestUri.startsWith(dirBase)) {
-            return dirBase.replace(/[/\\]+$/, '')
-        }
-
-        // nothing matches, return empty
         return ''
     }
 
@@ -393,26 +370,7 @@ export class HttpRequest {
      * Prepares the base path.
      */
     protected prepareBasePath (): string {
-        const baseUrl = this.getBaseUrl()
-        if (!baseUrl) {
-            return ''
-        }
-
-        const scriptFilename = this._server.get('SCRIPT_FILENAME') ?? ''
-        const filename = path.basename(scriptFilename)
-
-        let basePath: string
-        if (path.basename(baseUrl) === filename) {
-            basePath = path.dirname(baseUrl)
-        } else {
-            basePath = baseUrl
-        }
-
-        // normalize Windows paths to forward slashes
-        basePath = basePath.replace(/\\/g, '/')
-
-        // remove trailing slash
-        return basePath.replace(/\/+$/, '')
+        return Str.rtrim(this.getBaseUrl(), '/')
     }
 
     /**

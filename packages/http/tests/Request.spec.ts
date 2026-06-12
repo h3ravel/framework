@@ -401,6 +401,15 @@ describe('Request', () => {
         expect(request()).toBeInstanceOf(Request)
     })
 
+    it('uses an empty base URL for Node requests without a trusted proxy prefix', async () => {
+        const event = makeEvent({ url: 'http://localhost/users' })
+        const req = await Request.create(event, app as any)
+
+        expect(req.getBaseUrl()).toBe('')
+        expect(req.getBasePath()).toBe('')
+        expect(req.getPathInfo()).toBe('/users')
+    })
+
     // describe('Request', () => {
     //     it('session() has access to session', async () => {
     //         const event = makeEvent({
