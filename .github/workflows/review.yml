@@ -44,6 +44,11 @@ jobs:
         run: |
           pnpm install --ignore-scripts --frozen-lockfile
 
+      - name: Build SQLite native binding
+        run: |
+          pnpm rebuild sqlite3
+          node -e "require('sqlite3')"
+
       - name: Build Packages
         run: |
           pnpm build
