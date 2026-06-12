@@ -12,6 +12,51 @@ While a working knowlege of Serverside programing and JavaScript is enough to co
 
 Understanding the fundamentals of dependency injection, middleware pipelines, and modern service container patterns will be a big plus.
 
+## Container Development
+
+H3ravel can load framework and application code through native ESM, CommonJS, Jiti, workspace links, and test runners. The same contract may therefore be evaluated more than once and produce different constructor objects. Container abstractions must use canonical tokens so bindings remain stable across these module graphs.
+
+### Contract Tokens
+
+Every abstract framework contract used as a container key must define its own canonical token:
+
+```ts
+import {
+    CONTAINER_TOKEN,
+    createContainerToken,
+} from '../Utilities/ContainerToken'
+
+export abstract class IExampleService {
+    static readonly [CONTAINER_TOKEN] = createContainerToken(
+        'Example.IExampleService'
+    )
+
+    abstract handle (): Promise<void>
+}
+```
+
+- Use the stable `<Area>.<ContractName>` naming format.
+- Add tokens only to abstractions used with container methods such as `bind`, `singleton`, `make`, `alias`, `instance`, or resolution callbacks.
+- Do not add canonical tokens to ordinary concrete classes, controllers, middleware, models, or providers.
+- Define the token directly on the contract. The container intentionally ignores inherited token metadata so concrete subclasses retain constructor identity.
+- Never use a class name alone as an equivalent-token fallback. Different packages may export unrelated classes with the same name.
+
+### Loading Modules
+
+- Use `importFile()` for application TypeScript files that require runtime transpilation.
+- Allow JavaScript build artifacts to use native imports so they share the host module cache.
+- Do not install global TypeScript loaders such as `tsx/esm` inside framework runtime entry points.
+- Production paths must continue to load compiled JavaScript; development paths may load TypeScript directly.
+
+### Required Tests
+
+Container or loader changes must include regression coverage that:
+
+- Resolves two distinct contract constructors carrying the same canonical token.
+- Confirms a concrete subclass is still resolved by its own constructor.
+- Runs the affected integration suite independently so global test state cannot hide a loader or binding failure.
+- Covers both TypeScript transpilation and native JavaScript module identity when changing `importFile()`.
+
 ## AI Contribution
 
 We recognize that AI has come to stay and is gradually becoming a permanent part of our development landscape, this changes our approach to work and the way we collaborate. We have 100% tollerance for AI generated contributions provided they meet the following criteria:

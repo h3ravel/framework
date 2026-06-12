@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/events",
-  "version": "1.29.0-alpha.16",
+  "version": "1.30.0-alpha.16",
   "description": "Events package for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -8,14 +8,9 @@
     ]
   },
   "type": "module",
-  "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
-  "module": "./dist/index.js",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
+    ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
   "files": [
@@ -57,7 +52,7 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^1.29.0-alpha.16"
+    "@h3ravel/core": "workspace:^1.30.0-alpha.16"
   },
   "devDependencies": {
     "typescript": "catalog:"

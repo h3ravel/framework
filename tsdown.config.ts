@@ -8,18 +8,16 @@ import { exists, findUpConfig } from './utils/fs'
 export const baseConfig: UserConfig = {
     dts: true,
     clean: true,
-    shims: true,
+    shims: false,
     unbundle: false,
     entry: ['src/index.ts'],
-    format: ['esm', 'cjs'],
+    format: ['esm'],
     sourcemap: false,
     exports: true,
-    outExtensions: (e) => {
-        return ({
-            js: e.format === 'es' ? '.js' : '.cjs',
-            dts: '.d.ts'
-        })
-    },
+    outExtensions: () => ({
+        js: '.js',
+        dts: '.d.ts'
+    }),
     hooks (hooks) {
         hooks.hook('build:done', async (ctx) => {
             try {

@@ -9,7 +9,6 @@ export default defineConfig([
         return Object.assign({}, exports, { './tsconfig.base.json': './tsconfig.base.json' })
       },
     },
-    format: ['esm', 'cjs'],
     entry: ['src/index.ts'],
     sourcemap: false,
     target: 'node22',
