@@ -1,8 +1,6 @@
 {
   "extends": "@h3ravel/shared/tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "dist",
     "paths": {
       "src/*": [
         "./../src/*"

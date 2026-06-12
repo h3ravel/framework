@@ -1,6 +1,6 @@
 import { FilesystemManager } from '../FilesystemManager'
 import { IFilesystemManager } from '@h3ravel/foundation'
-import { ServiceProvider } from '@h3ravel/core'
+import { ServiceProvider } from '@h3ravel/support'
 import { StorageLinkCommand } from '../Commands/StorageLinkCommand'
 
 /**

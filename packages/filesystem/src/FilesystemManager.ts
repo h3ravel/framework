@@ -84,11 +84,11 @@ export class FilesystemManager<
      * @param fileName  The name to save the file as (optional)
      * @returns         A tuple containing the public URL and the file path
      */
-    saveFile = async (
+    async saveFile (
         file: FileLike,
         filePath: string = '',
         fileName?: string
-    ): Promise<[string, string]> => {
+    ): Promise<[string, string]> {
         const name = fileName || this.generateName(file)
         const drive = this.driver.use()
 

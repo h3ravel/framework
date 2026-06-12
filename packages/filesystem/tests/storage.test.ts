@@ -70,26 +70,8 @@ describe('Filesystem Storage', () => {
         }
     })
 
-    function makeApp () {
-        return {
-            make (key: string) {
-                if (key !== 'config') throw new Error(`Unexpected binding: ${key}`)
-
-                return {
-                    get (name: string) {
-                        if (name === 'app.url') {
-                            return 'http://localhost/storage'
-                        }
-
-                        return getConfigValue(values, name)
-                    },
-                }
-            },
-        }
-    }
-
     function makeStorage () {
-        return new FilesystemManager(makeApp() as never)
+        return new FilesystemManager()
     }
 
     it('uses the configured default disk and switches between configured disks', () => {

@@ -62,7 +62,13 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
+    "@google-cloud/storage": "^7.21.0",
     "flydrive": "catalog:"
+  },
+  "peerDependenciesMeta": {
+    "@google-cloud/storage": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@h3ravel/contracts": "workspace:^0.29.0-alpha.10",
