@@ -22,14 +22,13 @@ export class DevCommand extends Command {
     protected description: string = 'Build the app for production'
 
     public async handle () {
-        const DIST_DIR = '.h3ravel/serve'
         const minify = this.option('minify')
         const verbosity = this.getVerbosity()
         const debug = verbosity > 0
 
         try {
             this.newLine()
-            await DevCommand.dev({ DIST_DIR, minify, verbosity, debug })
+            await DevCommand.dev({ minify, verbosity, debug })
             this.newLine()
         } catch (e) {
             Logger.error(e as any)
@@ -42,16 +41,16 @@ export class DevCommand extends Command {
      * @param param0 
      * @returns 
      */
-    public static async dev ({ debug, minify, verbosity, DIST_DIR } = {
+    public static async dev ({ debug, minify, verbosity } = {
         debug: false,
         minify: false,
-        verbosity: 0,
-        DIST_DIR: 'dist'
+        verbosity: 0
     }) {
 
         const pm = (await preferredPM(base_path()))?.name ?? 'pnpm'
 
         const LOG_LEVELS = [
+            'silent',
             'silent',
             'info',
             'warn',
@@ -62,16 +61,16 @@ export class DevCommand extends Command {
             EXTENDED_DEBUG: debug ? 'true' : 'false',
             CLI_BUILD: 'false',
             NODE_ENV: 'development',
-            DIST_DIR,
+            DIST_DIR: '.h3ravel/serve',
             DIST_MINIFY: minify,
             LOG_LEVEL: LOG_LEVELS[verbosity]
         }
 
-        const silent = ENV_VARS.LOG_LEVEL === 'silent' ? '--silent' : null
+        const silent = ENV_VARS.LOG_LEVEL === 'silent' ? ['--log-level', 'silent'] : []
 
         return await execa(
             pm,
-            ['tsdown', silent, '--config-loader', 'native', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
+            ['tsdown', ...silent, '--config-loader', 'native', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
             { stdout: 'inherit', stderr: 'inherit', cwd: base_path(), env: Object.assign({}, process.env, ENV_VARS) }
         )
     }
