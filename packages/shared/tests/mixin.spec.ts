@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { trait, use, uses } from '../src/Mixins/TraitSystem'
 
 import { mix } from '../src/Mixins/MixinSystem'
@@ -54,13 +54,17 @@ describe('Mixins', () => {
             }
         }
 
-        const router = new Router()
+        let router: Router
+
+        beforeEach(() => {
+            spy.mockClear()
+            router = new Router()
+        })
 
         it('child class constructor has access to all parent methods', () => {
-            expect(spy).toHaveBeenCalledTimes(4)
+            expect(spy).toHaveBeenCalledTimes(2)
             expect(spy).toHaveBeenCalledWith('Playing')
             expect(spy).toHaveBeenCalledWith('makeMagic')
-            spy.mockReset()
         })
 
         it('extended classes can implement proxies', () => {
@@ -135,13 +139,17 @@ describe('Mixins', () => {
             }
         }
 
-        const router = new Router()
+        let router: Router
+
+        beforeEach(() => {
+            spy.mockClear()
+            router = new Router()
+        })
 
         it('child class constructor has access to all parent methods', () => {
-            expect(spy).toHaveBeenCalledTimes(4)
+            expect(spy).toHaveBeenCalledTimes(2)
             expect(spy).toHaveBeenCalledWith('Playing')
             expect(spy).toHaveBeenCalledWith('makeMagic')
-            spy.mockReset()
         })
 
         it('traits can implement proxies', () => {

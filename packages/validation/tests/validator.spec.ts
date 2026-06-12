@@ -192,7 +192,7 @@ describe('Validator', () => {
             const { DatabaseServiceProvider, DB, Model } = (await import('@h3ravel/database'))
             const { HttpServiceProvider } = (await import(('@h3ravel/http')))
             const { ConfigServiceProvider } = (await import(('@h3ravel/config')))
-            await h3ravel(
+            const app = await h3ravel(
                 [HttpServiceProvider, DatabaseServiceProvider, ConfigServiceProvider, ValidationServiceProvider],
                 path.join(process.cwd(), 'packages/validation/tests'),
                 {
@@ -201,6 +201,7 @@ describe('Validator', () => {
                         config: 'config'
                     }
                 })
+            await app.boot()
 
             await DB.instance().schema.hasTable('users').then((exists) => {
                 if (!exists) {

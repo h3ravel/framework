@@ -42,16 +42,32 @@ describe('Url', () => {
 
         const { EventsServiceProvider } = await import(('@h3ravel/events'))
         const { HttpServiceProvider } = await import(String('@h3ravel/http'))
-        const { RouteServiceProvider } = await import(String('@h3ravel/router'))
+        const { ConfigServiceProvider } = await import(String('@h3ravel/config'))
+        const { RoutingServiceProvider } = await import(String('@h3ravel/router'))
+        const { RouteServiceProvider } = await import(String('@h3ravel/support'))
 
         globalThis.env = new EnvLoader().get
         console.info()
-        app = await h3ravel([EventsServiceProvider, HttpServiceProvider, RouteServiceProvider, UrlServiceProvider], process.cwd())
+        app = await h3ravel(
+            [ConfigServiceProvider, EventsServiceProvider, HttpServiceProvider, RouteServiceProvider, RoutingServiceProvider, UrlServiceProvider],
+            process.cwd(),
+            {
+                autoload: false,
+                customPaths: {
+                    config: 'packages/session/tests/config',
+                }
+            }
+        )
+        await app.boot()
+        app.make('url').setRequest({
+            getScheme: () => 'https',
+            getHost: () => 'example.com',
+        })
         Object.assign(mockApp, app)
         Object.assign(globalThis, globalThat)
         app.make('router').get('path', () => ({ success: true })).name('path')
         app.make('router').get('path/index', [ExampleController, 'index']).name('path.index')
-        app.fire()
+        app.make('router').getRoutes().refreshNameLookups()
     })
 
     beforeEach(() => {
@@ -128,7 +144,7 @@ describe('Url', () => {
         })
 
         it('should create URL from route action', () => {
-            mockApp.make.mockReturnValue(app.make('app.routes'))
+            mockApp.make.mockImplementation((key: string) => app.make(key))
             const url = Url.action('ExampleController@index', {}, mockApp as any)
             expect(url.getPath()).toBe('/path/index')
         })
@@ -335,8 +351,6 @@ describe('Url', () => {
 
     describe('Global Helpers', () => {
         it('should generate string when path is provided', () => {
-            mockApp.make.mockReturnValue(app.make('app.routes'))
-
             expect(url('path')).toBe('https://example.com/path')
         })
 

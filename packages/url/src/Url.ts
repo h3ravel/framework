@@ -134,11 +134,27 @@ export class Url {
 
         const cname = typeof controllerName === 'string' ? controllerName : controllerName.name
 
-        const routes: ClassicRouteDefinition[] = app.make('app.routes')
+        let routes: ClassicRouteDefinition[]
 
-        if (!Array.isArray(routes)) {
-            // Backward-compatible message expected by existing tests
-            throw new Error('Action URL generation requires router integration - not yet implemented')
+        try {
+            const legacyRoutes = app.make('app.routes')
+            routes = Array.isArray(legacyRoutes) ? legacyRoutes : []
+        } catch {
+            const router = app.make('router')
+            routes = router.getRoutes().getRoutes().map((route: any) => {
+                const action = route.getAction()
+                const controller = action.controller
+                const signature = typeof controller === 'function'
+                    ? [controller.name, action.uses?.[1] ?? 'index']
+                    : typeof controller === 'string'
+                        ? controller.replace(/^\\/, '').split('@')
+                        : undefined
+
+                return {
+                    path: route.uri(),
+                    signature,
+                } as ClassicRouteDefinition
+            })
         }
 
         if (routes.length < 1) throw new Error(`No routes available to resolve action: ${controller}`)

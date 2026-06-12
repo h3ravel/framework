@@ -2,6 +2,7 @@ import { beforeEach, describe, it } from 'vitest'
 
 import { IApplication } from '@h3ravel/contracts'
 import { h3ravel } from '@h3ravel/core'
+import path from 'node:path'
 
 let app: IApplication
 
@@ -20,10 +21,21 @@ class Cont {
 
 describe('Router', async () => {
     beforeEach(async () => {
+        const { ConfigServiceProvider } = await import(('@h3ravel/config'))
         const { EventsServiceProvider } = await import(('@h3ravel/events'))
         const { HttpServiceProvider } = await import(('@h3ravel/http'))
-        const { RouteServiceProvider } = await import(('@h3ravel/router'))
-        app = await h3ravel([EventsServiceProvider, HttpServiceProvider, RouteServiceProvider])
+        const { RouteServiceProvider } = await import(('@h3ravel/support'))
+        app = await h3ravel(
+            [ConfigServiceProvider, EventsServiceProvider, HttpServiceProvider, RouteServiceProvider],
+            path.join(process.cwd(), 'packages/router/tests'),
+            {
+                autoload: false,
+                customPaths: {
+                    config: '../../session/tests/config',
+                }
+            }
+        )
+        await app.boot()
     })
 
     it('can load routes before server is fired', async () => {
