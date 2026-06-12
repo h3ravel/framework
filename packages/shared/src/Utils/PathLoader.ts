@@ -34,10 +34,12 @@ export class PathLoader {
         }
 
 
-        if (name === 'public') {
-            path = path.replace('/public', nodepath.join('/', process.env.DIST_DIR ?? '.h3ravel/serve', 'public'))
-        } else {
-            path = path.replace('/src/', `/${process.env.DIST_DIR ?? '.h3ravel/serve'}/`)
+        if (process.env.NODE_ENV === 'production') {
+            if (name === 'public') {
+                path = path.replace('/public', nodepath.join('/', process.env.DIST_DIR ?? '.h3ravel/serve', 'public'))
+            } else {
+                path = path.replace('/src/', `/${process.env.DIST_DIR ?? '.h3ravel/serve'}/`)
+            }
         }
 
         return nodepath.normalize(path)
@@ -59,6 +61,10 @@ export class PathLoader {
     }
 
     distPath (path: string, skipExt = false) {
+        if (process.env.NODE_ENV !== 'production') {
+            return nodepath.normalize(path)
+        }
+
         path = path.replace('/src/', `/${process.env.DIST_DIR ?? '.h3ravel/serve'}/`.replace(/([^:]\/)\/+/g, '$1'))
 
         if (!skipExt) {

@@ -3,6 +3,7 @@ import { Migrate, MigrationCreator } from '@h3ravel/arquebus/migrations'
 import { SeedCommand, TBaseConfig, arquebusConfig } from '..'
 
 import { Command } from '@h3ravel/musket'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 
 export class MigrateCommand extends Command {
@@ -203,7 +204,9 @@ export class MigrateCommand extends Command {
             if (!packagePath) throw new Error('Package not found')
 
             /** Get the package,json and instanciate the migration creator */
-            const pkgJson = (await import(path.join(packagePath, 'package.json')))
+            const pkgJson = JSON.parse(
+                await readFile(path.join(packagePath, 'package.json'), 'utf8'),
+            )
             const creator = new MigrationCreator(path.join(packagePath, pkgJson.migrations ?? 'migrations'))
 
             const info = Logger.parse([

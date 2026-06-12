@@ -1,4 +1,4 @@
-import { FileSystem, Logger } from '@h3ravel/shared'
+import { FileSystem, importFile, Logger } from '@h3ravel/shared'
 
 import { Command } from '@h3ravel/musket'
 import { DB } from '..'
@@ -80,7 +80,7 @@ export class SeedCommand extends Command {
             path = String(f1 ?? f2)
         }
 
-        const { default: seeder } = (await import(path))
+        const { default: seeder } = await importFile<{ default?: new (...args: any[]) => any }>(path)
 
         if (seeder) {
             this.info('INFO: Seeding database.')

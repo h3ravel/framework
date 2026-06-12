@@ -1,5 +1,6 @@
 import { Application, h3ravel } from '@h3ravel/core'
 
+import { importFile } from '@h3ravel/shared'
 import { UnprocessableEntityHttpException } from '../Exceptions/UnprocessableEntityHttpException'
 import path from 'node:path'
 
@@ -11,7 +12,9 @@ export class TestApplication {
      */
     async init (cwd?: string) {
         const basePath = cwd ?? process.cwd()
-        const providersModule = await import(path.join(basePath, 'src/bootstrap/providers'))
+        const providersModule = await importFile<{ default?: unknown }>(
+            path.join(basePath, 'src/bootstrap/providers.ts'),
+        )
         const providers = providersModule.default ?? providersModule
 
         if (!Array.isArray(providers)) {

@@ -2,8 +2,9 @@ import 'reflect-metadata'
 import { Middleware, MiddlewareOptions, type H3 } from 'h3'
 import { Request, Response, JsonResponse } from '@h3ravel/http'
 import { Arr, Collection, isClass, MacroableClass, Str, Stringable, tap } from '@h3ravel/support'
+import * as facadeModule from '@h3ravel/support/facades'
 import { IDispatcher, IApplication } from '@h3ravel/contracts'
-import { Magic, mix } from '@h3ravel/shared'
+import { importFile, Magic, mix } from '@h3ravel/shared'
 import { IMiddleware, IRequest, IResponse, IRouter, RouteActions, ActionInput, MiddlewareList, ResponsableType } from '@h3ravel/contracts'
 import type { EventHandler, IController, GenericObject, ResourceOptions, ResourceMethod, CallableConstructor, MiddlewareIdentifier } from '@h3ravel/contracts'
 import { RouteMethod, IResponsable } from '@h3ravel/contracts'
@@ -23,7 +24,6 @@ import { PendingResourceRegistration } from './PendingResourceRegistration'
 import { RouteRegistrar } from './RouteRegisterer'
 import { existsSync } from 'node:fs'
 import { ImplicitRouteBinding } from './ImplicitRouteBinding'
-import { pathToFileURL } from 'node:url'
 
 export class Router extends mix(IRouter, MacroableClass, Magic) {
     private DIST_DIR: string
@@ -777,12 +777,14 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
             return
         }
 
-        const sourcePath = process.env.NODE_ENV === 'testing'
-            ? routes
-            : this.app.paths.distPath(routes)
+        const sourcePath = this.app.paths.distPath(routes)
 
         if (existsSync(sourcePath)) {
-            await import(pathToFileURL(sourcePath).href)
+            await importFile(sourcePath, {
+                virtualModules: {
+                    '@h3ravel/support/facades': facadeModule,
+                },
+            })
         }
     }
 

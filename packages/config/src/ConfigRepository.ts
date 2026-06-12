@@ -1,5 +1,6 @@
-import type { DotNestedKeys, DotNestedValue } from '@h3ravel/shared'
+import { importFile, type DotNestedKeys, type DotNestedValue } from '@h3ravel/shared'
 import { safeDot, setNested } from '@h3ravel/support'
+import * as supportModule from '@h3ravel/support'
 
 import { IApplication } from '@h3ravel/contracts'
 import { Registerer } from '@h3ravel/core'
@@ -39,11 +40,18 @@ export class ConfigRepository {
             Registerer.register(this.app as never)
 
             const files = (await readdir(configPath)).filter((e) => {
-                return !e.includes('.d.ts') && !e.includes('.d.cts') && !e.includes('.map')
+                return /\.(c|m)?(j|t)sx?$/.test(e) && !e.includes('.d.')
             })
 
             for (let i = 0; i < files.length; i++) {
-                const configModule = await import(path.join(configPath, files[i]))
+                const configModule = await importFile<{ default?: (app: IApplication) => Record<string, any> }>(
+                    path.join(configPath, files[i]),
+                    {
+                        virtualModules: {
+                            '@h3ravel/support': supportModule,
+                        },
+                    },
+                )
                 const name = files[i].replaceAll(/\.ts|\.js/g, '')
                 if (typeof configModule.default === 'function') {
                     this.configs[name] = configModule.default(this.app)

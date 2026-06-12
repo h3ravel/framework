@@ -618,9 +618,6 @@ importers:
       h3:
         specifier: catalog:prod
         version: 2.0.1-rc.5
-      jiti:
-        specifier: ^2.7.0
-        version: 2.7.0
       parasito:
         specifier: ^0.2.5
         version: 0.2.5
@@ -795,6 +792,9 @@ importers:
       inquirer-autocomplete-standalone:
         specifier: ^0.8.1
         version: 0.8.1
+      jiti:
+        specifier: ^2.7.0
+        version: 2.7.0
       ora:
         specifier: ^9.1.0
         version: 9.1.0

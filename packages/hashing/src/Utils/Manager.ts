@@ -1,5 +1,6 @@
 import { HashAlgorithm, HashConfiguration, IBaseHashManager } from '@h3ravel/contracts'
 import { type SnakeToTitleCase, Str, InvalidArgumentException } from '@h3ravel/support'
+import { importFile } from '@h3ravel/shared'
 
 import { BcryptHasher } from '../Drivers/BcryptHasher'
 import { ArgonHasher } from '../Drivers/ArgonHasher'
@@ -59,13 +60,13 @@ export abstract class Manager extends IBaseHashManager {
         const tsPath = path.resolve(basePath, 'hashing.config.ts')
 
         if (existsSync(jsPath)) {
-            this.config = (await import(jsPath)).default ?? {}
+            this.config = (await importFile<{ default?: HashConfiguration }>(jsPath)).default ?? {} as never
             return this
         }
 
         if (existsSync(tsPath)) {
             if (process.env.NODE_ENV !== 'production') {
-                this.config = (await import(tsPath)).default ?? {}
+                this.config = (await importFile<{ default?: HashConfiguration }>(tsPath)).default ?? {} as never
                 return this
             } else {
                 throw new ConfigException(

@@ -1,5 +1,4 @@
 import { DriverContract, ObjectVisibility } from 'flydrive/types'
-import { JitiOptions, JitiResolveOptions } from 'jiti'
 
 import type { GCSDriverOptions } from 'flydrive/drivers/gcs/types'
 
@@ -83,10 +82,4 @@ export interface FilesystemConfig {
         DriverContract | (new (config?: CustomDiskConfig) => DriverContract)
     >
     fileNameGenerator?: (originalName: string) => string
-}
-
-export interface FileImporter {
-    <T = unknown> (filePath: string): Promise<T>
-    <T = unknown> (filePath: string, userOptions?: JitiOptions | undefined): Promise<T>
-    <T = unknown> (filePath: string, userOptions?: JitiOptions | undefined, resolveOptions?: (JitiResolveOptions & { default?: true })): Promise<T>
 }

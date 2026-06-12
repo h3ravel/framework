@@ -2,8 +2,9 @@ import { ConcreteConstructor, IServiceProvider } from '@h3ravel/contracts'
 
 import type { Application } from './Application'
 import { ContainerResolver } from '../src/Manager/ContainerResolver'
-import { createRequire } from 'module'
+import { importFile } from '@h3ravel/shared'
 import fg from 'fast-glob'
+import { readFileSync } from 'node:fs'
 import path from 'node:path'
 
 export class ProviderRegistry {
@@ -230,7 +231,11 @@ export class ProviderRegistry {
                 if (pkg.h3ravel?.providers) {
                     providers.push(...await Promise.all(
                         pkg.h3ravel.providers.map(
-                            async (name: string) => (await import(path.resolve(path.dirname(manifestPath), 'dist/index.js')))[name]
+                            async (name: string) => (
+                                await importFile<Record<string, ConcreteConstructor<IServiceProvider, false>>>(
+                                    path.resolve(path.dirname(manifestPath), 'dist/index.js'),
+                                )
+                            )[name]
                         )))
                 }
             }
@@ -251,7 +256,6 @@ export class ProviderRegistry {
      * @returns 
      */
     private static getManifest (manifestPath: string) {
-        const require = createRequire(import.meta.url)
-        return require(manifestPath)
+        return JSON.parse(readFileSync(manifestPath, 'utf8'))
     }
 }

@@ -2,6 +2,7 @@ import { BootProviders, ExceptionHandler, RegisterFacades } from '..'
 import { CKernel, CallableConstructor, ConcreteConstructor, IApplication, IBootstraper } from '@h3ravel/contracts'
 import { Command, Kernel } from '@h3ravel/musket'
 import { existsSync, statSync } from 'node:fs'
+import { importFile } from '@h3ravel/shared'
 
 import { BuildCommand } from './Commands/BuildCommand'
 import { ContainerResolver } from '@h3ravel/core'
@@ -12,7 +13,6 @@ import { MakeCommand } from './Commands/MakeCommand'
 import { PostinstallCommand } from './Commands/PostinstallCommand'
 import { Terminating } from '../Core/Events/Terminating'
 import { altLogo } from './logo'
-import { createRequire } from 'module'
 import tsDownConfig from './TsdownConfig'
 
 /**
@@ -163,7 +163,7 @@ export class ConsoleKernel extends CKernel {
             this.registerCommands()
 
             if (this.shouldDiscoverCommands()) {
-                this.discoverCommands()
+                await this.discoverCommands()
             }
 
             this.commandsLoaded = true
@@ -187,16 +187,21 @@ export class ConsoleKernel extends CKernel {
     /**
      * Discover the commands that should be automatically loaded.
      */
-    protected discoverCommands () {
-        const require = createRequire(import.meta.url)
-
+    protected async discoverCommands () {
         this.getConsole().registerDiscoveryPath(Array.from(this.commandPaths))
 
         for (let path of this.commandRoutePaths) {
-            path = path.replace('/src/', this.DIST_DIR)
+            if (process.env.NODE_ENV === 'production') {
+                path = path
+                    .replace('/src/', this.DIST_DIR)
+                    .replace(/\.(ts|tsx|mts|cts)$/, '.js')
+            }
+
             if (existsSync(path)) {
+                const route = await importFile<{ default?: CallableConstructor }>(path)
+
                 class RouteCommand extends Command<IApplication> {
-                    handle = require(path).default
+                    handle = route.default
                 }
 
                 this.getConsole().registerCommands([RouteCommand])
@@ -211,8 +216,12 @@ export class ConsoleKernel extends CKernel {
      */
     addCommandPaths (paths: string[]) {
         paths.forEach(e => {
-            e = e.replace('/src/', this.DIST_DIR)
-            this.commandPaths.add(statSync(e, { throwIfNoEntry: false })?.isFile() ? e : e + '*.js')
+            if (process.env.NODE_ENV === 'production') {
+                e = e.replace('/src/', this.DIST_DIR)
+            }
+
+            const extension = process.env.NODE_ENV === 'production' ? '*.js' : '*.{ts,js}'
+            this.commandPaths.add(statSync(e, { throwIfNoEntry: false })?.isFile() ? e : e + extension)
         })
         return this
     }

@@ -16,11 +16,11 @@ import { detect } from 'detect-port'
 import dotenv from 'dotenv'
 import dotenvExpand from 'dotenv-expand'
 import path from 'node:path'
+import { readFileSync } from 'node:fs'
 import { readFile } from 'node:fs/promises'
 import semver from 'semver'
 import { CoreServiceProvider } from './Providers/CoreServiceProvider'
 import { EntryConfig } from './Contracts/H3ravelContract'
-import { createRequire } from 'node:module'
 
 export class Application extends Container implements IApplication {
     /**
@@ -707,9 +707,7 @@ export class Application extends Container implements IApplication {
             return this.namespace
         }
 
-        const require = createRequire(import.meta.url)
-
-        const pkg = require(path.join(process.cwd(), 'package.json'))
+        const pkg = JSON.parse(readFileSync(path.join(this.basePath, 'package.json'), 'utf8'))
         for (const [namespace, pathChoice] of Object.entries(data_get(pkg, 'autoload.namespaces'))) {
 
             if (this.getPath('app', '/') === this.getPath('src', pathChoice as never)) {
