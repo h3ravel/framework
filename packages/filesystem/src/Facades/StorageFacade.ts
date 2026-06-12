@@ -1,5 +1,5 @@
 import { Facades } from '@h3ravel/support/facades'
-import { IStorage } from '@h3ravel/foundation'
+import { IFilesystemManager } from '@h3ravel/foundation'
 
 class StorageFacade extends Facades {
     protected static getFacadeAccessor () {
@@ -7,4 +7,4 @@ class StorageFacade extends Facades {
     }
 }
 
-export const Storage = StorageFacade.createFacade<IStorage>()
+export const Storage = StorageFacade.createFacade<IFilesystemManager>()

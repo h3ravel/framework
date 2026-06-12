@@ -5,14 +5,14 @@ import { rmSync, symlinkSync } from 'node:fs'
 
 import { Driver } from './Driver'
 import { IApplication } from '@h3ravel/contracts'
-import { IStorage } from '@h3ravel/foundation'
+import { IFilesystemManager } from '@h3ravel/foundation'
 import { Logger } from '@h3ravel/shared'
 import { Readable } from 'node:stream'
 import path from 'node:path'
 
-export class Storage<
+export class FilesystemManager<
     D extends keyof KnownDisks | keyof CustomDiskDriverRegistry = keyof KnownDisks | keyof CustomDiskDriverRegistry
-> extends IStorage implements DriverContract {
+> extends IFilesystemManager implements DriverContract {
     driver: DriveManager<any>
     services: Record<string, () => DriverContract> = {}
     diskName: D

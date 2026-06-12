@@ -4,7 +4,7 @@ import { DriverContract, ObjectMetaData, ObjectVisibility, SignedURLOptions, Wri
 
 import { Readable } from 'node:stream'
 
-export abstract class IStorage<
+export abstract class IFilesystemManager<
     D extends keyof KnownDisks | keyof CustomDiskDriverRegistry = keyof KnownDisks | keyof CustomDiskDriverRegistry
 > implements DriverContract {
     abstract driver: DriveManager<any>
