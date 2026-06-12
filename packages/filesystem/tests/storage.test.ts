@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { mkdtempSync, rmSync } from 'node:fs'
-import { join } from 'node:path'
-import { tmpdir } from 'node:os'
 
 import { Driver } from '../src/Driver'
-import { Storage } from '../src/Storage'
+import { FilesystemManager } from '../src/FilesystemManager'
+import { GCSDriver } from 'flydrive/drivers/gcs'
 import { driver } from './helpers'
+import { join } from 'node:path'
+import { tmpdir } from 'node:os'
 
 type TestConfig = Record<string, any>
 
@@ -67,15 +68,15 @@ describe('Filesystem Storage', () => {
         }
     })
 
-    function makeStorage () {
-        const app = {
+    function makeApp () {
+        return {
             make (key: string) {
                 if (key !== 'config') throw new Error(`Unexpected binding: ${key}`)
 
                 return {
                     get (name: string) {
                         if (name === 'app.url') {
-                            return (path: string) => `http://localhost/storage/${path}`
+                            return 'http://localhost/storage'
                         }
 
                         return getConfigValue(values, name)
@@ -83,8 +84,10 @@ describe('Filesystem Storage', () => {
                 }
             },
         }
+    }
 
-        return new Storage(app as never)
+    function makeStorage () {
+        return new FilesystemManager(makeApp() as never)
     }
 
     it('uses the configured default disk and switches between configured disks', () => {
@@ -105,6 +108,8 @@ describe('Filesystem Storage', () => {
 
         expect(await storage.exists('documents/original.txt')).toBe(true)
         expect(await storage.get('documents/original.txt')).toBe('hello flydrive')
+        expect(await storage.getUrl('documents/original.txt'))
+            .toBe('http://localhost/storage/documents/original.txt')
 
         await storage.copy('documents/original.txt', 'documents/copy.txt')
         expect(await storage.get('documents/copy.txt')).toBe('hello flydrive')
@@ -137,5 +142,27 @@ describe('Filesystem Storage', () => {
         expect(storage.getDiskName()).toBe('memory')
         expect(storage.getDriverName()).toBe('memory')
         expect(await storage.get('demo.jpg')).toBe('custom driver contentdemo.jpg')
+    })
+
+    it('creates the built-in GCS driver from configured client options', () => {
+        const storageClient = {
+            bucket: () => ({})
+        }
+
+        const gcs = Driver.make(makeApp() as never, {
+            driver: 'gcs',
+            storage: storageClient,
+            bucket: 'uploads',
+            visibility: 'private',
+            usingUniformAcl: true,
+        })
+
+        expect(gcs).toBeInstanceOf(GCSDriver)
+        expect((gcs as any).options).toMatchObject({
+            storage: storageClient,
+            bucket: 'uploads',
+            visibility: 'private',
+            usingUniformAcl: true,
+        })
     })
 })

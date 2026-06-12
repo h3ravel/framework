@@ -1,4 +1,5 @@
 import { DriverContract, ObjectVisibility } from 'flydrive/types'
+import type { GCSDriverOptions } from 'flydrive/drivers/gcs/types'
 
 export interface FileLike {
     originalname: string
@@ -39,7 +40,10 @@ export interface LocalDiskDriverConfig {
     root?: string
     location?: string | URL
     visibility: ObjectVisibility
+    url?: string
 }
+
+export type GcsDiskDriverConfig = GCSDriverOptions
 
 export type CustomDiskConfig = keyof CustomDiskDriverRegistry extends never
     ? { driver: string;[key: string]: any }
@@ -49,11 +53,13 @@ export type DiskConfig =
     | LocalDiskDriverConfig & { driver: 'local' | 'public' }
     | FtpDiskDriverConfig & { driver: 'ftp' }
     | S3DiskDriverConfig & { driver: 's3' }
+    | GcsDiskDriverConfig & { driver: 'gcs' }
     | CustomDiskConfig
 
-export type DriverConfig<K extends 'ftp' | 'local' | 's3' | (string & {}) = string & {}> =
+export type DriverConfig<K extends 'ftp' | 'local' | 's3' | 'gcs' | (string & {}) = string & {}> =
     K extends 'ftp' ? FtpDiskDriverConfig :
     K extends 's3' ? S3DiskDriverConfig :
+    K extends 'gcs' ? GcsDiskDriverConfig :
     K extends 'local' ? LocalDiskDriverConfig :
     K extends keyof CustomDiskDriverRegistry ? CustomDiskDriverRegistry[K] :
     DiskConfig
@@ -63,10 +69,11 @@ export type KnownDisks = {
     public: LocalDiskDriverConfig & { driver: 'local' }
     ftp: FtpDiskDriverConfig & { driver: 'ftp' }
     s3: S3DiskDriverConfig & { driver: 's3' }
+    gcs: GcsDiskDriverConfig & { driver: 'gcs' }
 }
 
 export interface FilesystemConfig {
-    default: 'local' | 'ftp' | 's3' | keyof CustomDiskDriverRegistry | (string & {})
+    default: 'local' | 'ftp' | 's3' | 'gcs' | keyof CustomDiskDriverRegistry | (string & {})
     disks: KnownDisks & CustomDiskDriverRegistry
     links: Record<string, string>
     custom_drivers?: Record<

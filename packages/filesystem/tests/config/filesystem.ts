@@ -13,7 +13,7 @@ export default (): FilesystemConfig => {
          * You can configure as many disks as you want, and even have multiple disks 
          * using the same driver.
          * 
-         * Supported drivers: local, ftp, s3
+         * Supported drivers: local, ftp, s3, gcs
          */
         disks: {
             local: {
@@ -44,6 +44,14 @@ export default (): FilesystemConfig => {
                 url: env('AWS_URL'),
                 endpoint: env('AWS_ENDPOINT'),
                 visibility: 'public',
+            },
+            gcs: {
+                driver: 'gcs',
+                projectId: env('GOOGLE_CLOUD_PROJECT'),
+                keyFilename: env('GOOGLE_APPLICATION_CREDENTIALS'),
+                bucket: env('GOOGLE_CLOUD_STORAGE_BUCKET'),
+                visibility: 'private',
+                usingUniformAcl: true,
             }
         },
 
@@ -58,7 +66,7 @@ export default (): FilesystemConfig => {
         /**
          * Optional file name generator function. 
          * If provided, this function will be used to generate unique file names 
-         * for uploaded files when using the `saveFile` method of the Storage class.
+         * for uploaded files when using the `saveFile` method of the FilesystemManager class.
          * 
          * @param originalName  The original name of the file
          * @returns             A unique file name

@@ -60,11 +60,12 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1011.0",
+    "@aws-sdk/s3-request-presigner": "^3.1011.0",
+    "@google-cloud/storage": "^7.21.0",
     "@h3ravel/musket": "catalog:prod",
     "@h3ravel/shared": "workspace:^0.29.0-alpha.10",
     "@h3ravel/support": "workspace:^0.17.0-alpha.10",
-    "@aws-sdk/client-s3": "^3.1011.0",
-    "@aws-sdk/s3-request-presigner": "^3.1011.0",
     "flydrive": "catalog:",
     "ssh2-sftp-client": "^12.1.0"
   },
@@ -72,7 +73,7 @@
     "@h3ravel/core": "workspace:^1.22.0-alpha.10"
   },
   "devDependencies": {
-    "typescript": "catalog:",
-    "@types/ssh2-sftp-client": "^9.0.6"
+    "@types/ssh2-sftp-client": "^9.0.6",
+    "typescript": "catalog:"
   }
 }

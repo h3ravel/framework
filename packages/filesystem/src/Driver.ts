@@ -1,8 +1,10 @@
-import type { CustomDiskConfig, CustomDiskDriverRegistry, DiskConfig, FtpDiskDriverConfig, LocalDiskDriverConfig, S3DiskDriverConfig } from '@h3ravel/foundation'
+import type { CustomDiskConfig, CustomDiskDriverRegistry, DiskConfig, FtpDiskDriverConfig, GcsDiskDriverConfig, LocalDiskDriverConfig, S3DiskDriverConfig } from '@h3ravel/foundation'
 import { DriverContract, SignedURLOptions } from 'flydrive/types'
 
 import { FSDriver } from 'flydrive/drivers/fs'
 import { FtpDriver } from './FtpDriver'
+import { GCSDriver } from 'flydrive/drivers/gcs'
+import type { GCSDriverOptions } from 'flydrive/drivers/gcs/types'
 import { IApplication } from '@h3ravel/contracts'
 import { IFilesystemDriver } from '@h3ravel/foundation'
 import { S3Driver } from 'flydrive/drivers/s3'
@@ -23,13 +25,13 @@ export class Driver extends IFilesystemDriver {
         super()
     }
 
-    static make<K extends 'local' | 'ftp' | 's3' | (string & {})> (
+    static make<K extends 'local' | 'ftp' | 's3' | 'gcs' | (string & {})> (
         app: IApplication,
         config: DiskConfig
     ): DriverFor<K> {
         const name = config.driver
 
-        if (!['local', 'ftp', 's3'].includes(name) && !this.customDrivers.has(name)) {
+        if (!['local', 'ftp', 's3', 'gcs'].includes(name) && !this.customDrivers.has(name)) {
             throw new Error(`Unsupported driver: ${name}`)
         }
 
@@ -47,19 +49,28 @@ export class Driver extends IFilesystemDriver {
     local () {
         const config = this.config as LocalDiskDriverConfig
         const app = this.app
+        const buildUrl = (key: string) => {
+            const configuredUrl = config.url ?? app.make('config').get('app.url')
+
+            if (typeof configuredUrl === 'function') {
+                return configuredUrl(key)
+            }
+
+            const baseUrl = String(configuredUrl).replace(/\/+$/, '')
+            const normalizedKey = key.replace(/^\/+/, '')
+            return `${baseUrl}/${normalizedKey}`
+        }
 
         return new FSDriver({
             location: config.location ?? new URL(config.root!, import.meta.url),
             visibility: config.visibility ?? 'public',
             urlBuilder: {
                 async generateURL (key: string, _path: string) {
-                    // TODO: ensure this resolves to the actuall app url and works as expected
-                    return app.make('config').get('app.url')(key)
+                    return buildUrl(key)
                 },
 
                 async generateSignedURL (key: string, _path: string, _opts: SignedURLOptions) {
-                    // TODO: ensure this resolves to the actuall app url and works as expected
-                    return app.make('config').get('app.url')(key)
+                    return buildUrl(key)
                 },
             },
         })
@@ -79,6 +90,13 @@ export class Driver extends IFilesystemDriver {
             visibility: 'private',
             cdnUrl: config.cdnUrl ?? config.url,
         })
+    }
+
+    gcs () {
+        const config = this.config as GcsDiskDriverConfig & { driver?: string }
+        const { driver: _driver, ...options } = config
+
+        return new GCSDriver(options)
     }
 
     ftp () {

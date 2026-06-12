@@ -16,6 +16,30 @@
 
 This is the filesystem manager for the [H3ravel](https://h3ravel.toneflix.net) framework, providing shared file storage and filesystem utitlities for the framework.
 
+## Google Cloud Storage
+
+Install and configure the filesystem package with a `gcs` disk:
+
+```ts
+export default () => ({
+  default: 'gcs',
+  disks: {
+    gcs: {
+      driver: 'gcs',
+      projectId: env('GOOGLE_CLOUD_PROJECT'),
+      keyFilename: env('GOOGLE_APPLICATION_CREDENTIALS'),
+      bucket: env('GOOGLE_CLOUD_STORAGE_BUCKET'),
+      visibility: 'private',
+      usingUniformAcl: true,
+    },
+  },
+  links: {},
+})
+```
+
+The driver also accepts an initialized `@google-cloud/storage` client through
+the `storage` option.
+
 ## Custom Drivers
 
 @h3ravel/filesystem allows you to configure and use custom storage drivers.

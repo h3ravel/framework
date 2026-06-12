@@ -41,10 +41,10 @@ export class FilesystemManager<
     }
 
     /**
-     * Static method to get a disk instance directly from the Storage class without needing to instantiate it first.
+     * Select a configured disk on the filesystem manager.
      * 
      * @param diskName  The name of the disk to use. If not provided, the default disk will be used.
-     * @returns A Storage instance
+     * @returns The filesystem manager instance
      */
     disk<K extends keyof KnownDisks | keyof CustomDiskDriverRegistry> (
         diskName: K
