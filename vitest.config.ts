@@ -1,7 +1,14 @@
 import { defineConfig } from 'vitest/config'
+import { fileURLToPath } from 'node:url'
+
+const basicAppSource = fileURLToPath(new URL('./examples/basic-app/src/', import.meta.url))
 
 export default defineConfig({
     resolve: {
+        alias: [
+            { find: /^App\//, replacement: `${basicAppSource}app/` },
+            { find: /^src\//, replacement: basicAppSource },
+        ],
         tsconfigPaths: true,
     } as never,
     test: {

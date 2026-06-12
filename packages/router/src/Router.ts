@@ -21,9 +21,9 @@ import { PendingSingletonResourceRegistration } from './PendingSingletonResource
 import { ResourceRegistrar } from './ResourceRegistrar'
 import { PendingResourceRegistration } from './PendingResourceRegistration'
 import { RouteRegistrar } from './RouteRegisterer'
-import { createRequire } from 'module'
 import { existsSync } from 'node:fs'
 import { ImplicitRouteBinding } from './ImplicitRouteBinding'
+import { pathToFileURL } from 'node:url'
 
 export class Router extends mix(IRouter, MacroableClass, Magic) {
     private DIST_DIR: string
@@ -54,6 +54,7 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
      * The route group attribute stack.
      */
     protected groupStack: GenericObject<any>[] = []
+    protected routeLoading: Promise<void> = Promise.resolve()
 
     /**
      * The event dispatcher instance.
@@ -711,17 +712,35 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
      */
     group<C extends ((_e: this) => void) | string> (attributes: RouteActions, routes: C | C[]) {
         for (const groupRoutes of Arr.wrap(routes)) {
-            this.updateGroupStack(attributes)
+            if (typeof groupRoutes === 'function') {
+                this.updateGroupStack(attributes)
+                this.loadRoutes(groupRoutes)
+                this.groupStack.pop()
+                continue
+            }
 
-            // Once we have updated the group stack, we'll load the provided routes and
-            // merge in the group's attributes when the routes are created. After we
-            // have created the routes, we will pop the attributes off the stack.
-            this.loadRoutes(groupRoutes)
+            const parentStack = [...this.groupStack]
+            this.routeLoading = this.routeLoading.then(async () => {
+                const previousStack = this.groupStack
+                this.groupStack = [...parentStack]
+                this.updateGroupStack(attributes)
 
-            this.groupStack.pop()
+                try {
+                    await this.loadRoutes(groupRoutes)
+                } finally {
+                    this.groupStack = previousStack
+                }
+            })
         }
 
         return this
+    }
+
+    /**
+     * Wait for route files queued by route groups to finish loading.
+     */
+    async routesLoaded () {
+        await this.routeLoading
     }
 
     /**
@@ -753,11 +772,17 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
      * @param  routes
      */
     protected async loadRoutes (routes: string | ((_e: this) => void)) {
-        const require = createRequire(import.meta.url)
         if (typeof routes === 'function') {
             routes(this)
-        } else if (existsSync(this.app.paths.distPath(routes))) {
-            require(this.app.paths.distPath(routes))
+            return
+        }
+
+        const sourcePath = process.env.NODE_ENV === 'testing'
+            ? routes
+            : this.app.paths.distPath(routes)
+
+        if (existsSync(sourcePath)) {
+            await import(pathToFileURL(sourcePath).href)
         }
     }
 

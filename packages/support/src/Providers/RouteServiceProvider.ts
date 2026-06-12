@@ -92,13 +92,18 @@ export class RouteServiceProvider extends ServiceProvider {
      */
     protected async loadRoutes () {
         if (RouteServiceProvider.alwaysLoadRoutesUsing != null) {
-            this.app.call(RouteServiceProvider.alwaysLoadRoutesUsing)
+            await this.app.call(RouteServiceProvider.alwaysLoadRoutesUsing)
         }
 
         if (this.loadRoutesUsing != null) {
-            this.app.call(this.loadRoutesUsing)
+            await this.app.call(this.loadRoutesUsing)
         } else if (typeof (this as any)['map'] === 'function') {
-            this.app.call((this as any)['map'])
+            await this.app.call((this as any)['map'])
+        }
+
+        const router = this.app.make(IRouter) as IRouter & { routesLoaded?: () => Promise<void> }
+        if (typeof router.routesLoaded === 'function') {
+            await router.routesLoaded()
         }
         // try {
         //     const routePath = this.app.getPath('routes')
