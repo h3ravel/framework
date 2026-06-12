@@ -4,7 +4,6 @@ import { DriverContract, ObjectMetaData, ObjectVisibility, SignedURLOptions, Wri
 import { rmSync, symlinkSync } from 'node:fs'
 
 import { Driver } from './Driver'
-import { IApplication } from '@h3ravel/contracts'
 import { IFilesystemManager } from '@h3ravel/foundation'
 import { Logger } from '@h3ravel/shared'
 import { Readable } from 'node:stream'
@@ -18,7 +17,7 @@ export class FilesystemManager<
     diskName: D
     driverName: FilesystemConfig['disks'][D]['driver']
 
-    constructor(app: IApplication) {
+    constructor() {
         super()
 
         const disks = Object.entries(config('filesystem.disks', {})) as Array<[string, DriverConfig]>
@@ -29,7 +28,7 @@ export class FilesystemManager<
         }
 
         for (const [disk, config] of disks) {
-            this.services[disk] = () => Driver.make(app, config)
+            this.services[disk] = () => Driver.make(config)
         }
 
         this.diskName = config('filesystem.default')

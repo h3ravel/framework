@@ -12,7 +12,7 @@ export class FilesystemProvider extends ServiceProvider {
 
     register () {
         this.registerCommands([StorageLinkCommand])
-        this.app.singleton('storage', () => new FilesystemManager(this.app))
+        this.app.singleton('storage', () => new FilesystemManager())
         this.app.alias([
             [FilesystemManager, 'storage'],
             [IFilesystemManager, 'storage'],

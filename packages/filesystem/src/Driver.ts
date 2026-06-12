@@ -4,7 +4,6 @@ import { DriverContract, SignedURLOptions } from 'flydrive/types'
 import { FSDriver } from 'flydrive/drivers/fs'
 import { FtpDriver } from './FtpDriver'
 import { GCSDriver } from 'flydrive/drivers/gcs'
-import { IApplication } from '@h3ravel/contracts'
 import { IFilesystemDriver } from '@h3ravel/foundation'
 import { S3Driver } from 'flydrive/drivers/s3'
 
@@ -20,12 +19,11 @@ export class Driver extends IFilesystemDriver {
         DriverContract | (new (config?: CustomDiskConfig) => DriverContract)
     >()
 
-    constructor(private app: IApplication, private config: DiskConfig) {
+    constructor(private config: DiskConfig) {
         super()
     }
 
     static make<K extends 'local' | 'ftp' | 's3' | 'gcs' | (string & {})> (
-        app: IApplication,
         config: DiskConfig
     ): DriverFor<K> {
         const name = config.driver
@@ -34,7 +32,7 @@ export class Driver extends IFilesystemDriver {
             throw new Error(`Unsupported driver: ${name}`)
         }
 
-        const driver = new Driver(app, config)
+        const driver = new Driver(config)
 
         if (this.customDrivers.has(name)) {
             return driver.custom(name) as DriverFor<K>
@@ -47,29 +45,17 @@ export class Driver extends IFilesystemDriver {
 
     local () {
         const config = this.config as LocalDiskDriverConfig
-        const app = this.app
-        const buildUrl = (key: string) => {
-            const configuredUrl = config.url ?? app.make('config').get('app.url')
-
-            if (typeof configuredUrl === 'function') {
-                return configuredUrl(key)
-            }
-
-            const baseUrl = String(configuredUrl).replace(/\/+$/, '')
-            const normalizedKey = key.replace(/^\/+/, '')
-            return `${baseUrl}/${normalizedKey}`
-        }
 
         return new FSDriver({
             location: config.location ?? new URL(config.root!, import.meta.url),
             visibility: config.visibility ?? 'public',
             urlBuilder: {
                 async generateURL (key: string, _path: string) {
-                    return buildUrl(key)
+                    return url(key)
                 },
 
                 async generateSignedURL (key: string, _path: string, _opts: SignedURLOptions) {
-                    return buildUrl(key)
+                    return url(key)
                 },
             },
         })
