@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/events",
-  "version": "1.29.0-alpha.13",
+  "version": "1.29.0-alpha.14",
   "description": "Events package for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -57,7 +57,7 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^1.29.0-alpha.13"
+    "@h3ravel/core": "workspace:^1.29.0-alpha.14"
   },
   "devDependencies": {
     "typescript": "catalog:"

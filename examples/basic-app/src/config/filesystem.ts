@@ -54,6 +54,14 @@ export default (): FilesystemConfig => {
                 url: env('AWS_URL'),
                 endpoint: env('AWS_ENDPOINT'),
                 visibility: 'public',
+            },
+            gcs: {
+                driver: 'gcs',
+                projectId: env('GOOGLE_CLOUD_PROJECT'),
+                keyFilename: env('GOOGLE_APPLICATION_CREDENTIALS'),
+                bucket: env('GOOGLE_CLOUD_STORAGE_BUCKET'),
+                visibility: 'private',
+                usingUniformAcl: true,
             }
         },
 
