@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
-import { mkdtemp, rmdir, writeFile } from 'node:fs/promises'
+import { mkdtemp, rm, writeFile } from 'node:fs/promises'
 
 import { HashManager } from '../src'
 import { Str } from '@h3ravel/support'
@@ -7,10 +7,8 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { tmpdir } from 'node:os'
 
-let testConfig = `import { defineConfig } from '@h3ravel/hashing'
-
-export default defineConfig({
-    driver: 'bcrypt',
+const testConfig = (driver: string) => `export default {
+    driver: '${driver}',
     bcrypt: {
         rounds: 12,
         verify: true,
@@ -22,7 +20,7 @@ export default defineConfig({
         time: 4,
         verify: true,
     },
-})`
+}`
 
 describe('Password Hashing', async () => {
     ['bcrypt', 'argon', 'argon2id'].forEach(driver => {
@@ -39,10 +37,7 @@ describe('Password Hashing', async () => {
             const confPath = path.join(baseTempPath, 'hashing.config.ts')
 
             if (!existsSync(confPath)) {
-                const pd = { argon: 'bcrypt', argon2id: 'argon' }
-
-                testConfig = testConfig.replace(`driver: '${pd[<never>driver] ?? 'bcrypt'}',`, `driver: '${driver}',`)
-                await writeFile(confPath, testConfig)
+                await writeFile(confPath, testConfig(driver))
             }
 
             const config = (await import(confPath)).default
@@ -53,7 +48,7 @@ describe('Password Hashing', async () => {
             })
 
             afterAll(async () => {
-                await rmdir(baseTempPath, { recursive: true })
+                await rm(baseTempPath, { recursive: true, force: true })
             })
 
             describe('Configuration', async () => {

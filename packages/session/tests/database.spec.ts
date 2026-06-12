@@ -20,9 +20,9 @@ describe('@h3ravel/session Database Driver', () => {
         const { DatabaseServiceProvider } = (await import(('@h3ravel/database')))
         const { HttpServiceProvider } = (await import(('@h3ravel/http')))
         const { ConfigServiceProvider } = (await import(('@h3ravel/config')))
-        const { RouteServiceProvider } = (await import(('@h3ravel/router')))
+        const { RouteServiceProvider } = (await import(('@h3ravel/support')))
 
-        await h3ravel(
+        const app = await h3ravel(
             [HttpServiceProvider, DatabaseServiceProvider, ConfigServiceProvider, RouteServiceProvider, SessionServiceProvider],
             path.join(process.cwd(), 'packages/session/tests'),
             {
@@ -32,6 +32,7 @@ describe('@h3ravel/session Database Driver', () => {
                     routes: 'routes',
                 }
             })
+        await app.boot()
 
 
         await DB.instance().schema.hasTable('sessions').then(async function (exists) {

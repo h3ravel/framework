@@ -1,15 +1,35 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { Helpers } from '@h3ravel/foundation'
+import { H3Event } from 'h3'
 import { Response } from '../src/Response'
 
 // Mock classes
-class Application { }
+class Application {
+    private event?: H3Event
+    private response?: Response
+
+    getHttpContext (key?: string) {
+        const context = { event: this.event }
+        return key ? context[key as keyof typeof context] : context
+    }
+
+    make (key: string) {
+        if (key === 'http.response') return this.response
+    }
+
+    setEvent (event: H3Event) {
+        this.event = event
+    }
+
+    setResponse (response: Response) {
+        this.response = response
+    }
+}
 function makeEvent (overides: Record<string, any> = {}) {
     globalThis.dump = () => { }
-    return {
-        res: { headers: new Headers(), statusCode: 200 },
-        req: { headers: new Headers(), url: overides.url ?? 'http://localhost/test', method: 'get' },
-    } as any
+    const url = new URL(overides.url ?? '/test', 'http://localhost')
+    return new H3Event(new Request(url))
 }
 
 // Mock implementation for inherited methods
@@ -34,7 +54,10 @@ describe('Response', () => {
     beforeEach(() => {
         event = makeEvent()
         app = new Application()
+        app.setEvent(event)
         iResponse = new Response(app, event)
+        app.setResponse(iResponse)
+        Helpers.load(app)
     })
 
     it('stores the app and event', () => {
@@ -86,11 +109,12 @@ describe('Response', () => {
 
     it('getEvent with key returns nested value', () => {
         const r = new Response(app, makeEvent({ url: '/foo' }))
-        expect(r.getEvent('req.url')).toBe('/foo')
+        expect(r.getEvent('req.url')).toBe('http://localhost/foo')
     })
 
     it('returns Response class instance from global response helper', async () => {
         const res = new Response(app, makeEvent({ url: '/foo' }))
+        app.setResponse(res)
 
         expect(response()).toBe(res)
         expect(response()).toBeInstanceOf(Response)

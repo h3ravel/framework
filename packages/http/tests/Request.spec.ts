@@ -90,7 +90,7 @@ describe('Request', () => {
     beforeEach(async () => {
         const { SessionServiceProvider } = (await import(('@h3ravel/session')))
         const { ConfigServiceProvider } = (await import(('@h3ravel/config')))
-        const { RouteServiceProvider } = (await import(('@h3ravel/router')))
+        const { RouteServiceProvider } = (await import(('@h3ravel/support')))
         app = await h3ravel(
             [SessionServiceProvider, HttpServiceProvider, ConfigServiceProvider, RouteServiceProvider],
             path.join(process.cwd(), 'packages/http/tests'),
@@ -101,6 +101,7 @@ describe('Request', () => {
                     routes: 'routes',
                 }
             })
+        await app.boot()
         app.make('config')
 
         vi.restoreAllMocks() // restore in case any global spy persists
@@ -394,6 +395,7 @@ describe('Request', () => {
         })
 
         const req = await Request.create(event, app as any)
+        app.bind('http.request', () => req)
 
         expect(request()).toBe(req)
         expect(request()).toBeInstanceOf(Request)
@@ -421,4 +423,3 @@ describe('Request', () => {
     //     })
     // })
 })
-

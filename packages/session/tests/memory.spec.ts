@@ -5,6 +5,7 @@ import { Encryption } from '../src/Encryption'
 import { IHttpContext } from '@h3ravel/contracts'
 import { SessionManager } from '../src/SessionManager'
 import { SessionServiceProvider } from '../src/Providers/SessionServiceProvider'
+import { H3Event } from 'h3'
 import path from 'node:path'
 
 let ctx: IHttpContext
@@ -13,16 +14,13 @@ let event: any
 const appKey = 'base64:dnZm+Ei7ExEHzhj/wO/3YKUckMQtpLjRVk1VLYiV/es='
 
 function makeEvent (overides: Record<string, any> = {}) {
-    return {
-        res: { headers: new Headers(), statusCode: 200, cookie: () => { } },
-        req: {
-            headers: new Headers({
-                'user-agent': 'Vitest',
-                'x-forwarded-for': '127.0.0.1'
-            }),
-            url: overides.url ?? 'http://localhost/test', method: 'get'
-        },
-    } as any
+    return new H3Event(new Request(overides.url ?? 'http://localhost/test', {
+        method: 'GET',
+        headers: {
+            'user-agent': 'Vitest',
+            'x-forwarded-for': '127.0.0.1'
+        }
+    }))
 }
 
 describe('@h3ravel/session MemoryDriver', () => {
@@ -32,7 +30,7 @@ describe('@h3ravel/session MemoryDriver', () => {
         const { DatabaseServiceProvider } = (await import(('@h3ravel/database')))
         const { HttpServiceProvider } = (await import(('@h3ravel/http')))
         const { ConfigServiceProvider } = (await import(('@h3ravel/config')))
-        const { RouteServiceProvider } = (await import(('@h3ravel/router')))
+        const { RouteServiceProvider } = (await import(('@h3ravel/support')))
         app = await h3ravel(
             [HttpServiceProvider, DatabaseServiceProvider, ConfigServiceProvider, RouteServiceProvider, SessionServiceProvider],
             path.join(process.cwd(), 'packages/session/tests'),
@@ -43,6 +41,7 @@ describe('@h3ravel/session MemoryDriver', () => {
                     routes: 'routes',
                 }
             })
+        await app.boot()
     })
 
     beforeEach(async () => {
