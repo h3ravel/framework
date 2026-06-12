@@ -35,7 +35,7 @@ export class PathLoader {
 
 
         if (name === 'public') {
-            path = path.replace('/public', nodepath.join('/', process.env.DIST_DIR ?? '.h3ravel/serve'))
+            path = path.replace('/public', nodepath.join('/', process.env.DIST_DIR ?? '.h3ravel/serve', 'public'))
         } else {
             path = path.replace('/src/', `/${process.env.DIST_DIR ?? '.h3ravel/serve'}/`)
         }

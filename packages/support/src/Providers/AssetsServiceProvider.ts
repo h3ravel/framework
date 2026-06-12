@@ -37,7 +37,7 @@ export class AssetsServiceProvider extends ServiceProvider {
             return serveStatic(event, {
                 indexNames: ['/index.html'],
                 getContents: (id) => {
-                    return <never>readFile(join(Str.before(publicPath, id), id))
+                    return readFile(join(Str.before(publicPath, id), id))
                 },
                 getMeta: async (id) => {
                     const stats = await stat(join(Str.before(publicPath, id), id)).catch(() => { })

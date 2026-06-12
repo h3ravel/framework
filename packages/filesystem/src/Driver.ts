@@ -51,10 +51,14 @@ export class Driver extends IFilesystemDriver {
             visibility: config.visibility ?? 'public',
             urlBuilder: {
                 async generateURL (key: string, _path: string) {
+                    if (config.url) return `${config.url}/key`.replace(/^(https?:\/)\/+/, '$1/').replace(/([^:]\/)\/+/g, '$1')
+
                     return url(key)
                 },
 
                 async generateSignedURL (key: string, _path: string, _opts: SignedURLOptions) {
+                    if (config.url) return `${config.url}/key`.replace(/^(https?:\/)\/+/, '$1/').replace(/([^:]\/)\/+/g, '$1')
+
                     return url(key)
                 },
             },
