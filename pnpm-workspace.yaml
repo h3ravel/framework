@@ -35,7 +35,7 @@ catalog:
   '@vitest/coverage-v8': ^4.1.8
   argon2: ^0.44.0
   barrelize: 1.6.6
-  bcryptjs: 3.0.2
+  bcryptjs: 3.0.3
   cross-env: ^10.1.0
   dayjs: ^1.11.18
   detect-port: ^2.1.0
