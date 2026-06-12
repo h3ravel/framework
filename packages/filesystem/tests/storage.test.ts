@@ -47,6 +47,8 @@ describe('Filesystem Storage', () => {
             },
         }
 
+        globalThis.url = ((key?: string) => 'http://localhost/storage/' + key) as never
+
         globalThis.config = ((key?: string | TestConfig, defaultValue?: any) => {
             if (typeof key === 'object') {
                 values = key
@@ -149,7 +151,7 @@ describe('Filesystem Storage', () => {
             bucket: () => ({})
         }
 
-        const gcs = Driver.make(makeApp() as never, {
+        const gcs = Driver.make({
             driver: 'gcs',
             storage: storageClient,
             bucket: 'uploads',
