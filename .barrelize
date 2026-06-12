@@ -55,6 +55,7 @@
       "name": "index.ts",
       "root": "packages/filesystem/src",
       "exclude": [
+        "**/Facades/*",
         "**/*.test.ts",
         "**/*.d.ts"
       ]

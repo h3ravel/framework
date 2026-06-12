@@ -6,7 +6,7 @@ import { CreatesRegularExpressionRouteConstraints } from './Traits/CreatesRegula
 import { ResourceRegistrar } from './ResourceRegistrar'
 import { RouteCollection } from './RouteCollection'
 import { Router } from './Router'
-import variadic from 'packages/support/src/Helpers'
+import { variadic } from '@h3ravel/support'
 
 export class PendingSingletonResourceRegistration extends use(
     Finalizable,

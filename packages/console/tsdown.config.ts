@@ -10,7 +10,9 @@ export default defineConfig([
     treeshake: true,
     outDir: 'bin',
     minify: true,
-    external: baseConfig.external
+    deps: {
+      neverBundle: baseConfig.deps?.neverBundle
+    }
   },
   {
     ...baseConfig,

@@ -5,10 +5,28 @@ import path from 'node:path'
 import providers from 'src/bootstrap/providers'
 
 export default class {
+    /**
+     * Initialize the app then fire up the dev server
+     * 
+     * @returns 
+     */
     async bootstrap () {
         const app = await h3ravel(providers, process.cwd(), { autoload: true, initialize: false })
         this.configure(app)
+        // Fire up the developement server using the user provided arguments
         return await app.fire()
+    }
+
+    /**
+     * Initialize the app without firing up the dev server
+     * 
+     * @returns 
+     */
+    async init () {
+        const app = await h3ravel(providers, process.cwd(), { autoload: true, initialize: false })
+        this.configure(app)
+        // Boot the application service providers and other requirements
+        return await app.boot()
     }
 
     configure (app: Application) {

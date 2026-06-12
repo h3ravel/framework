@@ -57,7 +57,7 @@ describe('Mixins', () => {
         const router = new Router()
 
         it('child class constructor has access to all parent methods', () => {
-            expect(spy).toHaveBeenCalledTimes(2)
+            expect(spy).toHaveBeenCalledTimes(4)
             expect(spy).toHaveBeenCalledWith('Playing')
             expect(spy).toHaveBeenCalledWith('makeMagic')
             spy.mockReset()
@@ -138,7 +138,7 @@ describe('Mixins', () => {
         const router = new Router()
 
         it('child class constructor has access to all parent methods', () => {
-            expect(spy).toHaveBeenCalledTimes(2)
+            expect(spy).toHaveBeenCalledTimes(4)
             expect(spy).toHaveBeenCalledWith('Playing')
             expect(spy).toHaveBeenCalledWith('makeMagic')
             spy.mockReset()

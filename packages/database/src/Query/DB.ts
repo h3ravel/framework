@@ -1,5 +1,6 @@
+import { QueryBuilder, arquebus } from '@h3ravel/arquebus'
+
 import { IQueryBuilder } from '@h3ravel/arquebus/types'
-import { arquebus } from '@h3ravel/arquebus'
 
 export class DB {
     connection?: string
@@ -27,7 +28,7 @@ export class DB {
     /**
      * Builder transaction instance
      */
-    public static transaction<C> (callback: (...args: C[]) => any) {
+    public static transaction<C> (callback: (...args: C[]) => any): ReturnType<QueryBuilder['transaction']> {
         return new DB().builder().transaction(callback)
     }
 

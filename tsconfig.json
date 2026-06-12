@@ -1,9 +1,5 @@
 {
   "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "outDir": "./dist"
-  },
   "exclude": [
     "**/console/bin",
     "dist",
@@ -17,6 +13,7 @@
     "eslint.config.js",
     "jest.config.ts",
     "arquebus.config.js",
+    "scripts/version-packages*.mjs",
     "**/coverage/**"
   ],
   "ts-node": {

@@ -53,7 +53,7 @@
     "builder"
   ],
   "scripts": {
-    "build": "tsdown --config-loader unconfig",
+    "build": "tsdown --config-loader unrun",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
@@ -73,7 +73,7 @@
     "@h3ravel/contracts": "workspace:^0.29.0-alpha.10"
   },
   "devDependencies": {
-    "typescript": "^5.4.0"
+    "typescript": "catalog:"
   },
   "peerDependenciesMeta": {
     "@h3ravel/core": {

@@ -52,7 +52,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "typecheck": "tsc --noEmit",
-    "build": "tsdown --config-loader unconfig",
+    "build": "tsdown --config-loader unrun",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
     "test": "jest --passWithNoTests",
@@ -66,7 +66,7 @@
   },
   "devDependencies": {
     "typescript": "^5.0.0",
-    "vitest": "^2.0.0"
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "@h3ravel/shared": "workspace:^0.29.0-alpha.10",

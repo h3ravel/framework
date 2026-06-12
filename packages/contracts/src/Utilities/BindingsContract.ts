@@ -21,7 +21,7 @@ type RemoveIndexSignature<T> = {
     : K]: T[K]
 }
 
-export type Bindings = {
+export interface Bindings {
     [key: string]: any;
     [key: `app.${string}`]: any;
     [key: `middleware.${string}`]: any;

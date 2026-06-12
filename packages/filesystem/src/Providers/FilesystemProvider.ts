@@ -1,3 +1,5 @@
+import { FilesystemManager } from '../FilesystemManager'
+import { IFilesystemManager } from '@h3ravel/foundation'
 import { ServiceProvider } from '@h3ravel/core'
 import { StorageLinkCommand } from '../Commands/StorageLinkCommand'
 
@@ -10,5 +12,10 @@ export class FilesystemProvider extends ServiceProvider {
 
     register () {
         this.registerCommands([StorageLinkCommand])
+        this.app.singleton('storage', () => new FilesystemManager())
+        this.app.alias([
+            [FilesystemManager, 'storage'],
+            [IFilesystemManager, 'storage'],
+        ])
     }
 }

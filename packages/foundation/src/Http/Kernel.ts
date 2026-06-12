@@ -224,7 +224,7 @@ export class Kernel extends mix(IKernel, use(InteractsWithTime)) {
     /**
      * When the request being handled started.
      */
-    public requestStartedAt () {
+    public requestStartedAt (): DateTime | undefined {
         return this.#requestStartedAt
     }
 
@@ -436,7 +436,7 @@ export class Kernel extends mix(IKernel, use(InteractsWithTime)) {
         }
 
         // TODO: Pay Attention to these
-        for (const [key, middleware] of Object.entries(this.middlewareAliases)) {
+        for (const [_key, _middleware] of Object.entries(this.middlewareAliases)) {
             // this.router.aliasMiddleware(key, middleware)
             // console.log(key, middleware, 'key, middleware')
         }

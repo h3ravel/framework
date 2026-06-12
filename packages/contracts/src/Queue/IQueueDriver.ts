@@ -1,5 +1,5 @@
-import { IJob } from "./IJob";
-import { JobPayload } from "./Utils";
+import { IJob } from './IJob'
+import { JobPayload } from './Utils'
 
 /**
  * Queue driver contract for queue backends.

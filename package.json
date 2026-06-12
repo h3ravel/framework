@@ -22,7 +22,7 @@
   "scripts": {
     "barrel": "barrelize >/dev/null",
     "_barrel": "pnpm -r --filter './packages/*' run barrel",
-    "patch": "pnpm -r --filter './packages/*' version patch",
+    "patch": "pnpm version:packages patch",
     "build": "pnpm barrel && pnpm -r --workspace-concurrency=1 --filter './packages/*' run build",
     "devx": "pnpm barrel && pnpm -r --parallel --filter './examples/*' run dev",
     "dev": "pnpm barrel && pnpm -r --parallel --filter './packages/*' run dev",
@@ -34,19 +34,20 @@
     "postinstall": "pnpm barrel",
     "undev": "tsx watch packages/core/src/main.ts",
     "cleanup": "find . \\( -name 'node_modules' -o -name 'dist' -o -name 'bin' \\) -type d -prune -exec rimraf '{}' +",
-    "release": "pnpm build && pnpm changeset version && pnpm changeset publish",
+    "release": "pnpm version:packages",
     "publish": "pnpm patch-all && pnpm -r publish --access public --tag alpha",
-    "patch-all": "pnpm build && pnpm -r version-patch"
+    "patch-all": "pnpm build && pnpm version:packages patch",
+    "version:packages": "node scripts/version-packages.mjs"
   },
   "publishConfig": {
     "access": "restricted"
   },
   "devDependencies": {
-    "@aws-sdk/client-sesv2": "^3.925.0",
+    "@aws-sdk/client-sesv2": "^3.1066.0",
     "@changesets/cli": "catalog:",
     "@eslint/js": "catalog:",
     "@swc/core": "catalog:",
-    "@types/node": "^24.10.0",
+    "@types/node": "^25.9.3",
     "@typescript-eslint/eslint-plugin": "catalog:",
     "@typescript-eslint/parser": "catalog:",
     "@vitest/coverage-v8": "catalog:",
@@ -59,10 +60,10 @@
     "escalade": "catalog:",
     "eslint": "catalog:",
     "fetchdts": "^0.1.7",
+    "globals": "^17.6.0",
     "husky": "catalog:",
     "knex": "catalog:",
     "mysql2": "catalog:",
-    "madge": "^8.0.0",
     "nodemailer": "^7.0.10",
     "path": "catalog:",
     "pnpm": "^10.20.0",
@@ -72,11 +73,10 @@
     "ts-node": "catalog:",
     "tsconfig-paths": "catalog:",
     "tsdown": "catalog:",
-    "typescript": "^5.9.3",
+    "typescript": "catalog:",
     "typescript-eslint": "catalog:",
     "utility-types": "catalog:",
-    "vite-tsconfig-paths": "catalog:",
-    "vitest": "^3.2.4"
+    "vitest": "catalog:"
   },
   "packageManager": "pnpm@10.19.0"
 }

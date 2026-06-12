@@ -93,7 +93,7 @@ export abstract class Job {
      *
      * @param delay
      */
-    public release (delay = 0) {
+    public release (_delay = 0) {
         this.released = true
     }
 

@@ -35,7 +35,7 @@ export default class {
 
         await execa(
             pm,
-            ['tsdown', '--silent', '--config-loader', 'unconfig', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
+            ['tsdown', '--silent', '--config-loader', 'unrun', '-c', 'tsdown.default.config.ts'].filter(e => e !== null),
             { stdout: 'inherit', stderr: 'inherit', cwd: join(process.cwd()), env: Object.assign({}, process.env, ENV_VARS) }
         )
     }

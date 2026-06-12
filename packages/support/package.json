@@ -44,7 +44,7 @@
     "laravel"
   ],
   "scripts": {
-    "build": "tsdown --config-loader unconfig",
+    "build": "tsdown --config-loader unrun",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
@@ -54,7 +54,7 @@
   "devDependencies": {
     "@h3ravel/shared": "workspace:^0.29.0-alpha.10",
     "@types/luxon": "catalog:",
-    "typescript": "^5.4.0"
+    "typescript": "catalog:"
   },
   "dependencies": {
     "@h3ravel/collect.js": "catalog:prod",

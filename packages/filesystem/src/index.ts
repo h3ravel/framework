@@ -1,2 +1,5 @@
 export * from './Commands/StorageLinkCommand'
+export * from './Driver'
+export * from './FilesystemManager'
+export * from './FtpDriver'
 export * from './Providers/FilesystemProvider'

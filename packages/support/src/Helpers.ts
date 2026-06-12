@@ -73,7 +73,7 @@ export const optional: OptionalFn = <T, R> (value: Nullable<T>, callback?: (valu
  *
  * @param args
  */
-export default function variadic<X> (args: X[]) {
+export function variadic<X> (args: X[]) {
     if (Array.isArray(args[0])) {
         return args[0]
     }

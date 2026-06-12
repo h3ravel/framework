@@ -470,7 +470,7 @@ export class Middleware {
      * @param subdomains 
      * @returns 
      */
-    public trustHosts (at: any = null, subdomains = true): this {
+    public trustHosts (_at: any = null, _subdomains = true): this {
         this._trustHosts = true
         return this
     }

@@ -1,8 +1,5 @@
 {
   "extends": "./.h3ravel/tsconfig.json",
-  "compilerOptions": {
-    "outDir": "dist"
-  },
   "include": ["src", "public", "../../packages/console/src/run.ts"],
   "exclude": ["dist", "node_modules", "./.h3ravel", "./public/**"]
 }

@@ -1,5 +1,6 @@
 import { defineConfig } from 'eslint/config'
 import { globalIgnores } from 'eslint/config'
+import globals from 'globals'
 import js from '@eslint/js'
 import tseslint from 'typescript-eslint'
 
@@ -8,7 +9,8 @@ export default defineConfig(
     languageOptions: {
       parserOptions: {
         // eslint-disable-next-line no-undef
-        tsconfigRootDir: process.cwd()
+        tsconfigRootDir: process.cwd(),
+        globals: { ...globals.node },
       },
     },
   },
@@ -42,6 +44,7 @@ export default defineConfig(
       'semi': ['error', 'never'],
       'quotes': ['error', 'single'],
       'no-unused-vars': 'off',
+      'no-useless-assignment': 'off',
       '@typescript-eslint/no-unused-vars': [
         'warn', {
           'argsIgnorePattern': '^_|_',
@@ -51,6 +54,7 @@ export default defineConfig(
           'varsIgnorePattern': '^I[A-Z]|^_',
         }
       ],
+      '@typescript-eslint/no-empty-object-type': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       '@typescript-eslint/triple-slash-reference': ['error', {
         'path': 'always'
