@@ -50,6 +50,9 @@ export class HttpResponse extends IHttpResponse {
     ) {
         super()
         this.headers = new ResponseHeaderBag(this.event)
+        this.sentHeaders = Object.fromEntries(
+            Array.from(this.event.res.headers.entries(), ([name, value]) => [name, [value]])
+        )
         this.setContent()
         this.setProtocolVersion('1.0')
     }

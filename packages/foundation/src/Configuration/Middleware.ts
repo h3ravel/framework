@@ -330,6 +330,7 @@ export class Middleware {
             ].filter(e => e !== null),
 
             'api': [
+                'ResoraMiddleware',
                 'LogRequests',
                 'SubstituteBindings',
                 this.apiLimiter ? 'throttle:' + this.apiLimiter : null,

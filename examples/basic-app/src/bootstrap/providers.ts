@@ -8,7 +8,7 @@ import { AppServiceProvider } from 'src/app/Providers/AppServiceProvider'
  * Service provider names should be unique as duplicates might be filtered out
  * including custom providers matching core provider names
  */
-export default <Array<new (_app: Application) => ServiceProvider>>[
+export default <Array<new (app: Application) => ServiceProvider>>[
     AppServiceProvider,
     HttpServiceProvider,
 ] 

@@ -3,6 +3,7 @@ import { IApplication, IHttpContext, IRequest, IResponse } from '@h3ravel/contra
 import { FlashDataMiddleware } from './Middleware/FlashDataMiddleware'
 import type { H3Event } from 'h3'
 import { LogRequests } from './Middleware/LogRequests'
+import { ResoraMiddleware } from './Middleware/ResoraMiddleware'
 
 /**
  * Represents the HTTP context for a single request lifecycle.
@@ -18,6 +19,7 @@ export class HttpContext extends IHttpContext {
         public response: IResponse
     ) {
         super()
+        this.app.bindMiddleware('ResoraMiddleware', ResoraMiddleware)
         this.app.bindMiddleware('LogRequests', LogRequests)
         this.app.bindMiddleware('FlashDataMiddleware', FlashDataMiddleware)
     }

@@ -412,13 +412,25 @@ export class Router extends mix(IRouter, MacroableClass, Magic) {
             response = response.toResponse(request)
         }
 
+        const eventResponse = request.getEvent().res
+        const status = eventResponse.status
+        const statusText = eventResponse.statusText
+        const headers = Object.fromEntries(eventResponse.headers.entries())
+
         // if (response instanceof Model && response.wasRecentlyCreated) {
         //     response = new JsonResponse(response, 201)
         // }
         if (response instanceof Stringable || typeof response === 'string') {
-            response = new Response(request.app, response.toString(), 200, { 'Content-Type': 'text/html' })
+            response = new Response(request.app, response.toString(), status as never, {
+                ...headers,
+                'Content-Type': 'text/html',
+            })
         } else if (!(response instanceof IResponse) && !(response instanceof Response)) {
-            response = new JsonResponse(request.app, response)
+            response = new JsonResponse(request.app, response, status as never, headers)
+        }
+
+        if (statusText) {
+            response.setStatusCode(response.getStatusCode(), statusText)
         }
 
         if (response.getStatusCode() === Response.codes.HTTP_NOT_MODIFIED) {

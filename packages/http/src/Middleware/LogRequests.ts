@@ -2,14 +2,13 @@ import { IRequest } from '@h3ravel/contracts'
 import { Injectable } from '@h3ravel/foundation'
 import { Logger } from '@h3ravel/shared'
 import { Middleware } from '../Middleware'
-import { Response } from '@h3ravel/support/facades'
 
 export class LogRequests extends Middleware {
     @Injectable()
     async handle (request: IRequest, next: (request: IRequest) => Promise<unknown>) {
         const _next = await next(request)
 
-        const code = Number(Response.getStatusCode())
+        const code = request.getEvent().res.status ?? 200
         const method = request.method().toLowerCase()
         let color = 'bgRed'
 
