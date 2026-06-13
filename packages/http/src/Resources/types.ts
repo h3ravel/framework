@@ -1,0 +1,1 @@
+export { ResoraConfig as ResourceConfig } from 'resora'
