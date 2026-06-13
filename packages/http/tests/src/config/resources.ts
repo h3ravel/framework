@@ -1,4 +1,4 @@
-import { ResourceConfig } from '../../../src/Resources/types'
+import type { ResourceConfig } from '../../../src/Resources/types'
 
 export default (): ResourceConfig => {
     return {

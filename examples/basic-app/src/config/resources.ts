@@ -1,4 +1,4 @@
-import { ResourceConfig } from '@h3ravel/http'
+import type { ResourceConfig } from '@h3ravel/http'
 
 export default (): ResourceConfig => {
     return {

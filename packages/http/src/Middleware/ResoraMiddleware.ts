@@ -1,5 +1,3 @@
-import { applyRuntimeConfig, runWithCtx } from 'resora'
-
 import { IRequest } from '@h3ravel/contracts'
 import { Injectable } from '@h3ravel/foundation'
 import { Middleware } from '../Middleware'
@@ -7,6 +5,7 @@ import { Middleware } from '../Middleware'
 export class ResoraMiddleware extends Middleware {
     @Injectable()
     async handle (request: IRequest, next: (request: IRequest) => Promise<unknown>) {
+        const { applyRuntimeConfig, runWithCtx } = await import('resora')
         const { req, res } = request.context.event
 
         applyRuntimeConfig(Object.assign({}, config('resources'), {

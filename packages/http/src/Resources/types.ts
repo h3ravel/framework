@@ -1,1 +1,1 @@
-export { ResoraConfig as ResourceConfig } from 'resora'
+export type { ResoraConfig as ResourceConfig } from 'resora'
