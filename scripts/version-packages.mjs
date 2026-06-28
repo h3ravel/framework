@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable no-undef */
 
 import { dirname, join, resolve } from 'node:path'
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs'
@@ -14,7 +15,7 @@ const DEPENDENCY_FIELDS = [
     'optionalDependencies',
 ]
 
-export function parseVersion (version) {
+export function parseVersion(version) {
     const match = /^(\d+)\.(\d+)\.(\d+)(.*)$/.exec(version)
 
     if (!match) {
@@ -29,23 +30,23 @@ export function parseVersion (version) {
     }
 }
 
-export function formatVersion ({ major, minor, patch, suffix = '' }) {
+export function formatVersion({ major, minor, patch, suffix = '' }) {
     return `${major}.${minor}.${patch}${suffix}`
 }
 
-function compareVersions (left, right) {
+function compareVersions(left, right) {
     return left.major - right.major
         || left.minor - right.minor
         || left.patch - right.patch
 }
 
-function highestVersion (versions) {
+function highestVersion(versions) {
     return versions.reduce((highest, version) => {
         return compareVersions(version, highest) > 0 ? version : highest
     })
 }
 
-function alphaNumber (suffix) {
+function alphaNumber(suffix) {
     const match = /^-alpha\.(\d+)$/.exec(suffix)
 
     if (!match) {
@@ -57,7 +58,7 @@ function alphaNumber (suffix) {
     return Number(match[1])
 }
 
-function bumpVersion (version, bump) {
+function bumpVersion(version, bump) {
     if (bump === 'alpha') {
         return {
             ...version,
@@ -76,7 +77,7 @@ function bumpVersion (version, bump) {
     return { ...version, major: version.major + 1, minor: 0, patch: 0 }
 }
 
-function laneVersion (packages, suffix, bump, forcedMajor) {
+function laneVersion(packages, suffix, bump, forcedMajor) {
     const versions = packages.map(pkg => {
         const version = parseVersion(pkg.version)
         return {
@@ -95,7 +96,7 @@ function laneVersion (packages, suffix, bump, forcedMajor) {
     return formatVersion(bumpVersion(baseline, bump))
 }
 
-export function synchronizedVersions (packages, bump) {
+export function synchronizedVersions(packages, bump) {
     if (!BUMP_TYPES.has(bump)) {
         throw new Error(`Invalid bump "${bump}". Use major, minor, patch, or alpha.`)
     }
@@ -157,14 +158,14 @@ export function synchronizedVersions (packages, bump) {
     return targets
 }
 
-export function updateWorkspaceRange (range, nextDependencyVersion) {
+export function updateWorkspaceRange(range, nextDependencyVersion) {
     const match = /^(workspace:(?:\^|~)?)(\d+\.\d+\.\d+.*)$/.exec(range)
     if (!match) return range
 
     return `${match[1]}${nextDependencyVersion}`
 }
 
-export function buildVersionPlan (packages, bump) {
+export function buildVersionPlan(packages, bump) {
     const nextVersions = synchronizedVersions(packages, bump)
 
     return packages.map(pkg => {
@@ -191,7 +192,7 @@ export function buildVersionPlan (packages, bump) {
     })
 }
 
-function findWorkspaceRoot () {
+function findWorkspaceRoot() {
     let current = dirname(fileURLToPath(import.meta.url))
 
     while (current !== dirname(current)) {
@@ -202,7 +203,7 @@ function findWorkspaceRoot () {
     throw new Error('Unable to locate pnpm-workspace.yaml.')
 }
 
-function loadPackages (workspaceRoot) {
+function loadPackages(workspaceRoot) {
     const packagesDir = join(workspaceRoot, 'packages')
 
     return readdirSync(packagesDir, { withFileTypes: true })
@@ -217,7 +218,7 @@ function loadPackages (workspaceRoot) {
         .sort((a, b) => a.name.localeCompare(b.name))
 }
 
-function printPlan (plan, dryRun) {
+function printPlan(plan, dryRun) {
     console.log(dryRun ? 'Package version plan (dry run):' : 'Updating package versions:')
 
     for (const pkg of plan) {
@@ -226,7 +227,7 @@ function printPlan (plan, dryRun) {
     }
 }
 
-function writePlan (plan) {
+function writePlan(plan) {
     const originals = new Map()
 
     for (const pkg of plan) {
@@ -238,13 +239,13 @@ function writePlan (plan) {
     return originals
 }
 
-function restoreFiles (originals) {
+function restoreFiles(originals) {
     for (const [file, content] of originals) {
         writeFileSync(file, content)
     }
 }
 
-function updateLockfile (workspaceRoot) {
+function updateLockfile(workspaceRoot) {
     console.log('\nUpdating pnpm-lock.yaml...')
     execFileSync('pnpm', ['install', '--lockfile-only', '--ignore-scripts'], {
         cwd: workspaceRoot,
@@ -252,7 +253,7 @@ function updateLockfile (workspaceRoot) {
     })
 }
 
-export function run (argv = process.argv.slice(2)) {
+export function run(argv = process.argv.slice(2)) {
     const bump = argv.find(arg => !arg.startsWith('--'))
     const dryRun = argv.includes('--dry-run')
     const skipLockfile = argv.includes('--no-lockfile')
@@ -287,7 +288,9 @@ export function run (argv = process.argv.slice(2)) {
             }
 
             throw new Error(
-                `Lockfile update failed; package versions were restored.\n${error instanceof Error ? error.message : error}`
+                `Lockfile update failed; package versions were restored.\n${error instanceof Error ? error.message : error}`, {
+                cause: error
+            }
             )
         }
     }

@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/support",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Shared helpers, facades and utilities for H3ravel.",
   "type": "module",
   "types": "./dist/index.d.ts",
@@ -45,9 +45,9 @@
     "typescript": "catalog:"
   },
   "dependencies": {
-    "@h3ravel/shared": "workspace:^2.2.0",
+    "@h3ravel/shared": "workspace:^2.2.1",
     "@h3ravel/collect.js": "catalog:prod",
-    "@h3ravel/contracts": "workspace:^2.2.0",
+    "@h3ravel/contracts": "workspace:^2.2.1",
     "dayjs": "catalog:",
     "luxon": "catalog:"
   }
