@@ -8,13 +8,6 @@
     ".": "./dist/index.js",
     "./package.json": "./package.json"
   },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/index.d.ts"
-      ]
-    }
-  },
   "bin": {
     "musket": "bin/fire.js",
     "prepare": "bin/prepare.js"
@@ -24,14 +17,7 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public",
-    "exports": {
-      ".": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs"
-      },
-      "./*": "./*"
-    }
+    "access": "public"
   },
   "homepage": "https://h3ravel.toneflix.net/musket",
   "repository": {

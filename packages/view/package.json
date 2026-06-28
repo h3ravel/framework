@@ -10,14 +10,7 @@
   "type": "module",
   "types": "./dist/index.d.ts",
   "publishConfig": {
-    "access": "public",
-    "exports": {
-      ".": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs"
-      },
-      "./*": "./*"
-    }
+    "access": "public"
   },
   "files": [
     "dist"

@@ -9,26 +9,12 @@
     "./package.json": "./package.json",
     "./tsconfig.base.json": "./tsconfig.base.json"
   },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "dist/index.d.ts"
-      ]
-    }
-  },
   "files": [
     "dist",
     "tsconfig.base.json"
   ],
   "publishConfig": {
-    "access": "public",
-    "exports": {
-      ".": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs"
-      },
-      "./*": "./*"
-    }
+    "access": "public"
   },
   "homepage": "https://h3ravel.toneflix.net",
   "repository": {
