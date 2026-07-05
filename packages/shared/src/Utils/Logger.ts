@@ -1,6 +1,8 @@
 import chalk, { type ChalkInstance } from 'chalk'
 import { LoggerChalk, LoggerLog, LoggerParseSignature } from '../Contracts/Utils'
 import { Console } from './Console'
+import { Table } from 'console-table-printer'
+import { ComplexOptions } from 'console-table-printer/dist/src/models/external-table'
 
 export class Logger {
     /**
@@ -13,7 +15,7 @@ export class Logger {
     /**
      * Configure global verbosity levels
      */
-    static configure (options: { verbosity?: number, quiet?: boolean, silent?: boolean } = {}) {
+    static configure(options: { verbosity?: number, quiet?: boolean, silent?: boolean } = {}) {
         this.verbosity = options.verbosity ?? 0
         this.isQuiet = options.quiet ?? false
         this.isSilent = options.silent ?? false
@@ -22,7 +24,7 @@ export class Logger {
     /**
      * Check if output should be suppressed
      */
-    private static shouldSuppressOutput (level: 'line' | 'debug' | 'info' | 'warn' | 'error' | 'success'): boolean {
+    private static shouldSuppressOutput(level: 'line' | 'debug' | 'info' | 'warn' | 'error' | 'success'): boolean {
         if (this.isSilent) return true
         if (this.isQuiet && (level === 'info' || level === 'success')) return true
         if (level === 'debug' && this.verbosity < 3) return true
@@ -36,9 +38,9 @@ export class Logger {
      * @param log If set to false, array of [name, dots, value] output will be returned and not logged 
      * @returns 
      */
-    static twoColumnDetail (name: string, value: string, log?: true, spacer?: string): void
-    static twoColumnDetail (name: string, value: string, log?: false, spacer?: string): [string, string, string]
-    static twoColumnDetail (name: string, value: string, log = true, spacer = '.'): [string, string, string] | void {
+    static twoColumnDetail(name: string, value: string, log?: true, spacer?: string): void
+    static twoColumnDetail(name: string, value: string, log?: false, spacer?: string): [string, string, string]
+    static twoColumnDetail(name: string, value: string, log = true, spacer = '.'): [string, string, string] | void {
         // eslint-disable-next-line no-control-regex
         const regex = /\x1b\[\d+m/g
         const width = Math.max(process.stdout.columns, 100)
@@ -57,9 +59,9 @@ export class Logger {
      * @param log If set to false, array of [name, dots, value] output will be returned and not logged 
      * @returns 
      */
-    static describe (name: string, desc: string, width?: number, log?: true): void
-    static describe (name: string, desc: string, width?: number, log?: false): [string, string, string]
-    static describe (name: string, desc: string, width = 50, log = true): [string, string, string] | void {
+    static describe(name: string, desc: string, width?: number, log?: true): void
+    static describe(name: string, desc: string, width?: number, log?: false): [string, string, string]
+    static describe(name: string, desc: string, width = 50, log = true): [string, string, string] | void {
         width = Math.max(width, 30)
         // eslint-disable-next-line no-control-regex
         const regex = /\x1b\[\d+m/g
@@ -78,7 +80,7 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static split (name: string, value: string, status?: 'success' | 'info' | 'error', exit = false, preserveCol = false, spacer = '.') {
+    static split(name: string, value: string, status?: 'success' | 'info' | 'error', exit = false, preserveCol = false, spacer = '.') {
         status ??= 'info'
         const color = { success: chalk.bgGreen, info: chalk.bgBlue, error: chalk.bgRed }
 
@@ -97,7 +99,7 @@ export class Logger {
      * @param preserveCol 
      * @returns 
      */
-    static textFormat (
+    static textFormat(
         txt: unknown | unknown[],
         color: (...text: unknown[]) => string,
         preserveCol = false
@@ -146,7 +148,7 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static success (msg: any, exit = false, preserveCol = false) {
+    static success(msg: any, exit = false, preserveCol = false) {
         if (!this.shouldSuppressOutput('success')) {
             console.log(chalk.green('✓'), this.textFormat(msg, chalk.bgGreen, preserveCol))
         }
@@ -160,7 +162,7 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static info (msg: any, exit = false, preserveCol = false) {
+    static info(msg: any, exit = false, preserveCol = false) {
         if (!this.shouldSuppressOutput('info')) {
             console.log(chalk.blue('ℹ'), this.textFormat(msg, chalk.bgBlue, preserveCol))
         }
@@ -174,7 +176,7 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static error (msg: any, exit = true, preserveCol = false) {
+    static error(msg: any, exit = true, preserveCol = false) {
         if (!this.shouldSuppressOutput('error')) {
             if (msg instanceof Error) {
                 if (msg.message) {
@@ -190,13 +192,23 @@ export class Logger {
     }
 
     /**
+     * Creates a table with the given options and logs it to the console.
+     * 
+     * @param options 
+     * @returns 
+     */
+    static table(options?: string[] | ComplexOptions | undefined) {
+        return new Table(options)
+    }
+
+    /**
      * Logs a warning message
      * 
      * @param msg 
      * @param exit 
      * @param preserveCol 
      */
-    static warn (msg: any, exit = false, preserveCol = false) {
+    static warn(msg: any, exit = false, preserveCol = false) {
         if (!this.shouldSuppressOutput('warn')) {
             console.warn(chalk.yellow('⚠'), this.textFormat(msg, chalk.bgYellow, preserveCol))
         }
@@ -210,7 +222,7 @@ export class Logger {
      * @param exit 
      * @param preserveCol 
      */
-    static debug<M = any> (msg: M | M[], exit = false, preserveCol = false) {
+    static debug<M = any>(msg: M | M[], exit = false, preserveCol = false) {
         if (!this.shouldSuppressOutput('debug')) {
             if (Array.isArray(msg)) {
                 for (let i = 0; i < msg.length; i++) {
@@ -226,11 +238,11 @@ export class Logger {
     /**
      * Terminates the process
      */
-    static quiet () {
+    static quiet() {
         process.exit(0)
     }
 
-    static chalker (styles: LoggerChalk[]) {
+    static chalker(styles: LoggerChalk[]) {
         return (input: any): string =>
             styles.reduce((acc, style) => {
                 if ((style as any) in chalk) {
@@ -251,9 +263,9 @@ export class Logger {
      * @param log If set to false, string output will be returned and not logged 
      * @param sc color to use ue on split text if : is found 
      */
-    static parse (config: LoggerParseSignature, joiner?: string, log?: true, sc?: LoggerChalk): void
-    static parse (config: LoggerParseSignature, joiner?: string, log?: false, sc?: LoggerChalk): string
-    static parse (config: LoggerParseSignature, joiner = ' ', log = true, sc?: LoggerChalk): string | void {
+    static parse(config: LoggerParseSignature, joiner?: string, log?: true, sc?: LoggerChalk): void
+    static parse(config: LoggerParseSignature, joiner?: string, log?: false, sc?: LoggerChalk): string
+    static parse(config: LoggerParseSignature, joiner = ' ', log = true, sc?: LoggerChalk): string | void {
         const string = config.map(([str, opt]) => {
             if (Array.isArray(opt)) {
                 opt = Logger.chalker(opt) as ChalkInstance
@@ -297,7 +309,7 @@ export class Logger {
      * 
      * @returns 
      */
-    static console () {
+    static console() {
         return Console
     }
 }
