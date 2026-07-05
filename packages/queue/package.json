@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/queue",
-  "version": "11.19.3",
+  "version": "11.19.4",
   "description": "Job queues, workers and broadcasting support system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -44,8 +44,8 @@
     "version-patch": "pnpm version patch"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^2.2.3",
-    "@h3ravel/contracts": "workspace:^2.2.3"
+    "@h3ravel/core": "workspace:^2.2.4",
+    "@h3ravel/contracts": "workspace:^2.2.4"
   },
   "devDependencies": {
     "typescript": "catalog:"

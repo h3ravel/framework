@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/contracts",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "H3ravel Contracts.",
   "type": "module",
   "types": "./dist/index.d.ts",

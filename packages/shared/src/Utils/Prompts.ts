@@ -181,7 +181,7 @@ export class Prompts extends Logger {
      * @param placeholder  The placeholder text for the input
      * @returns
      */
-    public static async text(
+    public static async multiline(
         prompt: string = 'Please provide your input below:',
         placeholder?: string,
         options?: Omit<
