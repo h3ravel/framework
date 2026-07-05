@@ -18,7 +18,7 @@ export const baseConfig: UserConfig = {
         js: '.js',
         dts: '.d.ts'
     }),
-    hooks (hooks) {
+    hooks(hooks) {
         hooks.hook('build:done', async (ctx) => {
             try {
                 // Get the absolute output directory
@@ -71,8 +71,10 @@ export const baseConfig: UserConfig = {
             'esbuild',
             'edge.js',
             'nodemailer',
+            'console-table-printer',
             'typescript',
             /^@h3ravel\/.*/gi,
+            /^@cli-prompts\/.*/gi,
             /^node:.*/gi,
             /.*\/promises$/gi,
             'fs-readdir-recursive',
