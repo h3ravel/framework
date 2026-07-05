@@ -759,6 +759,9 @@ importers:
 
   packages/shared:
     dependencies:
+      '@cli-prompts/multiline':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@inquirer/prompts':
         specifier: ^7.9.0
         version: 7.9.0(@types/node@25.9.3)
@@ -1181,6 +1184,10 @@ packages:
 
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
+
+  '@cli-prompts/multiline@1.0.0':
+    resolution: {integrity: sha512-Jl9c1dra6M1I+yRDHC5FB2LtF/gWN9FmYX9/IKKtA6nQI2cuRde52/0E6f0D6CZffLExLvhvuKbfYrPbnBPBug==}
+    engines: {node: '>=18'}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -2387,6 +2394,10 @@ packages:
 
   ansi-escapes@7.1.0:
     resolution: {integrity: sha512-YdhtCd19sKRKfAAUsrcC1wzm4JuzJoiX4pOJqIoW2qmKj5WzG/dL8uUJ0361zaXtHqK7gEhOwtAtz7t3Yq3X5g==}
+    engines: {node: '>=18'}
+
+  ansi-escapes@7.3.0:
+    resolution: {integrity: sha512-BvU8nYgGQBxcmMuEeUEmNTvrMVjJNSH7RgW24vXexN4Ven6qCvy4TntnvlnwnMLTVlcRQQdbRY8NKnaIoeWDNg==}
     engines: {node: '>=18'}
 
   ansi-regex@5.0.1:
@@ -5304,6 +5315,10 @@ snapshots:
       human-id: 4.1.2
       prettier: 2.8.8
 
+  '@cli-prompts/multiline@1.0.0':
+    dependencies:
+      ansi-escapes: 7.3.0
+
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
@@ -6643,6 +6658,10 @@ snapshots:
       type-fest: 0.21.3
 
   ansi-escapes@7.1.0:
+    dependencies:
+      environment: 1.1.0
+
+  ansi-escapes@7.3.0:
     dependencies:
       environment: 1.1.0
 

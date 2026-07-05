@@ -37,11 +37,12 @@
     "dev": "tsdown --watch --config-loader unrun",
     "start": "node dist/index.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest --passWithNoTests",
+    "test": "vitest",
     "release:patch": "pnpm build && pnpm version patch && git add . && git commit -m \"version: bump shared package and publish\" && pnpm publish --tag latest",
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
+    "@cli-prompts/multiline": "^1.0.0",
     "@inquirer/prompts": "^7.9.0",
     "chalk": "^5.6.0",
     "edge.js": "catalog:",

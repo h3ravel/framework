@@ -83,6 +83,34 @@ describe('Prompts.Ask', () => {
         })
     })
 })
+describe('Prompts.Text', () => {
+    it('prompts for multi-line input', async () => {
+        vi.resetModules()
+
+        process.stdin.setRawMode = vi.fn()
+
+        const mockMultiline = vi.fn().mockResolvedValue(
+            'My project is about...\nIt does really cool things!'
+        )
+
+        vi.doMock('@cli-prompts/multiline', () => ({
+            multiline: mockMultiline,
+        }))
+
+        const { Prompts: PromptsWithMockedMultiline } = await import('../src/Utils/Prompts')
+
+        const result = await PromptsWithMockedMultiline.text(
+            'Please enter your project description:'
+        )
+
+        expect(mockMultiline).toHaveBeenCalledWith({
+            prompt: 'Please enter your project description:',
+            placeholder: undefined,
+        })
+
+        expect(result).toBe('My project is about...\nIt does really cool things!')
+    })
+})
 
 describe('Prompts.Secret', () => {
     it('calls password with default mask (undefined)', async () => {

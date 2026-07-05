@@ -4,6 +4,7 @@ import { checkbox, confirm, editor, input, password, select } from '@inquirer/pr
 import ora, { Options as oraOptions } from 'ora'
 
 import { Logger } from '..'
+import { multiline } from '@cli-prompts/multiline'
 
 export class Prompts extends Logger {
     /**
@@ -15,7 +16,7 @@ export class Prompts extends Logger {
      * @param pageSize     The number of items to show per page
      * @returns
      */
-    public static async choice (
+    public static async choice(
         message: string,
         choices: Choices,
         defaultIndex?: number,
@@ -38,7 +39,7 @@ export class Prompts extends Logger {
      * @param message      Message to display
      * @param defaultValue The default value
      */
-    public static async confirm (
+    public static async confirm(
         message: string,
         defaultValue?: boolean | undefined,
     ) {
@@ -56,7 +57,7 @@ export class Prompts extends Logger {
      * @param defaultValue The default value
      * @returns 
      */
-    public static async ask (
+    public static async ask(
         message: string,
         defaultValue?: string | undefined,
     ) {
@@ -75,7 +76,7 @@ export class Prompts extends Logger {
      * @param mask    Mask the user input
      * @returns 
      */
-    public static async secret (
+    public static async secret(
         message: string,
         mask?: string | boolean,
     ) {
@@ -97,7 +98,7 @@ export class Prompts extends Logger {
      * @param pageSize     The number of items to show per page
      * @returns 
      */
-    public static async anticipate (
+    public static async anticipate(
         message: string,
         source: string[] | ((input?: string | undefined) => Promise<ChoiceOrSeparatorArray<any>>),
         defaultValue?: string,
@@ -120,7 +121,7 @@ export class Prompts extends Logger {
      * @param options The spinner options
      * @returns 
      */
-    public static spinner (options?: string | oraOptions | undefined): Spinner {
+    public static spinner(options?: string | oraOptions | undefined): Spinner {
         return ora(options)
     }
 
@@ -134,7 +135,7 @@ export class Prompts extends Logger {
      * @param pageSize The number of items to show per page
      * @returns
      */
-    public static async checkbox (
+    public static async checkbox(
         message: string,
         choices: Choices,
         required?: boolean,
@@ -159,7 +160,7 @@ export class Prompts extends Logger {
      * @param validate A function to validate the input text
      * @returns
      */
-    public static async editor (
+    public static async editor(
         message?: string,
         postfix?: string,
         defaultValue?: string,
@@ -170,6 +171,28 @@ export class Prompts extends Logger {
             postfix,
             default: defaultValue,
             validate
+        })
+    }
+
+    /**
+     * Prompt the user for multi-line input directly in the console.
+     * 
+     * @param prompt  Message to display
+     * @param placeholder  The placeholder text for the input
+     * @returns
+     */
+    public static async text(
+        prompt: string = 'Please provide your input below:',
+        placeholder?: string,
+        options?: Omit<
+            Exclude<Parameters<typeof multiline>[0], string>,
+            | 'prompt' | 'placeholder'
+        >
+    ) {
+        return await multiline({
+            prompt,
+            placeholder,
+            ...options
         })
     }
 }
