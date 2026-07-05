@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/validation",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Lightweight validation library providing expressive rule-based validation for requests, data objects, and custom logic for H3ravel applications.",
   "h3ravel": {
     "providers": [
@@ -49,16 +49,16 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
-    "@h3ravel/shared": "workspace:^2.2.1",
-    "@h3ravel/support": "workspace:^2.2.1",
+    "@h3ravel/shared": "workspace:^2.2.2",
+    "@h3ravel/support": "workspace:^2.2.2",
     "simple-body-validator": "catalog:",
-    "@h3ravel/foundation": "workspace:^2.2.1"
+    "@h3ravel/foundation": "workspace:^2.2.2"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^2.2.1",
-    "@h3ravel/config": "workspace:^2.2.1",
-    "@h3ravel/database": "workspace:^11.19.1",
-    "@h3ravel/contracts": "workspace:^2.2.1"
+    "@h3ravel/core": "workspace:^2.2.2",
+    "@h3ravel/config": "workspace:^2.2.2",
+    "@h3ravel/database": "workspace:^11.19.2",
+    "@h3ravel/contracts": "workspace:^2.2.2"
   },
   "devDependencies": {
     "typescript": "catalog:"
