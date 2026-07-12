@@ -3,7 +3,6 @@ import { readFile, stat } from 'node:fs/promises'
 import { ServiceProvider } from '../Providers/ServiceProvider'
 import { Str } from '../Helpers/Str'
 import { join } from 'node:path'
-import { serveStatic } from 'h3'
 import { statSync } from 'node:fs'
 
 /**
@@ -14,7 +13,9 @@ import { statSync } from 'node:fs'
 export class AssetsServiceProvider extends ServiceProvider {
     public static priority = 996
 
-    register () {
+    async register() {
+        const { serveStatic } = await import('h3')
+
         const app = this.app.make('router')
         const publicPath = this.app.getPath('public')
 
