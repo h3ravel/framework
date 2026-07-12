@@ -44,7 +44,7 @@ jobs:
 
       - name: Build SQLite native binding
         run: |
-          pnpm rebuild sqlite3
+          pnpm rebuild -r sqlite3
           node -e "require('sqlite3')"
 
       - name: Build Packages
