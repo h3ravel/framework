@@ -99,7 +99,7 @@ describe('Prompts.Text', () => {
 
         const { Prompts: PromptsWithMockedMultiline } = await import('../src/Utils/Prompts')
 
-        const result = await PromptsWithMockedMultiline.text(
+        const result = await PromptsWithMockedMultiline.multiline(
             'Please enter your project description:'
         )
 
