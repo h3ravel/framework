@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/config",
-  "version": "2.2.5",
+  "version": "2.2.6",
   "description": "Environment/config loading and management system for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -44,13 +44,13 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
-    "@h3ravel/shared": "workspace:^2.2.5",
-    "@h3ravel/support": "workspace:^2.2.5",
+    "@h3ravel/shared": "workspace:^2.2.6",
+    "@h3ravel/support": "workspace:^2.2.6",
     "@h3ravel/musket": "catalog:prod"
   },
   "devDependencies": {
-    "@h3ravel/core": "workspace:^2.2.5",
-    "@h3ravel/contracts": "workspace:^2.2.5",
+    "@h3ravel/core": "workspace:^2.2.6",
+    "@h3ravel/contracts": "workspace:^2.2.6",
     "typescript": "catalog:"
   }
 }
