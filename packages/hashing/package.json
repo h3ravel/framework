@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/hashing",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Secure framework-agnostic Bcrypt and Argon2 hashing for storing user passwords in H3ravel and node Apps.",
   "h3ravel": {
     "providers": [
@@ -50,10 +50,10 @@
     "typescript": "catalog:"
   },
   "peerDependencies": {
-    "@h3ravel/core": "workspace:^2.2.4",
-    "@h3ravel/foundation": "workspace:^2.2.4",
-    "@h3ravel/shared": "workspace:^2.2.4",
-    "@h3ravel/support": "workspace:^2.2.4"
+    "@h3ravel/core": "workspace:^2.2.5",
+    "@h3ravel/foundation": "workspace:^2.2.5",
+    "@h3ravel/shared": "workspace:^2.2.5",
+    "@h3ravel/support": "workspace:^2.2.5"
   },
   "peerDependenciesMeta": {
     "@h3ravel/core": {
@@ -63,7 +63,7 @@
   "dependencies": {
     "argon2": "catalog:",
     "bcryptjs": "catalog:",
-    "@h3ravel/contracts": "workspace:^2.2.4",
-    "@h3ravel/foundation": "workspace:^2.2.4"
+    "@h3ravel/contracts": "workspace:^2.2.5",
+    "@h3ravel/foundation": "workspace:^2.2.5"
   }
 }

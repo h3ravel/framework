@@ -1,6 +1,6 @@
 {
   "name": "@h3ravel/http",
-  "version": "11.19.4",
+  "version": "11.19.5",
   "description": "HTTP kernel, middleware pipeline, request/response classes for H3ravel.",
   "h3ravel": {
     "providers": [
@@ -44,18 +44,18 @@
     "version-patch": "pnpm version patch"
   },
   "dependencies": {
-    "@h3ravel/contracts": "workspace:^2.2.4",
-    "@h3ravel/support": "workspace:^2.2.4",
+    "@h3ravel/contracts": "workspace:^2.2.5",
+    "@h3ravel/support": "workspace:^2.2.5",
     "@h3ravel/musket": "catalog:prod",
-    "@h3ravel/shared": "workspace:^2.2.4",
-    "@h3ravel/session": "workspace:^2.2.4",
+    "@h3ravel/shared": "workspace:^2.2.5",
+    "@h3ravel/session": "workspace:^2.2.5",
     "h3": "catalog:prod",
     "resora": "^1.3.18",
     "srvx": "^0.8.2"
   },
   "peerDependencies": {
-    "@h3ravel/validation": "workspace:^2.2.4",
-    "@h3ravel/foundation": "workspace:^2.2.4"
+    "@h3ravel/validation": "workspace:^2.2.5",
+    "@h3ravel/foundation": "workspace:^2.2.5"
   },
   "devDependencies": {
     "typescript": "catalog:"
