@@ -64,7 +64,6 @@
     "dotenv": "catalog:",
     "execa": "catalog:",
     "preferred-pm": "catalog:",
-    "radashi": "^12.6.2",
     "resolve-from": "catalog:"
   }
 }

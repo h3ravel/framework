@@ -67,7 +67,6 @@
     "nodemailer": "^7.0.10",
     "path": "catalog:",
     "pnpm": "^10.20.0",
-    "radashi": "^12.7.0",
     "resolve-from": "catalog:",
     "rimraf": "catalog:",
     "ts-node": "catalog:",
