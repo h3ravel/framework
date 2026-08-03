@@ -83,7 +83,7 @@ export class ConsoleKernel extends CKernel {
      *
      * @return array
      */
-    protected bootstrappers () {
+    protected bootstrappers() {
         return this.#bootstrappers
     }
 
@@ -91,7 +91,7 @@ export class ConsoleKernel extends CKernel {
      * Report the exception to the exception handler.
      * @param  e
      */
-    protected reportException (e: Error) {
+    protected reportException(e: Error) {
         this.app.make(ExceptionHandler).report(e)
     }
 
@@ -100,14 +100,14 @@ export class ConsoleKernel extends CKernel {
      *
      * @param  e
      */
-    protected renderException (e: Error) {
+    protected renderException(e: Error) {
         this.app.make(ExceptionHandler).renderForConsole(e)
     }
 
     /**
      * Run the console application.
      */
-    async handle () {
+    async handle() {
         this.commandStartedAt = DateTime.now()
         await this.bootstrap()
 
@@ -132,14 +132,14 @@ export class ConsoleKernel extends CKernel {
      *
      * @param  command
      */
-    registerCommand (command: typeof Command | typeof Command[]) {
+    registerCommand(command: typeof Command | typeof Command[]) {
         this.getConsole().registerCommands(Array.isArray(command) ? command : [command])
     }
 
     /**
      * Get all the registered commands.
      */
-    async all (): Promise<{
+    async all(): Promise<{
         new(app: IApplication, kernel: Kernel<IApplication>): Command<IApplication>;
     }[]> {
         await this.bootstrap()
@@ -152,7 +152,7 @@ export class ConsoleKernel extends CKernel {
      *
      * @return void
      */
-    async bootstrap () {
+    async bootstrap() {
         if (!this.app.hasBeenBootstrapped()) {
             await this.app.bootstrapWith(this.bootstrappers())
         }
@@ -173,21 +173,21 @@ export class ConsoleKernel extends CKernel {
     /**
      * Determine if the kernel should discover commands.
      */
-    protected shouldDiscoverCommands () {
+    protected shouldDiscoverCommands() {
         return this.constructor === ConsoleKernel
     }
 
     /**
      * Register the commands for the application.
      */
-    protected registerCommands () {
+    protected registerCommands() {
         //
     }
 
     /**
      * Discover the commands that should be automatically loaded.
      */
-    protected async discoverCommands () {
+    protected async discoverCommands() {
         this.getConsole().registerDiscoveryPath(Array.from(this.commandPaths))
 
         for (let path of this.commandRoutePaths) {
@@ -214,7 +214,7 @@ export class ConsoleKernel extends CKernel {
      *
      * @param  paths
      */
-    addCommandPaths (paths: string[]) {
+    addCommandPaths(paths: string[]) {
         paths.forEach(e => {
             if (process.env.NODE_ENV === 'production') {
                 e = e.replace('/src/', this.DIST_DIR)
@@ -231,7 +231,7 @@ export class ConsoleKernel extends CKernel {
      *
      * @param  paths
      */
-    addCommandRoutePaths (paths: string[]): this {
+    addCommandRoutePaths(paths: string[]): this {
         paths.forEach(e => this.commandRoutePaths.add(e))
 
         return this
@@ -240,7 +240,7 @@ export class ConsoleKernel extends CKernel {
     /**
      * Get the Musket application instance.
      */
-    getConsole (): Kernel<IApplication> {
+    getConsole(): Kernel<IApplication> {
         if (this.console == null) {
             const baseCommands = [BuildCommand, MakeCommand, PostinstallCommand, KeyGenerateCommand] as any[]
 
@@ -280,7 +280,7 @@ export class ConsoleKernel extends CKernel {
      *
      * @param request
      */
-    public terminate (status: number): void {
+    public terminate(status: number): void {
         this.app.make('app.events').dispatch(new Terminating())
 
         // this.app.terminate();

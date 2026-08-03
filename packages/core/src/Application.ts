@@ -1,5 +1,6 @@
 import 'reflect-metadata'
 
+import type { Musket } from '@h3ravel/musket'
 import { FileSystem, Logger, PathLoader } from '@h3ravel/shared'
 import { H3, serve, type H3Event } from 'h3'
 
@@ -32,15 +33,25 @@ export class Application extends Container implements IApplication {
     h3Event?: H3Event
     private tries: number = 0
     private basePath: string
-    private versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
     private namespace?: string
-    private static versions: { [key: string]: string, app: string, ts: string } = { app: '0.0.0', ts: '0.0.0' }
+
+    private versions: {
+        [key: string]: string,
+        app: string,
+        ts: string
+    } = { app: '0.0.0', ts: '0.0.0' }
+
+    private static versions: {
+        [key: string]: string,
+        app: string,
+        ts: string
+    } = { app: '0.0.0', ts: '0.0.0' }
 
     private h3App?: H3
     private providers: Array<IServiceProvider> = []
+    private autoRegisterProviders: boolean = false
     protected externalProviders: Array<ConcreteConstructor<IServiceProvider, false>> = []
     protected filteredProviders: Array<string> = []
-    private autoRegisterProviders: boolean = false
 
     /**
      * The route resolver callback.
@@ -96,14 +107,14 @@ export class Application extends Container implements IApplication {
     /**
      * Register core bindings into the container
      */
-    protected registerBaseBindings () {
+    protected registerBaseBindings() {
         Application.setInstance(this)
         this.bind(Application, () => this)
         this.bind('path.base', () => this.basePath)
         this.bind('load.paths', () => this.paths)
     }
 
-    protected async loadOptions () {
+    protected async loadOptions() {
         try {
             const corePath = FileSystem.findModulePkg('@h3ravel/core', process.cwd()) ?? ''
             const app = JSON.parse(await readFile(path.join(process.cwd(), '/package.json'), { encoding: 'utf8' }))
@@ -132,9 +143,21 @@ export class Application extends Container implements IApplication {
     }
 
     /**
+     * Called after Musket has been attached to the application.
+     *
+     * @param _musket
+     */
+    registerMusketListeners(musket: Musket<this>): void {
+        musket.afterHandle.once(async () => {
+            // await this.connection.close()
+            process.exit(0)
+        })
+    }
+
+    /**
      * Get all registered providers
      */
-    getRegisteredProviders (): IServiceProvider[] {
+    getRegisteredProviders(): IServiceProvider[] {
         return this.providers
     }
 
@@ -146,13 +169,13 @@ export class Application extends Container implements IApplication {
      * Minimal App: Loads only core, config, http, router by default.
      * Full-Stack App: Installs database, mail, queue, cache → they self-register via their providers.
      */
-    protected async getConfiguredProviders (): Promise<ConcreteConstructor<IServiceProvider, false>[]> {
+    protected async getConfiguredProviders(): Promise<ConcreteConstructor<IServiceProvider, false>[]> {
         return [
             CoreServiceProvider
         ]
     }
 
-    protected async getAllProviders (): Promise<Array<ConcreteConstructor<IServiceProvider, false>>> {
+    protected async getAllProviders(): Promise<Array<ConcreteConstructor<IServiceProvider, false>>> {
         const coreProviders = await this.getConfiguredProviders()
         return [...coreProviders, ...this.externalProviders]
     }
@@ -166,7 +189,7 @@ export class Application extends Container implements IApplication {
      * 
      * @returns 
      */
-    initialize (providers: Array<ConcreteConstructor<IServiceProvider, false>>, filtered: string[] = [], autoRegisterProviders = true) {
+    initialize(providers: Array<ConcreteConstructor<IServiceProvider, false>>, filtered: string[] = [], autoRegisterProviders = true) {
         /**
          * Bind HTTP APP to the service container
          */
@@ -187,7 +210,7 @@ export class Application extends Container implements IApplication {
     /**
      * Dynamically register all configured providers
      */
-    async registerConfiguredProviders () {
+    async registerConfiguredProviders() {
         const providers = await this.getAllProviders()
         ProviderRegistry.setSortable(false)
         ProviderRegistry.setFiltered(this.filteredProviders)
@@ -211,7 +234,7 @@ export class Application extends Container implements IApplication {
      * @param providers 
      * @param filtered 
      */
-    registerProviders (providers: Array<ConcreteConstructor<IServiceProvider, false>>, filtered: string[] = []): void {
+    registerProviders(providers: Array<ConcreteConstructor<IServiceProvider, false>>, filtered: string[] = []): void {
         this.externalProviders.push(...providers)
         this.filteredProviders = Array.from(new Set(this.filteredProviders.concat(filtered)))
     }
@@ -219,7 +242,7 @@ export class Application extends Container implements IApplication {
     /**
      * Register a provider
      */
-    async register (provider: IServiceProvider) {
+    async register(provider: IServiceProvider) {
         await new ContainerResolver(this).resolveMethodParams(provider, 'register', this)
         if (provider.registeredCommands && provider.registeredCommands.length > 0) {
             this.registeredCommands.push(...provider.registeredCommands)
@@ -232,7 +255,7 @@ export class Application extends Container implements IApplication {
      * 
      * @param commands An array of console commands to register.
      */
-    withCommands (commands: (new (app: any, kernel: any) => any)[]) {
+    withCommands(commands: (new (app: any, kernel: any) => any)[]) {
         this.registeredCommands = commands
 
         return this
@@ -241,7 +264,7 @@ export class Application extends Container implements IApplication {
     /**
      * checks if the application is running in CLI
      */
-    runningInConsole (): boolean {
+    runningInConsole(): boolean {
         return typeof process !== 'undefined'
             && !!process.stdout
             && !!process.stdin
@@ -251,11 +274,11 @@ export class Application extends Container implements IApplication {
     /**
      * checks if the application is running in Unit Test
      */
-    runningUnitTests (): boolean {
+    runningUnitTests(): boolean {
         return process.env.VITEST === 'true'
     }
 
-    getRuntimeEnv (): 'browser' | 'node' | 'unknown' {
+    getRuntimeEnv(): 'browser' | 'node' | 'unknown' {
         if (typeof window !== 'undefined' && typeof document !== 'undefined') {
             return 'browser'
         }
@@ -268,19 +291,19 @@ export class Application extends Container implements IApplication {
     /**
      * Determine if the application has booted.
      */
-    isBooted (): boolean {
+    isBooted(): boolean {
         return this.#booted
     }
 
     /**
      * Determine if the application has booted.
      */
-    logging (logging: boolean = true): this {
+    logging(logging: boolean = true): this {
         this.logsDisabled = !logging
         return this
     }
 
-    protected logsEnabled () {
+    protected logsEnabled() {
         if (this.logsDisabled) return false
 
         const debuggable = process.env.APP_DEBUG === 'true' && process.env.EXTENDED_DEBUG !== 'false'
@@ -291,7 +314,7 @@ export class Application extends Container implements IApplication {
     /**
      * Boot all service providers after registration
      */
-    async boot () {
+    async boot() {
 
         if (this.#booted) return this
 
@@ -340,7 +363,7 @@ export class Application extends Container implements IApplication {
      *
      * @param  callable  $callback
      */
-    booting (callback: (app: this) => void): void {
+    booting(callback: (app: this) => void): void {
         this.bootingCallbacks.push(callback)
     }
 
@@ -349,7 +372,7 @@ export class Application extends Container implements IApplication {
      *
      * @param callback
      */
-    booted (callback: (app: this) => void): void {
+    booted(callback: (app: this) => void): void {
         this.bootedCallbacks.push(callback)
 
         if (this.isBooted()) {
@@ -367,7 +390,7 @@ export class Application extends Container implements IApplication {
      * @throws {HttpException}
      * @throws {NotFoundHttpException}
      */
-    abort (code: ResponseCodes, message = '', headers: GenericObject = {}): void {
+    abort(code: ResponseCodes, message = '', headers: GenericObject = {}): void {
         if (code == 404) {
             throw new NotFoundHttpException(message, undefined, 0, headers)
         }
@@ -380,7 +403,7 @@ export class Application extends Container implements IApplication {
      *
      * @param  callback
      */
-    terminating (callback: (app: this) => void): this {
+    terminating(callback: (app: this) => void): this {
         this.terminatingCallbacks.push(callback)
 
         return this
@@ -389,7 +412,7 @@ export class Application extends Container implements IApplication {
     /**
      * Terminate the application.
      */
-    terminate (): void {
+    terminate(): void {
         let index = 0
 
         while (index < this.terminatingCallbacks.length) {
@@ -404,7 +427,7 @@ export class Application extends Container implements IApplication {
      *
      * @param  callbacks
      */
-    protected fireAppCallbacks (callbacks: Array<(app: this) => void>): void {
+    protected fireAppCallbacks(callbacks: Array<(app: this) => void>): void {
         let index = 0
 
         while (index < callbacks.length) {
@@ -419,7 +442,7 @@ export class Application extends Container implements IApplication {
      *
      * @param  config  Configuration option to pass to the initializer
      */
-    async handleRequest (config?: EntryConfig): Promise<void> {
+    async handleRequest(config?: EntryConfig): Promise<void> {
         this.h3App?.all('/**', async (event) => {
             // Define app context factory
             this.context = (event) => this.buildContext(event, config)
@@ -471,7 +494,7 @@ export class Application extends Container implements IApplication {
      * @param config 
      * @returns 
      */
-    async buildContext (event: H3Event, config?: EntryConfig, fresh = false): Promise<IHttpContext> {
+    async buildContext(event: H3Event, config?: EntryConfig, fresh = false): Promise<IHttpContext> {
         const { HttpContext, Request, Response } = await import('@h3ravel/http')
 
         event = config?.h3Event ?? event
@@ -494,7 +517,7 @@ export class Application extends Container implements IApplication {
     /**
      * Handle the incoming Artisan command.
      */
-    async handleCommand () {
+    async handleCommand() {
         const kernel = this.make(CKernel)
 
         const status = await kernel.handle()
@@ -507,7 +530,7 @@ export class Application extends Container implements IApplication {
     /**
      * Get the URI resolver callback.
      */
-    getUriResolver (): () => typeof IUrl | undefined {
+    getUriResolver(): () => typeof IUrl | undefined {
         return this.uriResolver ?? (() => undefined)
     }
 
@@ -516,7 +539,7 @@ export class Application extends Container implements IApplication {
      *
      * @param  callback
      */
-    setUriResolver (callback: () => typeof IUrl) {
+    setUriResolver(callback: () => typeof IUrl) {
         this.uriResolver = callback
 
         return this
@@ -525,14 +548,14 @@ export class Application extends Container implements IApplication {
     /**
      * Determine if middleware has been disabled for the application.
      */
-    shouldSkipMiddleware () {
+    shouldSkipMiddleware() {
         return this.bound('middleware.disable') && this.make('middleware.disable') === true
     }
 
     /**
      * Provide safe overides for the app
      */
-    configure (): AppBuilder {
+    configure(): AppBuilder {
         return new AppBuilder(this)
             .withKernels()
             .withCommands()
@@ -541,7 +564,7 @@ export class Application extends Container implements IApplication {
     /**
      * Check if the current application environment matches the one provided
      */
-    environment<E = string | undefined> (env: E): E extends undefined ? string : boolean {
+    environment<E = string | undefined>(env: E): E extends undefined ? string : boolean {
         return (this.make('config').get('app.env') === env) as never
     }
 
@@ -552,14 +575,14 @@ export class Application extends Container implements IApplication {
      * 
      * @alias serve
      */
-    async fire (): Promise<this>
+    async fire(): Promise<this>
     /**
      * 
      * @param h3App The current H3 app instance
      * @param preferedPort If provided, this will overide the port set in the evironment
      */
-    async fire (h3App: H3, preferredPort?: number): Promise<this>
-    async fire (h3App?: H3, preferredPort?: number): Promise<this> {
+    async fire(h3App: H3, preferredPort?: number): Promise<this>
+    async fire(h3App?: H3, preferredPort?: number): Promise<this> {
 
         if (h3App)
             this.h3App = h3App
@@ -579,7 +602,7 @@ export class Application extends Container implements IApplication {
      * @param h3App The current H3 app instance
      * @param preferedPort If provided, this will overide the port set in the evironment
      */
-    async serve (h3App?: H3, preferredPort?: number): Promise<this> {
+    async serve(h3App?: H3, preferredPort?: number): Promise<this> {
         if (!h3App) {
             throw new InvalidArgumentException('No valid H3 app instance was provided.')
 
@@ -633,7 +656,7 @@ export class Application extends Container implements IApplication {
      *
      * @param bootstrappers
      */
-    async bootstrapWith (bootstrappers: ConcreteConstructor<IBootstraper>[]): Promise<void> {
+    async bootstrapWith(bootstrappers: ConcreteConstructor<IBootstraper>[]): Promise<void> {
         for (const bootstrapper of bootstrappers) {
             if (this.has('app.events'))
                 this.make('app.events').dispatch('bootstrapping: ' + bootstrapper.name, [this])
@@ -650,7 +673,7 @@ export class Application extends Container implements IApplication {
     /**
      * Determine if the application has been bootstrapped before.
      */
-    hasBeenBootstrapped (): boolean {
+    hasBeenBootstrapped(): boolean {
         return this.bootstrapped
     }
 
@@ -660,7 +683,7 @@ export class Application extends Container implements IApplication {
      * @param h3App The current H3 app instance
      * @returns 
      */
-    setH3App (h3App?: H3) {
+    setH3App(h3App?: H3) {
         this.h3App = h3App
         return this
     }
@@ -670,7 +693,7 @@ export class Application extends Container implements IApplication {
      *
      * @returns 
      */
-    getH3App (): H3 | undefined {
+    getH3App(): H3 | undefined {
         return this.h3App
     }
 
@@ -679,7 +702,7 @@ export class Application extends Container implements IApplication {
      *
      * @param  ctx
      */
-    setHttpContext (ctx: IHttpContext): this {
+    setHttpContext(ctx: IHttpContext): this {
         this.httpContext = ctx
 
         return this
@@ -688,12 +711,12 @@ export class Application extends Container implements IApplication {
     /**
      * Get the HttpContext.
      */
-    getHttpContext (): IHttpContext | undefined
+    getHttpContext(): IHttpContext | undefined
     /**
      * @param key 
      */
-    getHttpContext<K extends keyof IHttpContext> (key: K): IHttpContext[K]
-    getHttpContext (key?: keyof IHttpContext): any {
+    getHttpContext<K extends keyof IHttpContext>(key: K): IHttpContext[K]
+    getHttpContext(key?: keyof IHttpContext): any {
         return key ? this.httpContext?.[key] : this.httpContext
     }
 
@@ -702,7 +725,7 @@ export class Application extends Container implements IApplication {
      *
      * @throws {RuntimeException}
      */
-    getNamespace (): string {
+    getNamespace(): string {
         if (this.namespace != null) {
             return this.namespace
         }
@@ -723,7 +746,7 @@ export class Application extends Container implements IApplication {
      * 
      * @returns 
      */
-    path (): string {
+    path(): string {
         return this.getPath('app')
     }
 
@@ -732,7 +755,7 @@ export class Application extends Container implements IApplication {
      * 
      * @returns 
      */
-    getBasePath (): string {
+    getBasePath(): string {
         return this.basePath
     }
 
@@ -743,7 +766,7 @@ export class Application extends Container implements IApplication {
      * @param name - The base name of the path property
      * @returns 
      */
-    getPath (name: IPathName, suffix?: string) {
+    getPath(name: IPathName, suffix?: string) {
         return path.join(this.paths.getPath(name, this.basePath), suffix ?? '')
     }
 
@@ -754,7 +777,7 @@ export class Application extends Container implements IApplication {
      * @param path - The new path
      * @returns 
      */
-    setPath (name: IPathName, path: string) {
+    setPath(name: IPathName, path: string) {
         return this.paths.setPath(name, path, this.basePath)
     }
 
@@ -763,7 +786,7 @@ export class Application extends Container implements IApplication {
      *
      * @returns 
      */
-    getVersion (key: string) {
+    getVersion(key: string) {
         return this.versions[key]?.replaceAll(/\^|~/g, '')
     }
 
@@ -772,7 +795,7 @@ export class Application extends Container implements IApplication {
      *
      * @returns 
      */
-    static getVersion (key: string) {
+    static getVersion(key: string) {
         return this.versions[key]?.replaceAll(/\^|~/g, '')
     }
 }

@@ -16,7 +16,7 @@ import { arquebusConfig } from '../Configuration'
 export class DatabaseServiceProvider extends ServiceProvider {
     public static priority = 994
 
-    register () {
+    register() {
         const config = this.app.make('config')
 
         const connection = Object.entries(arquebusConfig(config.get('database')))

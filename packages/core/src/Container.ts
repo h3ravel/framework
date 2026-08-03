@@ -60,9 +60,9 @@ export class Container extends IContainer {
      * @param target 
      * @returns 
      */
-    static hasAnyDecorator<C extends abstract new (...args: any[]) => any> (target: C): boolean
-    static hasAnyDecorator<F extends (...args: any[]) => any> (target: F): boolean
-    static hasAnyDecorator (target: (...args: any[]) => any): boolean {
+    static hasAnyDecorator<C extends abstract new (...args: any[]) => any>(target: C): boolean
+    static hasAnyDecorator<F extends (...args: any[]) => any>(target: F): boolean
+    static hasAnyDecorator(target: (...args: any[]) => any): boolean {
         if (Reflect.getMetadataKeys(target).length > 0) return true
 
         const paramLength = target.length
@@ -82,9 +82,9 @@ export class Container extends IContainer {
      * @param key 
      * @param factory 
      */
-    bind<T> (key: new (...args: any[]) => T, factory: () => T): void
-    bind<T extends UseKey> (key: T, factory: () => Bindings[T]): void
-    bind<T extends UseKey> (
+    bind<T>(key: new (...args: any[]) => T, factory: () => T): void
+    bind<T extends UseKey>(key: T, factory: () => Bindings[T]): void
+    bind<T extends UseKey>(
         key: T,
         factory: () => Bindings[T] | T
     ) {
@@ -105,7 +105,7 @@ export class Container extends IContainer {
      * @param key 
      * @param middleware 
      */
-    bindMiddleware (key: IMiddleware | string, middleware: ConcreteConstructor<IMiddleware>) {
+    bindMiddleware(key: IMiddleware | string, middleware: ConcreteConstructor<IMiddleware>) {
         this.middlewares.set(key, middleware as never)
     }
 
@@ -115,9 +115,9 @@ export class Container extends IContainer {
      * @param key 
      * @param middleware 
      */
-    boundMiddlewares (): MapIterator<[string | IMiddleware, IMiddleware]>
-    boundMiddlewares (key: IMiddleware | string): IMiddleware
-    boundMiddlewares (key?: IMiddleware | string) {
+    boundMiddlewares(): MapIterator<[string | IMiddleware, IMiddleware]>
+    boundMiddlewares(key: IMiddleware | string): IMiddleware
+    boundMiddlewares(key?: IMiddleware | string) {
         if (key) {
             return this.middlewares.get(key)
         }
@@ -129,7 +129,7 @@ export class Container extends IContainer {
      * 
      * @param key 
      */
-    unbind<T extends UseKey> (key: T | T[]) {
+    unbind<T extends UseKey>(key: T | T[]) {
         if (Array.isArray(key)) {
             for (let i = 0; i < key.length; i++) {
                 const abstract = this.getAlias(key[i])
@@ -153,11 +153,11 @@ export class Container extends IContainer {
      * @param key 
      * @param factory 
      */
-    singleton<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T]), factory: (app: this) => Bindings[T]): void
-    singleton<T extends UseKey> (key: T | (abstract new (...args: any[]) => Bindings[T]), factory: (app: this) => Bindings[T]): void
-    singleton<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T]), factory: abstract new (...args: any[]) => any): void
-    singleton<T extends UseKey> (key: T | (abstract new (...args: any[]) => Bindings[T]), factory: abstract new (...args: any[]) => any): void
-    singleton<T extends UseKey> (
+    singleton<T extends UseKey>(key: T | (new (...args: any[]) => Bindings[T]), factory: (app: this) => Bindings[T]): void
+    singleton<T extends UseKey>(key: T | (abstract new (...args: any[]) => Bindings[T]), factory: (app: this) => Bindings[T]): void
+    singleton<T extends UseKey>(key: T | (new (...args: any[]) => Bindings[T]), factory: abstract new (...args: any[]) => any): void
+    singleton<T extends UseKey>(key: T | (abstract new (...args: any[]) => Bindings[T]), factory: abstract new (...args: any[]) => any): void
+    singleton<T extends UseKey>(
         key: T | (new (...args: any[]) => Bindings[T]),
         factory: any
     ): void {
@@ -182,7 +182,7 @@ export class Container extends IContainer {
      * @param handler 
      * @returns 
      */
-    async invoke<X extends InstanceType<ClassConstructor>, M extends ExtractClassMethods<X>> (
+    async invoke<X extends InstanceType<ClassConstructor>, M extends ExtractClassMethods<X>>(
         instance: X,
         method: M,
         defaultArgs?: any[],
@@ -224,7 +224,7 @@ export class Container extends IContainer {
      * @param instance 
      * @param method 
      */
-    resolveParams<X extends InstanceType<ClassConstructor>, M extends ExtractClassMethods<X>> (
+    resolveParams<X extends InstanceType<ClassConstructor>, M extends ExtractClassMethods<X>>(
         instance: X,
         method: M,
     ): any[] {
@@ -256,10 +256,10 @@ export class Container extends IContainer {
      * 
      * @param key 
      */
-    make<T extends UseKey> (key: T): Bindings[T]
-    make<C extends abstract new (...args: any[]) => any> (key: C): InstanceType<C>
-    make<F extends (...args: any[]) => any> (key: F): ReturnType<F>
-    make (key: any): any {
+    make<T extends UseKey>(key: T): Bindings[T]
+    make<C extends abstract new (...args: any[]) => any>(key: C): InstanceType<C>
+    make<F extends (...args: any[]) => any>(key: F): ReturnType<F>
+    make(key: any): any {
         return this.resolve(key)
     }
 
@@ -269,7 +269,7 @@ export class Container extends IContainer {
      * @param abstract 
      * @param raiseEvents 
      */
-    resolve (abstract: any, raiseEvents = true): any {
+    resolve(abstract: any, raiseEvents = true): any {
         abstract = this.getAlias(abstract)
 
         /**
@@ -322,9 +322,9 @@ export class Container extends IContainer {
      * @param key 
      * @param callback 
      */
-    afterResolving<T extends UseKey> (key: T, callback: (resolved: Bindings[T], app: this) => void): void
-    afterResolving<T extends abstract new (...args: any[]) => any> (key: T, callback: (resolved: InstanceType<T>, app: this) => void): void
-    afterResolving (key: any, callback: (resolved: any, app: this) => void) {
+    afterResolving<T extends UseKey>(key: T, callback: (resolved: Bindings[T], app: this) => void): void
+    afterResolving<T extends abstract new (...args: any[]) => any>(key: T, callback: (resolved: InstanceType<T>, app: this) => void): void
+    afterResolving(key: any, callback: (resolved: any, app: this) => void) {
         key = this.getAlias(key)
         const existing = this.afterResolvingCallbacks.get(key) || []
         existing.push(callback)
@@ -337,9 +337,9 @@ export class Container extends IContainer {
      * @param  key
      * @param  callback
      */
-    beforeResolving<T extends UseKey> (key: T, callback: (app: this) => void): void
-    beforeResolving<T extends abstract new (...args: any[]) => any> (key: T, callback: (app: this) => void): void
-    beforeResolving (key: any, callback: (app: this) => void) {
+    beforeResolving<T extends UseKey>(key: T, callback: (app: this) => void): void
+    beforeResolving<T extends abstract new (...args: any[]) => any>(key: T, callback: (app: this) => void): void
+    beforeResolving(key: any, callback: (app: this) => void) {
         key = this.getAlias(key)
         const existing = this.beforeResolvingCallbacks.get(key) || []
         existing.push(callback)
@@ -352,7 +352,7 @@ export class Container extends IContainer {
      * @param  key
      * @param resolved 
      */
-    private runBeforeResolvingCallbacks<T extends UseKey> (key: T) {
+    private runBeforeResolvingCallbacks<T extends UseKey>(key: T) {
         const callbacks = this.beforeResolvingCallbacks.get(key) || []
 
         for (let i = 0; i < callbacks.length; i++) {
@@ -366,7 +366,7 @@ export class Container extends IContainer {
      * @param key 
      * @param resolved 
      */
-    private runAfterResolvingCallbacks<T extends UseKey> (
+    private runAfterResolvingCallbacks<T extends UseKey>(
         key: T,
         resolved: Bindings[T]
     ) {
@@ -383,7 +383,7 @@ export class Container extends IContainer {
      * @param ClassType 
      * @returns 
      */
-    private build<T extends UseKey> (ClassType: new (...args: any[]) => Bindings[T]): Bindings[T] {
+    private build<T extends UseKey>(ClassType: new (...args: any[]) => Bindings[T]): Bindings[T] {
         let dependencies: any[] = []
 
         if (Array.isArray((ClassType as any).__inject__)) {
@@ -407,9 +407,12 @@ export class Container extends IContainer {
      *
      * @param name
      */
-    isAlias (name: IBinding | string) {
+    isAlias(name: IBinding | string) {
         name = this.normalizeKey(name)
-        return this.aliases.has(name) && typeof this.aliases.get(name) !== 'undefined'
+        return (
+            this.aliases.has(name) &&
+            typeof this.aliases.get(name) !== 'undefined'
+        )
     }
 
     /**
@@ -417,7 +420,7 @@ export class Container extends IContainer {
      *
      * @param  abstract
      */
-    getAlias (abstract: any): any {
+    getAlias(abstract: any): any {
         abstract = this.normalizeKey(abstract)
 
         if (this.aliases.has(abstract))
@@ -435,7 +438,7 @@ export class Container extends IContainer {
      * @param key
      * @returns
      */
-    private normalizeKey (key: any): any {
+    private normalizeKey(key: any): any {
         if (
             key != null &&
             Object.prototype.hasOwnProperty.call(key, Container.containerToken)
@@ -451,7 +454,7 @@ export class Container extends IContainer {
      *
      * @param  abstract
      */
-    protected getExtenders (abstract: string | IBinding) {
+    protected getExtenders(abstract: string | IBinding) {
         return this.extenders.get(this.getAlias(abstract)) ?? []
     }
 
@@ -460,7 +463,7 @@ export class Container extends IContainer {
      *
      * @param  abstract
      */
-    forgetExtenders (abstract: string | IBinding) {
+    forgetExtenders(abstract: string | IBinding) {
         this.extenders.delete(this.getAlias(abstract))
     }
 
@@ -470,9 +473,9 @@ export class Container extends IContainer {
      * @param token 
      * @param target 
      */
-    alias (key: [string | ClassConstructor, any][]): this
-    alias (key: string | ClassConstructor, target: any): this
-    alias (key: string | ClassConstructor | [string | ClassConstructor, any][], target?: any) {
+    alias(key: [string | ClassConstructor, any][]): this
+    alias(key: string | ClassConstructor, target: any): this
+    alias(key: string | ClassConstructor | [string | ClassConstructor, any][], target?: any) {
         if (Array.isArray(key))
             for (const [tokn, targ] of key)
                 this.aliases.set(this.normalizeKey(tokn), this.normalizeKey(targ))
@@ -488,9 +491,9 @@ export class Container extends IContainer {
      * @param  abstract
      * @param  callback
      */
-    rebinding<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T]), callback: (app: this, inst: Bindings[T]) => Bindings[T] | void): void
-    rebinding<T extends UseKey> (key: T | (abstract new (...args: any[]) => Bindings[T]), callback: (app: this, inst: Bindings[T]) => Bindings[T] | void): void
-    rebinding<T extends UseKey> (
+    rebinding<T extends UseKey>(key: T | (new (...args: any[]) => Bindings[T]), callback: (app: this, inst: Bindings[T]) => Bindings[T] | void): void
+    rebinding<T extends UseKey>(key: T | (abstract new (...args: any[]) => Bindings[T]), callback: (app: this, inst: Bindings[T]) => Bindings[T] | void): void
+    rebinding<T extends UseKey>(
         abstract: T,
         callback: any
     ) {
@@ -509,10 +512,10 @@ export class Container extends IContainer {
      * @param  string  $abstract
      * @returns
      */
-    bound<T extends UseKey> (abstract: T): boolean
-    bound<C extends abstract new (...args: any[]) => any> (abstract: C): boolean
-    bound<F extends (...args: any[]) => any> (abstract: F): boolean
-    bound (abstract: any): boolean {
+    bound<T extends UseKey>(abstract: T): boolean
+    bound<C extends abstract new (...args: any[]) => any>(abstract: C): boolean
+    bound<F extends (...args: any[]) => any>(abstract: F): boolean
+    bound(abstract: any): boolean {
         abstract = this.getAlias(abstract)
         return this.bindings.has(abstract) || !!this.instances.get(abstract) || this.isAlias(abstract)
     }
@@ -523,10 +526,10 @@ export class Container extends IContainer {
      * @param key 
      * @returns 
      */
-    has<T extends UseKey> (key: T): boolean
-    has<C extends abstract new (...args: any[]) => any> (key: C): boolean
-    has<F extends (...args: any[]) => any> (key: F): boolean
-    has (key: any): boolean {
+    has<T extends UseKey>(key: T): boolean
+    has<C extends abstract new (...args: any[]) => any>(key: C): boolean
+    has<F extends (...args: any[]) => any>(key: F): boolean
+    has(key: any): boolean {
         return this.bound(key)
     }
 
@@ -535,7 +538,7 @@ export class Container extends IContainer {
      *
      * @param abstract
      */
-    resolved (abstract: IBinding | string): boolean {
+    resolved(abstract: IBinding | string): boolean {
         abstract = this.getAlias(abstract)
 
         return this.resolvedInstances.has(abstract) || this.instances.has(abstract)
@@ -549,9 +552,9 @@ export class Container extends IContainer {
      *
      * @throws {InvalidArgumentException}
      */
-    extend<T extends UseKey> (key: T | (new (...args: any[]) => Bindings[T]), closure: (inst: Bindings[T], app: this) => Bindings[T]): void
-    extend<T extends UseKey> (key: T | (abstract new (...args: any[]) => Bindings[T]), closure: (inst: Bindings[T], app: this) => Bindings[T]): void
-    extend<T extends UseKey> (
+    extend<T extends UseKey>(key: T | (new (...args: any[]) => Bindings[T]), closure: (inst: Bindings[T], app: this) => Bindings[T]): void
+    extend<T extends UseKey>(key: T | (abstract new (...args: any[]) => Bindings[T]), closure: (inst: Bindings[T], app: this) => Bindings[T]): void
+    extend<T extends UseKey>(
         abstract: T | (new (...args: any[]) => Bindings[T]),
         closure: any
     ): void {
@@ -576,9 +579,9 @@ export class Container extends IContainer {
      * @param  abstract
      * @param  instance
      */
-    instance<X = any> (key: string, instance: X): X
-    instance<K extends abstract new (...args: any[]) => any, X = any> (abstract: K, instance: X): X
-    instance (abstract: any, instance: any) {
+    instance<X = any>(key: string, instance: X): X
+    instance<K extends abstract new (...args: any[]) => any, X = any>(abstract: K, instance: X): X
+    instance(abstract: any, instance: any) {
         abstract = this.getAlias(abstract)
         this.removeAbstractAlias(abstract)
 
@@ -604,9 +607,9 @@ export class Container extends IContainer {
      *
      * @param  callback
      */
-    call<C extends abstract new (...args: any[]) => any> (callback: C): any | Promise<any>
-    call<F extends (...args: any[]) => any> (callback: F): any | Promise<any>
-    call (callback: (...args: any[]) => any): any | Promise<any> {
+    call<C extends abstract new (...args: any[]) => any>(callback: C): any | Promise<any>
+    call<F extends (...args: any[]) => any>(callback: F): any | Promise<any>
+    call(callback: (...args: any[]) => any): any | Promise<any> {
         if (ContainerResolver.isClass(callback)) {
             return this.make(callback)
         }
@@ -619,7 +622,7 @@ export class Container extends IContainer {
      *
      * @param abstract
      */
-    protected rebound (abstract: any) {
+    protected rebound(abstract: any) {
         const callbacks = this.getReboundCallbacks(abstract)
         if (!callbacks) {
             return
@@ -638,7 +641,7 @@ export class Container extends IContainer {
      *
      * @param abstract
      */
-    protected getReboundCallbacks (abstract: any) {
+    protected getReboundCallbacks(abstract: any) {
         return this.reboundCallbacks.get(abstract) ?? []
     }
 
@@ -647,7 +650,7 @@ export class Container extends IContainer {
      *
      * @param  searched
      */
-    protected removeAbstractAlias (searched: string) {
+    protected removeAbstractAlias(searched: string) {
         if (!this.aliases.has(searched)) {
             return
         }
@@ -666,7 +669,7 @@ export class Container extends IContainer {
     /**
      * Get the globally available instance of the container.
      */
-    static getInstance (): Application {
+    static getInstance(): Application {
         return this.instance ??= new Application(process.cwd(), 'h3ravel')
     }
 
@@ -675,7 +678,7 @@ export class Container extends IContainer {
      * 
      * @param container 
      */
-    static setInstance (container?: Application): Application | undefined {
+    static setInstance(container?: Application): Application | undefined {
         return Container.instance = container
     }
 }

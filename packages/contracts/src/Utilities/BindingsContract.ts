@@ -26,20 +26,20 @@ export interface Bindings {
     [key: `app.${string}`]: any;
     [key: `middleware.${string}`]: any;
     db: any
-    env (): NodeJS.ProcessEnv
-    env<T extends string> (key: T, def?: any): any
+    env(): NodeJS.ProcessEnv
+    env<T extends string>(key: T, def?: any): any
     url: IUrlGenerator
-    view (viewPath: string, params?: Record<string, any>): Promise<IResponsable>
+    view(viewPath: string, params?: Record<string, any>): Promise<IResponsable>
     edge: Edge;
-    asset (key: string, def?: string): string
+    asset(key: string, def?: string): string
     hash: IHashManager
     router: IRouter
     events: IDispatcher
     routes: IRouteCollection
     config: {
-        get<X extends Record<string, any>> (): X
-        get<X extends Record<string, any>, T extends Extract<keyof X, string>> (key?: T, def?: any): X[T]
-        set<T extends string> (key: T, value: any): void
+        get<X extends Record<string, any>>(): X
+        get<X extends Record<string, any>, T extends Extract<keyof X, string>>(key?: T, def?: any): X[T]
+        set<T extends string>(key: T, value: any): void
         load?(): any
     }
     session: ISessionManager;
@@ -57,4 +57,4 @@ export interface Bindings {
 
 export type UseKey<X extends Record<string, any> = Record<string, any>> = keyof RemoveIndexSignature<Bindings & X>
 
-export type IBinding = UseKey | symbol | (new (...args: any[]) => unknown)
+export type IBinding = UseKey | symbol | (new (...args: any[]) => unknown) | (string & {})

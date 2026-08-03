@@ -140,14 +140,14 @@ catalogs:
       version: 4.1.8
   prod:
     '@h3ravel/arquebus':
-      specifier: ^3.0.0
-      version: 3.0.0
+      specifier: ^3.0.2
+      version: 3.0.2
     '@h3ravel/collect.js':
       specifier: ^5.4.0
       version: 5.4.0
     '@h3ravel/musket':
-      specifier: ^2.2.7
-      version: 2.2.7
+      specifier: ^2.2.13
+      version: 2.2.13
     h3:
       specifier: ^2.0.1-rc.22
       version: 2.0.1-rc.22
@@ -260,7 +260,7 @@ importers:
     dependencies:
       '@h3ravel/arquebus':
         specifier: catalog:prod
-        version: 3.0.0(@types/node@24.9.2)(h3@2.0.1-rc.22)(sqlite3@6.0.1)
+        version: 3.0.2(@types/node@24.9.2)(h3@2.0.1-rc.22)(sqlite3@6.0.1)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/cache':
         specifier: workspace:^11.17.0
         version: link:../../packages/cache
@@ -296,7 +296,7 @@ importers:
         version: link:../../packages/mail
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@24.9.2)
+        version: 2.2.13(@types/node@24.9.2)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/queue':
         specifier: workspace:^11.17.0
         version: link:../../packages/queue
@@ -353,7 +353,7 @@ importers:
   packages/cache:
     dependencies:
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
     devDependencies:
       typescript:
@@ -364,19 +364,19 @@ importers:
     dependencies:
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
       typescript:
         specifier: 'catalog:'
@@ -385,19 +385,19 @@ importers:
   packages/console:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
       '@h3ravel/foundation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../foundation
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       chalk:
         specifier: ^5.6.2
@@ -422,7 +422,7 @@ importers:
         version: 5.0.0
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       typescript:
         specifier: 'catalog:'
@@ -434,9 +434,12 @@ importers:
         specifier: catalog:prod
         version: 2.0.1-rc.22
     devDependencies:
+      '@h3ravel/arquebus':
+        specifier: catalog:prod
+        version: 3.0.2(@types/node@25.9.3)(h3@2.0.1-rc.22)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       edge.js:
         specifier: 'catalog:'
         version: 6.3.0
@@ -447,13 +450,16 @@ importers:
   packages/core:
     dependencies:
       '@h3ravel/foundation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../foundation
+      '@h3ravel/musket':
+        specifier: catalog:prod
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       chalk:
         specifier: ^5.6.2
@@ -490,7 +496,7 @@ importers:
         version: 2.8.1
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@types/semver':
         specifier: 'catalog:'
@@ -503,21 +509,21 @@ importers:
     dependencies:
       '@h3ravel/arquebus':
         specifier: catalog:prod
-        version: 3.0.0(@types/node@25.9.3)(h3@2.0.1-rc.22)(sqlite3@6.0.1)
+        version: 3.0.2(@types/node@25.9.3)(h3@2.0.1-rc.22)(sqlite3@6.0.1)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
       '@h3ravel/filesystem':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../filesystem
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       sqlite3:
         specifier: 'catalog:'
@@ -530,7 +536,7 @@ importers:
   packages/events:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
     devDependencies:
       typescript:
@@ -549,16 +555,16 @@ importers:
         specifier: ^7.21.0
         version: 7.21.0
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       flydrive:
         specifier: 'catalog:'
@@ -581,12 +587,12 @@ importers:
         version: 7.21.0
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       flydrive:
         specifier: 'catalog:'
@@ -599,25 +605,25 @@ importers:
         version: 0.2.5
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
 
   packages/hashing:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
       '@h3ravel/foundation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       argon2:
         specifier: 'catalog:'
@@ -633,32 +639,32 @@ importers:
   packages/http:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@h3ravel/foundation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../foundation
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/session':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../session
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       '@h3ravel/validation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../validation
       h3:
         specifier: catalog:prod
         version: 2.0.1-rc.22
       resora:
         specifier: ^1.3.18
-        version: 1.3.18(@types/node@25.9.3)
+        version: 1.3.18(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       srvx:
         specifier: ^0.8.2
         version: 0.8.2
@@ -673,7 +679,7 @@ importers:
         specifier: ^3.1066.0
         version: 3.1066.0
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
       nodemailer:
         specifier: ^7.0.5
@@ -689,10 +695,10 @@ importers:
   packages/queue:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
     devDependencies:
       typescript:
@@ -702,28 +708,28 @@ importers:
   packages/router:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@h3ravel/database':
-        specifier: workspace:^11.19.6
+        specifier: workspace:^11.19.7
         version: link:../database
       '@h3ravel/events':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../events
       '@h3ravel/foundation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../foundation
       '@h3ravel/http':
-        specifier: workspace:^11.19.6
+        specifier: workspace:^11.19.7
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       h3:
         specifier: catalog:prod
@@ -735,17 +741,17 @@ importers:
   packages/session:
     dependencies:
       '@h3ravel/database':
-        specifier: workspace:^11.19.6
+        specifier: workspace:^11.19.7
         version: link:../database
       '@h3ravel/foundation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       typescript:
         specifier: 'catalog:'
@@ -788,7 +794,7 @@ importers:
         version: 4.1.1
     devDependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       fetchdts:
         specifier: ^0.1.6
@@ -803,10 +809,10 @@ importers:
         specifier: catalog:prod
         version: 5.4.0
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       dayjs:
         specifier: 'catalog:'
@@ -828,16 +834,16 @@ importers:
   packages/url:
     dependencies:
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@h3ravel/foundation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
     devDependencies:
       typescript:
@@ -847,25 +853,25 @@ importers:
   packages/validation:
     dependencies:
       '@h3ravel/config':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../config
       '@h3ravel/contracts':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../contracts
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
       '@h3ravel/database':
-        specifier: workspace:^11.19.6
+        specifier: workspace:^11.19.7
         version: link:../database
       '@h3ravel/foundation':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../foundation
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       simple-body-validator:
         specifier: 'catalog:'
@@ -878,19 +884,19 @@ importers:
   packages/view:
     dependencies:
       '@h3ravel/core':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../core
       '@h3ravel/http':
-        specifier: workspace:^11.19.6
+        specifier: workspace:^11.19.7
         version: link:../http
       '@h3ravel/musket':
         specifier: catalog:prod
-        version: 2.2.7(@types/node@25.9.3)
+        version: 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@5.9.2)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
       '@h3ravel/shared':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../shared
       '@h3ravel/support':
-        specifier: workspace:^2.2.6
+        specifier: workspace:^2.2.7
         version: link:../support
       edge.js:
         specifier: 'catalog:'
@@ -1418,26 +1424,34 @@ packages:
     resolution: {integrity: sha512-l+IFTkd+6Y5LoAuXyYCKNAKtw/Ci+rAMqgdTB1jv4iZiLhw0rtq+0qjIRbBizXkNzEFmXiXUW0H7sZQQvk1ffA==}
     engines: {node: '>=14'}
 
-  '@h3ravel/arquebus@3.0.0':
-    resolution: {integrity: sha512-+iUa+7Uag/rZZSxAWyALL3ztLDbodWtQSv0R9owifwcayUF5v/aGIWOBp5EBBW29u5CcfQwhUT0q/kAfU4IMWw==}
+  '@h3ravel/arquebus@3.0.2':
+    resolution: {integrity: sha512-OXdkSnd4G4f6iPoiHxjAfo8UEHS6OOBdAcZY2IYcwHwcTuDIINqR/xKOi8jDkgm1/CiZiYWXClO8kmAj1jFzHQ==}
     engines: {node: ^20.19.0 || >=22.12.0, pnpm: '>=10'}
     hasBin: true
 
   '@h3ravel/collect.js@5.4.0':
     resolution: {integrity: sha512-0PS7Yl30tQf3daHF0akEZ5XV5MnOq6BEsdtksCZl473bGJmrd0RQAdRIA34MEw9h+ilLhE2OhNIlYateffMvBA==}
 
-  '@h3ravel/contracts@2.2.5':
-    resolution: {integrity: sha512-xYChod43cdzWbRs5iv1sYYxWjj67ojz60oi2KWAiVl4/EefqwO6QfUOQUF6Gjy8baNRYqHEtIEjd882rtiv6zw==}
+  '@h3ravel/contracts@2.2.6':
+    resolution: {integrity: sha512-GDljn+3qswJkhujfy5O7g6Cx4nbUXzwgYjsInQ5afLthhGNrQqOyCWIWQNzM4afquEWZ/0BV22J1gfGKZgN9Vw==}
 
-  '@h3ravel/musket@2.2.7':
-    resolution: {integrity: sha512-QgYy6g/c+d9NqcjJyOlh4LbMmFwgl6n5kkdB0faiJ5pbnRg2ByrSBwtu4OgDbopvHplbC6PR1ddU/pduCrCisA==}
+  '@h3ravel/musket@2.2.13':
+    resolution: {integrity: sha512-3md3Ncmjh9HDAYMq0gseJyZWyZpmX5hZMAx2Uu3SAhpP99Hwg154UkVygAvXMQN9Ks7zkXEpaj+/q2Ky2TlhzQ==}
     engines: {node: ^20.19.0 || >=22.12.0}
+    peerDependencies:
+      tsdown: ^0.22.2
+    peerDependenciesMeta:
+      tsdown:
+        optional: true
 
   '@h3ravel/shared@2.2.5':
     resolution: {integrity: sha512-3nyQMYmB1wXD2JJ9t9hc/xTFBVewmbGkwT47su0Tp7DxhGE6WUJ6M/NhfKTHieO5sw2/1rKSU70lbzDDt2kfzg==}
 
-  '@h3ravel/support@2.2.5':
-    resolution: {integrity: sha512-GieWq7ZpsL7iOtTkfCqtmFs9NW6HCe/2ottp7JVvj2Io6lt+QPJ/x2frghKfPpPjEDUxT7ebC2eR0eognJUytA==}
+  '@h3ravel/shared@2.2.6':
+    resolution: {integrity: sha512-aB36v5gL698cjKwSlLtBKTR3QYmvCIzUxQuBkt7Tf00LR9+Q8sNTJ1VinZYE9CZ+BCawfuG1/YcSqDKUN3s6qg==}
+
+  '@h3ravel/support@2.2.6':
+    resolution: {integrity: sha512-/LYzW5eguyB7bcAKi8YNTghFjW57ynZ2r0v+ANjL7IcGl1FsrTspSu20jlPbMYqOu1mexe6V1D7DHN8soNDfeA==}
     peerDependencies:
       h3: ^2.0.1-rc.22
     peerDependenciesMeta:
@@ -5518,12 +5532,12 @@ snapshots:
       - encoding
       - supports-color
 
-  '@h3ravel/arquebus@3.0.0(@types/node@24.9.2)(h3@2.0.1-rc.22)(sqlite3@6.0.1)':
+  '@h3ravel/arquebus@3.0.2(@types/node@24.9.2)(h3@2.0.1-rc.22)(sqlite3@6.0.1)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))':
     dependencies:
       '@h3ravel/collect.js': 5.4.0
-      '@h3ravel/musket': 2.2.7(@types/node@24.9.2)
-      '@h3ravel/shared': 2.2.5(@types/node@24.9.2)
-      '@h3ravel/support': 2.2.5(@types/node@24.9.2)(h3@2.0.1-rc.22)
+      '@h3ravel/musket': 2.2.13(@types/node@24.9.2)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
+      '@h3ravel/shared': 2.2.6(@types/node@24.9.2)
+      '@h3ravel/support': 2.2.6(@types/node@24.9.2)(h3@2.0.1-rc.22)
       barrelize: 1.8.2
       chalk: 5.6.2
       chokidar: 5.0.0
@@ -5550,13 +5564,14 @@ snapshots:
       - pg-query-stream
       - sqlite3
       - supports-color
+      - tsdown
 
-  '@h3ravel/arquebus@3.0.0(@types/node@25.9.3)(h3@2.0.1-rc.22)(sqlite3@6.0.1)':
+  '@h3ravel/arquebus@3.0.2(@types/node@25.9.3)(h3@2.0.1-rc.22)(sqlite3@6.0.1)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))':
     dependencies:
       '@h3ravel/collect.js': 5.4.0
-      '@h3ravel/musket': 2.2.7(@types/node@25.9.3)
-      '@h3ravel/shared': 2.2.5(@types/node@25.9.3)
-      '@h3ravel/support': 2.2.5(@types/node@25.9.3)(h3@2.0.1-rc.22)
+      '@h3ravel/musket': 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
+      '@h3ravel/shared': 2.2.6(@types/node@25.9.3)
+      '@h3ravel/support': 2.2.6(@types/node@25.9.3)(h3@2.0.1-rc.22)
       barrelize: 1.8.2
       chalk: 5.6.2
       chokidar: 5.0.0
@@ -5583,41 +5598,97 @@ snapshots:
       - pg-query-stream
       - sqlite3
       - supports-color
+      - tsdown
+
+  '@h3ravel/arquebus@3.0.2(@types/node@25.9.3)(h3@2.0.1-rc.22)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))':
+    dependencies:
+      '@h3ravel/collect.js': 5.4.0
+      '@h3ravel/musket': 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
+      '@h3ravel/shared': 2.2.6(@types/node@25.9.3)
+      '@h3ravel/support': 2.2.6(@types/node@25.9.3)(h3@2.0.1-rc.22)
+      barrelize: 1.8.2
+      chalk: 5.6.2
+      chokidar: 5.0.0
+      cross-env: 10.1.0
+      dayjs: 1.11.21
+      dotenv: 17.4.2
+      escalade: 3.2.0
+      husky: 9.1.7
+      knex: 3.3.0(mysql2@3.22.6(@types/node@25.9.3))(pg@8.22.0)(tedious@20.0.0)
+      lint-staged: 17.0.8
+      mysql2: 3.22.6(@types/node@25.9.3)
+      pg: 8.22.0
+      pluralize: 8.0.0
+      resolve-from: 5.0.0
+      tedious: 20.0.0
+    transitivePeerDependencies:
+      - '@types/node'
+      - better-sqlite3
+      - crossws
+      - h3
+      - mariadb
+      - mysql
+      - pg-native
+      - pg-query-stream
+      - sqlite3
+      - supports-color
+      - tsdown
 
   '@h3ravel/collect.js@5.4.0': {}
 
-  '@h3ravel/contracts@2.2.5':
+  '@h3ravel/contracts@2.2.6':
     dependencies:
       h3: 2.0.1-rc.22
     transitivePeerDependencies:
       - crossws
 
-  '@h3ravel/musket@2.2.7(@types/node@24.9.2)':
+  '@h3ravel/musket@2.2.13(@types/node@24.9.2)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))':
     dependencies:
       '@h3ravel/shared': 2.2.5(@types/node@24.9.2)
       chalk: 5.6.2
       commander: 14.0.2
-      dayjs: 1.11.19
+      dayjs: 1.11.21
       execa: 9.6.1
       glob: 13.0.6
       preferred-pm: 4.1.1
       resolve-from: 5.0.0
       tsx: 4.20.6
+    optionalDependencies:
+      tsdown: 0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0))
     transitivePeerDependencies:
       - '@types/node'
       - crossws
 
-  '@h3ravel/musket@2.2.7(@types/node@25.9.3)':
+  '@h3ravel/musket@2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@5.9.2)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))':
     dependencies:
       '@h3ravel/shared': 2.2.5(@types/node@25.9.3)
       chalk: 5.6.2
       commander: 14.0.2
-      dayjs: 1.11.19
+      dayjs: 1.11.21
       execa: 9.6.1
       glob: 13.0.6
       preferred-pm: 4.1.1
       resolve-from: 5.0.0
       tsx: 4.20.6
+    optionalDependencies:
+      tsdown: 0.22.2(tsx@4.20.6)(typescript@5.9.2)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0))
+    transitivePeerDependencies:
+      - '@types/node'
+      - crossws
+
+  '@h3ravel/musket@2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))':
+    dependencies:
+      '@h3ravel/shared': 2.2.5(@types/node@25.9.3)
+      chalk: 5.6.2
+      commander: 14.0.2
+      dayjs: 1.11.21
+      execa: 9.6.1
+      glob: 13.0.6
+      preferred-pm: 4.1.1
+      resolve-from: 5.0.0
+      tsx: 4.20.6
+    optionalDependencies:
+      tsdown: 0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0))
     transitivePeerDependencies:
       - '@types/node'
       - crossws
@@ -5656,11 +5727,45 @@ snapshots:
       - '@types/node'
       - crossws
 
-  '@h3ravel/support@2.2.5(@types/node@24.9.2)(h3@2.0.1-rc.22)':
+  '@h3ravel/shared@2.2.6(@types/node@24.9.2)':
+    dependencies:
+      '@cli-prompts/multiline': 1.0.0
+      '@inquirer/prompts': 7.9.0(@types/node@24.9.2)
+      chalk: 5.6.2
+      console-table-printer: 2.16.1
+      edge.js: 6.3.0
+      escalade: 3.2.0
+      h3: 2.0.1-rc.22
+      inquirer-autocomplete-standalone: 0.8.1
+      jiti: 2.7.0
+      ora: 9.1.0
+      preferred-pm: 4.1.1
+    transitivePeerDependencies:
+      - '@types/node'
+      - crossws
+
+  '@h3ravel/shared@2.2.6(@types/node@25.9.3)':
+    dependencies:
+      '@cli-prompts/multiline': 1.0.0
+      '@inquirer/prompts': 7.9.0(@types/node@25.9.3)
+      chalk: 5.6.2
+      console-table-printer: 2.16.1
+      edge.js: 6.3.0
+      escalade: 3.2.0
+      h3: 2.0.1-rc.22
+      inquirer-autocomplete-standalone: 0.8.1
+      jiti: 2.7.0
+      ora: 9.1.0
+      preferred-pm: 4.1.1
+    transitivePeerDependencies:
+      - '@types/node'
+      - crossws
+
+  '@h3ravel/support@2.2.6(@types/node@24.9.2)(h3@2.0.1-rc.22)':
     dependencies:
       '@h3ravel/collect.js': 5.4.0
-      '@h3ravel/contracts': 2.2.5
-      '@h3ravel/shared': 2.2.5(@types/node@24.9.2)
+      '@h3ravel/contracts': 2.2.6
+      '@h3ravel/shared': 2.2.6(@types/node@24.9.2)
       dayjs: 1.11.21
       luxon: 3.7.2
     optionalDependencies:
@@ -5669,11 +5774,11 @@ snapshots:
       - '@types/node'
       - crossws
 
-  '@h3ravel/support@2.2.5(@types/node@25.9.3)(h3@2.0.1-rc.22)':
+  '@h3ravel/support@2.2.6(@types/node@25.9.3)(h3@2.0.1-rc.22)':
     dependencies:
       '@h3ravel/collect.js': 5.4.0
-      '@h3ravel/contracts': 2.2.5
-      '@h3ravel/shared': 2.2.5(@types/node@25.9.3)
+      '@h3ravel/contracts': 2.2.6
+      '@h3ravel/shared': 2.2.6(@types/node@25.9.3)
       dayjs: 1.11.21
       luxon: 3.7.2
     optionalDependencies:
@@ -7578,7 +7683,7 @@ snapshots:
 
   is-fullwidth-code-point@5.1.0:
     dependencies:
-      get-east-asian-width: 1.4.0
+      get-east-asian-width: 1.6.0
 
   is-glob@4.0.3:
     dependencies:
@@ -7771,6 +7876,29 @@ snapshots:
       mysql2: 3.22.6(@types/node@25.9.3)
       pg: 8.22.0
       sqlite3: 6.0.1
+      tedious: 20.0.0
+    transitivePeerDependencies:
+      - supports-color
+
+  knex@3.3.0(mysql2@3.22.6(@types/node@25.9.3))(pg@8.22.0)(tedious@20.0.0):
+    dependencies:
+      colorette: 2.0.19
+      commander: 10.0.1
+      debug: 4.3.4
+      escalade: 3.2.0
+      esm: 3.2.25
+      get-package-type: 0.1.0
+      getopts: 2.3.0
+      interpret: 2.2.0
+      lodash: 4.18.1
+      pg-connection-string: 2.6.2
+      rechoir: 0.8.0
+      resolve-from: 5.0.0
+      tarn: 3.1.2
+      tildify: 2.0.0
+    optionalDependencies:
+      mysql2: 3.22.6(@types/node@25.9.3)
+      pg: 8.22.0
       tedious: 20.0.0
     transitivePeerDependencies:
       - supports-color
@@ -8300,12 +8428,13 @@ snapshots:
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
 
-  resora@1.3.18(@types/node@25.9.3):
+  resora@1.3.18(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0))):
     dependencies:
-      '@h3ravel/musket': 2.2.7(@types/node@25.9.3)
+      '@h3ravel/musket': 2.2.13(@types/node@25.9.3)(tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)))
     transitivePeerDependencies:
       - '@types/node'
       - crossws
+      - tsdown
 
   restore-cursor@5.1.0:
     dependencies:
@@ -8331,6 +8460,23 @@ snapshots:
     dependencies:
       glob: 13.0.6
       package-json-from-dist: 1.0.1
+
+  rolldown-plugin-dts@0.25.2(rolldown@1.1.1)(typescript@5.9.2):
+    dependencies:
+      '@babel/generator': 8.0.0-rc.6
+      '@babel/helper-validator-identifier': 8.0.0-rc.6
+      '@babel/parser': 8.0.0-rc.6
+      ast-kit: 3.0.0-beta.1
+      birpc: 4.0.0
+      dts-resolver: 3.0.0
+      get-tsconfig: 5.0.0-beta.5
+      obug: 2.1.1
+      rolldown: 1.1.1
+    optionalDependencies:
+      typescript: 5.9.2
+    transitivePeerDependencies:
+      - oxc-resolver
+    optional: true
 
   rolldown-plugin-dts@0.25.2(rolldown@1.1.1)(typescript@6.0.3):
     dependencies:
@@ -8590,7 +8736,7 @@ snapshots:
   string-width@7.2.0:
     dependencies:
       emoji-regex: 10.5.0
-      get-east-asian-width: 1.4.0
+      get-east-asian-width: 1.6.0
       strip-ansi: 7.1.2
 
   string-width@8.1.0:
@@ -8686,7 +8832,7 @@ snapshots:
       '@js-joda/core': 6.1.0
       '@types/node': 25.9.3
       bl: 6.1.6
-      iconv-lite: 0.7.0
+      iconv-lite: 0.7.3
       js-md4: 0.3.2
       native-duplexpair: 1.0.0
       sprintf-js: 1.1.3
@@ -8765,6 +8911,34 @@ snapshots:
       json5: 2.2.3
       minimist: 1.2.8
       strip-bom: 3.0.0
+
+  tsdown@0.22.2(tsx@4.20.6)(typescript@5.9.2)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)):
+    dependencies:
+      ansis: 4.3.1
+      cac: 7.0.0
+      defu: 6.1.7
+      empathic: 2.0.1
+      hookable: 6.1.1
+      import-without-cache: 0.4.0
+      obug: 2.1.1
+      picomatch: 4.0.4
+      rolldown: 1.1.1
+      rolldown-plugin-dts: 0.25.2(rolldown@1.1.1)(typescript@5.9.2)
+      semver: 7.8.4
+      tinyexec: 1.2.4
+      tinyglobby: 0.2.17
+      tree-kill: 1.2.2
+      unconfig-core: 7.5.0
+    optionalDependencies:
+      tsx: 4.20.6
+      typescript: 5.9.2
+      unrun: 0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)
+    transitivePeerDependencies:
+      - '@ts-macro/tsc'
+      - '@typescript/native-preview'
+      - oxc-resolver
+      - vue-tsc
+    optional: true
 
   tsdown@0.22.2(tsx@4.20.6)(typescript@6.0.3)(unrun@0.2.15(@emnapi/core@1.11.0)(@emnapi/runtime@1.11.0)):
     dependencies:
